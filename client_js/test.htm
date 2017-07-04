@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+<link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+<script>
+<!--
+
+//From: http://www.technicaladvices.com/2012/07/16/preventing-backspace-from-navigating-back-in-all-the-browsers/
+document.onkeydown = function (event) 
+{
+	
+	if (!event) { /* This will happen in IE */
+		event = window.event;
+	}
+		
+	var keyCode = event.keyCode;
+	
+	if (keyCode == 8 &&
+		((event.target || event.srcElement).tagName != "TEXTAREA") && 
+		((event.target || event.srcElement).tagName != "INPUT")) { 
+		
+		if (navigator.userAgent.toLowerCase().indexOf("msie") == -1) {
+			event.stopPropagation();
+		} else {
+			event.returnValue = false;
+		}
+		
+		return false;
+	}
+};	
+
+
+var LanguagesNB=["cat","spa","eng"];
+var ActiveLanguage=2;
+
+function DonaCadena3(cat,spa,eng)
+{
+	if (ActiveLanguage==0)
+		return cat;
+	else if (ActiveLanguage==1)
+		return spa;
+	else if (ActiveLanguage==2)
+		return eng;
+}
+
+function DonaCadenaCodelistDeSelect(selector)
+{
+	if (selector.selectedIndex!=-1)
+		return selector.options[selector.selectedIndex].value;
+	else
+		return "";
+}
+
+function SeleccionaSelectDesDeValor(selector, valor)
+{
+	if (valor)
+	{
+		for (var i=0; i<selector.length; i++)
+		{
+			if (selector.options[i].value==valor)
+			{
+				selector.selectedIndex=i;
+				return;
+			}					
+		}
+	} 
+}
+
+function GetActiveLanguageIndex(language)
+{
+	for (var i=0; i<LanguagesNB.length; i++)
+	{
+		if (LanguagesNB[i]==language)
+			return i;
+	}
+	return -1;
+}
+
+function ChangeLanguage(lang)
+{
+	ActiveLanguage=lang;
+	document.getElementById("front-welcome-text-title").innerHTML=DonaCadena3(
+		"Benvinguts al NiMMbus", "Bienvenidos al NiMMbus", "Welcome to NiMMbus");
+	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadena3(
+		"La observació de la terra a tot arreu. Comparteix informació i valoracions amb altres.",
+		"La observación de la tierra en todas partes. Comparte información y valoraciones con los demás.",
+		"Earth observation everywhere. Share information and feedback with others.");
+	document.getElementById("front-language-lang").innerHTML=DonaCadena3(
+		"<small>Idioma:</small> Català",
+		"<small>Idioma:</small> Español",
+		"<small>Language:</small> English");
+	document.getElementById("sign_in_title").placeholder=DonaCadena3("Títol", "Título", "Title");
+	document.getElementById("sign_in_code").placeholder=DonaCadena3("Identificador", "Identificador","Identifier");
+	document.getElementById("sign_in_codespace").placeholder=DonaCadena3("Espai de noms", "Espacio de nombres", "Name space");
+	document.getElementById("sign_in_btn").value=DonaCadena3("Crear", "Crear", "Create");
+	document.getElementById("sign_in_create_citation").innerHTML=DonaCadena3("Descriu la citació al recurs sobre el que donaràs feedback", "Describe la citación al recurso sobre el qual darás feedback", "Describe the citation to the resource you are going to give feedback");
+
+}
+
+function DonaCadenaIdNoPotSerBuit(id)
+{
+	return document.getElementById(id).innerHTML + " "+ DonaCadena3("no pot ser buit.", "no puede estar vacio.", "cannot be blank.");
+}
+
+
+function InitFrontPage()
+{
+	//SurtDeNimmbus();
+	ChangeLanguage(ActiveLanguage);
+}
+
+var TimeOutBoxCloser=0;
+var CloseDropDownListOutMenu=null;
+var CloseDropDownListOutSubMenu=null;
+
+function SwitchDropDownList(menu_id, submenu_id)
+{
+	if (document.getElementById(submenu_id).style.visibility=="")
+		document.getElementById(submenu_id).style.visibility="hidden";
+
+	if (document.getElementById(submenu_id).style.visibility=="hidden")
+	{
+		document.getElementById(submenu_id).style.visibility="visible";
+		//Remove menu when clicking outside: http://www.techjunkie.com/close-div-click-outside/
+		CloseDropDownListOut(CloseDropDownListOutSubMenu);
+
+		CloseDropDownListOutMenu=menu_id;
+		CloseDropDownListOutSubMenu=submenu_id;
+
+		document.body.removeEventListener('click', CloseDropDownListOutEvent, false);
+		if (TimeOutBoxCloser)
+			clearTimeout(TimeOutBoxCloser);
+		TimeOutBoxCloser=setTimeout("document.body.addEventListener('click', CloseDropDownListOutEvent, false);", 300);
+	}
+	else
+		CloseDropDownListOut(submenu_id);
+}
+
+function CloseDropDownListOut(id)
+{
+	document.body.removeEventListener('click', CloseDropDownListOut, false);
+	if (id)
+		document.getElementById(id).style.visibility='hidden';
+}
+
+function CloseDropDownListOutEvent(event)
+{
+	if (!event)
+		event=window.event;
+	if(event.target.id != CloseDropDownListOutMenu)
+	{
+		CloseDropDownListOut(CloseDropDownListOutSubMenu);
+		CloseDropDownListOutSubMenu=null;		
+	}
+}
+
+</script>
+
+<style>
+.text-input:focus {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) inset, 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+.text-input {
+  border: 1px solid #56B4EF;
+  height: 29px;
+  transition: background 0.2s linear 0s;
+  box-shadow: 0 1px 0 #EEEEEE inset, 0 1px 0 #FFFFFF;
+  border-radius: 3px;
+  font-size: 13px;
+  font-family: "Gotham Narrow SSm",sans-serif;
+  line-height: 20px;
+  padding: 4px;
+}
+
+.submit_btn {
+  border-radius: 4px;
+  box-shadow: 0 1px 0 #FFFFFF;
+  line-height: 11px;
+  background-color: #55ACEE;
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
+  border: 1px solid #3B88C3;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 16px;
+}
+
+.submit_btn:hover {
+  background-color: #3B88C3;
+}
+
+.submit_btn_disable {
+  border-radius: 4px;
+  box-shadow: 0 1px 0 #FFFFFF;
+  line-height: 11px;
+  background-color: #55ACEE;
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
+  border: 1px solid #3B88C3;
+  color: #CCCCCC;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 16px;
+}
+
+
+.packet_paragraph {
+  margin: 0 0 0 0;
+}
+
+.front-bg {
+  background: none repeat scroll 0 0 #000000;
+  height: 200%;
+  left: -50%;
+  top: -2%;
+  position: fixed;
+  width: 200%;
+  z-index: -1;
+}
+
+.front-bg img {
+  bottom: 0;
+  display: none;
+  left: 0;
+  margin: auto;
+  min-height: 50%;
+  min-width: 50%;
+  right: 0;
+  top: 0;
+}
+
+.front-welcome-text { 
+  bottom: 0;
+  color: #CCD6DD;
+  font-size: 20px;
+  font-weight: 300;
+  left: 10%;
+  top: 130px;
+  width: 33%;
+  height: 330px;
+  line-height: 22px;
+  padding: 20px;
+  position: absolute;
+  text-align: left;
+  text-shadow: 0 1px 2px #000000;
+  font-family: "Gotham Narrow SSm",sans-serif;
+  //background-color: #55EEAC;
+  background-color: #33AA77;
+}
+
+.front-language {
+  background: none repeat scroll 0 0 #FFFFFF;
+  bottom: 0;
+  color: #66757F;
+  left: 80%;
+  top: 20px;
+  width: 150px;
+  height: 30px;
+  line-height: 22px;
+  padding: 20px;
+  position: absolute;
+  text-align: left;
+  font-family: "Gotham Narrow SSm",sans-serif;
+  border-radius: 4px;
+  border: 1px solid #C1C8CD;
+}
+
+.dropdown-list {
+  background: none repeat scroll 0 0 #FFFFFF;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  bottom: 0;
+  color: #66757F;
+  line-height: 22px;
+  padding: 20px;
+  position: absolute;
+  text-align: left;
+  font-family: "Gotham Narrow SSm",sans-serif;
+  border-radius: 4px;
+  border: 1px solid #C1C8CD;
+  visibility: hidden;
+  z-index: 100;
+  cursor: pointer;
+}
+
+.dropdown-language {
+    //background-color: black;
+    //color: white;
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.dropdown-list_active {
+    //background-color: black;
+    //color: white;
+    display: block;
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s linear 0s;
+}
+
+.dropdown-list_active:hover {
+    background-color: #3B88C3;
+    color: white;
+    display: block;
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.dropdown-caret {
+    left: 60;
+    float: left;
+    height: 10px;
+    overflow: hidden;
+    position: absolute;
+    top: -10px;
+    width: 18px;
+}
+
+.caret-outer {
+    border-bottom: 10px solid rgba(0, 0, 0, 0.1);
+    border-left: 10px solid rgba(0, 0, 0, 0);
+    border-right: 10px solid rgba(0, 0, 0, 0);
+    height: auto;
+    left: 0;
+    top: 0;
+    width: auto;
+    display: inline-block;
+    margin-left: -1px;
+    position: absolute;
+}
+
+.caret-inner {
+    border-bottom: 9px solid rgba(255, 255, 255, 0.98);
+    border-left: 9px solid rgba(0, 0, 0, 0);
+    border-right: 9px solid rgba(0, 0, 0, 0);
+    left: 1px;
+    top: 1px;
+    display: inline-block;
+    margin-left: -1px;
+    position: absolute;
+}
+
+.white-area {
+  background: none repeat scroll 0 0 #FFFFFF;
+  bottom: 0;
+  //color: #CCD6DD;
+  color: #66757F;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 22px;
+  padding: 20px;
+  position: absolute;
+  text-align: left;
+  //text-shadow: 0 1px 2px #000000;
+  font-family: "Gotham Narrow SSm",sans-serif;
+  border-radius: 4px;
+  border: 1px solid #C1C8CD;
+  z-index: 2;
+  display: table;  //Auto sizes height if content is too long
+}
+
+.white-area-title {
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid #E1E8ED;
+  //;box-shadow: 0 1px 0 #FFFFFF;
+  color: #66757F;
+  display: block;
+  font-size: 18px;
+  font-weight: 300;
+  //position: relative;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.white-area-list {
+  list-style: none outside none;
+  margin-left: 0;
+  padding: 0;
+}
+
+.white-area-li {
+  display: table;
+  width: 100%;
+  border-bottom: 1px solid #e1e8ed;
+  min-height: 68px;
+  cursor: pointer;
+}
+
+.white-area-li:hover {
+    background-color: #f5f8fa;
+}
+
+.white-area-li-text {
+  padding: 9px 12px 9px 60px;
+  list-style: none outside none;
+}
+
+.white-area-li-text-link {
+    text-decoration: none;
+    color: #0084B4;
+}
+
+.white-area-li-text-link:active, .white-area-li-text-link:focus, .white-area-li-text-link:hover{
+    text-decoration: underline;
+}
+
+
+.white-area-li-img {
+  float: left;
+  margin-left: -58px;
+  margin-top: 3px;
+  -moz-force-broken-image-icon: 1;
+  border-radius: 5px;
+  height: 48px;
+  width: 48px;
+  border: 0 none;
+}
+
+.white-area-li-shadow {
+  font-size: 11px;
+  color: #CCCCCC;
+  position: relative;
+  left: 30; 
+}
+
+.white-area-li-shadow:hover {
+  font-size: 11px;
+  color: #66757F;
+}
+
+.white-area-li-shadow-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.white-area-li-shadow-link:active, .white-area-li-shadow-link:focus, .white-area-li-shadow-link:hover{
+    color: #0084B4;
+    text-decoration: underline;
+}
+
+
+/* inspirat amb http://stackoverflow.com/questions/114543/how-to-horizontally-center-a-div-in-a-div */
+.long-note-outer {
+    position: fixed;
+    text-align: center;
+    top: 30;
+    width: 100%;
+    z-index: 98;
+}
+
+.short-note-outer {
+    position: fixed;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: 98;
+}
+
+.note-inner {
+    overflow: hidden; 
+    line-height: 110%;
+    font-family: "Gotham Narrow SSm",sans-serif;
+    background: #fde073;
+    display: table;
+    margin: 0 auto;
+    -webkit-box-shadow: 0 0 5px black;
+    -moz-box-shadow:    0 0 5px black;
+    box-shadow:         0 0 5px black;
+    border-radius: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    opacity: 0;
+    z-index: 101;
+    transition: opacity 0.3s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.caret {
+  margin-top: 0;  
+  vertical-align: middle;
+  border-left: 4px solid rgba(0, 0, 0, 0);
+  border-right: 4px solid rgba(0, 0, 0, 0);
+  border-top: 4px solid #66757F;
+  display: inline-block;
+  height: 0;
+  margin-left: 2px;
+  margin-top: 5px;
+  width: 0;
+}
+
+.main-page-bar {
+  background: none repeat scroll 0 0 #FFFFFF;
+  top: 0px;
+  left: 0px;
+  color: #CCD6DD;
+  font-size: 14px;
+  font-weight: 300;
+  width: 100%;
+  height: 40px;
+  padding: 0px;
+  position: fixed;
+  text-align: left;
+  font-family: "Gotham Narrow SSm",sans-serif;
+  border-bottom: 1px solid #e1e8ed;
+  z-index: 97;
+}
+
+.tooltip {
+    text-decoration: none;
+    text-align: center;
+    width: 100px;
+    white-space: nowrap;
+    position: absolute;
+    font-size: 14px;
+    line-height: normal;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.42, 0, 0.58, 1);
+    /* Safari */
+    -webkit-transition; opacity 0.3s cubic-bezier(0.42, 0, 0.58, 1);
+    z-index: 99;
+}
+
+.tooltip-caret {
+  margin-top: 0;  
+  margin-bottom: 0;  
+  vertical-align: middle;
+  border-left: 6px solid rgba(0, 0, 0, 0);
+  border-right: 6px solid rgba(0, 0, 0, 0);
+  border-bottom: 6px solid #000000;
+  display: inline-block;
+  height: 0;
+  //margin-left: 3px;
+  //margin-top: 5px;
+  width: 0;
+}
+
+.tooltip-text {
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-left: 3px solid #000000;
+    border-right: 3px solid #000000;
+    background-color: #000000;
+    color: white;
+    border-radius: 3px;
+}
+
+.control-group {
+    display: table;
+    clear: both;
+    margin-bottom: 15px;
+    width: 95%
+}
+
+.control-label {
+    border-bottom: 0 none;
+    float: left;
+    font-size: 13px;
+    line-height: 20px;
+    margin: 0;
+    padding-top: 5px;
+    text-align: right;
+    width: 120px;
+    color: #292F33;
+    cursor: pointer;
+    display: block;
+}
+
+.controls {
+    margin-left: 140px;
+}
+
+.controls p {
+    color: #8899A6;
+    margin: 0;
+}
+
+.form-actions {
+    margin: 20px 0 8px;
+    padding-left: 140px;
+}
+
+.text_button {
+    color: #0084B4;
+    cursor: pointer;
+}
+
+.text_button:active, .text_button:focus, .text_button:hover {
+    color: #0084B4;
+    text-decoration: underline;
+}
+
+
+</style>
+</head>
+
+
+<body onLoad="InitFrontPage();">
+
+<div class="long-note-outer">
+<div id="long-note" class="note-inner"></div>
+</div>
+
+<div class="short-note-outer">
+<div id="short-note" class="note-inner"></div>
+</div>
+
+<!-- *** IDENTIFICATION FRONT PAGE *** -->
+
+<div id="front-page">
+
+<div class="front-bg">
+<img src="topoorto.jpg" style="display: block;">
+</div>
+
+
+<div class="front-welcome-text">
+<h1 id="front-welcome-text-title" style="line-height: normal; margin: 0px">Benvinguts al NiMMbus.</h1>
+<p id="front-welcome-text-subtitle" style="margin: 10px"></p>
+<br>
+<img src="NiMMbus.png" style="display: block;">
+<table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table>
+</div>
+
+<div class="front-language">
+<a class="dropdown-language" id="dropdown-language" onClick="SwitchDropDownList('dropdown-language', 'front-language-list');">
+<span id="front-language-lang">
+Language: English
+</span>
+<b class="caret"></b>
+</a>
+</div>
+
+<div id="front-language-list" class="dropdown-list" style="left: 85%; top: 70px; width: 70px; height: 70px;">
+<div class="dropdown-caret">
+<span class="caret-outer"></span>
+<span class="caret-inner"></span>
+</div>
+<a class="dropdown-list_active" onClick="ChangeLanguage(0);SwitchDropDownList('dropdown-language', 'front-language-list');">
+Català</a>
+<a class="dropdown-list_active" onClick="ChangeLanguage(1);SwitchDropDownList('dropdown-language', 'front-language-list');">
+Español</a>
+<a class="dropdown-list_active" onClick="ChangeLanguage(2);SwitchDropDownList('dropdown-language', 'front-language-list');">
+English</a>
+</div>
+
+<div class="white-area" style="left: 50%; top: 130px; width: 300px; height: 80px;">
+<form id="sign_in" name="sign_in" class="packet_paragraph" method="get" method="GET" action="index.htm">
+<p class="packet_paragraph" id="sign_in_create_citation"></p>
+<p class="packet_paragraph"><input id="sign_in_title" type="text" size="80" maxlength="254" class="text-input" style="width: 296px;" name="target_title" value="" placeholder="Title" autocomplete="on"></p>
+<p class="packet_paragraph"><input id="sign_in_code" type="text" size="80" maxlength="254" class="text-input" name="target_code" value="" style="width: 140px;" placeholder="code">
+<p class="packet_paragraph"><input id="sign_in_codespace" type="text" size="80" maxlength="254" class="text-input" name="target_code_space" value="" style="width: 140px;" placeholder="code space">
+<input type="hidden" name="page" value="ADD_FEEDBACK">
+<input id="sign_in_btn" class="submit_btn" type="submit" value="Sign in"></p>
+</form>
+</div>
+
+</div>  <!--End of id="front-page" -->
+
+
+
+
+</body>
+</html>
