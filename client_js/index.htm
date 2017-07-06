@@ -708,12 +708,14 @@ function OmpleInputDesDeWPSComplexOutput(item)
 }
 
 var PendingToken="";
+var ActionAfterSignIn=null;
+var ParamActionAfterSignIn=null;
+var ChangeLang=true;  //Change language following user preferences?
 
 function AnalitzarParametresURL()
 {
 var clau=new Array("USER=", "PASSWORD=", "EMAIL=", "LANGUAGE=", "TOKEN=", "TOKEN_DESC=", "PAGE=", "TARGET_TITLE=", "TARGET_CODE=", "TARGET_CODE_SPACE=");
 var newpage="";
-var change_lang=true;  //Change language following user preferences?
 var email, target_title="", target_code="", target_code_space="";
 
 	if (location.search && location.search.substring(0,1)=="?")
@@ -741,7 +743,7 @@ var email, target_title="", target_code="", target_code_space="";
 						else
 						{
 							ActiveLanguage=i;
-							change_lang=false;
+							ChangeLang=false;
 						}
 					}
 					else if (i_clau==4)  //TOKEN
@@ -784,7 +786,7 @@ var email, target_title="", target_code="", target_code_space="";
 			EntraAResetPassword();
 		}
 		else if (newpage=="MAIN")
-			EntraANimmbusMain(change_lang);
+			EntraANimmbusMain();
 		else if (newpage=="ADD_FEEDBACK")
 		{
 			if (target_title=="" || target_code=="")
@@ -792,7 +794,8 @@ var email, target_title="", target_code="", target_code_space="";
 				ShowInfo("long", DonaCadena3("Es necessari indicar TARGET_TITLE= i TARGET_CODE=.", "Es necesario indicar TARGET_TITLE= i TARGET_CODE=.", "TARGET_TITLE= and TARGET_CODE= should be provided."));
 				return;
 			}
-			EntraAAddFeedback({"title":target_title, "code": target_code, "code_space": target_code_space});
+			ActionAfterSignIn=EntraAAddFeedback;
+			ParamActionAfterSignIn={"title":target_title, "code": target_code, "code_space": target_code_space};
 		}
 		else
 			ShowInfo("long", DonaCadena3("Plana no identificada", "Página no identificada", "Unidentified page name") +": \""+ newpage+"\".");
@@ -1007,7 +1010,10 @@ var root, id_proces, id_obj;
 function DiguesOKIEntraANimmbusCallBack()
 {
 	ShowInfo("short", DonaCadena3("Tot bé", "Todo correcto", "Ok!"));
-	EntraANimmbusMain(true);
+	if (ActionAfterSignIn)
+		ActionAfterSignIn(ParamActionAfterSignIn);
+	else
+		EntraANimmbusMain(true);
 }
 
 function AvaluaRespostaOk(doc, nom_funcio)
@@ -1123,7 +1129,7 @@ function EvaluateGetReturnProcess(id, nom_funcio)
 				nom_funcio);
 }
 
-function AvaluaRespostaRetrieveUserLanguage(doc, change_lang)
+function AvaluaRespostaRetrieveUserMinPreferences(doc)
 {
 var root, output, identifier;
 
@@ -1142,7 +1148,7 @@ var root, output, identifier;
 			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
 			if (identifier)
 			{
-				if (identifier.childNodes[0].nodeValue=="language" && change_lang)
+				if (identifier.childNodes[0].nodeValue=="language" && ChangeLang)
 				{					
 					var s=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 					if (s!="")
@@ -1190,12 +1196,12 @@ var root, output, identifier;
 }
 
 
-function RetrieveUserLanguage(change_lang)
+function RetrieveUserMinPreferences()
 {
 	//RemoveInfo("long");
 	ajaxExecuteNB=new Ajax();
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_USER:RETRIEVE&LANGUAGE="+LanguagesNB[ActiveLanguage]+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+
-				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value), AvaluaRespostaRetrieveUserLanguage, "text/xml", change_lang);
+				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value), AvaluaRespostaRetrieveUserMinPreferences, "text/xml", null);
         //ShowInfo("permanent", DonaCadena3("Demanant dades...", "Pidiendo datos...", "Requesting data..."));
 	return false;
 }
@@ -1636,7 +1642,7 @@ function DonaNomImgTipusRecurs(type)
 
 var ResourcesPerPage=10;  //solució provisional a l'espera de que sigui conigurrable per usuari
 
-function AvaluaRespostaEnumerateResources(doc, start_index)
+function AvaluaRespostaEnumerateResources(doc, make_pannel_visible)
 {
 var root, s, type;
 	root=DonaRootXML(doc, document);
@@ -1646,7 +1652,8 @@ var root, s, type;
 		return;
 	var owc=new ParseOWSContextAtom(root);
 
-	ChangePannel("resources", true);
+	if (make_pannel_visible)
+		ChangePannel("resources", true);
 
 	if (owc.properties.totalResults==0)
 		document.getElementById("resources-hits-text").innerHTML="<small>"+DonaCadena3("Useu el botó \"Nou\" per crear recursos", "Use el botón \"Nuevo\" para crear recursos", "Use the \"New\" button to create resources")+"</small>";
@@ -1659,7 +1666,7 @@ var root, s, type;
 	}
 	else
 	{
-		document.getElementById("newer-resources_btn").onclick=new Function("EnumerateResources("+((owc.properties.startIndex<=ResourcesPerPage) ? 1 : owc.properties.startIndex-ResourcesPerPage)+");");
+		document.getElementById("newer-resources_btn").onclick=new Function("EnumerateResources("+((owc.properties.startIndex<=ResourcesPerPage) ? 1 : owc.properties.startIndex-ResourcesPerPage)+", false);");
 		document.getElementById("newer-resources_btn").className="submit_btn";
 	}
 
@@ -1670,7 +1677,7 @@ var root, s, type;
 	}
 	else
 	{
-		document.getElementById("older-resources_btn").onclick=new Function("EnumerateResources("+(parseInt(owc.properties.startIndex)+ResourcesPerPage)+");");
+		document.getElementById("older-resources_btn").onclick=new Function("EnumerateResources("+(parseInt(owc.properties.startIndex)+ResourcesPerPage)+", false);");
 		document.getElementById("older-resources_btn").className="submit_btn";
 	}
 
@@ -1735,12 +1742,12 @@ var root, s, type;
 
 var ajaxExecuteNBResource;
 
-function EnumerateResources(start_index)
+function EnumerateResources(start_index, make_pannel_visible)
 {
 	RemoveInfo("long");
 	ajaxExecuteNBResource=new Ajax();
 	ajaxExecuteNBResource.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE="+LanguagesNB[ActiveLanguage]+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+
-				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+"&STARTINDEX="+start_index+"&COUNT="+ResourcesPerPage, AvaluaRespostaEnumerateResources, "text/xml", start_index);
+				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+"&STARTINDEX="+start_index+"&COUNT="+ResourcesPerPage, AvaluaRespostaEnumerateResources, "text/xml", make_pannel_visible);
         ShowInfo("permanent", DonaCadena3("Demanant llista de recursos...", "Pidiendo lista de recursos...", "Requesting resource list..."));
 	return false;
 }
@@ -1970,7 +1977,7 @@ function MostraFeedbackResource(id, target)
 
 	IdResourceToSaveChanges=id;
 
-	if (target==null) 
+	if (target!="" || (id=='' && target==null)) 
 		PopulateCompactDescriptionResource(TargetResourceToSaveChanges, "target_feedback-resource_compact_screen", "target_feedback-resource_compact_descrip");
 
 	document.getElementById("feedback-resource-exit_btn").style.display='none';
@@ -1994,18 +2001,54 @@ function SurtDeAddFeedbackCallBack()
 {
 	//DetermineCitationID
 	ShowInfo("short", DonaCadena3("Citació creada", "Citación creada", "Citation Created"));
-	EnumerateResources(1);
+	RetrieveUserMinPreferences();
+	EnumerateResources(1, false);
 	MostraFeedbackResource('', null);
+}
+
+function AvaluaRespostaCreaTargetNoNecessari(doc)
+{
+var root, id_proces, id_obj;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+	{
+		RemoveInfo("permanent");
+		return null;
+	}
+
+	if (AnalitzaExceptionReport(root, document))
+	{
+		RemoveInfo("permanent");
+		return null;
+	}
+
+	process_succeeded=GetXMLElementByName(root, "wps", "ProcessSucceeded");
+	if (process_succeeded)
+	{
+		//Si ha retornat de manera immediata amb una ProcessSucceeded vol dir que no calia crear cap target. Es podria comprobar més bé mirant is "msg_id:" és 99 però no em cal.
+		id_obj=DonaIDRecursDesDeRootXML(root);
+		RemoveInfo("permanent");
+		return id_obj;
+	}
+	return "";
 }
 
 function AvaluaRespostaRetrieveTarget(doc, nom_funcio)
 {
+var target_id;
 	//Determina si la resposta a estat "error" "ja existeix" i puc obtenir el target_id
-	target_id=AvaluaRespostaCreaTarget(doc);
-	if (target_id)
-		MostraFeedbackResource('', target_id);
+	target_id=AvaluaRespostaCreaTargetNoNecessari(doc);
+	if (target_id==null)  // El fitxer doc no és ni tant sols un xml que es pugui entendre.
+		return;
+	if (target_id=="")
+		AvaluaResposta(doc, nom_funcio);  //El recurs no existia i està en procés de creació
 	else
-		AvaluaResposta(doc, nom_funcio)
+	{
+		RetrieveUserMinPreferences();
+		EnumerateResources(1, false);
+		MostraFeedbackResource('', target_id);  //el recurs existeix i es pot afegir el feedback sobre ell sense esperar.
+	}
 }
 
 //Funció inspirada en SendCitationResourceChanges() però molt més automàtica.
@@ -2015,7 +2058,7 @@ function EntraAAddFeedback(target)
 	ajaxExecuteNB=new Ajax();	
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:CREATE&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+
 				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+"&TYPE=CITATION"+"&TITLE="+target.title+
-				"&ID_CODE="+target.code+"&ID_NAMESPACE="+target.codespace+
+				"&ID_CODE="+target.code+"&ID_NAMESPACE="+target.code_space+
 				"&URL_LINK=&URL_DESCRIP=&URL_FUNCTION=", AvaluaRespostaRetrieveTarget, "text/xml", 
 				"SurtDeAddFeedbackCallBack");
 	return false;
@@ -2522,7 +2565,7 @@ var SurtDeResourceDeleteCallBack, s;
 	ajaxExecuteNB=new Ajax();
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:DELETE&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+
 				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+"&RESOURCE="+IdResourceToSaveChanges,
-				 AvaluaResposta, "text/xml", SurtDeResourceDeleteCallBack);
+				 AvaluaResposta, "text/xml", "SurtDeResourceDeleteCallBack");
         ShowInfo("permanent", DonaCadena3("Petició enviada", "Petición enviada", "Request sent"));
 	return false;
 }
@@ -2541,14 +2584,14 @@ function SurtDeHRefResourceChangesCallBack()
 {
 	ShowInfo("short", DonaCadena3("Canvis guardats", "Cambios guardados", "Changes send"));
 	SurtDeHRefResourceChanges(false);
-	EnumerateResources(1);
+	EnumerateResources(1, true);
 }
 
 function SurtDeHRefResourceDeleteCallBack()
 {
 	ShowInfo("short", DonaCadena3("Hiperenllaç esborrat", "Hiperenllace eliminado", "Hiperlink deleted"));
 	SurtDeHRefResourceChanges(false);
-	EnumerateResources(1);
+	EnumerateResources(1, true);
 }
 
 function SurtDePoiResourceChanges(avis)
@@ -2565,14 +2608,14 @@ function SurtDePoiResourceChangesCallBack()
 {
 	ShowInfo("short", DonaCadena3("Canvis guardats", "Cambios guardados", "Changes send"));
 	SurtDePoiResourceChanges(false);
-	EnumerateResources(1);
+	EnumerateResources(1, true);
 }
 
 function SurtDePoiResourceDeleteCallBack()
 {
 	ShowInfo("short", DonaCadena3("Punt d'interés esborrat", "Punto de interés eliminado", "Point of interest deleted"));
 	SurtDePoiResourceChanges(false);
-	EnumerateResources(1);
+	EnumerateResources(1, true);
 }
 
 function GetPoiFromDeviceCallBack(position) 
@@ -2649,21 +2692,27 @@ function SurtDeFeedbackResourceChanges(avis)
 		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
 			return false;
 	}
-	ChangePannel("resources", true);
+	if (ActionAfterSignIn==EntraAAddFeedback)
+	{
+		window.onbeforeunload=null;
+		window.close();
+	}
+	else
+		ChangePannel("resources", true);
 }
 
 function SurtDeFeedbackResourceChangesCallBack()
 {
 	ShowInfo("short", DonaCadena3("Canvis guardats", "Cambios guardados", "Changes send"));
 	SurtDeFeedbackResourceChanges(false);
-	EnumerateResources(1);
+	EnumerateResources(1, true);
 }
 
 function SurtDeFeedbackResourceDeleteCallBack()
 {
 	ShowInfo("short", DonaCadena3("Valoració esborrada", "Valoración eliminada", "Feedback deleted"));
 	SurtDeFeedbackResourceChanges(false);
-	EnumerateResources(1);
+	EnumerateResources(1, true);
 }
 
 function SurtDeCitationResourceChanges(avis)
@@ -2680,14 +2729,14 @@ function SurtDeCitationResourceChangesCallBack()
 {
 	ShowInfo("short", DonaCadena3("Canvis guardats", "Cambios guardados", "Changes send"));
 	SurtDeCitationResourceChanges(false);
-	EnumerateResources(1);
+	EnumerateResources(1, true);
 }
 
 function SurtDeCitationResourceDeleteCallBack()
 {
 	ShowInfo("short", DonaCadena3("Citació esborrada", "Citación eliminada", "Citation deleted"));
 	SurtDeCitationResourceChanges(false);
-	EnumerateResources(1);
+	EnumerateResources(1, true);
 }
 
 
@@ -2754,11 +2803,11 @@ function EntraANimmbus(es_nou)
 	document.getElementById("main-left-pannel-subtitle-text").innerHTML=document.sign_in.user.value;
 }
 
-function EntraANimmbusMain(change_lang)
+function EntraANimmbusMain()
 {
 	EntraANimmbus(false);
-	RetrieveUserLanguage(change_lang);
-	EnumerateResources(1);
+	RetrieveUserMinPreferences();
+	EnumerateResources(1, true);
 }
 
 function EntraAResetPassword()
