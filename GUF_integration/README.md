@@ -61,7 +61,7 @@ To get more information about a specific feedback item you should extract the re
 (Retrieved format for feedback items not finalised. Expect change in the format by 28nd July).
 
 Example of a succesful citation retrieval:
-```
+```xml
 <?xml version="1.0" encoding="iso-8859-1"?>
 <wps:ExecuteResponse xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" 
           xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
