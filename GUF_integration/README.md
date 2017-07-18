@@ -16,4 +16,8 @@ For each entry in the catalogue, a list of previous user feedback items is expec
 
 To create the URL please follow the ENUMERATE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&USER={user_name}&PASSWORD={password}&TYPE=FEEDBACK&FORMAT=text/xml&TRG_FLD_1=ID_CODE&TRG_VL_1={catalogue_id}&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_FLD_2=ID_NAMESPACE&TRG_VL_2={catalogue_namespace}&TRG_OPR_2=EQ
 
+(Still not available. Availability foreseen 22nd July).
+
 To get more information about a specific feedback item you should extract the resource_id from the atom response entry and follow the RETRIEVE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE=eng&USER={user_name}&PASSWORD={password}&RESOURCE={resource_id}.
+
+(Retrieved format for feedback items not finalised. Expect change in the format by 28nd July).
