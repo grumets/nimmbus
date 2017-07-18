@@ -2,9 +2,9 @@
 
 ## General request parameters
 * All request are in KVP and have these 3 parameters:
-SERVICE=WPS
-REQUEST=EXECUTE
-IDENTIFIER=NB_{class_type}:{operation}
+  * SERVICE=WPS
+  * REQUEST=EXECUTE
+  * IDENTIFIER=NB_{class_type}:{operation}
 
 ## General response
 All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request that follows ATOM syntax.
@@ -66,7 +66,7 @@ All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request 
   * TITLE=
   * REASON=
   * TYPE=
-  * SHARE_BORROWER_#= (User_id, user email or "Anonymous")
+  * SHARE_BORROWER_#= (user_id, user email or "Anonymous")
   * SHARE_RIGHTS_#= (A combination of the following letters R: Read, W: Write, S: Share. if Borrower is Anonymous this parameter does not apply and R is assumed)
 
 * Resource HREF creation particulatities
