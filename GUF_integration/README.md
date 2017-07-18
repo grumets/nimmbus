@@ -18,12 +18,13 @@ To create the URL please follow the ENUMERATE template: http://www.opengis.uab.c
 
 (Still not available. Availability foreseen 22nd July).
 
+Example of sucessful response:
 ```xml 
 <?xml version="1.0" encoding="iso-8859-1"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xmlns:owc="http://www.opengis.net/owc/1.0" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xml:lang="ca">
     <link rel="profile" href="http://www.opengis.net/spec/owc-atom/1.0/req/core" title="This file is compliant with version 1.0 of OGC Context"/>
     <title>Nimmbus resources response</title>
-    <id>http://localhost:80/cgi-bin/server1/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng</id>
+    <id>http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng</id>
     <subtitle type="text">Resources [1, 11] of 11 created by Alaitz Zabala (AlaitzZabala) </subtitle>
     <updated>2017-07-18T17:37:18.471Z</updated>
     <author>
@@ -38,11 +39,11 @@ To create the URL please follow the ENUMERATE template: http://www.opengis.uab.c
     <opensearch:totalResults>11</opensearch:totalResults>
     <opensearch:startIndex>1</opensearch:startIndex>
     <opensearch:itemsPerPage>11</opensearch:itemsPerPage>
-    <link rel="self" type="application/atom+xml" href="http://localhost:80/cgi-bin/server1/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng"/>
+    <link rel="self" type="application/atom+xml" href="http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng"/>
     <entry>
-        <id>http://localhost:80/cgi-bin/server1/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX</id>
+        <id>http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX</id>
         <title>Used to extract forest areas</title>
-        <link href="http://localhost:80/cgi-bin/server1/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX&amp;USER={user}&amp;PASSWORD={password}"/>
+        <link href="http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX&amp;USER={user}&amp;PASSWORD={password}"/>
         <author>
             <name>Alaitz Zabala (AlaitzZabala)</name>
         </author>
@@ -58,3 +59,113 @@ To create the URL please follow the ENUMERATE template: http://www.opengis.uab.c
 To get more information about a specific feedback item you should extract the resource_id from the atom response entry and follow the RETRIEVE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE=eng&USER={user_name}&PASSWORD={password}&RESOURCE={resource_id}.
 
 (Retrieved format for feedback items not finalised. Expect change in the format by 28nd July).
+
+Example of a succesful citation retrieval:
+```
+<?xml version="1.0" encoding="iso-8859-1"?>
+<wps:ExecuteResponse xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" 
+          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+          xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd" 
+          service="WPS" version="1.0.0" 
+          serviceInstance="http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=GetCapabilities" xml:lang="en-US">
+  <wps:Process wps:processVersion="1">
+    <ows:Identifier>NB_RESOURCE:RETRIEVE</ows:Identifier>
+    <ows:Title></ows:Title>
+  </wps:Process>
+  <wps:Status creationTime="2017-07-18T17:46:45.183Z">
+    <wps:ProcessSucceeded />
+  </wps:Status>
+  <wps:ProcessOutputs>
+    <wps:Output>
+      <ows:Identifier>obj_id</ows:Identifier>
+      <ows:Title>Resource internal Identifier</ows:Title>
+      <wps:Data>
+            <wps:LiteralData>66Z1BK7VL3E15L6XX047Z091UJHT710798T3C4B69A3BQZ2</wps:LiteralData>
+      </wps:Data>
+    </wps:Output>
+    <wps:Output>
+      <ows:Identifier>obj_time</ows:Identifier>
+      <ows:Title>Resource creation time</ows:Title>
+      <wps:Data>
+            <wps:LiteralData>2017-06-12T14:33:40.516Z</wps:LiteralData>
+      </wps:Data>
+    </wps:Output>
+    <wps:Output>
+      <ows:Identifier>language</ows:Identifier>
+      <ows:Title>Language</ows:Title>
+      <wps:Data>
+            <wps:LiteralData>eng</wps:LiteralData>
+      </wps:Data>
+    </wps:Output>
+    <wps:Output>
+      <ows:Identifier>last_modif_time</ows:Identifier>
+      <ows:Title>Resource last modification time</ows:Title>
+      <wps:Data>
+            <wps:LiteralData>2017-06-12T14:33:40.516Z</wps:LiteralData>
+      </wps:Data>
+    </wps:Output>
+    <wps:Output>
+      <ows:Identifier>type</ows:Identifier>
+      <ows:Title>Resource type</ows:Title>
+      <wps:Data>
+            <wps:LiteralData>CITATION</wps:LiteralData>
+      </wps:Data>
+    </wps:Output>
+    <wps:Output>
+      <ows:Identifier>rights</ows:Identifier>
+      <ows:Title>User Rights</ows:Title>
+      <wps:Data>
+            <wps:LiteralData>RWSO</wps:LiteralData>
+      </wps:Data>
+    </wps:Output>
+    <wps:Output>
+      <ows:Identifier>owner_user</ows:Identifier>
+      <ows:Title>Owner user</ows:Title>
+      <wps:Data>
+            <wps:LiteralData>AlaitzZabala</wps:LiteralData>
+      </wps:Data>
+    </wps:Output>
+    <wps:Output>
+      <ows:Identifier>title</ows:Identifier>
+      <ows:Title>Resource title</ows:Title>
+      <wps:Data>
+            <wps:LiteralData>Corine Land Cover 2012</wps:LiteralData>
+      </wps:Data>
+    </wps:Output>
+    <wps:Output>
+      <ows:Identifier>citation</ows:Identifier>
+      <ows:Title>Citation</ows:Title>
+      <wps:Data>
+          <wps:ComplexData xmlns:gco="http://standards.iso.org/iso/19115/-3/gco/1.0"  xmlns:cit="http://standards.iso.org/iso/19115/-3/cit/1.0"
+ xmlns:mcc="http://standards.iso.org/iso/19115/-3/mcc/1.0">
+              <cit:CI_Citation>
+                   <cit:title>
+                   	<gco:CharacterString>Corine Land Cover 2012</gco:CharacterString>
+                   </cit:title>
+                   <cit:identifier>
+                   	<mcc:MD_Identifier>
+                   		<mcc:code>
+            	       		<gco:CharacterString>c90fd0c1-ebdf-4df9-9216-4592ed843644</gco:CharacterString>
+                   		</mcc:code>
+                   		<mcc:codeSpace>
+                   			<gco:CharacterString>http://sdi.eea.europa.eu/catalogue</gco:CharacterString>
+                   		</mcc:codeSpace>
+                   	</mcc:MD_Identifier>
+                   </cit:identifier>
+                   <cit:onlineResource>
+                   	<cit:CI_OnlineResource>
+                   		<cit:linkage>
+            	       		<gco:CharacterString>http://land.copernicus.eu/pan-european/corine-land-cover/clc-2012/view</gco:CharacterString>
+                   		</cit:linkage>
+                   		<cit:description>
+            	       		<gco:CharacterString>View the data on a web browser</gco:CharacterString>
+                   		</cit:description>
+                   	</cit:CI_OnlineResource>
+                   </cit:onlineResource>
+              </cit:CI_Citation>
+          </wps:ComplexData>
+      </wps:Data>
+    </wps:Output>
+  </wps:ProcessOutputs>
+</wps:ExecuteResponse>
+```
