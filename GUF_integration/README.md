@@ -18,6 +18,43 @@ To create the URL please follow the ENUMERATE template: http://www.opengis.uab.c
 
 (Still not available. Availability foreseen 22nd July).
 
+```xml 
+<?xml version="1.0" encoding="iso-8859-1"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xmlns:owc="http://www.opengis.net/owc/1.0" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xml:lang="ca">
+    <link rel="profile" href="http://www.opengis.net/spec/owc-atom/1.0/req/core" title="This file is compliant with version 1.0 of OGC Context"/>
+    <title>Nimmbus resources response</title>
+    <id>http://localhost:80/cgi-bin/server1/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng</id>
+    <subtitle type="text">Resources [1, 11] of 11 created by Alaitz Zabala (AlaitzZabala) </subtitle>
+    <updated>2017-07-18T17:37:18.471Z</updated>
+    <author>
+        <name>Alaitz Zabala (AlaitzZabala)</name>
+    </author>
+    <dc:publisher>Nimmbus</dc:publisher>
+    <generator uri="https://www.opengis.uab.cat/nimmbus/" version="1.0">
+         NiMMbus: MiraMon Cloud Service NB_RESOURCE:ENUMERATE
+    </generator>
+    <rights>
+    </rights>
+    <opensearch:totalResults>11</opensearch:totalResults>
+    <opensearch:startIndex>1</opensearch:startIndex>
+    <opensearch:itemsPerPage>11</opensearch:itemsPerPage>
+    <link rel="self" type="application/atom+xml" href="http://localhost:80/cgi-bin/server1/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng"/>
+    <entry>
+        <id>http://localhost:80/cgi-bin/server1/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX</id>
+        <title>Used to extract forest areas</title>
+        <link href="http://localhost:80/cgi-bin/server1/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX&amp;USER={user}&amp;PASSWORD={password}"/>
+        <author>
+            <name>Alaitz Zabala (AlaitzZabala)</name>
+        </author>
+        <dc:publisher>NiMMbus</dc:publisher>
+        <updated>2017-07-18T17:37:18.471Z</updated>
+        <dc:rights>RWSO</dc:rights>
+        <category scheme="http://www.opengis.uab.cat/nimmbus/resource_type" term="FEEDBACK" label="a user feedback item" />
+        <content type="text">We are reporting this for other to be able to generalise the methodology around the world.</content>
+    </entry>
+</feed>
+```
+
 To get more information about a specific feedback item you should extract the resource_id from the atom response entry and follow the RETRIEVE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE=eng&USER={user_name}&PASSWORD={password}&RESOURCE={resource_id}.
 
 (Retrieved format for feedback items not finalised. Expect change in the format by 28nd July).
