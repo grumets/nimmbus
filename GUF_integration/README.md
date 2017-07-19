@@ -4,9 +4,11 @@
 
 For each entry in a catalogue, a button with a text "Add feedback" is expected, at the end of the general description of the resource.
 
-The button will start another window with the NiMMbus interface. To ease the process to the user, the link to NiMMbus can be populated with the target_code and target_codespace of the catalogue entry (a target_title is also recommended).
+The button will start another window (e.g. <a href="_url_template_" target="_blank"> with the NiMMbus interface. To ease the process to the user, the link to NiMMbus can be populated with the target_code and target_codespace of the catalogue entry (a target_title is also recommended).
 
 To create the URL please follow the template: http://www.opengis.uab.cat/nimmbus/index.htm?target_title={target_title}&target_code={target_code}&target_codespace={target_codespace}&page=ADDFEEDBACK
+
+When the user presses "save" the new window will be closed automatically so it will create the effect of returning to the catalogue.
 
 For more details go to [test htm](https://github.com/joanma747/nimmbus/blob/master/client_js/test.htm).
 
