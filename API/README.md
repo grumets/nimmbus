@@ -100,15 +100,14 @@ All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request 
 * Resource enumeration
   * IDENTIFIER=NB_RESOURCE:ENUMERATE
   * LANGUAGE=cat,spa,eng
-  * USER=
-  * PASSWORD=
+  * USER=  (if not provided, "Anonymous" is assumed)
+  * PASSWORD= (not necessary if USER=Anonymous)
   * STARTINDEX= (Starting by 1)
   * COUNT=
   * TYPE=
   * FORMAT=
   * XSL= (full url or "mm32")
   * CRS=  (for the moment only for application/x-mmzx output and for TYPE=POINT)
-  * TARGET= (only for TYPE=FEEDBACK, resource_id)
   * TRG_FLD_#= (ID_CODE or ID_NAMESPACE)
   * TRG_VL_#=
   * TRG_OPR_#=EQ
@@ -120,8 +119,8 @@ All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request 
 * Resource details retrieval
   * IDENTIFIER=NB_RESOURCE:RETRIEVE
   * LANGUAGE=cat,spa,eng
-  * USER=
-  * PASSWORD=
+  * USER=  (if not provided, "Anonymous" is assumed)
+  * PASSWORD= (not necessary if USER=Anonymous)
   * RESOURCE=
 
 * Resource modification
