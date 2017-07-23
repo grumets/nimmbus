@@ -1,15 +1,23 @@
 # NiMMbus API
+The Nimmbus API is based on the CRUD (create, retrieve, update, and delete) 4 basic functions for persistent storage/management of objects (https://en.wikipedia.org/wiki/Create,_read,_update_and_delete). The API defines a set of object classes and provide mainly the 4 CRUD operations plus some additions when considered necessary. In this way, it mimics some of the RESTful design principles too.
+The Nimmbus API uses the OGC WPS 1.0 standard but with 2 significant modifications:
+* The the WPS execute request uses the WPS 1.0 abstract model but is implemted as GET requests (not present in the WPS 1.0 standard. 
+* The CREATE, MODIFY (update) and DELETE operations are implicitelly assyncronous and repond a syncronization ID (more or less equivament to the job id introduced in WPS 2.0 standard). An extra operation allows for requesting NB_SYNC:GETRETURN the status of the assyncronous process or the actual result if the process has ended.
 
 ## General request parameters
 * All request are in KVP and have these 3 parameters:
   * SERVICE=WPS
   * REQUEST=EXECUTE
   * IDENTIFIER=NB_{class_type}:{operation}
+* In the folling descriptions a parameter ending by _# means that the paramters can be used n times substuting the # by sequential numbers starting by 1.
 
 ## General response
-All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request that follows ATOM syntax.
+All responses follow the WPS 1.0 specified XML syntax except the NB_RESOURCE:RETRIEVE request that follows ATOM syntax.
 
-## User class request operations
+## General exceptions
+All responses follow the WPS 1.0 specified XML syntax for exceptions.
+
+## NB_USER class request operations
 * User Creation
   * IDENTIFIER=NB_USER:CREATE
   * LANGUAGE=cat,spa,eng
@@ -56,9 +64,9 @@ All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request 
   * USER=
   * PASSWORD=
 
-## Resource class request operations
+## NB_RESOURCE class request operations
 
-* Resource creation
+* Resource creation (and simultaneous optional share creation)
   * IDENTIFIER=NB_RESOURCE:CREATE
   * LANGUAGE=cat,spa,eng
   * USER=
@@ -66,8 +74,8 @@ All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request 
   * TITLE=
   * REASON=
   * TYPE=
-  * SHARE_BORROWER_#= (user_id, user email or "Anonymous")
-  * SHARE_RIGHTS_#= (A combination of the following letters R: Read, W: Write, S: Share. if Borrower is Anonymous this parameter does not apply and R is assumed)
+  * SHARE_BORROWER_#= (optional, user_id, user email or "Anonymous")
+  * SHARE_RIGHTS_#= (optional, a combination of the following letters R: Read, W: Write, S: Share. if Borrower is Anonymous this parameter does not apply and R is assumed)
 
 * Resource HREF creation particulatities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=HREF
@@ -100,18 +108,20 @@ All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request 
 * Resource enumeration
   * IDENTIFIER=NB_RESOURCE:ENUMERATE
   * LANGUAGE=cat,spa,eng
-  * USER=  (if not provided, "Anonymous" is assumed)
-  * PASSWORD= (not necessary if USER=Anonymous)
-  * STARTINDEX= (Starting by 1)
-  * COUNT=
-  * TYPE=
-  * FORMAT=
-  * XSL= (full url or "mm32")
+  * USER=  (Optional. If not provided, "Anonymous" is assumed)
+  * PASSWORD= (Optional. Do not use if USER=Anonymous)
+  * STARTINDEX= (Starting by 1. Optional. default is 1. )
+  * COUNT= (Optional, default is 10)
+  * TYPE= (Optional, default is ALL).
+  * FORMAT= (Optional, default is text/xml, returning an ATOM file).
+  * XSL= (full url or "mm32". Optional)
   * CRS=  (for the moment only for application/x-mmzx output and for TYPE=POINT)
-  * TRG_FLD_#= (ID_CODE or ID_NAMESPACE)
-  * TRG_VL_#=
-  * TRG_OPR_#=EQ
-  * TRG_NXS_#=AND
+  * TARGET= (resource_id. Optional, indicate only if TYPE=FEEDBACK)
+  * TRG_FLD_#= (Optional filter. Currently can only be ID_CODE or ID_NAMESPACE)
+  * TRG_VL_#= (Optional filter)
+  * TRG_OPR_#=EQ (Optional filter)
+  * TRG_NXS_#=AND (Optional filter)
+  * TRG_PRTY_#= (Optional filter)
   * Examples
     * SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=cat&USER=JoanMaso&PASSWORD=****&STARTINDEX=1&COUNT=10&FORMAT=application/x-mmzx
     * SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=cat&USER=JoanMaso&PASSWORD=****&STARTINDEX=1&COUNT=10&FORMAT=text/html&XSL=mm32
@@ -119,8 +129,8 @@ All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request 
 * Resource details retrieval
   * IDENTIFIER=NB_RESOURCE:RETRIEVE
   * LANGUAGE=cat,spa,eng
-  * USER=  (if not provided, "Anonymous" is assumed)
-  * PASSWORD= (not necessary if USER=Anonymous)
+  * USER=  (Optional. If not provided, "Anonymous" is assumed)
+  * PASSWORD= (Optional. Do not use if USER=Anonymous)
   * RESOURCE=
 
 * Resource modification
@@ -131,6 +141,7 @@ All responses follow the WPS 1.0 syntax except the NB_RESOURCE:RETRIEVE request 
   * TITLE=
   * REASON=
   * TYPE=
+If a paremeter is not indicated the value is not modified. If the paremeter is indicated but is black the value is erased.
 
 * Resource HREF modification particulatities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=HREF
@@ -169,7 +180,7 @@ To manage targets of a feedback, only two strategies are available at the moment
   * IDENTIFIER=NB_RESOURCE:DELETE
   * RESOURCE=
 
-## Share class request operations
+## NB_SHARE class request operations
 
 * Add a share target (borrower) to a resource
   * IDENTIFIER=NB_SHARE:ADD
@@ -208,16 +219,16 @@ To manage targets of a feedback, only two strategies are available at the moment
   * LANGUAGE=cat,spa,eng
   * USER=
   * PASSWORD=
-  * TYPE=  (opcional)
+  * TYPE=  (Optional)
 
-## Sync class request operations
+## NB_SYNC class request operations
 
 * Write request status request.
   * IDENTIFIER=NB_SYNC:GETRETURN
   * LANGUAGE=cat,spa,eng
   * SYNC_ID=
 
-## Token class request operations
+## NB_TOKEN class request operations
 
 * Token execution. 
   * IDENTIFIER=NB_TOKEN:EXECUTE
