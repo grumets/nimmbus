@@ -134,6 +134,17 @@ function DonaCadenaCodelistDeSelect(selector)
 		return "";
 }
 
+function DonaCadenaCodelistDeRadio(radio)
+{
+	for (var i=0; i<radio.length; i++)
+	{
+		if (radio[i].checked)
+			return radio[i].value;
+	}
+	return "";
+}
+
+
 function SeleccionaSelectDesDeValor(selector, valor)
 {
 	if (valor)
@@ -148,6 +159,16 @@ function SeleccionaSelectDesDeValor(selector, valor)
 		}
 	} 
 }
+
+function SeleccionaRadioDesDeValor(radio, valor)
+{
+	if (valor)
+	{
+		for (var i=0; i<radio.length; i++)
+			radio[i].checked=(radio[i].value==valor) ? true : false;
+	} 
+}
+
 
 function GetActiveLanguageIndex(language)
 {
@@ -269,15 +290,18 @@ function ChangeLanguage(lang)
 	document.getElementById("resolution-motivation-feedback-resource_value").innerHTML=DonaCadena3("Resolució", "Resolución", "Resolution");
 	document.getElementById("moderation-motivation-feedback-resource_value").innerHTML=DonaCadena3("Moderació", "Moderación", "Moderation");
 	document.getElementById("comment-motiv-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Motivació del comentari de l'usuari sobre el recurs", "Motivación del comentario del usuario sobre el recurso", "Motivation of user's comment about the resource");
-	
+
 	document.getElementById("rating-feedback-resource_screen").innerHTML=DonaCadena3("Puntuació", "Puntuación", "Rating");
-	document.getElementById("undefined-rating-feedback-resource_value").innerHTML=DonaCadena3("Indefinit", "Indefinido", "Undefined");
+	/*document.getElementById("undefined-rating-feedback-resource_value").innerHTML=DonaCadena3("Indefinit", "Indefinido", "Undefined");
 	document.getElementById("oneStar-rating-feedback-resource_value").innerHTML=DonaCadena3("1 estrella: Molt dolent", "1 estrella: Muy malo", "1 star: very bad");
 	document.getElementById("twoStars-rating-feedback-resource_value").innerHTML=DonaCadena3("2 estrelles: Dolent", "2 estrellas: Malo", "2 stars: Bad");
 	document.getElementById("threeStars-rating-feedback-resource_value").innerHTML=DonaCadena3("3 estrelles: Regular", "3 estrellas: Regular", "3 stars: Regular");
 	document.getElementById("fourStars-rating-feedback-resource_value").innerHTML=DonaCadena3("4 estrelles: Bo", "4 estrellas: Bueno", "4 stars: Good");
-	document.getElementById("fiveStars-rating-feedback-resource_value").innerHTML=DonaCadena3("5 estrelles: Excel·lent", "5 estrellas: Excelente", "5 stars: Excellent");		
-	document.getElementById("rating-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Codi numèric que puntua subjectivament el recurs", "Código numérico que puntúa subjectivamente el recurso", "Numeric code that qualifies subjectively the resource");
+	document.getElementById("fiveStars-rating-feedback-resource_value").innerHTML=DonaCadena3("5 estrelles: Excel·lent", "5 estrellas: Excelente", "5 stars: Excellent");*/
+	document.getElementById("rating-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Nombre d'estrelles que puntua subjectivament el recurs", "Numero de estrellas que puntúa subjectivamente el recurso", "Number of stars that qualifies subjectively the resource");
+
+	document.getElementById("share-anonymous-feedback-resource_screen").innerHTML=DonaCadena3("Compartir amb tothom", "Compartir con todos", "Share to everyone");
+  	document.getElementById("share-anonymous-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Compartir aquest feedback amb tothom", "Compartir este feedback con todos", "If check this feedback will be visible to everyone");
 
 	document.getElementById("feedback-resource-delete_btn").value=DonaCadena3("Eliminar valoració", "Eliminar valoración", "Delete feedback");
 	document.getElementById("feedback-resource-exit_btn").value=DonaCadena3("Sortir", "Salir", "Close");
@@ -714,9 +738,9 @@ var ChangeLang=true;  //Change language following user preferences?
 
 function AnalitzarParametresURL()
 {
-var clau=new Array("USER=", "PASSWORD=", "EMAIL=", "LANGUAGE=", "TOKEN=", "TOKEN_DESC=", "PAGE=", "TARGET_TITLE=", "TARGET_CODE=", "TARGET_CODE_SPACE=");
+var clau=new Array("USER=", "PASSWORD=", "EMAIL=", "LANGUAGE=", "TOKEN=", "TOKEN_DESC=", "PAGE=", "TARGET_TITLE=", "TARGET_CODE=", "TARGET_CODESPACE=", "SHARE_BORROWER_1=");
 var newpage="";
-var email, target_title="", target_code="", target_code_space="";
+var email, target_title="", target_code="", target_code_space="", share_borrower_1="";
 
 	if (location.search && location.search.substring(0,1)=="?")
 	{
@@ -753,11 +777,13 @@ var email, target_title="", target_code="", target_code_space="";
 					else if (i_clau==6)  // PAGE
 						newpage=valor.toUpperCase();
 					else if (i_clau==7)  // TARGET_TITLE
-						target_title=valor
+						target_title=valor;
 					else if (i_clau==8)  // TARGET_CODE
-						target_code=valor
-					else if (i_clau==9)  // TARGET_CODE_SPACE
-						target_code_space=valor
+						target_code=valor;
+					else if (i_clau==9)  // TARGET_CODESPACE
+						target_code_space=valor;
+					else if (i_clau==10)  // SHARE_BORROWER_1
+						share_borrower_1=valor;
 					else
 						ShowInfo("long", DonaCadena3("Clau no identificada", "Clave no identificada", "Unidentified key") +": \""+ valor+"\".");
 					break;
@@ -787,7 +813,7 @@ var email, target_title="", target_code="", target_code_space="";
 		}
 		else if (newpage=="MAIN")
 			EntraANimmbusMain();
-		else if (newpage=="ADD_FEEDBACK")
+		else if (newpage=="ADDFEEDBACK")
 		{
 			if (target_title=="" || target_code=="")
 			{
@@ -795,7 +821,7 @@ var email, target_title="", target_code="", target_code_space="";
 				return;
 			}
 			ActionAfterSignIn=EntraAAddFeedback;
-			ParamActionAfterSignIn={"title":target_title, "code": target_code, "code_space": target_code_space};
+			ParamActionAfterSignIn={"title":target_title, "code": target_code, "code_space": target_code_space, "share_borrower_1": share_borrower_1};
 		}
 		else
 			ShowInfo("long", DonaCadena3("Plana no identificada", "Página no identificada", "Unidentified page name") +": \""+ newpage+"\".");
@@ -1011,7 +1037,10 @@ function DiguesOKIEntraANimmbusCallBack()
 {
 	ShowInfo("short", DonaCadena3("Tot bé", "Todo correcto", "Ok!"));
 	if (ActionAfterSignIn)
+	{
 		ActionAfterSignIn(ParamActionAfterSignIn);
+		ActionAfterSignIn=null;
+	}
 	else
 		EntraANimmbusMain(true);
 }
@@ -1458,7 +1487,7 @@ var root, output, identifier, s, georss;
 				}
 				else if (identifier.childNodes[0].nodeValue=="rating")
 				{					
-					SeleccionaSelectDesDeValor(document.feedback_resource_form.rating, 
+					SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, 
 								OmpleInputDesDeWPSLiteralOutput(output.item(item)));
 				}
 				else if (identifier.childNodes[0].nodeValue=="rights")
@@ -1985,6 +2014,7 @@ function MostraFeedbackResource(id, target)
 	{
 		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadena3("Nova valoració", "Nueva valoración", "New feedback");
 		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("Introdueix les característiques d'aquesta valoració", "Introduce las características de esta valoración", "Define the characteristics of this feedback");
+		document.getElementById("share-anonymous-feedback-resource_fieldset").style.display='inline'
 		document.getElementById("feedback-resource_btn").value=DonaCadena3("Crear", "Crear", "Create");
 		document.getElementById("feedback-resource-delete_btn").style.display='none';
 	}
@@ -1992,6 +2022,7 @@ function MostraFeedbackResource(id, target)
 	{
 		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadena3("Valoració", "Valoración", "Feedback");
 		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("Modifica les característiques d'aquesta valoració", "Modifica las características de esta valoración", "Modify the characteristics of this feedback");
+		document.getElementById("share-anonymous-feedback-resource_fieldset").style.display='none'
 		document.getElementById("feedback-resource_btn").value=DonaCadena3("Guardar canvis", "Guardar cambios", "Save changes");
 		document.getElementById("feedback-resource-delete_btn").style.display='inline';
 	}
@@ -2059,7 +2090,7 @@ function EntraAAddFeedback(target)
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:CREATE&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+
 				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+"&TYPE=CITATION"+"&TITLE="+target.title+
 				"&ID_CODE="+target.code+"&ID_NAMESPACE="+target.code_space+
-				"&URL_LINK=&URL_DESCRIP=&URL_FUNCTION=", AvaluaRespostaRetrieveTarget, "text/xml", 
+				"&URL_LINK=&URL_DESCRIP=&URL_FUNCTION="+(target.share_borrower_1!="" ? "&SHARE_BORROWER_1="+target.share_borrower_1 : ""), AvaluaRespostaRetrieveTarget, "text/xml", 
 				"SurtDeAddFeedbackCallBack");
 	return false;
 }
@@ -2472,7 +2503,7 @@ var s,s2;
 	if (IdResourceToSaveChanges=="")
 	{
 		s="CREATE";
-		s2="";
+		s2=(document.feedback_resource_form.share_1.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
 	        ShowInfo("permanent", DonaCadena3("Recurs enviat", "Recurso enviado", "Resource sent"));
 	}
 	else
@@ -2489,7 +2520,7 @@ var s,s2;
 				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+"&TYPE=FEEDBACK"+"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.title.value)+
 				"&REASON="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.reason.value)+"&ABSTRACT="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.abstract.value)+
 				"&CONTACT_ROLE="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.contactRole)+"&COMMENT="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.comment.value)+
-				"&MOTIVATION="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.motivation)+"&RATING="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.rating)+s2, AvaluaResposta, "text/xml", 
+				"&MOTIVATION="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.motivation)+"&RATING="+DonaCadenaCodelistDeRadio(document.feedback_resource_form.rating)+s2, AvaluaResposta, "text/xml", 
 				"SurtDeFeedbackResourceChangesCallBack");
 	return false;
 }
@@ -2911,7 +2942,13 @@ function SurtDeAccountCallBack()
 	ChangeLanguage(ActiveLanguage=document.account_form.language.selectedIndex);
 	ShowInfo("short", DonaCadena3("Canvis guardats", "Cambios guardados", "Changes send"));
 	SurtDeAccount();
-	ChangePannel("resources", true);
+	if (ActionAfterSignIn)
+	{
+		ActionAfterSignIn(ParamActionAfterSignIn);
+		ActionAfterSignIn=null;
+	}
+	else
+		ChangePannel("resources", true);
 }
 
 function SendAccountChanges()
@@ -3500,7 +3537,7 @@ function CurrentPassInputChange()
 .long-note-outer {
     position: fixed;
     text-align: center;
-    top: 30;
+    top: 30px;
     width: 100%;
     z-index: 98;
 }
@@ -3645,6 +3682,44 @@ function CurrentPassInputChange()
 .text_button:active, .text_button:focus, .text_button:hover {
     color: #0084B4;
     text-decoration: underline;
+}
+
+.starRating:not(old){
+  display        : inline-block;
+  width          : 7.5em;
+  height         : 1.5em;
+  overflow       : hidden;
+  vertical-align : bottom;
+}
+
+.starRating:not(old) > input{
+  margin-right : -100%;
+  opacity      : 0;
+}
+
+.starRating:not(old) > label{
+  display         : block;
+  float           : right;
+  position        : relative;
+  background      : url('star-off.png');
+  background-size : contain;
+}
+
+.starRating:not(old) > label:before{
+  content         : '';
+  display         : block;
+  width           : 1.5em;
+  height          : 1.5em;
+  background      : url('star-on.png');
+  background-size : contain;
+  opacity         : 0;
+  transition      : opacity 0.2s linear;
+}
+
+.starRating:not(old) > label:hover:before,
+.starRating:not(old) > label:hover ~ label:before,
+.starRating:not(:hover) > :checked ~ label:before{
+  opacity : 1;
 }
 
 
@@ -4056,17 +4131,39 @@ Sign out</a>
 <div id="rating-feedback-resource_fieldset" class="control-group">
 <label class="control-label" id="rating-feedback-resource_screen" for="rating-feedback-resource_screen_value"></label>
 <div class="controls">
-<select class="text-input" id="rating-feedback-resource_screen_value" name="rating">
+<!--select class="text-input" id="rating-feedback-resource_screen_value" name="rating">
 <option value="" id="undefined-rating-feedback-resource_value" default="default"></option>
 <option value="1" id="oneStar-rating-feedback-resource_value"></option>
 <option value="2" id="twoStars-rating-feedback-resource_value"></option>
 <option value="3" id="threeStars-rating-feedback-resource_value"></option>
 <option value="4" id="fourStars-rating-feedback-resource_value"></option>
 <option value="5" id="fiveStars-rating-feedback-resource_value"></option>
-</select>	
+</select-->
+      <span class="starRating">
+        <input id="rating-feedback-resource_value5" type="radio" name="rating" value="5">
+        <label for="rating-feedback-resource_value5">5</label>
+        <input id="rating-feedback-resource_value4" type="radio" name="rating" value="4">
+        <label for="rating-feedback-resource_value4">4</label>
+        <input id="rating-feedback-resource_value3" type="radio" name="rating" value="3">
+        <label for="rating-feedback-resource_value3">3</label>
+        <input id="rating-feedback-resource_value2" type="radio" name="rating" value="2">
+        <label for="rating-feedback-resource_value2">2</label>
+        <input id="rating-feedback-resource_value1" type="radio" name="rating" value="1" checked>
+        <label for="rating-feedback-resource_value1">1</label>
+      </span>
 <p id="rating-feedback-resource_screen_descrip"></p>
 </div>
 </div>  <!--End of id="comment-motiv-feedback-resource_fieldset" -->
+
+<div id="share-anonymous-feedback-resource_fieldset" class="control-group">
+<label class="control-label" id="share-anonymous-feedback-resource_screen" for="share-anonymous-feedback-resource_screen_value"></label>
+<div class="controls">
+<p id="share-anonymous-feedback-resource_alert" style="display: none;"></p>
+<input type="checkbox" id="share-anonymous-feedback-resource_screen_value" name="share_1" checked="checked"/>
+<p id="share-anonymous-feedback-resource_screen_descrip"></p>
+</div>
+</div>  <!--End of id="share-anonymous-feedback-resource_fieldset" -->
+
 
 <div class="form-actions">
 <input id="feedback-resource_btn" class="submit_btn" type="submit" value="Save changes" />
