@@ -8,4 +8,10 @@ Here you will find
   * the [API documentation](API) to interact with the server
   * some intructions on [how to integrate](GUF_integration) this system in existing metadata catalogues.
   
-PROJECT IDEA: PROJECT IDEA: We have a Geospatial User Feedback system called NiMMbus that allows to provide comments, ratings etc that can be associated with geospatial datasets on a catalogue using a data/metadata identifier. It is based in the Geospatial User Feedback standard in the Open Geospatial Consortium. We would like to demonstrate the value of including Geospatial User Feedback for INSPIRE catalogues. 
+We have a Geospatial User Feedback system called NiMMbus that allows to provide comments, ratings etc that can be associated with geospatial datasets on a catalogue using a data/metadata identifier. It is based in the Geospatial User Feedback standard in the Open Geospatial Consortium. We would like to demonstrate the value of including Geospatial User Feedback for INSPIRE catalogues. 
+
+```
+This project has received funding from the European Union’s Horizon 2020 research and innovation programme  under grant agreement No 730329. 
+This documentation and implementation reflects only the author's view wand the Agency is not responsible for any use that may be made of the information it contains. 
+```
+
