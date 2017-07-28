@@ -14,9 +14,7 @@ For more details go to [test htm](https://github.com/joanma747/nimmbus/blob/mast
 
 For each entry in the catalogue, a list of previous user feedback items is expected to be shown. To do that the NiMMbus API allows for an easy retrieval of this information as an ATOM file format.
 
-To create the URL please follow the ENUMERATE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&USER=Anonymous}&TYPE=FEEDBACK&FORMAT=text/xml&TRG_FLD_1=ID_CODE&TRG_VL_1={catalogue_id}&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_FLD_2=ID_NAMESPACE&TRG_VL_2={catalogue_namespace}&TRG_OPR_2=EQ
-
-(Still not available. Availability foreseen 22nd July).
+To create the URL please follow the ENUMERATE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&USER=Anonymous}&TYPE=FEEDBACK&FORMAT=text/xml&TRG_FLD_1=CODE&TRG_VL_1={catalogue_id}&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_FLD_2=NAMESPACE&TRG_VL_2={catalogue_namespace}&TRG_OPR_2=EQ
 
 Example of sucessful response:
 ```xml 
