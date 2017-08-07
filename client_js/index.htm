@@ -717,6 +717,22 @@ function DonaTextDesDeGcoCharacterString(item)
 		return "";
 }
 
+function DonaTextDesDeCodeList(item, namespace, code_list)
+{
+	var elem=GetXMLElementByName(item, namespace, code_list);
+	if (elem)
+	{
+		var code_list_value=GetXMLAttributeByName(elem, null, "codeListValue");
+		if (code_list_value && code_list_value.value)
+			return code_list_value.value;
+		else
+			return "";
+	}
+	else
+		return "";
+}
+
+
 function OmpleInputDesDeWPSLiteralOutput(item)
 {
 	var literal_data=GetXMLElementByName(item, "wps", "LiteralData");
@@ -1037,10 +1053,7 @@ function DiguesOKIEntraANimmbusCallBack()
 {
 	ShowInfo("short", DonaCadena3("Tot bé", "Todo correcto", "Ok!"));
 	if (ActionAfterSignIn)
-	{
 		ActionAfterSignIn(ParamActionAfterSignIn);
-		ActionAfterSignIn=null;
-	}
 	else
 		EntraANimmbusMain(true);
 }
@@ -1113,7 +1126,7 @@ var fn;
 					{
 						RemoveInfo("permanent");
 						ShowInfo("short", DonaCadena3("Tot bé", "Todo correcto", "Ok!"));
-						//··· M'agradaria obtenir l'identificador del codi del objecte creat/modificat aquí i posar-lo a IdResourceToSaveChanges 
+						//·$· M'agradaria obtenir l'identificador del codi del objecte creat/modificat aquí i posar-lo a IdResourceToSaveChanges 
 						UpdateLastServer();
 						//uso el truco següent: http://www.sitepoint.com/call-javascript-function-string-without-using-eval
 						fn=window[nom_funcio];
@@ -1444,7 +1457,7 @@ var root, output, identifier, s, georss;
 
 function AvaluaRespostaRetrieveResourceFeedback(doc, id)
 {
-var root, output, identifier, s, georss;
+var root, output, identifier, s, feedback_item, user_comment;
 
 	root=DonaRootXML(doc, document);
 	if (!root)
@@ -1471,8 +1484,8 @@ var root, output, identifier, s, georss;
 					document.feedback_resource_form.title.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="reason")
 					document.feedback_resource_form.reason.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-				else if (identifier.childNodes[0].nodeValue=="abstract")
-					document.feedback_resource_form.abstract.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));					
+				/*else if (identifier.childNodes[0].nodeValue=="abstract")
+					document.feedback_resource_form.abstract.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="contactRole")				
 				{					
 					SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, 
@@ -1489,7 +1502,36 @@ var root, output, identifier, s, georss;
 				{					
 					SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, 
 								OmpleInputDesDeWPSLiteralOutput(output.item(item)));
-				}
+				}*/
+				else if (identifier.childNodes[0].nodeValue=="feedback")
+				{					
+					feedback_item=OmpleInputDesDeWPSComplexOutput(output.item(item));
+					if (feedback_item)
+					{ 
+						elem=GetXMLElementByName(feedback_item, "guf", "abstract");
+						if (elem)
+							document.feedback_resource_form.abstract.value=DonaTextDesDeGcoCharacterString(elem);
+						
+						elem=GetXMLElementByName(feedback_item, "guf", "contactRole");
+						if (elem)
+							SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, DonaTextDesDeCodeList(elem, "guf", "GUF_UserRoleCode"));
+	
+						user_comment=GetXMLElementByName(feedback_item, "guf", "userComment");
+						if (user_comment)
+						{
+							elem=GetXMLElementByName(feedback_item, "guf", "comment");
+							document.feedback_resource_form.comment.value=DonaTextDesDeGcoCharacterString(elem);
+							elem=GetXMLElementByName(feedback_item, "guf", "motivation");
+							if (elem)
+								SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, DonaTextDesDeCodeList(elem, "guf", "GUF_MotivationCode"));
+						}
+
+						elem=GetXMLElementByName(feedback_item, "guf", "rating");
+						if (elem)
+							SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, 
+													DonaTextDesDeCodeList(elem, "guf", "GUF_RatingCode"));
+					}
+				}	
 				else if (identifier.childNodes[0].nodeValue=="rights")
 				{
 					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
@@ -1572,10 +1614,10 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 							if (elem)
 								document.citation_resource_form.url_descrip.value=DonaTextDesDeGcoCharacterString(elem);
 							//FUNCTION
-							elem=GetXMLElementByName(onlineResource, "cit", "CI_OnLineFunctionCode");
+							elem=GetXMLElementByName(onlineResource, "cit", "function");
 							if (elem)
 								SeleccionaSelectDesDeValor(document.citation_resource_form.function_code, 
-												GetXMLAttributeByName(elem, null, "codeListValue"));
+												DonaTextDesDeCodeList(elem, "cit", "CI_OnLineFunctionCode"));
 						}
 					}
 				}	
@@ -2085,6 +2127,9 @@ var target_id;
 //Funció inspirada en SendCitationResourceChanges() però molt més automàtica.
 function EntraAAddFeedback(target)
 {
+	ActionAfterSignIn=TancaFinestraNimmbus;
+	ParamActionAfterSignIn=null;
+
         ShowInfo("permanent", DonaCadena3("Citatió enviada", "Citación enviada", "Citation sent"));
 	ajaxExecuteNB=new Ajax();	
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:CREATE&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+
@@ -2723,11 +2768,8 @@ function SurtDeFeedbackResourceChanges(avis)
 		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
 			return false;
 	}
-	if (ActionAfterSignIn==EntraAAddFeedback)
-	{
-		window.onbeforeunload=null;
-		window.close();
-	}
+	if (ActionAfterSignIn==TancaFinestraNimmbus)
+		ActionAfterSignIn(ParamActionAfterSignIn);
 	else
 		ChangePannel("resources", true);
 }
@@ -2821,6 +2863,12 @@ var s;
 				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.new_user_form.new_pass.value)+"&EMAIL="+DonaCadenaPerValorDeFormulari(document.new_user_form.email.value)+s, AvaluaResposta, "text/xml", "EntraANewAccountCallBack");
         ShowInfo("permanent", DonaCadena3("Missatge enviat", "Mensage enviado", "Message sent"));
 	return false;
+}
+
+function TancaFinestraNimmbus()
+{
+	window.onbeforeunload=null;
+	window.close();
 }
 
 function EntraANimmbus(es_nou)
@@ -2943,10 +2991,7 @@ function SurtDeAccountCallBack()
 	ShowInfo("short", DonaCadena3("Canvis guardats", "Cambios guardados", "Changes send"));
 	SurtDeAccount();
 	if (ActionAfterSignIn)
-	{
 		ActionAfterSignIn(ParamActionAfterSignIn);
-		ActionAfterSignIn=null;
-	}
 	else
 		ChangePannel("resources", true);
 }
@@ -3332,7 +3377,7 @@ function CurrentPassInputChange()
   text-align: left;
   text-shadow: 0 1px 2px #000000;
   font-family: "Gotham Narrow SSm",sans-serif;
-  //background-color: #55EEAC;
+  /*background-color: #55EEAC;*/
   background-color: #33AA77;
 }
 
@@ -3371,8 +3416,8 @@ function CurrentPassInputChange()
 }
 
 .dropdown-language {
-    //background-color: black;
-    //color: white;
+    /*background-color: black;
+    color: white;*/
     display: block;
     text-decoration: none;
     text-align: center;
@@ -3381,8 +3426,8 @@ function CurrentPassInputChange()
 }
 
 .dropdown-list_active {
-    //background-color: black;
-    //color: white;
+    /*background-color: black;
+    color: white;*/
     display: block;
     text-decoration: none;
     text-align: left;
@@ -3438,7 +3483,7 @@ function CurrentPassInputChange()
 .white-area {
   background: none repeat scroll 0 0 #FFFFFF;
   bottom: 0;
-  //color: #CCD6DD;
+  /*color: #CCD6DD;*/
   color: #66757F;
   font-size: 14px;
   font-weight: 300;
@@ -3446,23 +3491,23 @@ function CurrentPassInputChange()
   padding: 20px;
   position: absolute;
   text-align: left;
-  //text-shadow: 0 1px 2px #000000;
+  /*text-shadow: 0 1px 2px #000000;*/
   font-family: "Gotham Narrow SSm",sans-serif;
   border-radius: 4px;
   border: 1px solid #C1C8CD;
   z-index: 2;
-  display: table;  //Auto sizes height if content is too long
+  display: table;  /*Auto sizes height if content is too long*/
 }
 
 .white-area-title {
   margin: 0 0 10px 0;
   border-bottom: 1px solid #E1E8ED;
-  //;box-shadow: 0 1px 0 #FFFFFF;
+  /*box-shadow: 0 1px 0 #FFFFFF;*/
   color: #66757F;
   display: block;
   font-size: 18px;
   font-weight: 300;
-  //position: relative;
+  /*position: relative;*/
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
@@ -3533,7 +3578,7 @@ function CurrentPassInputChange()
 }
 
 
-/* inspirat amb http://stackoverflow.com/questions/114543/how-to-horizontally-center-a-div-in-a-div */
+/*Inspirat amb http://stackoverflow.com/questions/114543/how-to-horizontally-center-a-div-in-a-div */
 .long-note-outer {
     position: fixed;
     text-align: center;
@@ -3624,8 +3669,8 @@ function CurrentPassInputChange()
   border-bottom: 6px solid #000000;
   display: inline-block;
   height: 0;
-  //margin-left: 3px;
-  //margin-top: 5px;
+  /*margin-left: 3px;
+  //margin-top: 5px;*/
   width: 0;
 }
 
@@ -3684,6 +3729,7 @@ function CurrentPassInputChange()
     text-decoration: underline;
 }
 
+/*Based on the work found in http://code.stephenmorley.org/html-and-css/star-rating-widget/ but replacing svg's by png's*/
 .starRating:not(old){
   display        : inline-block;
   width          : 7.5em;
