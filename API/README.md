@@ -110,21 +110,23 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * LANGUAGE=cat,spa,eng
   * USER=  (Optional. If not provided, "Anonymous" is assumed)
   * PASSWORD= (Optional. Do not use if USER=Anonymous)
-  * STARTINDEX= (Starting by 1. Optional. default is 1. )
+  * STARTINDEX= (Starting by 1. Optional. Default is 1)
   * COUNT= (Optional, default is 10)
-  * TYPE= (Optional, default is ALL).
-  * FORMAT= (Optional, default is text/xml, returning an ATOM file).
+  * TYPE= (Optional, default is ALL)
+  * FORMAT= (Optional, default is text/xml, returning an ATOM file)
   * XSL= (full url or "mm32". Optional)
   * CRS=  (for the moment only for application/x-mmzx output and for TYPE=POINT)
-  * TARGET= (resource_id. Optional, indicate only if TYPE=FEEDBACK)
-  * TRG_FLD_#= (Optional filter. Currently can only be ID_CODE or ID_NAMESPACE)
-  * TRG_VL_#= (Optional filter)
-  * TRG_OPR_#=EQ (Optional filter)
-  * TRG_NXS_#=AND (Optional filter)
-  * TRG_PRTY_#= (Optional filter)
+  * TARGET= (resource_id. Optional filter applicable if TYPE=FEEDBACK)
+  * TRG_TYPE_#= (Optional filter applicable if TYPE=FEEDBACK. Currently can only be CITATION)
+  * TRG_FLD_#= (Optional filter applicable if TYPE=FEEDBACK. Currently can only be CODE or NAMESPACE)
+  * TRG_VL_#= (Optional filter applicable if TYPE=FEEDBACK)
+  * TRG_OPR_#=EQ (Optional filter applicable if TYPE=FEEDBACK)
+  * TRG_NXS_#=AND (Optional filter applicable if TYPE=FEEDBACK)
+  * TRG_PRTY_#= (Optional. Starts with 1)
   * Examples
     * SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=cat&USER=JoanMaso&PASSWORD=****&STARTINDEX=1&COUNT=10&FORMAT=application/x-mmzx
     * SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=cat&USER=JoanMaso&PASSWORD=****&STARTINDEX=1&COUNT=10&FORMAT=text/html&XSL=mm32
+    * SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&USER=Anonymous&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=c90fd0c1-ebdf-4df9-9216-4592ed843644&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=http://sdi.eea.europa.eu/catalogue&TRG_OPR_2=EQ"
 
 * Resource details retrieval
   * IDENTIFIER=NB_RESOURCE:RETRIEVE
