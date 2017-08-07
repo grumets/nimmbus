@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <head>
+        <title>GEOAPI demo</title>
+        <link rel="shortcut icon" type="image/png" href="docs/assets/favicon.png">
+        
+        <script type="text/javascript" src="sources/js/jquery/jquery-1.10.2.js"></script>
+        <script type="text/javascript" src="sources/js/jquery/jquery-ui-1.10.3.js"></script>
+        
+        <script type="text/javascript" src="sources/js/yahoo/yahoo-dom-event-2.9.0.js"></script>
+        <script type="text/javascript" src="sources/js/yahoo/tree-view-min-2.9.0.js"></script>
+
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+        <script type="text/javascript" src="sources/js/jquery/gmaps.js"></script>
+        
+        <script type="text/javascript" src="sources/js/ol/ol-2.13.1.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/fonts/fonts-min.css" />
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/treeview/assets/skins/sam/treeview.css" />     
+        
+        <!-- required jtable css -->
+        <link href="http://www.jtable.org/Content/highlight.css" rel="stylesheet" type="text/css" />    
+        <link href="http://www.jtable.org/Content/themes/flick/jquery-ui-1.10.1.custom.min.css" rel="stylesheet" type="text/css" />
+        <link href="http://www.jtable.org/Scripts/jtable/themes/jqueryui/jtable_jqueryui.css" rel="stylesheet" type="text/css" />
+        
+        <!-- required jtable javascript -->      
+        <script src="http://www.jtable.org/Scripts/syntaxhighligher/shCore.js" type="text/javascript"></script>
+        <script src="http://www.jtable.org/Scripts/syntaxhighligher/shBrushJScript.js" type="text/javascript"></script>
+        <script src="http://www.jtable.org/Scripts/syntaxhighligher/shBrushXml.js" type="text/javascript"></script>
+        <script src="http://www.jtable.org/Scripts/syntaxhighligher/shBrushCSharp.js" type="text/javascript"></script>
+        <script src="http://www.jtable.org/Scripts/syntaxhighligher/shBrushSql.js" type="text/javascript"></script>
+        <script src="http://www.jtable.org/Scripts/syntaxhighligher/shBrushPhp.js" type="text/javascript"></script>
+        
+        <script src="http://www.jtable.org/Scripts/jtablesite.js" type="text/javascript"></script>
+        <script type="text/javascript" src="http://www.jtable.org/Scripts/jtable/jquery.jtable.js"></script>        
+            
+        <script type="text/javascript">
+            $.extend(true, $.hik.jtable.prototype.options, {
+                jqueryuiTheme: true
+            });
+        </script>
+        
+        <script type="text/javascript" src="sources/js/min/giapi-1.2.9-beta.min.js"></script>
+                                             
+        <style>
+            .no-close .ui-dialog-titlebar-close {
+                display: none;
+            }
+
+            .no-close .ui-dialog-content {
+                font-size: 10px;
+            }
+
+            .no-close .ui-dialog-title {
+                font-size: 12px;
+            }
+
+            .small-font .ui-dialog-content {
+                font-size: 11px;
+            }
+
+            .small-font .ui-dialog-title {
+                font-size: 12px;
+            }
+            
+            /****************************************
+            /* some small changes to the jtable ui */            
+            /****************************************
+             
+            /* table rows height decreased */               
+            div.jtable-main-container table.jtable tbody > tr {
+              padding: 2px;
+              height: 22px; /* 30 */            
+            }
+            
+            /* table cells font size decreased */  
+            div.jtable-main-container table.jtable tbody > tr > td {
+                padding: 1px;
+                border: 1px solid #ddd;
+                font-size: 90%; /* 100% */
+            }
+
+            /* header title size decreased */ 
+            div.jtable-main-container div.jtable-title {
+                position: relative;
+                line-height: 22px; /* 34 */
+                padding-left: 10px;              
+            }
+                      
+            /* adds a gray rounded border to the jtable */
+            div.jtable-main-container {
+                position: relative;
+                border: 1px solid; 
+                border-radius: 5px;
+                border-color: #ddd;
+            }
+
+        </style>
+
+        <script>
+        
+//Extrect from: http://stackoverflow.com/questions/9838812/how-can-i-open-a-json-file-in-javascript-without-jquery
+function loadXMLtext(path, success, error)
+{
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function()
+    {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                if (success)
+                    success(xhr.response);
+            } else {
+                if (error)
+		    error(xhr.statusText);
+            }
+        }
+    };
+    xhr.open("GET", path, true);
+    xhr.send();
+}
+
+            GIAPI.logger.enabled = true;
+            GIAPI.demo.dsc = {};
+            GIAPI.demo.dsc.concepts = [];
+            
+            GIAPI.demo.dsc.overview = true;
+            GIAPI.demo.dsc.download = true;
+            
+            /* The DAB endpoint */                
+            GIAPI.demo.dsc.dab = GIAPI.DAB(GIAPI.demo.api);
+
+
+            /**
+             * Update and uncomment the endpoint below in order to use the
+             * load balancer status proxy 
+             */
+            // GIAPI.lbStatusProxyEndpoint = 'http://localhost:8096/lb-status-proxy/status?';
+
+            jQuery(function() {
+                jQuery("#ts").datepicker({
+                    dateFormat : "yy-mm-dd",
+                    changeMonth : true,
+                    changeYear : true,
+                    yearRange : '1900:2014'
+                });
+                jQuery("#te").datepicker({
+                    dateFormat : "yy-mm-dd",
+                    changeMonth : true,
+                    changeYear : true,
+                    yearRange : '1900:2014'
+                });
+
+                var map = new GMaps({
+                    div : '#map',
+                    lat : 43,
+                    lng : 10.5,
+
+                    drag : function(e) {
+                        var bounds = map.getBounds();
+                        var ne = bounds.getNorthEast();
+                        var se = bounds.getSouthWest();
+
+                        jQuery('#south').val(se.lat());
+                        jQuery('#west').val(se.lng());
+                        jQuery('#north').val(ne.lat());
+                        jQuery('#east').val(ne.lng());
+                    },
+
+                    zoom_changed : function(e) {
+                        var bounds = map.getBounds();
+                        if (bounds) {
+                            var ne = bounds.getNorthEast();
+                            var se = bounds.getSouthWest();
+
+                            jQuery('#south').val(se.lat());
+                            jQuery('#west').val(se.lng());
+                            jQuery('#north').val(ne.lat());
+                            jQuery('#east').val(ne.lng());
+                        }
+                    }
+                });
+                map.setZoom(4);
+                
+                /**
+                 * Initializes the json dialog 
+                 */               
+                var area = "<textarea id='reportDialogArea' style='width:370px; height: 340px' readonly>" + toString + "</textarea>";
+                jQuery("#reportDialog").append(area);
+    
+                    GIAPI.demo.dsc.jsonDialog = jQuery("#reportDialog").dialog({
+                        dialogClass : "small-font",
+                        autoOpen: false,
+                        height : 400,
+                        width : 400,
+                        resizable : true,
+                        modal : true
+                });                   
+            });
+
+            GIAPI.demo.dsc.discover = function() {
+
+                GIAPI.demo.dsc.paginators = null;
+                var constraints = {};
+
+                var what = jQuery('#what').val().split(',');
+                if (what[0] !== '') {
+                    constraints.what = what;
+                }
+                
+                // var format = jQuery('#format').val().split(',');
+                // if (format[0] !== '') {
+                    // constraints.format = format;
+                // }
+//                 
+                // var kwd = jQuery('#kwd').val().split(',');
+                // if (kwd[0] !== '') {
+                    // constraints.keyword = kwd;
+                // }
+
+                var south = jQuery('#south').val();
+                var west = jQuery('#west').val();
+                var north = jQuery('#north').val();
+                var east = jQuery('#east').val();
+
+                if (south && west && north && east) {
+                    constraints.where = {};
+                    constraints.where.south = south;
+                    constraints.where.west = west;
+                    constraints.where.north = north;
+                    constraints.where.east = east;
+                }
+
+                var timeStart = jQuery('#ts').val();
+                var timeEnd = jQuery('#te').val();
+                if (timeStart || timeEnd) {
+                    constraints.when = {};
+                    constraints.when.from = timeStart;
+                    constraints.when.to = timeEnd;
+                }
+
+                var who = jQuery('#who').val().split(',');
+                if (who[0] !== '') {
+                    constraints.who = who;
+                }
+
+                var start = jQuery('#start').val() || 1;
+                var pageSize = jQuery('#pageSize').val() || 10;
+                var options = {};
+                options.start = start;
+                options.pageSize = pageSize;
+                var agg = jQuery('#agg').val();
+                if (agg === 'true') {
+                    options.aggregate = agg;
+                }
+
+                var keyword = jQuery('#extKeyword').val();
+                var relName = jQuery('#rel').val();
+                var concepts = jQuery('#conceptText').val();
+
+                if (relName) {
+                    options.extension = {};
+                    options.extension.relation = GIAPI.Relation[relName];
+                }
+                if (keyword) {
+                    if (!options.extension) {
+                        options.extension = {};
+                    }
+                    options.extension.keyword = keyword;
+                }
+                if (concepts) {
+                    if (!options.extension) {
+                        options.extension = {};
+                    }
+                    options.extension.concepts = GIAPI.demo.dsc.concepts;
+                }
+                
+                var timeout = jQuery('#timeout').val();
+                if(timeout){
+                    options.timeout = timeout;
+                }
+                
+                var searchFields = jQuery('#searchFields').val();
+                if(searchFields){
+                    options.searchFields = searchFields;
+                }
+                
+                var searchOperator = jQuery('#searchOperator').val();
+                if(searchOperator){
+                    options.searchOperator = searchOperator;
+                }
+                
+                var spatialRel = jQuery('#spatialRelation').val();
+                if(spatialRel){
+                    options.spatialRelation = spatialRel;
+                }
+                
+                var termFrequency = jQuery('#termFrequency').val();
+                if(termFrequency){
+                    options.termFrequency = termFrequency;
+                }
+                                
+                try {
+                    GIAPI.demo.dsc.dab.discover(GIAPI.demo.dsc.onDiscoverResponse, constraints, options, GIAPI.demo.dsc.onStatus);
+                    
+                    // GIAPI.demo.dsc.dab.discover(GIAPI.demo.dsc.onDiscoverResponse, constraints, options);
+
+                    GIAPI.demo.dsc.openStatusDialog();
+                    jQuery('#results').remove();
+                } catch(err) {
+                    GIAPI.demo.dsc.openWarnDialog(err);
+                }
+            };
+
+            GIAPI.demo.dsc.onDiscoverResponse = function(result) {
+                
+                jQuery("#statusDialog").empty();
+
+                if(result[0].resultSet().error){
+                    
+                    jQuery("#statusDialog").dialog('close');
+                    
+                    GIAPI.demo.dsc.openWarnDialog(result[0].resultSet().error);
+                    return;
+                }
+
+                if(!GIAPI.demo.dsc.paginators || GIAPI.demo.dsc.paginators.length === 1){
+
+                    GIAPI.demo.dsc.paginators = [];
+                    for (var i = 0; i < result.length; i++) {
+                        GIAPI.demo.dsc.paginators.push(result[i]);
+                    }
+                }
+                
+                if (!GIAPI.demo.dsc.currentPaginator) {
+                    jQuery('#demo-body').append('<div id="results"></div>');
+                    jQuery('#results').append('<ul id="results_list">');
+                }
+
+                for (var resultIndex = 0; resultIndex < result.length; resultIndex++) {
+
+                    var paginator = result[resultIndex];
+                    var currentPage = paginator.page();
+                    var resultSet = paginator.resultSet();
+                                       
+                    if (GIAPI.demo.dsc.currentPaginator) {// a paginator method has been called
+
+                        jQuery('#tab-' + GIAPI.demo.dsc.currentPaginator).empty();
+                        resultIndex = parseInt(GIAPI.demo.dsc.currentPaginator);
+                        GIAPI.demo.dsc.currentPaginator = null;
+
+                    } else {// the start discover button has been pressed
+
+                        var href = "<a href='./docs/classes/DAB.html#result' target='_blank'><u>result</u></a>";
+                        var tabTitle = resultSet.extension ? resultSet.extension.label : href;
+
+                        jQuery('#results_list').append('<li><a href="#tab-' + resultIndex + '">' + tabTitle + '</a></li>');
+                        jQuery('#results').append('<div id="tab-' + resultIndex + '"></div>');
+                    }
+
+                    var tabContentId = 'tab-' + resultIndex + '-content';
+                    jQuery('#tab-' + resultIndex).append('<div id=' + tabContentId + '></div>');
+
+                    /**
+                     * Inserts paginator and result set table
+                     */
+                    var pagId = 'paginator-column_' + resultIndex;
+                    var resSetId = 'result-set-colum_' + resultIndex;
+
+                    jQuery('#' + tabContentId).append('<table style="font-size: 11px; width:100%"><tbody><tr><th id="' + pagId + '"></th><th id="' + resSetId + '"></th></tr><tbody>');
+
+                    GIAPI.demo.dsc.appendPaginator(paginator, pagId, resultIndex);
+                    GIAPI.demo.dsc.appendResultSet(resSetId, resultIndex, resultSet);
+
+                    /**
+                     * Inserts tab content table
+                     */
+                    // creates tab content table
+                    var tabTableId = 'tab-' + resultIndex + '-content-table';
+                    jQuery('#' + tabContentId).append('<table style="width:100%" cellpadding="3"><tbody id="' + tabTableId + '"></tbody></table>');
+
+                    /**
+                     * Inserts the term frequency tables
+                     */
+                    if(resultSet.termFrequency){
+                                               
+                        var tfId = 'tf-row_' + GIAPI.random();
+                        var tfthId = 'tf-row_th' + GIAPI.random();
+
+                        jQuery('#' + tabTableId).append('<tr style="width:200px;"  id="' + tfId + '">');
+                        
+                        var rowSpan = parseInt(currentPage.size())+2;
+                        jQuery('#' + tfId).append('<th valign="top" id='+tfthId+' rowspan="'+rowSpan+'" style="width:350px;"></th>');
+                                                                                       
+                        var targetsCount = resultSet.termFrequency.targetsCount();
+                        var targetsIds = [];
+                        for (var k=0; k < targetsCount; k++) {
+                            
+                            var targetDivId = 'target_div_'+GIAPI.random();
+                            targetsIds.push(targetDivId);
+                            
+                            jQuery('#' + tfthId).append('<div style="width:350px; margin-bottom: 5px" id='+targetDivId+'></div>');                           
+                        };                        
+                          
+                        jQuery('#' + tabTableId).append('</tr>');
+                        
+                        // something to do before the discover starts               
+                        var beforeDiscover = function(){
+                        };
+                        
+                        // something to do before after the discover is started               
+                        var afterDiscover = function(){
+                              GIAPI.demo.dsc.openStatusDialog();
+                              jQuery('#results').remove();
+                        };
+
+                        // creates the table             
+                        var freqTable = GIAPI.TermFrequencyWidget(targetsIds, resultSet.termFrequency, beforeDiscover, afterDiscover);
+                       
+                        // init the table             
+                        freqTable.init();
+                    }
+
+                    // inserts first table row with the current page count
+                    var curPageRowId = 'cur-page-row_' + resultIndex;
+                    jQuery('#' + tabTableId).append('<tr style="background-color: #F5B70C" id="' + curPageRowId + '">');
+                    jQuery('#' + curPageRowId).append('<th style="border:1px solid; border-radius: 5px;border-color: #F5B70C"><a href="./docs/classes/Paginator.html#method_page" target="_blank">paginator.page()</a> (<a href="./docs/classes/Page.html#method_count" target="_blank">count: </a>' + currentPage.count() + ')</th>');
+                    jQuery('#' + tabTableId).append('</tr>');
+
+                    var count = 0;
+                    while (currentPage.hasNext()) {
+
+                        var node = currentPage.next();
+                        var id = node.report().id;
+                        var type = node.report().type;
+                        var title = node.report().title;
+                        var desc = node.report().description;
+                        
+                        var opt = {};
+                        opt.params = { transparent: true};    
+                        opt.extraOptions = {opacity: 0.5};
+                                         
+                        var layers = node.olWMS_Layer(opt);
+
+                        var rowId = tabTableId + '_row_' + count + '_' + resultIndex;
+                        var expId = tabTableId + '_exp_' + count + '_' + resultIndex;
+
+                        jQuery('#' + tabTableId).append('<tr style="background-color: #F5E3B3" id=' + rowId + '>');
+
+                        //--------------------------
+                        // first column: report info
+                        //--------------------------
+
+                        var div = '<div>';
+                        id = id.length > 100 ? (id.substr(0,100)+'...') : id;
+                        desc = desc.length > 300 ? (desc.substr(0,300)+'...') : desc;
+
+                        div += '<a href="./docs/classes/Report.html#property_id" target="_blank">report.id</a>: ' + id + '<br>';
+                        div += '<a href="./docs/classes/Report.html#property_title" target="_blank">report.title</a>: ' + title + '<br>';
+                        div += '<a href="./docs/classes/Report.html#property_type" target="_blank">report.type</a>: ' + type + '<br>';
+                        div += '<a href="./docs/classes/Report.html#property_description" target="_blank">report.description</a>: ' + desc + '<br>';
+                        div += '<a href="http://www.opengis.uab.cat/nimmbus/index.htm?target_title=' + title + '&target_code=' + id + '&target_codespace=http://api.eurogeos-broker.eu/dab&page=ADDFEEDBACK&share_borrower_1=Anonymous" target="_blank">Add user feedback</a><br>';
+
+                        jQuery('#' + rowId).append('<td style="border:1px solid; border-radius: 5px;border-color: #F5E3B3">' + div + '</td>');
+                        //--------------------------------------
+                        // second column: 'node.report()' button
+                        //--------------------------------------
+
+                        var jsonButtonId = 'json_button_' + GIAPI.random();
+                        var jsonButton = '<button id="' + jsonButtonId + '">node.report()</button>';
+
+                        jQuery('#' + rowId).append('<td style="border:1px solid; border-radius: 5px;border-color: #F5E3B3">' + jsonButton + '</td>');
+                        
+                        var curReport = JSON.stringify(node.report(), null, 4);
+                        
+                        jQuery('#' + jsonButtonId).click(  (function(rep) {                            
+                            return function(){
+                                
+                                GIAPI.demo.dsc.openJSONreportDialog(null,rep);            
+                             };                            
+                         })(curReport) );
+
+                        //-----------------------
+                        // second+1/2 column: overview
+                        //-----------------------
+
+                        var jsonButtonId2 = 'json_button_' + GIAPI.random();
+                        var jsonButton2 = '<button id="' + jsonButtonId2 + '">View feedback</button>';
+
+                        jQuery('#' + rowId).append('<td style="border:1px solid; border-radius: 5px;border-color: #F5E3B3">' + jsonButton2 + '</td>');
+                        
+                        var curUrlGUF = 'http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1='+id+'&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=http://api.eurogeos-broker.eu/dab&TRG_OPR_2=EQ';
+                        
+                        jQuery('#' + jsonButtonId2).click(  (function(rep) {
+                            return function(){                               
+                                loadXMLtext(rep,
+				function(data) { GIAPI.demo.dsc.openJSONreportDialog(null, data); }, 
+				function(xhr) { alert(xhr); });
+                             };                            
+                         })(curUrlGUF) );
+
+                        //-----------------------
+                        // third column: overview
+                        //-----------------------
+                                                                        
+                        if (GIAPI.demo.dsc.overview) {
+
+                            var ovTableId = 'ovTable_' + GIAPI.random();
+                            var ovTableOvrId = 'ovTabOvr_' + GIAPI.random();
+
+                            var ovTable = '<td><table><tr><td id="'+ovTableId+'"></td>';
+                            ovTable += '<td><a href="http://api.eurogeoss-broker.eu/docs/classes/DAB.html#method_overview" target="_blank">info</a></td></tr>';
+                            ovTable += '<tr><td colspan="2" id="'+ovTableOvrId+'"></td></tr></table></td>';
+                            
+                            var ovSelId = 'ovSel_' + GIAPI.random();
+                            var sel = '<select style="width: 125px" id="'+ovSelId+'">';
+                            
+                            if(node.report().overview){
+                                for(var o=0; o < node.report().overview.length; o++){
+                                    
+                                    sel += '<option value="'+o+'">overview '+(o+1)+'/'+node.report().overview.length+' </option>';
+                                }
+                                sel += '</select>';
+                            }
+                            
+                            jQuery('#' + rowId).append(ovTable);
+                            jQuery('#' + ovTableId).append(sel);
+                                 
+                            var divId = 'overview_div_' + GIAPI.random();
+                            var canvasDiv = '<div id="'+divId+'" width="150px" height="70px"><canvas id="canvas_'+divId+'"></canvas></div>';
+                                                       
+                            jQuery('#' + ovTableOvrId).append('<td style="border:1px solid; border-radius: 5px;border-color: #F5E3B3">' + canvasDiv +'</td>');
+                                                       
+                            GIAPI.demo.dsc.overviewMessage(divId,'Loading overview...');
+                            
+                            GIAPI.demo.dsc.loadOverview(node, divId);
+                                                      
+                            jQuery('#' + ovSelId).change(  (function(n,Id,selId) {                            
+                                 
+                                 return function(){
+                                        
+                                        jQuery('#'+Id).empty();
+                                        
+                                        var val = jQuery('#' + selId).val();
+                                        
+                                        GIAPI.demo.dsc.loadOverview(n, Id, val);          
+                                     };                            
+                                 })(node,divId,ovSelId) );                            
+                        }
+                        
+                        //--------------------------------
+                        // third column: access link button
+                        //---------------------------------
+                                                                        
+                        if (node.isAccessible() && GIAPI.demo.dsc.download) {
+                            
+                             var divId = 'access_div_' + GIAPI.random();
+                             var div = '<div id="'+divId+'" width="150px" height="70px"><canvas id="canvas_'+divId+'"></canvas></div>';
+                             jQuery('#' + rowId).append('<td style="border:1px solid; border-radius: 5px;border-color: #F5E3B3">' + div +'</td>');
+
+                             GIAPI.demo.dsc.overviewMessage(divId,'Loading access link...');
+                             
+                             GIAPI.demo.dsc.loadAccessLink(node, divId);
+                       }
+                       
+                        //--------------------------------
+                        // fourth column: access link button
+                        //---------------------------------
+                                                                        
+                        if (node.isSimplyAccessible()) {
+                            
+                             var divId = 'simply_access_div_' + GIAPI.random();
+                             var div = '<div id="'+divId+'"></div>';
+                             jQuery('#' + rowId).append('<td style="border:1px solid; border-radius: 5px;border-color: #F5E3B3">' + div +'</td>');
+
+                             var links = node.simpleAccessLinks();   
+                             
+                             for(var i=0; i< links.length; i++){
+                                 
+                                 var link = links[i];    
+                                 
+                                 var buttonId = 'json_button_' + GIAPI.random();
+                                 var button = '<button id="' + buttonId + '">node.simpleAccessLinks()['+i+']</button>';
+        
+                                 jQuery('#' + divId).append(button);      
+                                                                                                 
+                                 jQuery('#' + buttonId).click(  (function(l) {                            
+                                    return function(){
+                                        
+                                        window.open(l,'_blank');                              
+                                     };                            
+                                 })(link) );   
+                             }   
+                       }
+                         
+                        if (type === 'composed') {
+
+                            //-------------------
+                            // fith column: who
+                            //-------------------
+
+                            var whoDiv = '<div><a href="javascript:void(0)">who</a>';                            
+                            var whoButtonId = 'who_button_' + GIAPI.random();
+                            whoDiv += '<input type="checkBox" id="' + whoButtonId + '"></input></div>';
+                            
+                            jQuery('#' + rowId).append('<td style="border:1px solid; border-radius: 5px;border-color: #F5E3B3">' + whoDiv + '</td>');                                                       
+                            jQuery('#' + whoButtonId).click(  (function(nodeId) {
+                                    
+                                return function(){
+                                    
+                                    var val = jQuery('#who').val();
+                                    if (this.checked) {
+                                        if (!val) {
+                                            val = nodeId;
+                                        } else {
+                                            val = val + ',' + nodeId;
+                                        }
+                                        jQuery('#who').val(val);
+                                    } else {
+                                        var split = val.split(',');
+                                        if (split.length === 1) {
+                                            jQuery('#who').val('');
+                                        } else {
+                                            Array.prototype.remove(split, nodeId);
+                                            jQuery('#who').val(split);
+                                        }
+                                    }                                   
+                                };                                                          
+                            })(id));
+
+                            //---------------------
+                            // sixth column: expand
+                            //---------------------
+
+                            var expandDiv = '<div id=' + expId + '></div>';
+                            var width = type === 'composed' ? "style=\"width:50%;border:1px solid; border-radius: 5px;border-color: #F5E3B3 \"" : '';
+                            jQuery('#' + rowId).append('<td ' + width + '>' + expandDiv + '</td>');
+                            if (type === 'composed') {
+                                
+                                var options = {
+                                  onCreateNode : GIAPI.demo.dsc.onCreateNode,
+                                  onError :  GIAPI.demo.dsc.onExpandError                                    
+                                };
+                                
+                                GIAPI.GINodeTree(node, expId, options);
+                            }
+                        }
+
+                        jQuery('#' + tabTableId).append('</tr>');
+
+                        count++;
+                    }
+                }
+
+                jQuery('#results').append('</ul>');
+                jQuery("#results").tabs({
+                    // event: "mouseover"
+                });
+
+                GIAPI.demo.dsc.enableDiscoverButton(true);
+
+                if (jQuery("#statusDialog").dialog('isOpen')) {
+                    jQuery("#statusDialog").dialog('close');
+                }
+            };
+
+            GIAPI.demo.dsc.overviewMessage = function(divId, msg) {
+                
+                var canvas = document.getElementById('canvas_'+divId);
+                var ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = "12px Arial";
+                ctx.textBaseline = "top";
+                ctx.fillText(msg, 0, 0);
+            };
+
+            GIAPI.demo.dsc.loadOverview = function(node, divId,index) {
+             
+                var onOverviewResponse = function(status, error) {                    
+                    if (status === 'error') {
+                        GIAPI.demo.dsc.overviewMessage(divId, error);
+                    }else{
+                        jQuery('#canvas_'+divId).remove();
+                    }
+                };
+                
+                var idx = index ? index : 0;
+                node.overview(divId, idx, onOverviewResponse, 'medium', true);               
+            };
+            
+            GIAPI.demo.dsc.loadAccessLink = function(node, divId) {
+             
+                var onAccessResponse = function(result, error) {                    
+                    if (error) {
+                        GIAPI.demo.dsc.overviewMessage(divId, error);
+                    }else{
+                        jQuery('#canvas_'+divId).remove();
+                        
+                        var buttonId = 'json_button_' + GIAPI.random();
+                        var button = '<button id="' + buttonId + '">node.accessLink()</button>';
+
+                        jQuery('#' + divId).append(button);      
+                                                                                         
+                        jQuery('#' + buttonId).click(  (function(link) {                            
+                            return function(){
+                                
+                                window.open(link,'_blank');                              
+                             };                            
+                        })(result) );                     
+                    }
+                };
+
+                node.accessLink(onAccessResponse);               
+            };
+            
+            GIAPI.demo.dsc.onStatus = function(statusList) {
+
+                if (statusList) {
+                    jQuery("#statusDialog").empty();
+
+                    for (var i = 0; i < statusList.length; i++) {
+                        var s = statusList[i];
+                        var title = s.title();
+                        jQuery("#statusDialog").append("Title: " + s.title() + "<br>");
+                        jQuery("#statusDialog").append("Message: " + s.message() + "<br>");
+
+                        var dataURL = s.phase(true);
+                        var image = '<image style="background:transparent" src="' + dataURL + '" </image>';
+
+                        jQuery("#statusDialog").append("Phase: " + image + "<br>");
+
+                        jQuery("#statusDialog").append("Progress: " + s.progress() + "<br>");
+                        jQuery("#statusDialog").append("--- <br>");
+                    }
+                }
+            };
+            
+            GIAPI.demo.dsc.onCreateNode = function(giNode, parentTreeNode, expandNext, isRoot){
+                
+                var oData = null;
+                if(expandNext){
+                    oData = '<label>Click to get more results...</label>';    
+                }else if(isRoot){
+                    oData = giNode.report().title;
+                }else{
+                    var buttonId = 'json_button_' + GIAPI.random();                                
+                    var report = encodeURIComponent(JSON.stringify(giNode.report(), null, 4));                    
+                    oData = "<div><label>"+giNode.report().title+'</label><button onclick="GIAPI.demo.dsc.openJSONreportDialog(this,null)" name="'+report+'" id="' + buttonId + '">node.report()</button></div>';                            
+                }            
+                return oData;                                             
+            };
+                        
+            GIAPI.demo.dsc.onExpandError = function(prtTreeNode, resultSetError) {
+
+                GIAPI.demo.dsc.openWarnDialog(resultSetError);
+            };
+            
+            GIAPI.demo.dsc.openJSONreportDialog = function(button, report) {
+
+                var rep = null;
+                if(button){
+                    rep = decodeURIComponent(button.name);
+                }else{                   
+                    rep = report;
+                }
+
+                jQuery("#reportDialogArea").val(rep);
+                jQuery("#reportDialog").dialog('open');
+            };
+            
+            GIAPI.demo.dsc.keyDown = function(e){
+              var keycode;
+              
+              if (window.event){
+                  keycode = window.event.keyCode;
+              }else if (e){
+                  keycode = e.which;
+              }
+            
+              if((keycode === 13)){              
+                   GIAPI.demo.dsc.discover();     
+              }        
+            };
+
+            GIAPI.demo.dsc.pagination = function(method, button) {
+
+                var id = button.id;
+                var idx_ = id.indexOf('_') + 1;
+                var i = id.substring(idx_, id.length);
+
+                switch(method) {
+                    case 'next':
+                        if (!GIAPI.demo.dsc.paginators[i].next()) {
+                            GIAPI.demo.dsc.openWarnDialog('Call to next not available');
+                            return;
+                        }
+                        GIAPI.demo.dsc.paginators[i].next(GIAPI.demo.dsc.onDiscoverResponse, true);
+                        break;
+
+                    case 'prev':
+                        if (!GIAPI.demo.dsc.paginators[i].prev()) {
+                            GIAPI.demo.dsc.openWarnDialog('Call to prev not available');
+                            return;
+                        }
+                        GIAPI.demo.dsc.paginators[i].prev(GIAPI.demo.dsc.onDiscoverResponse, true);
+                        break;
+                    case 'skip':
+                        if (!GIAPI.demo.dsc.paginators[i].skip(jQuery('#skipInput_'+i).val())) {
+                            GIAPI.demo.dsc.openWarnDialog('Index out of bounds or unchanged');
+                            return;
+                        }
+                        GIAPI.demo.dsc.paginators[i].skip(GIAPI.demo.dsc.onDiscoverResponse, jQuery('#skipInput_'+i).val(),true);
+                        break;
+                    
+                    case 'last':
+                        if (!GIAPI.demo.dsc.paginators[i].last()) {
+                            GIAPI.demo.dsc.openWarnDialog('Call to last not available');
+                            return;
+                        }
+                        GIAPI.demo.dsc.paginators[i].last(GIAPI.demo.dsc.onDiscoverResponse, true);
+                        break;
+
+                    case 'first':
+                        if (!GIAPI.demo.dsc.paginators[i].first()) {
+                            GIAPI.demo.dsc.openWarnDialog('Call to first not available');
+                            return;
+                        }
+                        GIAPI.demo.dsc.paginators[i].first(GIAPI.demo.dsc.onDiscoverResponse, true);
+                        break;
+                }
+
+                GIAPI.demo.dsc.currentPaginator = i;
+
+                GIAPI.demo.dsc.openStatusDialog();
+                GIAPI.demo.dsc.enableDiscoverButton(false);
+                jQuery('#result_set').empty();
+                jQuery('#result_nodes').empty();
+            };
+
+            GIAPI.demo.dsc.enableDiscoverButton = function(enable) {
+
+                if (enable) {
+                    jQuery('#discoverButton').removeAttr('disabled');
+                } else {
+                    jQuery('#discoverButton').attr('disabled', 'disabled');
+                }
+            };
+
+            GIAPI.demo.dsc.openStatusDialog = function() {
+                jQuery("#statusDialog").dialog({
+                    dialogClass : "no-close",
+                    height : 400,
+                    width : 400,
+                    modal : true
+                });
+            };
+
+            GIAPI.demo.dsc.openWarnDialog = function(warning) {
+                jQuery("#warnDialog").empty();
+                jQuery("#warnDialog").append('<br>' + warning);
+                jQuery("#warnDialog").dialog({
+                    dialogClass : "small-font",
+                    height : 150,
+                    width : 500,
+                    modal : true
+                });
+            };
+
+            GIAPI.demo.dsc.includeSource = function(sources, check) {
+
+                var index = event.toElement.id.replace('check_', '');
+                var source = sources[index];
+
+                source.include(check.checked);
+            };
+
+            // initializing sources visualization
+            GIAPI.demo.dsc.dab.sources(function(sources, error) {
+                
+                if(error){
+                    GIAPI.demo.dsc.openWarnDialog(error);
+                    return;
+                }
+
+                var table = '<div style="height: 300px; overflow: auto;"><table>';
+                table += '<tr>';
+                table += '<th>Title</td>';
+                table += '<th>Enabled</td>';
+                table += '</tr>';
+
+                for (var i = 0; i < sources.length; i++) {
+                    var source = sources[i];
+                    var title = source.report().title;
+
+                    table += '<tr>';
+                    table += '<td>' + title + '</td>';
+                    var checkId = 'check_' + i;
+                    table += '<td><input id=' + checkId + ' type="checkbox" checked></input></td>';
+                    table += '</tr>';
+                }
+                table += '</table></div>';
+
+                jQuery('#sources').append(table);
+
+                for (var i = 0; i < sources.length; i++) {
+                    var checkId = 'check_' + i;
+                    jQuery('#' + checkId).click(function(event) {
+
+                        GIAPI.demo.dsc.includeSource(sources, this);
+                    });
+                };
+            });
+
+            GIAPI.demo.dsc.appendPaginator = function(paginator, pagId, i) {
+
+                var tBodyId = 'pag_table_' + i;
+                var rowId = tBodyId + '_row';
+
+                jQuery('#' + pagId).append('<table style="font-size: 11px; width:100%; border:1px solid; border-radius: 5px; background-color: #05A8FA; border-color: #05A8FA;"><tbody><tr><th><a href="./docs/classes/Paginator.html" target="_blank">Paginator</a></th></tr><tbody></table>');
+
+                jQuery('#' + pagId).append('<table style="font-size: 11px; width:100%; border:1px solid; border-radius: 5px; background-color: #DAEFF2; border-color: #DAEFF2;"><tbody id="' + tBodyId + '"></tbody></table>');
+
+                var first = paginator.first() ? '' : ' disabled';
+                var prev = paginator.prev() ? '' : ' disabled';
+                var next = paginator.next() ? '' : ' disabled';
+                var last = paginator.last() ? '' : ' disabled';
+
+                jQuery('#' + tBodyId).append('<tr style="width:100%;" id=' + rowId + '>');               
+                jQuery('#' + rowId).append('<td style="width:20%;"><button style="width:100%;" id="firstButton_' + i + '" onclick="GIAPI.demo.dsc.pagination(\'first\',this)"' + first + '>FIRST</button></td>');
+                jQuery('#' + rowId).append('<td style="width:20%;"><button style="width:100%;" id="prevButton_' + i + '" onclick="GIAPI.demo.dsc.pagination(\'prev\',this)"' + prev + '>PREV</button></td>');              
+                var skipTable = '<table style="width: 100%"><body><tr><td style="width: 100%"><button style="width:100%;" id="skipButton_' + i + '" onclick="GIAPI.demo.dsc.pagination(\'skip\',this)">SKIP</button></td>';
+
+                skipTable += '<td style="width: 100%"><input id="skipInput_'+i+'" style="width:50px" type="text" value="'+paginator.resultSet().pageIndex+'"></input><td></tr></body></table>';
+                jQuery('#' + rowId).append('<td style="width:20%;">'+skipTable+'</td>');
+                jQuery('#' + rowId).append('<td style="width:20%;"><button style="width:100%;" id="nextButton_' + i + '" onclick="GIAPI.demo.dsc.pagination(\'next\',this)"' + next + '>NEXT</button></td>');
+                jQuery('#' + rowId).append('<td style="width:20%;"><button style="width:100%;" id="lastButton_' + i + '" onclick="GIAPI.demo.dsc.pagination(\'last\',this)"' + last + '>LAST</button></td>');
+                
+                jQuery('#' + tBodyId).append('</tr>');
+                jQuery('#' + tBodyId).append('<tr style="width:100%;" id=' + (rowId + '_') + '>');              
+                jQuery('#' + rowId + '_').append('<td style="width:20%;"><a href="./docs/classes/Paginator.html#method_first" target="_blank">info</a></td>');
+                jQuery('#' + rowId + '_').append('<td style="width:20%;"><a href="./docs/classes/Paginator.html#method_prev" target="_blank">info</a></td>');                         
+                jQuery('#' + rowId + '_').append('<td style="width:20%;"><a href="./docs/classes/Paginator.html#method_skip" target="_blank">info</a></td>');
+                jQuery('#' + rowId + '_').append('<td style="width:20%;"><a href="./docs/classes/Paginator.html#method_next" target="_blank">info</a></td>');
+                jQuery('#' + rowId + '_').append('<td style="width:20%;"><a href="./docs/classes/Paginator.html#method_last" target="_blank">info</a></td>');              
+                jQuery('#' + tBodyId).append('</tr>');
+            };
+
+            GIAPI.demo.dsc.appendResultSet = function(resSetId, i, resultSet) {
+
+                var tBodyId = 'resSetTable_' + i;
+
+                var mainTable = '<table style="font-size: 11px; width:300px; border:1px solid; border-radius: 5px; background-color: #05A8FA; border-color: #05A8FA;">';
+                mainTable += '<tbody id="' + tBodyId + '"><tr><th><a href="./docs/classes/ResultSet.html" target="_blank">resultSet</a></th>';
+                var extTh = resultSet.extension ? '<th><a href="./docs/classes/ResultSetExtension.html" target="_blank">resultSet.extension</a></th>' : '';
+                mainTable += extTh + '</tr><tbody></table>';
+                jQuery('#' + resSetId).append(mainTable);
+
+                // result set table on column 0
+                var mainTableRow1Id = 'resSetTable_row1' + i;
+
+                var tBody0Id = 'resSetTable0_' + i;
+                var resSetTable = '<table style="font-size: 11px; width:100%; border:1px solid; border-radius: 5px; background-color: #05A8FA; border-color: #05A8FA;">';
+                resSetTable += '<tbody id="' + tBody0Id + '"><tbody></table>';
+                jQuery('#' + tBodyId).append('<tr id=' + mainTableRow1Id + '><th>' + resSetTable + '</tr></th>');
+
+                jQuery('#' + tBody0Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSet.html#property_start" target="_blank">start</a></th><th>' + resultSet.start + '</th></tr>');
+                jQuery('#' + tBody0Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSet.html#property_size" target="_blank">size</a></th><th>' + resultSet.size + '</th></tr>');
+                jQuery('#' + tBody0Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSet.html#property_pageIndex" target="_blank">pageIndex</a></th><th>' + resultSet.pageIndex + '</th></tr>');
+                jQuery('#' + tBody0Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSet.html#property_pageCount" target="_blank">pageCount</a></th><th>' + resultSet.pageCount + '</th></tr>');
+                jQuery('#' + tBody0Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSet.html#property_pageSize" target="_blank">pageSize</a></th><th>' + resultSet.pageSize + '</th></tr>');
+                if (resultSet.error) {
+                    jQuery('#' + tBody0Id).append('<tr style="background-color: #DAEFF2"><th><a href="javascript:void(0)">error</a></th><th>' + resultSet.error + '</th></tr>');
+                }
+
+                if (resultSet.extension) {
+                    var tBody1Id = 'resSetTable1_' + i;
+                    var multiTable = '<table style="font-size: 11px; width:100%; border:1px solid; border-radius: 5px; background-color: #05A8FA; border-color: #05A8FA;">';
+                    multiTable += '<tbody id="' + tBody1Id + '"><tbody></table>';
+                    jQuery('#' + mainTableRow1Id).append('<th>' + multiTable + '</th>');
+
+                    jQuery('#' + tBody1Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSetExtension.html#property_size" target="_blank">size</a></th><th>' + resultSet.extension.size + '</th></tr>');
+                    jQuery('#' + tBody1Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSetExtension.html#property_resultSetIndex" target="_blank">resultSetIndex</a></th><th>' + resultSet.extension.resultSetIndex + '</th></tr>');
+                    jQuery('#' + tBody1Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSetExtension.html#property_width" target="_blank">width</a></th><th>' + resultSet.extension.width + '</th></tr>');
+                    jQuery('#' + tBody1Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSetExtension.html#property_label" target="_blank">label</a></th><th>' + resultSet.extension.label + '</th></tr>');
+                    jQuery('#' + tBody1Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSetExtension.html#property_language" target="_blank">language</a></th><th>' + resultSet.extension.language + '</th></tr>');
+                    jQuery('#' + tBody1Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSetExtension.html#property_uri" target="_blank">uri</a></th><th>' + resultSet.extension.uri + '</th></tr>');
+                    jQuery('#' + tBody1Id).append('<tr style="background-color: #DAEFF2"><th><a href="./docs/classes/ResultSetExtension.html#property_scheme" target="_blank">scheme</a></th><th>' + resultSet.extension.scheme + '</th></tr>');
+                }
+            };
+
+            GIAPI.demo.dsc.showConceptTree = function(target) {
+
+                var dialog = target === 'what' ? GIAPI.demo.dsc.whatConceptTreeDialog : GIAPI.demo.dsc.optConceptTreeDialog;
+                var dialogId = target === 'what' ? 'whatConceptTreeDialog' : 'optConceptTreeDialog';
+
+                var content = target === 'what' ? "<div id='whatConceptTreeDiv'></div>" : "<div id='optConceptTreeDiv'></div>";
+                var contentId = target === 'what' ? "whatConceptTreeDiv" : "optConceptTreeDiv";
+
+                if (!dialog) {
+
+                    jQuery('#' + dialogId).append(content);
+
+                    var onLoadCompleteCallback = function(treeNodes) {
+                        
+                        for (var i = 0; i < treeNodes.length; i++) {
+
+                            var curNode = treeNodes[i];
+
+                            /**
+                             * set "concept.stringify()" button
+                             */
+                            var buttonId = 'button_' + GIAPI.random();
+                            jQuery('#' + curNode.contentElId).append('<button id="' + buttonId + '">concept.stringify()</button>');
+                            
+                            var curConcept = curNode.data;
+                                                        
+                            jQuery('#' + buttonId).click( (function(concept) {
+                                
+                                return function(){
+                                    if (!GIAPI.demo.dsc.conceptDialog) {
+    
+                                        var area = "<textarea id='conceptArea' style='width:370px; height: 340px' readonly></textarea>";
+                                        jQuery("#conceptDialog").append(area);
+    
+                                        GIAPI.demo.dsc.conceptDialog = jQuery("#conceptDialog").dialog({
+                                            dialogClass : "small-font",
+                                            height : 400,
+                                            width : 400,
+                                            resizable : true,
+                                            modal : true
+                                        });
+                                    }
+    
+                                    var value = concept.stringify();
+    
+                                    jQuery("#conceptArea").val(value);
+                                    jQuery("#conceptDialog").dialog('open');
+                                };
+                                
+                            })(curConcept) );
+
+                            buttonId = 'button_' + GIAPI.random();
+                            
+                            if (target === 'what') {
+                                /**
+                                 * set "add concept label" button (from the "Add search terms from concept label" tree)
+                                 */
+                                jQuery('#' + curNode.contentElId).append('<button id="' + buttonId + '">add concept label</button>');
+                                
+                                jQuery('#' + buttonId).click(   (function(concept) {
+                                    
+                                    return function(){
+                                        var values = eval(JSON.stringify(concept.label()));
+                                        var what = jQuery('#keywords').val();
+                                        if (what) {
+                                            values.push(what);
+                                        }
+                                        jQuery('#keywords').val(values);
+                                    };
+                                    
+                                })(curConcept));                               
+                            } else {
+                                /**
+                                 * set "add concept" button (from the "Add concept to extend discover" tree)
+                                 */
+                                jQuery('#' + curNode.contentElId).append('<button id="' + buttonId + '">add concept</button>');
+                                
+                                jQuery('#' + buttonId).click( (function(concept) {
+                                    
+                                    return function(){
+                                        GIAPI.demo.dsc.concepts.push(concept);
+    
+                                        jQuery('#conceptText').empty();
+                                        var val = '';
+                                        for (var i = 0; i < GIAPI.demo.dsc.concepts.length; i++) {
+                                            var con = GIAPI.demo.dsc.concepts[i];
+                                            var uri = con.uri();
+                                            val += uri + ',';
+                                        }
+                                        val = val.substring(0, val.length - 1);
+                                        jQuery('#conceptText').val(val);
+                                    };
+                                    
+                                })(curConcept));
+                            }
+                        }
+                    };
+                    
+                    var onErrorCallback = function(node, error){
+                                                
+                        GIAPI.demo.dsc.openWarnDialog(error);
+                        return;                    
+                    };
+                    
+                    var options = {
+                      onLoadComplete : onLoadCompleteCallback,
+                      onError: onErrorCallback
+                    };
+                    
+                    GIAPI.demo.dsc.conceptTree = GIAPI.ConceptTree(GIAPI.demo.dsc.dab, contentId, options );
+
+                    // disables click event on node labels
+                    GIAPI.demo.dsc.conceptTree.tree.subscribe('clickEvent', function(event, node) {
+
+                        return false;
+                    });
+
+                    // set concept keyword
+                    GIAPI.demo.dsc.conceptTree.tree.subscribe('expand', function(node) {
+
+                        if (!GIAPI.demo.dsc.conceptTree.conceptKeyword()) {
+                            var keyword = jQuery('#keywordField2').val();
+                            if (!keyword) {
+                                GIAPI.demo.dsc.openWarnDialog('Please enter a concept keyword');
+                                return false;
+                            } else {
+                                GIAPI.demo.dsc.conceptTree.conceptKeyword(keyword);
+                                jQuery('#keywordField2').attr('disabled', 'disabled');
+                            }
+                        }
+
+                        return true;
+                    });
+
+                    // adds keyword text field to the tree root (the DAB node)
+                    var keywordDiv = '<div id="keywordFieldId" style="margin-left:10px">Concept keyword <input style="width: 300px" id="keywordField2" type="text" value="drought"></div>';
+                    var treeRoot = GIAPI.demo.dsc.conceptTree.treeRoot;
+                    jQuery('#' + treeRoot.contentElId).append(keywordDiv);
+
+                    if (target === 'what') {
+                        GIAPI.demo.dsc.whatConceptTreeDialog = jQuery("#" + dialogId).dialog({
+                            dialogClass : "small-font",
+                            height : 400,
+                            width : 580,
+                            resizable : true,
+                            modal : true
+                        });
+                    } else {
+                        GIAPI.demo.dsc.optConceptTreeDialog = jQuery("#" + dialogId).dialog({
+                            dialogClass : "small-font",
+                            height : 400,
+                            width : 580,
+                            resizable : true,
+                            modal : true
+                        });
+                    }
+                }
+
+                jQuery('#' + dialogId).dialog("option", "title", target === 'what' ? 'Add search terms from concept label' : 'Add concept to extend discover');
+                jQuery('#' + dialogId).dialog('open');
+            };
+
+            GIAPI.demo.dsc.clearConcepts = function() {
+
+                GIAPI.demo.dsc.concepts = [];
+                jQuery('#conceptText').val('');
+            };
+            
+            GIAPI.demo.dsc.clear = function(id) {
+
+                jQuery("#" + id).val('');
+            };
+                            
+        </script>
+    </head>
+    
+    <body id="demo-body" style="font-family: Trebuchet MS, Helvetica, sans-serif; font-size: 70%">
+        
+        <table>
+            <tr>
+                <td>
+                    <h1>GEOAPI demo</h1>                  
+                </td>
+                <td >
+                     <style type="text/css">
+                        .discoverButton {
+                            position: center;
+                            width: 300px;
+                            height: 50px;
+                            margin-bottom: 10px;
+                            -moz-box-shadow: inset 0px 1px 0px 0px #bbdaf7;
+                            -webkit-box-shadow: inset 0px 1px 0px 0px #bbdaf7;
+                            box-shadow: inset 0px 1px 0px 0px #bbdaf7;
+                            background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #378de5) );
+                            background: -moz-linear-gradient( center top, #79bbff 5%, #378de5 100% );
+                            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#378de5');
+                            background-color: #79bbff;
+                            -moz-border-radius: 6px;
+                            -webkit-border-radius: 6px;
+                            border-radius: 6px;
+                            border: 1px solid #84bbf3;
+                            display: inline-block;
+                            color: #ffffff;
+                            font-family: arial;
+                            font-size: 15px;
+                            font-weight: bold;
+                            padding: 6px 24px;
+                            text-decoration: none;
+                            text-shadow: 1px 1px 0px #528ecc;
+                        }
+                        .discoverButton:hover {
+                            background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #378de5), color-stop(1, #79bbff) );
+                            background: -moz-linear-gradient( center top, #378de5 5%, #79bbff 100% );
+                            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#378de5', endColorstr='#79bbff');
+                            background-color: #378de5;
+                        }
+                        .discoverButton:active {
+                            position: relative;
+                            top: 1px;
+                        }
+                        /* This imageless css button was generated by CSSButtonGenerator.com */
+                    </style>
+            
+                    <div>
+                        <button class="discoverButton" onclick="GIAPI.demo.dsc.discover()" id="discoverButton">
+                            START DISCOVER
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    
+        <style>
+            input {
+                font-family: Trebuchet MS, Helvetica, sans-serif;
+                background: #ffc;
+            }
+            select {
+                font-family: Trebuchet MS, Helvetica, sans-serif;
+                background: #ffc;
+            }
+            button {
+                font-family: Trebuchet MS, Helvetica, sans-serif;
+            }
+        </style>
+
+        <table style="font-size:11px; width:100%; margin-bottom: 15px"  >
+
+            <tr style="background-color: #05A8FA; border-spacing:0px;">
+                <th style="width: 55%;border:1px solid; border-radius: 5px;border-color: #05A8FA"><a href="./docs/classes/DAB.html#constraints" target="_blank">constraints</a></th>
+                <th style="width: 25%;border:1px solid; border-radius: 5px;border-color: #05A8FA"><a href="./docs/classes/DAB.html#options" target="_blank">options</a></th>
+                <th style="width: 20%;border:1px solid; border-radius: 5px;border-color: #05A8FA"><a href="./docs/classes/DAB.html#method_sources" target="_blank">sources</a></th>
+            </tr>
+
+            <tr style="background-color: #DAEFF2;border-spacing:0px;">
+
+                <td style="border:1px solid; border-radius: 5px;border-color: #DAEFF2">
+                <table  style="border-spacing:0px;">
+                    <tr>
+                        <th>
+                        <table cellpadding="0" style="width:100%;border-spacing:0px;">
+                            <tr>
+
+                                <th align="left" style="width: 10px;"><a href="./docs/classes/DAB.html#what" target="_blank">what</a></th>
+                                <th>
+                                     
+                                     <table style="width: 100%">
+                                         <tr>
+                                             <th style="width: 100%">
+                                                 <input onkeydown="GIAPI.demo.dsc.keyDown()" style="width: 100%" id="what" type="text"/>
+                                             </th>
+                                             <th>
+                                             <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('what');">
+                                                 Clear
+                                             </button>
+                                             </th>
+                                          </tr>
+                                    </table>
+                                    
+                                    <button style="width: 300px; height: 30px;" onclick="GIAPI.demo.dsc.showConceptTree('what');" id="whatConceptTreeButton">
+                                        Add search terms from concept label
+                                    </button>
+                                </th>
+
+                            </tr>
+                            <!--
+                            <tr>
+                                <th align="left" style="width: 10px;">format</th>
+                                <th>
+                                     
+                                     <table style="width: 100%">
+                                         <tr>
+                                             <th style="width: 100%">
+                                                 <input onkeydown="GIAPI.demo.dsc.keyDown()" style="width: 100%" id="format" type="text"/>
+                                             </th>
+                                             <th>
+                                             <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('format');">
+                                                 Clear
+                                             </button>
+                                             </th>
+                                          </tr>
+                                    </table>                                    
+                                  </th>
+                            </tr>
+
+                            <tr>
+                                <th align="left" style="width: 10px;">kwd</th>
+                                <th>
+                                     
+                                     <table style="width: 100%">
+                                         <tr>
+                                             <th style="width: 100%">
+                                                 <input onkeydown="GIAPI.demo.dsc.keyDown()" style="width: 100%" id="kwd" type="text"/>
+                                             </th>
+                                             <th>
+                                             <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('kwd');">
+                                                 Clear
+                                             </button>
+                                             </th>
+                                          </tr>
+                                    </table>                                    
+                                  </th>
+                            </tr>
+                            -->
+
+                            <tr>
+                                <th align="left">
+                                    <a href="./docs/classes/DAB.html#where" target="_blank">where.south</a>
+                                </th>
+                                
+                                <th>
+                                    <table style="width: 100%">
+                                        <tr>                                
+                                            <th style="width: 100%">
+                                                <input onkeydown="GIAPI.demo.dsc.keyDown()" style="width: 100%" id="south" type="text"/>
+                                            </th>
+                                            
+                                            <th>
+                                                <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('south');">
+                                                    Clear
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </table>
+                                 </th>
+                            </tr>
+                            <tr>
+                                <th align="left"><a href="./docs/classes/DAB.html#where" target="_blank">where.west</a></th>
+                                
+                                <th>
+                                    <table style="width: 100%">
+                                        <tr>                                
+                                            <th style="width: 100%">
+                                                <input onkeydown="GIAPI.demo.dsc.keyDown()"  style="width: 100%" id="west" type="text"/>
+                                            </th>
+                                            
+                                            <th>
+                                                <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('west');">
+                                                    Clear
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </table>
+                                 </th>
+                            </tr>
+                            <tr>
+                                <th align="left"><a href="./docs/classes/DAB.html#where" target="_blank">where.north</a></th>
+                                <th>
+                                    <table style="width: 100%">
+                                        <tr>                                
+                                            <th style="width: 100%">
+                                                <input onkeydown="GIAPI.demo.dsc.keyDown()"  style="width: 100%" id="north" type="text"/>
+                                            </th>
+                                            
+                                            <th>
+                                                <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('north');">
+                                                    Clear
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </table>
+                                 </th>
+                            </tr>
+                            <tr>
+                                <th align="left"><a href="./docs/classes/DAB.html#where" target="_blank">where.east</a></th>
+                                <th>
+                                    <table style="width: 100%">
+                                        <tr>                                
+                                            <th style="width: 100%">
+                                                <input onkeydown="GIAPI.demo.dsc.keyDown()"  style="width: 100%" id="east" type="text"/>
+                                            </th>
+                                            
+                                            <th>
+                                                <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('east');">
+                                                    Clear
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </table>
+                                 </th>
+                            </tr>
+
+                            <tr>
+                                <th align="left"><a href="./docs/classes/DAB.html#when" target="_blank">when.from</a></th>
+                                <th>
+                                    <table style="width: 100%">
+                                        <tr>                                
+                                            <th style="width: 100%">
+                                                <input onkeydown="GIAPI.demo.dsc.keyDown()"  style="width: 100%" id="ts" type="text"/>
+                                            </th>
+                                            
+                                            <th>
+                                                <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('ts');">
+                                                    Clear
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </table>
+                                 </th>
+                            </tr>
+                            <tr>
+                                <th align="left"><a href="./docs/classes/DAB.html#when" target="_blank">when.to</a></th>
+                                <th>
+                                    <table style="width: 100%">
+                                        <tr>                                
+                                            <th style="width: 100%">
+                                                <input onkeydown="GIAPI.demo.dsc.keyDown()"  style="width: 100%" id="te" type="text"/>
+                                            </th>
+                                            
+                                            <th>
+                                                <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('te');">
+                                                    Clear
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </table>
+                                 </th>
+                            </tr>
+                            <tr>
+                                <th align="left"><a href="./docs/classes/DAB.html#who" target="_blank">who</a></th>
+                                <th>
+                                    <table style="width: 100%">
+                                        <tr>                                
+                                            <th style="width: 100%">
+                                                <input onkeydown="GIAPI.demo.dsc.keyDown()"  style="width: 100%" id="who" type="text"/>
+                                            </th>
+                                            
+                                            <th>
+                                                <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('who');">
+                                                    Clear
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </table>
+                                 </th>
+                            </tr>
+
+                        </table></th>
+
+                        <th style="width:100%; height: 100%" rowspan="4"><div style="width:100%; height:290px;" id="map"> </div></th>
+        
+                    </tr>
+                </table></td>
+
+                <td style="border:1px solid; border-radius: 5px;border-color: #DAEFF2">
+                <div id="options">
+                    <table style="font-size: 11px">
+                        <tr>
+                            <th align="left" style="width: 10%"><a href="./docs/classes/DAB.html#start" target="_blank">start</a></th>
+                            <th>
+                            <input onkeydown="GIAPI.demo.dsc.keyDown()"  style="width: 100%" id="start" type="text"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th align="left" style="width: 10%"><a href="./docs/classes/DAB.html#pageSize" target="_blank">pageSize</a></th>
+                            <th>
+                            <input onkeydown="GIAPI.demo.dsc.keyDown()"  style="width: 100%" id="pageSize" type="text"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th align="left" style="width: 10%"><a href="./docs/classes/DAB.html#timeout" target="_blank">timeout</a></th>
+                            <th>
+                            <input onkeydown="GIAPI.demo.dsc.keyDown()"  style="width: 100%" id="timeout" type="text"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th align="left" style="width: 10%"><a href="./docs/classes/DAB.html#searchFields" target="_blank">searchFields</a></th>
+                            <th>
+                                <select style="width: 100%" id="searchFields">
+                                    <option value="" selected></option>
+                                    <option value="anytext">anytext</option>
+                                    <option value="title">title</option>
+                                    <option value="description">description</option>
+                                    <option value="keyword">keyword</option>
+                                    <option value="title,description">title,description</option>
+                                    <option value="title,keyword">title,keyword</option>
+                                    <option value="description,keyword">description,keyword</option>
+                                    <option value="title,description,keyword">title,description,keyword</option>                                                                       
+                                </select>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th align="left" style="width: 10%"><a href="./docs/classes/DAB.html#searchOp" target="_blank">searchOperator</a></th>
+                            <th>
+                                <select style="width: 100%" id="searchOperator">
+                                    <option value=""></option>
+                                    <option value="OR">OR</option>
+                                    <option value="AND">AND</option>
+                                </select>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th align="left" style="width: 10%"><a href="./docs/classes/DAB.html#sprel" target="_blank">spatialRelation</a></th>
+                            <th>
+                                <select style="width: 100%" id="spatialRelation">
+                                    <option value=""></option>
+                                    <option value="CONTAINS">contains</option>
+                                    <option value="OVERLAPS">intersects</option>
+                                    <option value="DISJOINT">disjoint</option>
+                                </select>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th align="left" style="width: 10%"><a href="./docs/classes/DAB.html#termfreq" target="_blank">termFrequency</a></th>
+                            <th>
+                                <select style="width: 100%" id="termFrequency">
+                                    <option value=""></option>
+                                    <option value="keyword">keyword</option>
+                                    <option value="format">format</option>
+                                    <option value="source">source</option>
+                                    <option value="protocol">protocol</option>
+                                    <option value="keyword,format">keyword,format</option>
+                                    <option value="keyword,source">keyword,source</option>
+                                    <option value="format,source">format,source</option>
+                                    <option value="keyword,format,source">keyword,format,source</option>
+                                    
+                                    <option value="keyword,format,protocol">keyword,format,protocol</option>
+                                    <option value="keyword,source,protocol">keyword,source,protocol</option>
+                                    <option value="format,source,protocol">format,source,protocol</option>
+                                    <option value="keyword,format,source,protocol">keyword,format,source,protocol</option>
+                                </select>
+                            </th>
+                        </tr>
+                        <!-- <tr>
+                        <th align="left" style="width: 10%"><a href="javascript:void(0)">aggregate</a></th>
+                        <th>
+                        <select style="width: 100%" id="agg">
+                        <option value="false">false</option>
+                        <option value="true">true</option>
+                        </select>
+                        </th>
+                        </tr> -->
+                        <tr>
+                            <th colspan="2">
+                            <table style="width: 100%; border-style: solid; border-width: 1px">
+                                <tbody>
+
+                                    <tr>
+                                        <th align="left"><a style="width: 1%" href="./docs/classes/DAB.html#relation" target="_blank">extension.relation</a></th>
+                                        <th style="width: 100%;" colspan="2">
+                                        <select style="width: 100%" id="rel">
+                                            <option value=""> </option>
+                                            <option value="NONE">None</option>
+                                            <option value="NARROWER">Narrower</option>
+                                            <option value="BROADER">Broader</option>
+                                            <option value="NARROW_MATCH">Narrow match</option>
+                                            <option value="CLOSE_MATCH">Close match</option>
+                                            <option value="RELATED">Related</option>
+                                            <option value="RELATED_MATCH">Related match</option>
+                                            <option value="EXACT_MATCH">Exact match</option>
+                                            <option value="BROAD_MATCH">Broad match</option>
+                                        </select></th>
+                                    </tr>
+
+                                    <tr>
+                                        <th align="left"><a  style="width: 1%" href="./docs/classes/DAB.html#keyword" target="_blank">extension.keyword</a></th>
+                                        <th style="width: 100%;">
+                                        <input onkeydown="GIAPI.demo.dsc.keyDown()" style="width: 99%;" id="extKeyword" type="text"/>
+                                        </th>
+                                        <th style="width: 100%;">
+                                        <button style="width: 50px" onclick="GIAPI.demo.dsc.clear('extKeyword');">
+                                            Clear
+                                        </button></th>
+                                    </tr>
+
+                                    <tr>
+                                        <th align="left"><a  style="width: 1%"  href="./docs/classes/DAB.html#concepts" target="_blank">extension.concepts</a></th>
+                                        <th style="width: 100%;" colspan="2">
+                                        <button style="width: 100px" onclick="GIAPI.demo.dsc.showConceptTree('option')" id="optConceptTreeButton">
+                                            Add concept
+                                        </button>
+                                        <button style="width: 50px" onclick="GIAPI.demo.dsc.clearConcepts();">
+                                            Clear
+                                        </button>
+                                        <input style="width: 99%; margin-right: 5px; background-color: #E8E8E8"  id="conceptText" type="text" disabled>
+                                        </th>
+
+                                    </tr>
+                                </tbody>
+                            </table></th>
+                        </tr>
+
+                    </table>
+                </div></td>
+
+                <td style="border:1px solid; border-radius: 5px;border-color: #DAEFF2"><div id="sources"> </div></td>
+            </tr>
+        </table>
+
+        <div id="statusDialog" title="Discover status"> </div>
+        <div id="reportDialog" title="node.report()"> </div>
+        <div id="warnDialog" title="Warning"> </div>
+
+        <div id="whatConceptTreeDialog" title="add search terms from concept label"> </div>
+        <div id="optConceptTreeDialog" title="add concepts to extend the discover"> </div>
+        <div id="conceptDialog" title="concept.stringify()"> </div>
+
+    </body>
+</html>
