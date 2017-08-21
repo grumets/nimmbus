@@ -1,6 +1,8 @@
 # Instructions for the integration of the GUF system (based on the NiMMbus service) in a catalogue
 
-This page provides general instructions for integration. You can see an working example of this procedure in the [integration with the DAB API](guf_dab_nimmbus.htm) page.
+This page provides general instructions for integration. You can see an working examples of this procedure here:
+  * [integration with the DAB API](http://www.creaf.uab.cat/temp/dab) ([source code](guf_dab_nimmbus.htm)).
+  * [integration with the INSPIRE Portal](http://www.creaf.uab.cat/temp/inspire) ([source code](guf_inspire_nimmbus.htm)).
 
 ## How to include a button to add feedback for a catalogue entry
 
