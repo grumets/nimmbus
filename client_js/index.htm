@@ -5,11 +5,14 @@
 
 <link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
 
+<script language="JavaScript" src="xml.js"></script>
 <script language="JavaScript" src="owc_atom.js"></script>
+<script language="JavaScript" src="wps_iso_guf.js"></script>
 <script>
 <!--
 
 var ServersNB=["http://localhost/cgi-bin/server1/nimmbus.cgi","http://localhost/cgi-bin/server2/nimmbus.cgi"];
+//var ServersNB=["http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi"];
 var LastServerNB=0;
 
 
@@ -707,45 +710,6 @@ var xmlDoc;
 	}
 	return xmlDoc;
 }*/
-
-function DonaTextDesDeGcoCharacterString(item)
-{
-	var elem=GetValueXMLElementByName(item, "gco", "CharacterString");
-	if (elem)
-		return elem;
-	else
-		return "";
-}
-
-function DonaTextDesDeCodeList(item, namespace, code_list)
-{
-	var elem=GetXMLElementByName(item, namespace, code_list);
-	if (elem)
-	{
-		var code_list_value=GetXMLAttributeByName(elem, null, "codeListValue");
-		if (code_list_value && code_list_value.value)
-			return code_list_value.value;
-		else
-			return "";
-	}
-	else
-		return "";
-}
-
-
-function OmpleInputDesDeWPSLiteralOutput(item)
-{
-	var literal_data=GetXMLElementByName(item, "wps", "LiteralData");
-	if (literal_data && literal_data.childNodes[0] && literal_data.childNodes[0].nodeValue)
-		return literal_data.childNodes[0].nodeValue;
-	else
-		return "";
-}
-
-function OmpleInputDesDeWPSComplexOutput(item)
-{
-	return GetXMLElementByName(item, "wps", "ComplexData");
-}
 
 var PendingToken="";
 var ActionAfterSignIn=null;
@@ -1471,89 +1435,44 @@ var root, output, identifier, s, feedback_item, user_comment;
 		return;
 	}
 
-	output=GetXMLElementCollectionByName(root, "wps", "Output");
+	var guf=GetRetrieveResourceFeedbackOutputs(root);
 
-	if (output && output.length)
-	{
-		for (var item=0; item<output.length; item++)
-		{
-			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
-			if (identifier)
-			{
-				if (identifier.childNodes[0].nodeValue=="title")
-					document.feedback_resource_form.title.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-				else if (identifier.childNodes[0].nodeValue=="reason")
-					document.feedback_resource_form.reason.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-				/*else if (identifier.childNodes[0].nodeValue=="abstract")
-					document.feedback_resource_form.abstract.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-				else if (identifier.childNodes[0].nodeValue=="contactRole")				
-				{					
-					SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, 
-								OmpleInputDesDeWPSLiteralOutput(output.item(item)));
-				}
-				else if (identifier.childNodes[0].nodeValue=="comment")
-					document.feedback_resource_form.comment.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));					
-				else if (identifier.childNodes[0].nodeValue=="motivation")
-				{					
-					SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, 
-								OmpleInputDesDeWPSLiteralOutput(output.item(item)));
-				}
-				else if (identifier.childNodes[0].nodeValue=="rating")
-				{					
-					SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, 
-								OmpleInputDesDeWPSLiteralOutput(output.item(item)));
-				}*/
-				else if (identifier.childNodes[0].nodeValue=="feedback")
-				{					
-					feedback_item=OmpleInputDesDeWPSComplexOutput(output.item(item));
-					if (feedback_item)
-					{ 
-						elem=GetXMLElementByName(feedback_item, "guf", "abstract");
-						if (elem)
-							document.feedback_resource_form.abstract.value=DonaTextDesDeGcoCharacterString(elem);
-						
-						elem=GetXMLElementByName(feedback_item, "guf", "contactRole");
-						if (elem)
-							SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, DonaTextDesDeCodeList(elem, "guf", "GUF_UserRoleCode"));
-	
-						user_comment=GetXMLElementByName(feedback_item, "guf", "userComment");
-						if (user_comment)
-						{
-							elem=GetXMLElementByName(feedback_item, "guf", "comment");
-							document.feedback_resource_form.comment.value=DonaTextDesDeGcoCharacterString(elem);
-							elem=GetXMLElementByName(feedback_item, "guf", "motivation");
-							if (elem)
-								SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, DonaTextDesDeCodeList(elem, "guf", "GUF_MotivationCode"));
-						}
-
-						elem=GetXMLElementByName(feedback_item, "guf", "rating");
-						if (elem)
-							SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, 
-													DonaTextDesDeCodeList(elem, "guf", "GUF_RatingCode"));
-					}
-				}	
-				else if (identifier.childNodes[0].nodeValue=="rights")
-				{
-					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-					document.getElementById("feedback-resource_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("feedback-resource-exit_btn").style.display=(rights.indexOf("W")==-1) ? 'inline' : 'none';
-					document.getElementById("feedback-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("feedback-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
-					if (rights.indexOf("W")==-1)
-						document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("Descripció detallada d'aquesta valoració (no tens drets de modificació)", "Descripción detallada de esta valoración (no tiene derechos de modificación)", "Detailed description of this feedback (you do not have modification rights)");
-				}
-			}
-		}
-		RemoveInfo("permanent");
-		IdResourceToSaveChanges=id;
-		TargetResourceToSaveChanges="";  //No estic segur que s'hagi de fer això aquí
-		UpdateLastServer();
-	}
-	else
+	if (!guf)
 	{	
 		RemoveInfo("permanent");
 		TiraAPantallaRespostaSiNoEntenc(root, document);
+		return;
 	}
+
+	if (guf.title)
+		document.feedback_resource_form.title.value=guf.title;
+	if (guf.reason)
+		document.feedback_resource_form.reason.value=guf.reason;
+	if (guf.abstract)
+		document.feedback_resource_form.abstract.value=guf.abstract;
+	if (guf.contactRole)
+		SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, guf.contactRole);
+	if (guf.comment)
+		document.feedback_resource_form.comment.value=guf.comment;
+	if (guf.motivation)
+		SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, guf.motivation);
+	if (guf.rating)
+		SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, guf.rating);
+	if (guf.rights)
+	{
+		var rights=guf.rights;
+		document.getElementById("feedback-resource_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
+		document.getElementById("feedback-resource-exit_btn").style.display=(rights.indexOf("W")==-1) ? 'inline' : 'none';
+		document.getElementById("feedback-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
+		document.getElementById("feedback-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+		if (rights.indexOf("W")==-1)
+			document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("Descripció detallada d'aquesta valoració (no tens drets de modificació)", "Descripción detallada de esta valoración (no tiene derechos de modificación)", "Detailed description of this feedback (you do not have modification rights)");
+	}
+	RemoveInfo("permanent");
+	IdResourceToSaveChanges=id;
+	TargetResourceToSaveChanges="";  //No estic segur que s'hagi de fer això aquí
+	UpdateLastServer();
+
 	return;
 }
 
