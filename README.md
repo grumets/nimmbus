@@ -15,3 +15,5 @@ This project has received funding from the European Union’s Horizon 
 This documentation and implementation reflects only the author's view wand the Agency is not responsible for any use that may be made of the information it contains. 
 ```
 
+## Other geospatial user feedback initiatives
+  * [This is the Geospatial User Feedback (GUF) schema plugin for GeoNetwork 3.2.x or greater version](/metadata101/guf10).
