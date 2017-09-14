@@ -16,4 +16,4 @@ This documentation and implementation reflects only the author's view wand th
 ```
 
 ## Other geospatial user feedback initiatives
-  * [This is the Geospatial User Feedback (GUF) schema plugin for GeoNetwork 3.2.x or greater version](/metadata101/guf10).
+  * [This is the Geospatial User Feedback (GUF) schema plugin for GeoNetwork 3.2.x or greater version](https://github.com//metadata101/guf10).
