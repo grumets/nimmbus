@@ -460,7 +460,7 @@ function loadXMLtext(path, success, error)
                         div += '<a href="./docs/classes/Report.html#property_title" target="_blank">report.title</a>: ' + title + '<br>';
                         div += '<a href="./docs/classes/Report.html#property_type" target="_blank">report.type</a>: ' + type + '<br>';
                         div += '<a href="./docs/classes/Report.html#property_description" target="_blank">report.description</a>: ' + desc + '<br>';
-                        div += '<a href="http://www.opengis.uab.cat/nimmbus/index.htm?target_title=' + title + '&target_code=' + id + '&target_codespace=http://api.eurogeos-broker.eu/dab&page=ADDFEEDBACK&share_borrower_1=Anonymous" target="_blank">Add user feedback</a><br>';
+                        div += '<a href="https://www.opengis.uab.cat/nimmbus/index.htm?target_title=' + title + '&target_code=' + id + '&target_codespace=http://api.eurogeos-broker.eu/dab&page=ADDFEEDBACK&share_borrower_1=Anonymous" target="_blank">Add user feedback</a><br>';
 
                         jQuery('#' + rowId).append('<td style="border:1px solid; border-radius: 5px;border-color: #F5E3B3">' + div + '</td>');
                         //--------------------------------------
@@ -490,7 +490,7 @@ function loadXMLtext(path, success, error)
 
                         jQuery('#' + rowId).append('<td style="border:1px solid; border-radius: 5px;border-color: #F5E3B3">' + jsonButton2 + '</td>');
                         
-                        var curUrlGUF = 'http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1='+id+'&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=http://api.eurogeos-broker.eu/dab&TRG_OPR_2=EQ';
+                        var curUrlGUF = 'https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1='+id+'&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=http://api.eurogeos-broker.eu/dab&TRG_OPR_2=EQ';
                         
                         jQuery('#' + jsonButtonId2).click(  (function(rep) {
                             return function(){                               

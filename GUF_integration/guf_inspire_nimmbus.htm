@@ -361,7 +361,7 @@ function GetPreviousFeedback()
 		return;
 	}
 	//document.getElementById("guf-pannel").innerHTML=res_id.code;
-	loadFile("http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1="+res_id.code+"&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2="+res_id.codespace+"&TRG_OPR_2=EQ", "text/xml", ShowPreviousFeedback, ErrorPreviousFeedback, res_id);
+	loadFile("https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1="+res_id.code+"&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2="+res_id.codespace+"&TRG_OPR_2=EQ", "text/xml", ShowPreviousFeedback, ErrorPreviousFeedback, res_id);
 }
 
 function OpenPostFeedback()
@@ -372,7 +372,7 @@ function OpenPostFeedback()
 		document.getElementById("guf-pannel").innerHTML="No INSPIRE metadata window detected. Please make a query and click on a result to open the metadata windows first.";
 		return;
 	}
-	window.open("http://www.opengis.uab.cat/nimmbus/index.htm?target_title="+res_id.title+"&target_code="+res_id.code+"&target_codespace="+res_id.codespace+"&page=ADDFEEDBACK&share_borrower_1=Anonymous")
+	window.open("https://www.opengis.uab.cat/nimmbus/index.htm?target_title="+res_id.title+"&target_code="+res_id.code+"&target_codespace="+res_id.codespace+"&page=ADDFEEDBACK&share_borrower_1=Anonymous")
 	document.getElementById("guf-pannel").innerHTML="Once you have provided the feedback, please press [Get previous feedback] to see your new entry";
 }
 
