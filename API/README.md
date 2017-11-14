@@ -96,6 +96,7 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * RATING= 
   * TARGET_#=
   * TARGET_ROLE_#=
+  * PUB_#=
 
 * Resource Citation creation particulatities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=CITATION
@@ -104,6 +105,15 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * URL_LINK=
   * URL_DESCRIP=
   * URL_FUNCTION=
+
+* Resource Publication creation particulatities
+  * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=PUBLICAT
+  * ID_CODE=
+  * ID_NAMESPACE=
+  * URL_LINK=
+  * URL_DESCRIP=
+  * URL_FUNCTION=
+  * CATEGORY=
 
 * Resource enumeration
   * IDENTIFIER=NB_RESOURCE:ENUMERATE
@@ -139,11 +149,12 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * IDENTIFIER=NB_RESOURCE:MODIFY
   * LANGUAGE=cat,spa,eng
   * USER=
+  * RESOURCE=
   * PASSWORD=
   * TITLE=
   * REASON=
   * TYPE=
-If a paremeter is not indicated the value is not modified. If the paremeter is indicated but is black the value is erased.
+If a paremeter is not indicated the value is not modified. If the paremeter is indicated but is blank the value is erased.
 
 * Resource HREF modification particulatities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=HREF
@@ -164,11 +175,15 @@ If a paremeter is not indicated the value is not modified. If the paremeter is i
   * RATING= 
   * TARGET_#=
   * TARGET_ROLE_#=
-
-To manage targets of a feedback, only two strategies are available at the moment:
- 1. Neither target_# nor targer_role_# are described on the NB_RESOURCE:MODIFY, then ther targets of this feedback are not changed
- 2. If one or more target_# and target_role_# couples are defined, then ALL the previous targets of this feedback are deleted and the new list is described. 
- 3. There is also the possiblity of giving only one TARGET_1= empty, and this mean that the current targets are deleted on no one is added (so the feedback is at this moment without targets (that should not happen, in fact).
+To manage targets of a feedback, there are three strategies are available at the moment:
+ 1. Neither TARGET_# nor TARGET_ROLE_# are described on the NB_RESOURCE:MODIFY, then the targets of this feedback are not changed
+ 2. If one or more TARGET_# and TARGET_ROLE_# couples are defined, then ALL the previous targets of this feedback are deleted and the new list is described
+ 3. There is also the possiblity of giving only one TARGET_1= empty, and this mean that the current targets are deleted on no one is added (so the feedback has no targets afther this modification (that should not happen, in fact)
+  * PUB_#=
+To manage publications within a feedback item, there are three strategies are available at the moment:
+ 1. PUB_# is not described on the NB_RESOURCE:MODIFY, then the publications of this feedback are not changed
+ 2. If one or more PUB_# are defined, then ALL the previous publications of this feedback are deleted and the new list is described 
+ 3. There is also the possiblity of giving only one PUB_1= empty, and this mean that the current publications are deleted on no one is added
 
 * Resource Citation modification particulatities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=CITATION
@@ -177,6 +192,15 @@ To manage targets of a feedback, only two strategies are available at the moment
   * URL_LINK=
   * URL_DESCRIP=
   * URL_FUNCTION=
+
+* Resource Publication modification particulatities
+  * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=PUBLICAT
+  * ID_CODE=
+  * ID_NAMESPACE=
+  * URL_LINK=
+  * URL_DESCRIP=
+  * URL_FUNCTION=
+  * CATEGORY=
 
 * Resource deletion
   * IDENTIFIER=NB_RESOURCE:DELETE
