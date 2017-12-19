@@ -124,6 +124,7 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * COUNT= (Optional, default is 10)
   * TYPE= (Optional, default is ALL)
   * FORMAT= (Optional, default is text/xml, returning an ATOM file)
+  * CONTENT= (Optional, default is empty. If CONTENT=full the content element (of each entry) contains the complex content for TYPE=FEEDBACK, TYPE=CITATION and TYPE=PUBLICAT)
   * XSL= (full url or "mm32". Optional)
   * CRS=  (for the moment only for application/x-mmzx output and for TYPE=POINT)
   * TARGET= (resource_id. Optional filter applicable if TYPE=FEEDBACK)
