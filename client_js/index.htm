@@ -16,7 +16,7 @@ var ServersNB=["http://localhost/cgi-bin/server1/nimmbus.cgi","http://localhost/
 var LastServerNB=0;
 
 
-//Després de intentar fer servir l'objecte link() sense exit he hagut de fer això.
+//DesprÃ©s de intentar fer servir l'objecte link() sense exit he hagut de fer aixÃ².
 function DonaHost(s)
 {
 	if (-1!=s.indexOf("//"))
@@ -38,7 +38,7 @@ function DonaHost(s)
 
 function ConfirmExit()
 {
-	return DonaCadena3("Realment vols sortir del NiMMbus? (Les accions no guardades es perdran)", "¿Realmente desea salir de NiMMbus? (La acciones no guardadas se perderán)", "Do you really want to exit NiMMbus? (The unsaved accions will be lost)");
+	return DonaCadena3("Realment vols sortir del NiMMbus? (Les accions no guardades es perdran)", "Â¿Realmente desea salir de NiMMbus? (La acciones no guardadas se perderÃ¡n)", "Do you really want to exit NiMMbus? (The unsaved accions will be lost)");
 }
 window.onbeforeunload = ConfirmExit;
 
@@ -61,12 +61,12 @@ var s_host, pos_host;
 		s_host=DonaHost(servers[i]);
 		if (s_host.toLowerCase()=="localhost" && location.host.toLowerCase()!="localhost")
 		{
-			alert("Error en pujar la versió als servidors. ServersNB[] encara diu \"localhost\"!");
+			alert("Error en pujar la versiÃ³ als servidors. ServersNB[] encara diu \"localhost\"!");
 			break;
 		}
 		if (s_host.toLowerCase()!=location.host.toLowerCase())
 		{
-			//Canvio l'arrel del servidor local per l'arrel de la plana del navegador per estar segur que l'ajax funcionarà sense "cross server vulmerability".
+			//Canvio l'arrel del servidor local per l'arrel de la plana del navegador per estar segur que l'ajax funcionarÃ  sense "cross server vulmerability".
 			pos_host=(-1!=servers[i].indexOf("//")) ? servers[i].indexOf("//")+2 : 0;
 			servers[i]=servers[i].substring(0,pos_host)+location.host+servers[i].substring(pos_host+s_host.length, servers[i].length);
 		}
@@ -189,28 +189,28 @@ function ChangeLanguage(lang)
 	document.getElementById("front-welcome-text-title").innerHTML=DonaCadena3(
 		"Benvinguts al NiMMbus", "Bienvenidos al NiMMbus", "Welcome to NiMMbus");
 	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadena3(
-		"La observació de la terra a tot arreu. Comparteix informació i valoracions amb altres.",
-		"La observación de la tierra en todas partes. Comparte información y valoraciones con los demás.",
+		"La observaciÃ³ de la terra a tot arreu. Comparteix informaciÃ³ i valoracions amb altres.",
+		"La observaciÃ³n de la tierra en todas partes. Comparte informaciÃ³n y valoraciones con los demÃ¡s.",
 		"Earth observation everywhere. Share information and feedback with others.");
 	document.getElementById("front-language-lang").innerHTML=DonaCadena3(
-		"<small>Idioma:</small> Català",
-		"<small>Idioma:</small> Español",
+		"<small>Idioma:</small> CatalÃ ",
+		"<small>Idioma:</small> EspaÃ±ol",
 		"<small>Language:</small> English");
 	document.getElementById("front-signup-lang").innerHTML=DonaCadena3(
 		"Nou al NiMMbus? Registra't:",
 		"Nuevo en NiMMbus? Registrese:",
 		"New to NiMMbus? Sign up:");
 	document.getElementById("sign_in_user").placeholder=DonaCadena3("Usuari o email", "Usuario o email", "Username or email");
-	document.getElementById("sign_in_pass").placeholder=DonaCadena3("Contrasenya", "Contraseña","Password");
-	document.getElementById("sign_in_btn").value=DonaCadena3("Iniciar sessió", "Iniciar sesión", "Sign in");
-	document.getElementById("sign_in_forgot").innerHTML=DonaCadena3("Has oblidat la contrasenya?", "¿Olvidadó la contraseña?", "Forgot the password?");
+	document.getElementById("sign_in_pass").placeholder=DonaCadena3("Contrasenya", "ContraseÃ±a","Password");
+	document.getElementById("sign_in_btn").value=DonaCadena3("Iniciar sessiÃ³", "Iniciar sesiÃ³n", "Sign in");
+	document.getElementById("sign_in_forgot").innerHTML=DonaCadena3("Has oblidat la contrasenya?", "Â¿OlvidadÃ³ la contraseÃ±a?", "Forgot the password?");
 
 	document.getElementById("sign_up_user").placeholder=DonaCadena3("Usuari", "Usuario", "Username");
-	document.getElementById("sign_up_pass").placeholder=DonaCadena3("Contrasenya", "Contraseña","Password");
-	document.getElementById("sign_up_pass_valid").placeholder=DonaCadena3("Verificació de contrasenya", "Verificación de contraseña","Password verification");
+	document.getElementById("sign_up_pass").placeholder=DonaCadena3("Contrasenya", "ContraseÃ±a","Password");
+	document.getElementById("sign_up_pass_valid").placeholder=DonaCadena3("VerificaciÃ³ de contrasenya", "VerificaciÃ³n de contraseÃ±a","Password verification");
 	document.getElementById("sign_up_btn").value=DonaCadena3("Registrar-se al NiMMbus", "Registrarse en NiMMBus", "Sign up for NiMMbus");
-	/*document.getElementById("info_comment").innerHTML=DonaCadena3("La informació serà presentada aquí", "La información será presentada aquí", "Information will be presented here");*/
-	document.getElementById("settings-tooltip-text").innerHTML=DonaCadena3("Configuració", "Configuración", "Settings");
+	/*document.getElementById("info_comment").innerHTML=DonaCadena3("La informaciÃ³ serÃ  presentada aquÃ­", "La informaciÃ³n serÃ¡ presentada aquÃ­", "Information will be presented here");*/
+	document.getElementById("settings-tooltip-text").innerHTML=DonaCadena3("ConfiguraciÃ³", "ConfiguraciÃ³n", "Settings");
 	document.getElementById("settings-profile").innerHTML=DonaCadena3("Perfil", "Perfil", "Profile");
 	document.getElementById("settings-signout").innerHTML=DonaCadena3("Sortir", "Salir", "Sign out");
 
@@ -218,31 +218,31 @@ function ChangeLanguage(lang)
 
 	document.getElementById("resources-title-text").innerHTML=DonaCadena3("Recursos", "Recursos", "Resources");
 	document.getElementById("resources-subtitle-text").innerHTML=DonaCadena3("Llista de recursos disponibles", "Lista de recursos disponibles", "List of available resources");
-	document.getElementById("newer-resources-tooltip-text").innerHTML=DonaCadena3("Veure recursos més nous", "Ver recursos más nuevos", "See newer resources");
-	document.getElementById("older-resources-tooltip-text").innerHTML=DonaCadena3("Veure recursos més antics", "Ver recursos más antiguos", "See older resources");
+	document.getElementById("newer-resources-tooltip-text").innerHTML=DonaCadena3("Veure recursos mÃ©s nous", "Ver recursos mÃ¡s nuevos", "See newer resources");
+	document.getElementById("older-resources-tooltip-text").innerHTML=DonaCadena3("Veure recursos mÃ©s antics", "Ver recursos mÃ¡s antiguos", "See older resources");
 
 	document.getElementById("new-resource_btn").value=innerHTML=DonaCadena3("Nou", "Nuevo", "New");
 	document.getElementById("new-resource-tooltip-text").innerHTML=DonaCadena3("Crear nou recurs", "Crear nuevo recurso", "Create new resource");
-	document.getElementById("new-resource-href").innerHTML=DonaCadena3("Hiperenllaç", "Hiperenlace", "Hiperlink");
-	document.getElementById("new-resource-poi").innerHTML=DonaCadena3("Punt d'interés", "Punto de interés", "Point of interest");
-	document.getElementById("new-resource-feedback").innerHTML=DonaCadena3("Valoració", "Valoración", "Feedback");
-	document.getElementById("new-resource-citation").innerHTML=DonaCadena3("Citació", "Citación", "Citation");
+	document.getElementById("new-resource-href").innerHTML=DonaCadena3("HiperenllaÃ§", "Hiperenlace", "Hyperlink");
+	document.getElementById("new-resource-poi").innerHTML=DonaCadena3("Punt d'interÃ©s", "Punto de interÃ©s", "Point of interest");
+	document.getElementById("new-resource-feedback").innerHTML=DonaCadena3("ValoraciÃ³", "ValoraciÃ³n", "Feedback");
+	document.getElementById("new-resource-citation").innerHTML=DonaCadena3("CitaciÃ³", "CitaciÃ³n", "Citation");
 
-	document.getElementById("title-href-resource_screen").innerHTML=DonaCadena3("Títol", "Título", "Title");
-	document.getElementById("title-href-resource_screen_descrip").innerHTML=DonaCadena3("Per exemple: Rius de Catalunya", "Por ejemplo: Rios de Cataluña", "For exemple: Catalonia rivers");
-	document.getElementById("href-href-resource_screen").innerHTML=DonaCadena3("Hiperenllaç", "Hiperenlace", "Hiperlink");
+	document.getElementById("title-href-resource_screen").innerHTML=DonaCadena3("TÃ­tol", "TÃ­tulo", "Title");
+	document.getElementById("title-href-resource_screen_descrip").innerHTML=DonaCadena3("Per exemple: Rius de Catalunya", "Por ejemplo: Rios de CataluÃ±a", "For exemple: Catalonia rivers");
+	document.getElementById("href-href-resource_screen").innerHTML=DonaCadena3("HiperenllaÃ§", "Hiperenlace", "Hyperlink");
 	document.getElementById("href-href-resource_descrip").innerHTML=DonaCadena3("Per exemple: http://www6.gencat.net/mediamb/sig/bases/pein.mmz", "Por ejemplo: http://www6.gencat.net/mediamb/sig/bases/pein.mmz", "For exemple: http://www6.gencat.net/mediamb/sig/bases/pein.mmz");
 	document.getElementById("mimetype-href-resource_screen").innerHTML=DonaCadena3("Format", "Formato", "Format");
 	document.getElementById("other-mimetype-href-resource_value").innerHTML=DonaCadena3("Altres", "Otros", "Other");
-	document.getElementById("mimetype-href-resource_screen_descrip").innerHTML=DonaCadena3("Format del fitxer al qual apunta l'hiperenllaç", "Formato del fichero al que apunta el hiperenllace", "File format of the hiperlink target");
-	document.getElementById("reason-href-resource_screen").innerHTML=DonaCadena3("Motivació", "Motivación", "Motivation");
+	document.getElementById("mimetype-href-resource_screen_descrip").innerHTML=DonaCadena3("Format del fitxer al qual apunta l'hiperenllaÃ§", "Formato del fichero al que apunta el hiperenllace", "File format of the hyperlink target");
+	document.getElementById("reason-href-resource_screen").innerHTML=DonaCadena3("MotivaciÃ³", "MotivaciÃ³n", "Motivation");
 	document.getElementById("reason-href-resource_screen_descrip").innerHTML=DonaCadena3("Motiu pel qual el recurs resulta rellevant", "Motivo por el cual el recurso resulta relevante", "Reason why the resource is relevant");
-	document.getElementById("href-resource-delete_btn").value=DonaCadena3("Eliminar hiperenllaç", "Eliminar hiperenlace", "Delete hiperlink");
+	document.getElementById("href-resource-delete_btn").value=DonaCadena3("Eliminar hiperenllaÃ§", "Eliminar hiperenlace", "Delete hyperlink");
 	document.getElementById("href-resource-exit_btn").value=DonaCadena3("Sortir", "Salir", "Close");
 	document.getElementById("href-resource-close_btn").value=DonaCadena3("Descartar", "Descartar", "Discard");
 
 	document.getElementById("poi-gps-resource_btn").value=DonaCadena3("Obtenir del dispositiu", "Obtener del dispositivo", "Get it from the device");
-	document.getElementById("title-poi-resource_screen").innerHTML=DonaCadena3("Títol", "Título", "Title");
+	document.getElementById("title-poi-resource_screen").innerHTML=DonaCadena3("TÃ­tol", "TÃ­tulo", "Title");
 	document.getElementById("title-poi-resource_screen_descrip").innerHTML=DonaCadena3("Per exemple: Aplec de la sardana", "Por ejemplo: Feira de abril", "For exemple: Olimpic games statium");
 	document.getElementById("long-poi-resource_screen").innerHTML=DonaCadena3("Longitud", "Longitud", "Longitude");
 	document.getElementById("long-poi-resource_descrip").innerHTML=DonaCadena3("Longitud en graus. Per exemple: 3.25656", "Longitud en grados. Por ejemplo: 3.25656", "Longitude in degrees. For exemple: 3.25656");
@@ -250,9 +250,9 @@ function ChangeLanguage(lang)
 	document.getElementById("lat-poi-resource_descrip").innerHTML=DonaCadena3("Latitud en graus. Per exemple: 41.3389", "Latitud en grados. Por ejemplo: 41.3389", "Latitude in degrees. For exemple: 41.3389");
 	document.getElementById("pos-accur-poi-resource_screen").innerHTML=DonaCadena3("Exactitud", "Exactitud", "Accuracy");
 	document.getElementById("pos-accur-poi-resource_descrip").innerHTML=DonaCadena3("Exactitud posicional preferiblement en m. Per exemple: 25m", "Exactitud posicional preferiblemente en m. Por ejemplo: 25m", "Posicional accuracy, if possible in m. For exemple: 25m");
-	document.getElementById("elevation-poi-resource_screen").innerHTML=DonaCadena3("Elevació", "Elevación", "Elevation");
-	document.getElementById("elevation-poi-resource_descrip").innerHTML=DonaCadena3("Elevació en metres. Per exemple: 123.4", "Elevación en metros. Por ejemplo: 123.4", "Elevation in meters. For exemple: 123.4");
-	document.getElementById("reason-poi-resource_screen").innerHTML=DonaCadena3("Motivació", "Motivación", "Motivation");
+	document.getElementById("elevation-poi-resource_screen").innerHTML=DonaCadena3("ElevaciÃ³", "ElevaciÃ³n", "Elevation");
+	document.getElementById("elevation-poi-resource_descrip").innerHTML=DonaCadena3("ElevaciÃ³ en metres. Per exemple: 123.4", "ElevaciÃ³n en metros. Por ejemplo: 123.4", "Elevation in meters. For exemple: 123.4");
+	document.getElementById("reason-poi-resource_screen").innerHTML=DonaCadena3("MotivaciÃ³", "MotivaciÃ³n", "Motivation");
 	document.getElementById("reason-poi-resource_screen_descrip").innerHTML=DonaCadena3("Motiu pel qual el recurs resulta rellevant", "Motivo por el cual el recurso resulta relevante", "Reason why the resource is relevant");
 	document.getElementById("poi-resource-delete_btn").value=DonaCadena3("Eliminar punt", "Eliminar punto", "Delete point");
 	document.getElementById("poi-resource-exit_btn").value=DonaCadena3("Sortir", "Salir", "Close");
@@ -262,152 +262,152 @@ function ChangeLanguage(lang)
 	document.getElementById("primary-targetRole-feedback-resource_value").innerHTML=DonaCadena3("Primari", "Primario", "Primary");
 	document.getElementById("secundary-targetRole-feedback-resource_value").innerHTML=DonaCadena3("Secundari", "Secundario", "Secundary");
 	document.getElementById("supplementary-targetRole-feedback-resource_value").innerHTML=DonaCadena3("Suplementari", "Suplementario", "Supplementary");
-	document.getElementById("targetRole-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Quin és el paper d'aquest recurs que està valorant: P.ex. Primari", "Cual es el papel del recurso que se está valorando: P.ex. Primario", "What is the role of the resource this feedback is about: E.g. Primary");
+	document.getElementById("targetRole-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Quin Ã©s el paper d'aquest recurs que estÃ  valorant: P.ex. Primari", "Cual es el papel del recurso que se estÃ¡ valorando: P.ex. Primario", "What is the role of the resource this feedback is about: E.g. Primary");
 
-	document.getElementById("title-feedback-resource_screen").innerHTML=DonaCadena3("Títol", "Título", "Title");
+	document.getElementById("title-feedback-resource_screen").innerHTML=DonaCadena3("TÃ­tol", "TÃ­tulo", "Title");
 	document.getElementById("title-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Per exemple: Bon servidor de mapes", "Por ejemplo: Buen servidor de mapas", "For exemple: Good map server");
 	document.getElementById("abstract-feedback-resource_screen").innerHTML=DonaCadena3("Resum", "Resumen", "Abstract");
-	document.getElementById("abstract-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Descripció textual curta de la valoració", "Descripción textual corta de la valoración", "Brief narrative description of the feedback item");
-	document.getElementById("reason-feedback-resource_screen").innerHTML=DonaCadena3("Propòsit", "Propósito", "Purpose");
-  	document.getElementById("reason-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Raó o intenció per la qual explico la meva experiència i dono la meva valoració", "Razón o intención por la cual explico mi experiencia y proporciono mi valoración", "Reason or intention with which I explain my experience and provide this feedback");
+	document.getElementById("abstract-feedback-resource_screen_descrip").innerHTML=DonaCadena3("DescripciÃ³ textual curta de la valoraciÃ³", "DescripciÃ³n textual corta de la valoraciÃ³n", "Brief narrative description of the feedback item");
+	document.getElementById("reason-feedback-resource_screen").innerHTML=DonaCadena3("PropÃ²sit", "PropÃ³sito", "Purpose");
+  	document.getElementById("reason-feedback-resource_screen_descrip").innerHTML=DonaCadena3("RaÃ³ o intenciÃ³ per la qual explico la meva experiÃ¨ncia i dono la meva valoraciÃ³", "RazÃ³n o intenciÃ³n por la cual explico mi experiencia y proporciono mi valoraciÃ³n", "Reason or intention with which I explain my experience and provide this feedback");
 
 	document.getElementById("contactRole-feedback-resource_screen").innerHTML=DonaCadena3("Rol del contacte", "Rol del contacto", "Contact role");
 	document.getElementById("commercialDataProd-contactRole-feedback-resource_value").innerHTML=DonaCadena3("Productor comercial de dades", "Productor comercial de datos", "Commercial data producer");
-	document.getElementById("commercialAddValue-contactRole-feedback-resource_value").innerHTML=DonaCadena3("Afegir valor a les dades comercials", "Añadir valor a los datos comerciales", "Commercial added value");
-	document.getElementById("researchDataProd-contactRole-feedback-resource_value").innerHTML=DonaCadena3("Productor de dades científiques", "Productor de datos científicos", "Scientific data producer");
-	document.getElementById("researchEndUser-contactRole-feedback-resource_value").innerHTML=DonaCadena3("Usuari científic final", "Usuario científico final", "Research end user");
+	document.getElementById("commercialAddValue-contactRole-feedback-resource_value").innerHTML=DonaCadena3("Afegir valor a les dades comercials", "AÃ±adir valor a los datos comerciales", "Commercial added value");
+	document.getElementById("researchDataProd-contactRole-feedback-resource_value").innerHTML=DonaCadena3("Productor de dades cientÃ­fiques", "Productor de datos cientÃ­ficos", "Scientific data producer");
+	document.getElementById("researchEndUser-contactRole-feedback-resource_value").innerHTML=DonaCadena3("Usuari cientÃ­fic final", "Usuario cientÃ­fico final", "Research end user");
 	document.getElementById("decisionMaker-contactRole-feedback-resource_value").innerHTML=DonaCadena3("Responsables de presa de decisions", "Responsables de toma de decisiones", "Decision maker");
-	document.getElementById("generalPublic-contactRole-feedback-resource_value").innerHTML=DonaCadena3("Públic general", "Público general", "General public");
-	document.getElementById("contactRole-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Rol de l'usuari en el context d'aquesta valoració", "Rol del usuario en el contexto de esta valoración", "User's role in the context of this feedback item");
+	document.getElementById("generalPublic-contactRole-feedback-resource_value").innerHTML=DonaCadena3("PÃºblic general", "PÃºblico general", "General public");
+	document.getElementById("contactRole-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Rol de l'usuari en el context d'aquesta valoraciÃ³", "Rol del usuario en el contexto de esta valoraciÃ³n", "User's role in the context of this feedback item");
 
 	document.getElementById("comment-feedback-resource_screen").innerHTML=DonaCadena3("Comentari", "Comentario", "Comment");
 	document.getElementById("comment-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Comentari de l'usuari sobre el recurs", "Comentario del usuario sobre el recurso", "User's comment about the resource");
-	document.getElementById("comment-motiv-feedback-resource_screen").innerHTML=DonaCadena3("Motivació del comentari", "Motivación del comentario", "Comment motivation");
+	document.getElementById("comment-motiv-feedback-resource_screen").innerHTML=DonaCadena3("MotivaciÃ³ del comentari", "MotivaciÃ³n del comentario", "Comment motivation");
 	document.getElementById("undefined-motivation-feedback-resource_value").innerHTML=DonaCadena3("Indefinit", "Indefinido", "Undefined");
 	document.getElementById("comment-motivation-feedback-resource_value").innerHTML=DonaCadena3("Comentari", "Comentario", "Comment");
 	document.getElementById("question-motivation-feedback-resource_value").innerHTML=DonaCadena3("Pregunta", "Pregunta", "Question");
-	document.getElementById("answer-motivation-feedback-resource_value").innerHTML=DonaCadena3("Solució", "Solución", "Answer");
-	document.getElementById("acceptedAnswer-motivation-feedback-resource_value").innerHTML=DonaCadena3("Solució acceptada", "Solución acceptada", "Accepted answer");
+	document.getElementById("answer-motivation-feedback-resource_value").innerHTML=DonaCadena3("SoluciÃ³", "SoluciÃ³n", "Answer");
+	document.getElementById("acceptedAnswer-motivation-feedback-resource_value").innerHTML=DonaCadena3("SoluciÃ³ acceptada", "SoluciÃ³n acceptada", "Accepted answer");
 	document.getElementById("response-motivation-feedback-resource_value").innerHTML=DonaCadena3("Resposta", "Respuesta", "Response");		
-	document.getElementById("justification-motivation-feedback-resource_value").innerHTML=DonaCadena3("Justificació", "Justificación", "Justification");
-	document.getElementById("resolution-motivation-feedback-resource_value").innerHTML=DonaCadena3("Resolució", "Resolución", "Resolution");
-	document.getElementById("moderation-motivation-feedback-resource_value").innerHTML=DonaCadena3("Moderació", "Moderación", "Moderation");
-	document.getElementById("comment-motiv-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Motivació del comentari de l'usuari sobre el recurs", "Motivación del comentario del usuario sobre el recurso", "Motivation of user's comment about the resource");
+	document.getElementById("justification-motivation-feedback-resource_value").innerHTML=DonaCadena3("JustificaciÃ³", "JustificaciÃ³n", "Justification");
+	document.getElementById("resolution-motivation-feedback-resource_value").innerHTML=DonaCadena3("ResoluciÃ³", "ResoluciÃ³n", "Resolution");
+	document.getElementById("moderation-motivation-feedback-resource_value").innerHTML=DonaCadena3("ModeraciÃ³", "ModeraciÃ³n", "Moderation");
+	document.getElementById("comment-motiv-feedback-resource_screen_descrip").innerHTML=DonaCadena3("MotivaciÃ³ del comentari de l'usuari sobre el recurs", "MotivaciÃ³n del comentario del usuario sobre el recurso", "Motivation of user's comment about the resource");
 
-	document.getElementById("rating-feedback-resource_screen").innerHTML=DonaCadena3("Puntuació", "Puntuación", "Rating");
+	document.getElementById("rating-feedback-resource_screen").innerHTML=DonaCadena3("PuntuaciÃ³", "PuntuaciÃ³n", "Rating");
 	/*document.getElementById("undefined-rating-feedback-resource_value").innerHTML=DonaCadena3("Indefinit", "Indefinido", "Undefined");
 	document.getElementById("oneStar-rating-feedback-resource_value").innerHTML=DonaCadena3("1 estrella: Molt dolent", "1 estrella: Muy malo", "1 star: very bad");
 	document.getElementById("twoStars-rating-feedback-resource_value").innerHTML=DonaCadena3("2 estrelles: Dolent", "2 estrellas: Malo", "2 stars: Bad");
 	document.getElementById("threeStars-rating-feedback-resource_value").innerHTML=DonaCadena3("3 estrelles: Regular", "3 estrellas: Regular", "3 stars: Regular");
 	document.getElementById("fourStars-rating-feedback-resource_value").innerHTML=DonaCadena3("4 estrelles: Bo", "4 estrellas: Bueno", "4 stars: Good");
-	document.getElementById("fiveStars-rating-feedback-resource_value").innerHTML=DonaCadena3("5 estrelles: Excel·lent", "5 estrellas: Excelente", "5 stars: Excellent");*/
-	document.getElementById("rating-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Nombre d'estrelles que puntua subjectivament el recurs", "Numero de estrellas que puntúa subjectivamente el recurso", "Number of stars that qualifies subjectively the resource");
+	document.getElementById("fiveStars-rating-feedback-resource_value").innerHTML=DonaCadena3("5 estrelles: ExcelÂ·lent", "5 estrellas: Excelente", "5 stars: Excellent");*/
+	document.getElementById("rating-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Nombre d'estrelles que puntua subjectivament el recurs", "Numero de estrellas que puntÃºa subjectivamente el recurso", "Number of stars that qualifies subjectively the resource");
 
 	document.getElementById("share-anonymous-feedback-resource_screen").innerHTML=DonaCadena3("Compartir amb tothom", "Compartir con todos", "Share to everyone");
   	document.getElementById("share-anonymous-feedback-resource_screen_descrip").innerHTML=DonaCadena3("Compartir aquest feedback amb tothom", "Compartir este feedback con todos", "If check this feedback will be visible to everyone");
 
-	document.getElementById("feedback-resource-delete_btn").value=DonaCadena3("Eliminar valoració", "Eliminar valoración", "Delete feedback");
+	document.getElementById("feedback-resource-delete_btn").value=DonaCadena3("Eliminar valoraciÃ³", "Eliminar valoraciÃ³n", "Delete feedback");
 	document.getElementById("feedback-resource-exit_btn").value=DonaCadena3("Sortir", "Salir", "Close");
 	document.getElementById("feedback-resource-close_btn").value=DonaCadena3("Descartar", "Descartar", "Discard");
 
-	document.getElementById("title-citation-resource_screen").innerHTML=DonaCadena3("Títol", "Título", "Title");
-	document.getElementById("title-citation-resource_screen_descrip").innerHTML=DonaCadena3("Per exemple: Mapa Cobertes del Sòl de Catalunya", "Por ejemplo: Sistema de Información sobre Ocupación del Suelo de España", "For exemple: Corine Land Cover 2012");
+	document.getElementById("title-citation-resource_screen").innerHTML=DonaCadena3("TÃ­tol", "TÃ­tulo", "Title");
+	document.getElementById("title-citation-resource_screen_descrip").innerHTML=DonaCadena3("Per exemple: Mapa Cobertes del SÃ²l de Catalunya", "Por ejemplo: Sistema de InformaciÃ³n sobre OcupaciÃ³n del Suelo de EspaÃ±a", "For exemple: Corine Land Cover 2012");
 	document.getElementById("id-code-citation-resource_screen").innerHTML=DonaCadena3("Identificador", "Identificador", "Identifier");
 	document.getElementById("id-code-citation-resource_screen_descrip").innerHTML=DonaCadena3("Identificador del recurs. P. ex.:", "Identificador del recurso. P. ej.:", "Resource identifier. E.g.:") + " c90fd0c1-ebdf-4df9-9216-4592ed843644";
 	document.getElementById("id-namespace-citation-resource_screen").innerHTML=DonaCadena3("Espai de noms", "Espacio de nombres", "Namespace");
-	document.getElementById("id-namespace-citation-resource_screen_descrip").innerHTML=DonaCadena3("Espai de noms on l'identificador és únic. P. ex.:", "Espacio de nombres donde el identificador es único. P. ej.:", "Namespace where the identifier is unique. E.g.:") + " http://sdi.eea.europa.eu/catalogue";
-	document.getElementById("url-link-citation-resource_screen").innerHTML=DonaCadena3("Adreça URL", "Dirección URL", "URL Link");
-	document.getElementById("url-link-citation-resource_screen_descrip").innerHTML=DonaCadena3("Recurs en línia relacionat amb l'element. P. ex.:", "Recurso en línea relacionado con el elemento. P. ej.:", "Online resource related to the element. E.g.:") + " http://land.copernicus.eu/pan-european/corine-land-cover/clc-2012/view";
-	document.getElementById("url-descrip-citation-resource_screen").innerHTML=DonaCadena3("Descripció URL", "Descripción URL", "URL description");
-	document.getElementById("url-descrip-citation-resource_screen_descrip").innerHTML=DonaCadena3("Descripció detallada de què és o què fa el recurs en línia. P. ex.: Exploració de les dades en un navegador", "Descripción detallada de qué es o qué hace el recurso en línea. P. ej. Exploración de les datos en un navegador", "Detailed description of what the online resource is/does. E.g. View the data on a web browser");
+	document.getElementById("id-namespace-citation-resource_screen_descrip").innerHTML=DonaCadena3("Espai de noms on l'identificador Ã©s Ãºnic. P. ex.:", "Espacio de nombres donde el identificador es Ãºnico. P. ej.:", "Namespace where the identifier is unique. E.g.:") + " http://sdi.eea.europa.eu/catalogue";
+	document.getElementById("url-link-citation-resource_screen").innerHTML=DonaCadena3("AdreÃ§a URL", "DirecciÃ³n URL", "URL Link");
+	document.getElementById("url-link-citation-resource_screen_descrip").innerHTML=DonaCadena3("Recurs en lÃ­nia relacionat amb l'element. P. ex.:", "Recurso en lÃ­nea relacionado con el elemento. P. ej.:", "Online resource related to the element. E.g.:") + " http://land.copernicus.eu/pan-european/corine-land-cover/clc-2012/view";
+	document.getElementById("url-descrip-citation-resource_screen").innerHTML=DonaCadena3("DescripciÃ³ URL", "DescripciÃ³n URL", "URL description");
+	document.getElementById("url-descrip-citation-resource_screen_descrip").innerHTML=DonaCadena3("DescripciÃ³ detallada de quÃ¨ Ã©s o quÃ¨ fa el recurs en lÃ­nia. P. ex.: ExploraciÃ³ de les dades en un navegador", "DescripciÃ³n detallada de quÃ© es o quÃ© hace el recurso en lÃ­nea. P. ej. ExploraciÃ³n de les datos en un navegador", "Detailed description of what the online resource is/does. E.g. View the data on a web browser");
 	
-	document.getElementById("url-function-citation-resource_screen").innerHTML=DonaCadena3("Funció", "Función", "Function");
+	document.getElementById("url-function-citation-resource_screen").innerHTML=DonaCadena3("FunciÃ³", "FunciÃ³n", "Function");
 	document.getElementById("undefined-url-function-citation-resource_value").innerHTML=DonaCadena3("Indefinit", "Indefinido", "Undefined");
-	document.getElementById("download-url-function-citation-resource_value").innerHTML=DonaCadena3("Descàrrega", "Descarga", "Download");
-	document.getElementById("information-url-function-citation-resource_value").innerHTML=DonaCadena3("Informació", "Información", "Information");
-	document.getElementById("offlineAccess-url-function-citation-resource_value").innerHTML=DonaCadena3("Accés fora de línia", "Acceso fuera de línea", "Offline access");
+	document.getElementById("download-url-function-citation-resource_value").innerHTML=DonaCadena3("DescÃ rrega", "Descarga", "Download");
+	document.getElementById("information-url-function-citation-resource_value").innerHTML=DonaCadena3("InformaciÃ³", "InformaciÃ³n", "Information");
+	document.getElementById("offlineAccess-url-function-citation-resource_value").innerHTML=DonaCadena3("AccÃ©s fora de lÃ­nia", "Acceso fuera de lÃ­nea", "Offline access");
 	document.getElementById("order-url-function-citation-resource_value").innerHTML=DonaCadena3("Comandes", "Encargos", "Order");
-	document.getElementById("search-url-function-citation-resource_value").innerHTML=DonaCadena3("Cerca", "Búsqueda", "Search");
+	document.getElementById("search-url-function-citation-resource_value").innerHTML=DonaCadena3("Cerca", "BÃºsqueda", "Search");
 	document.getElementById("completeMetadata-url-function-citation-resource_value").innerHTML=DonaCadena3("Metadades completes", "Metadatos completos", "Complete Metadata");
-	document.getElementById("browseGraphic-url-function-citation-resource_value").innerHTML=DonaCadena3("Exploració", "Exploración", "View");
-	document.getElementById("upload-url-function-citation-resource_value").innerHTML=DonaCadena3("Càrrega", "Carga", "Upload");
-	document.getElementById("emailService-url-function-citation-resource_value").innerHTML=DonaCadena3("Servei de correu electrònic", "Servicio de correo electrónico", "Email service");
-	document.getElementById("browsing-url-function-citation-resource_value").innerHTML=DonaCadena3("Navegació", "Navegación", "Browsing");
-	document.getElementById("fileAccess-url-function-citation-resource_value").innerHTML=DonaCadena3("Accés a fitxer", "Acceso a fichero", "File access");
-	document.getElementById("url-function-citation-resource_screen_descrip").innerHTML=DonaCadena3("Funció del link. P. ex. Exploració", "Función del link. P. ex. Exploración", "Function of the link. E.g. View");
+	document.getElementById("browseGraphic-url-function-citation-resource_value").innerHTML=DonaCadena3("ExploraciÃ³", "ExploraciÃ³n", "View");
+	document.getElementById("upload-url-function-citation-resource_value").innerHTML=DonaCadena3("CÃ rrega", "Carga", "Upload");
+	document.getElementById("emailService-url-function-citation-resource_value").innerHTML=DonaCadena3("Servei de correu electrÃ²nic", "Servicio de correo electrÃ³nico", "Email service");
+	document.getElementById("browsing-url-function-citation-resource_value").innerHTML=DonaCadena3("NavegaciÃ³", "NavegaciÃ³n", "Browsing");
+	document.getElementById("fileAccess-url-function-citation-resource_value").innerHTML=DonaCadena3("AccÃ©s a fitxer", "Acceso a fichero", "File access");
+	document.getElementById("url-function-citation-resource_screen_descrip").innerHTML=DonaCadena3("FunciÃ³ del link. P. ex. ExploraciÃ³", "FunciÃ³n del link. P. ex. ExploraciÃ³n", "Function of the link. E.g. View");
 	
-	document.getElementById("citation-resource-delete_btn").value=DonaCadena3("Eliminar citació", "Eliminar citación", "Delete citation");
+	document.getElementById("citation-resource-delete_btn").value=DonaCadena3("Eliminar citaciÃ³", "Eliminar citaciÃ³n", "Delete citation");
 	document.getElementById("citation-resource-exit_btn").value=DonaCadena3("Sortir", "Salir", "Close");
 	document.getElementById("citation-resource-close_btn").value=DonaCadena3("Descartar", "Descartar", "Discard");
 
 	document.getElementById("account-title-text").innerHTML=DonaCadena3("Compte", "Cuenta", "Account");
-	document.getElementById("account-subtitle-text").innerHTML=DonaCadena3("Canvia les característiques bàsiques del teu compte i la configuració d'idioma", "Cambie las características básicas de su cuenta y la configuración de idioma", "Change your basic account and language settings.");
+	document.getElementById("account-subtitle-text").innerHTML=DonaCadena3("Canvia les caracterÃ­stiques bÃ siques del teu compte i la configuraciÃ³ d'idioma", "Cambie las caracterÃ­sticas bÃ¡sicas de su cuenta y la configuraciÃ³n de idioma", "Change your basic account and language settings.");
 	document.getElementById("new_user_screen").innerHTML=DonaCadena3("Usuari", "Usuario", "Username");
 	document.getElementById("new_user_descrip").innerHTML=DonaCadena3("Pots canviar el teu usuari en qualsevol moment.", "Puede cambiar su usuario en cualquier momento.", "How can change your username at any time.");
-	document.getElementById("email_screen").innerHTML=DonaCadena3("Correu electrònic", "Correo electrónico", "Email");
+	document.getElementById("email_screen").innerHTML=DonaCadena3("Correu electrÃ²nic", "Correo electrÃ³nico", "Email");
 	document.getElementById("email_screen_descrip").innerHTML=DonaCadena3("Per a validacions i notificacions per email", "Para validaciones y notificaciones por email", "For email notifications and verifications");
 	document.getElementById("name_screen").innerHTML=DonaCadena3("Nom", "Nombre", "Name");
 	document.getElementById("name_screen_descrip").innerHTML=DonaCadena3("El teu nom i cognoms", "Su nombre y apellidos", "Your name and surname");
-	document.getElementById("bio_screen").innerHTML=DonaCadena3("Biografia", "Biografía", "Bio");
+	document.getElementById("bio_screen").innerHTML=DonaCadena3("Biografia", "BiografÃ­a", "Bio");
 	document.getElementById("bio_screen_descrip").innerHTML=DonaCadena3("Un text curt que et descriu", "Un text corto que le describe", "About yourself in a few words.");
-	document.getElementById("current_pass_screen").innerHTML=DonaCadena3("Contrasenya actual", "Contraseña actual", "Current password");
-	document.getElementById("current_pass_screen_descrip").innerHTML=DonaCadena3("Cal que proporcionis la contrasenya actual si la vols canviar.", "Es necesario proporcionar la contraseña actual si desea cambiarla.", "Your current password is needed only if you want to change it.");
-	document.getElementById("new_pass_screen").innerHTML=DonaCadena3("Contrasenya nova", "Contraseña nueva","New password");
-	document.getElementById("new_pass_screen_descrip").innerHTML=DonaCadena3("Pots canviar la teva contrasenya en qualsevol moment.", "Puede cambiar su contraseña en cualquier momento.", "How can change your password at any time.");
-	document.getElementById("new_pass_valid_screen").innerHTML=DonaCadena3("Validació de contrasenya", "Validación de contraseña","Verify password");
-	document.getElementById("new_pass_valid_screen_descrip").innerHTML=DonaCadena3("Cal que tornis a escriure la teva contrasenya.", "Debes repetir la contraseña.", "You need to repeat your new password.");
+	document.getElementById("current_pass_screen").innerHTML=DonaCadena3("Contrasenya actual", "ContraseÃ±a actual", "Current password");
+	document.getElementById("current_pass_screen_descrip").innerHTML=DonaCadena3("Cal que proporcionis la contrasenya actual si la vols canviar.", "Es necesario proporcionar la contraseÃ±a actual si desea cambiarla.", "Your current password is needed only if you want to change it.");
+	document.getElementById("new_pass_screen").innerHTML=DonaCadena3("Contrasenya nova", "ContraseÃ±a nueva","New password");
+	document.getElementById("new_pass_screen_descrip").innerHTML=DonaCadena3("Pots canviar la teva contrasenya en qualsevol moment.", "Puede cambiar su contraseÃ±a en cualquier momento.", "How can change your password at any time.");
+	document.getElementById("new_pass_valid_screen").innerHTML=DonaCadena3("ValidaciÃ³ de contrasenya", "ValidaciÃ³n de contraseÃ±a","Verify password");
+	document.getElementById("new_pass_valid_screen_descrip").innerHTML=DonaCadena3("Cal que tornis a escriure la teva contrasenya.", "Debes repetir la contraseÃ±a.", "You need to repeat your new password.");
 	document.getElementById("language_screen").innerHTML=DonaCadena3("Idioma", "Idioma", "Language");
-	document.getElementById("language_screen_descrip").innerHTML=DonaCadena3("L'idioma que fas servir (l'entorn canviarà a aquest idioma).", "El idioma que usas (el entorno canviará a este idioma).", "The language you use (the interface will change to this language).");
+	document.getElementById("language_screen_descrip").innerHTML=DonaCadena3("L'idioma que fas servir (l'entorn canviarÃ  a aquest idioma).", "El idioma que usas (el entorno canviarÃ¡ a este idioma).", "The language you use (the interface will change to this language).");
 	document.getElementById("account_btn").value=DonaCadena3("Guardar canvis", "Guardar cambios", "Save changes");
 	document.getElementById("account-close_btn").value=DonaCadena3("Descartar", "Descartar", "Close");
 
 	document.getElementById("share-title-text").innerHTML=DonaCadena3("Compartir", "Compartir", "Share");
 	document.getElementById("share-subtitle-text").innerHTML=DonaCadena3("Comparteix aquest recurs amb els altres", "Comparte este recurso con otros", "Share this resource with others");
 	document.getElementById("new_share_screen").innerHTML=DonaCadena3("Usuari o email", "Usuario o email", "Username or email");
-	document.getElementById("new_share_descrip").innerHTML=DonaCadena3("Escriu un nom d'usuari de NiMMbus o un email, escull els drets i prem [Afegir]", "Escriba un nombre de usuario de NiMMbus o un email, escoja los derechos y presione [Añadir]", "Type a username in NiMMbus or an email, choose the rights and press [Add]");
+	document.getElementById("new_share_descrip").innerHTML=DonaCadena3("Escriu un nom d'usuari de NiMMbus o un email, escull els drets i prem [Afegir]", "Escriba un nombre de usuario de NiMMbus o un email, escoja los derechos y presione [AÃ±adir]", "Type a username in NiMMbus or an email, choose the rights and press [Add]");
 	document.getElementById("new_share_open_screen").innerHTML=DonaCadena3("Tots", "Todos", "All");
 	document.getElementById("new_share_open_read_label").innerHTML=DonaCadena3("Obrir a tothom per llegir", "Abrir a todos para lectura", "Open to everybody for reading");
 	document.getElementById("new_share_open_descrip").innerHTML=DonaCadena3("Marca aqueta casella si vols obrir l'access a aquest recurs a tothom (fins i tot sense identificar-se)", "Marca esta casilla si desea obrir el acceso a este recurso a todos (incluso sin identificarse)", "Check this box if you want to open the access to this resource to everyone (even if they are not identified)");
-	document.getElementById("new_share_open_btn").value=DonaCadena3("Afegir", "Añadir", "Add");
+	document.getElementById("new_share_open_btn").value=DonaCadena3("Afegir", "AÃ±adir", "Add");
 	document.getElementById("new_share_rights_read_label").innerHTML=DonaCadena3("Llegir", "Leer", "Read");
 	document.getElementById("new_share_rights_write_label").innerHTML=DonaCadena3("Escriure", "Escribir", "Write");
 	document.getElementById("new_share_rights_share_label").innerHTML=DonaCadena3("Compartir", "Compartir", "Share");
-	document.getElementById("new_share_btn").value=DonaCadena3("Afegir", "Añadir", "Add");
+	document.getElementById("new_share_btn").value=DonaCadena3("Afegir", "AÃ±adir", "Add");
 	document.getElementById("current_share_screen").innerHTML=DonaCadena3("Llista de comparticions", "Lista de comparticiones", "Sharing list");
 	document.getElementById("current_share_descrip").innerHTML=DonaCadena3("Fes clic a les creus per esborrar usuaris de la llista.", "Haga clic a las cruces para borrar usuarios de la lista.", "Click on the crosses to remove users from the list.");
 	document.getElementById("share-close_btn").value=DonaCadena3("Tancar", "Cerrar", "Close");
 
 	document.getElementById("feedback-title-text").innerHTML=DonaCadena3("Valoracions", "Valoraciones", "Feedback items");
 	document.getElementById("feedback-subtitle-text").innerHTML=DonaCadena3("Valoracions sobre el recurs:", "Valoraciones sobre el recurso:", "Feedback about the resource:");
-	document.getElementById("new_feedback_screen").innerHTML=DonaCadena3("Valoració", "Valoración", "Feedback");
-	document.getElementById("new_feedback_descrip").innerHTML=DonaCadena3("Prem [Afegir] per a crear una nova valoració sobre aquest recurs", "Presione [Añadir] para crear una nueva valoración sobre este recurso", "Press [Add] to create a new feedback item about this resource");
-	document.getElementById("new_feedback_btn").value=DonaCadena3("Afegir", "Añadir", "Add");
+	document.getElementById("new_feedback_screen").innerHTML=DonaCadena3("ValoraciÃ³", "ValoraciÃ³n", "Feedback");
+	document.getElementById("new_feedback_descrip").innerHTML=DonaCadena3("Prem [Afegir] per a crear una nova valoraciÃ³ sobre aquest recurs", "Presione [AÃ±adir] para crear una nueva valoraciÃ³n sobre este recurso", "Press [Add] to create a new feedback item about this resource");
+	document.getElementById("new_feedback_btn").value=DonaCadena3("Afegir", "AÃ±adir", "Add");
 	document.getElementById("current_feedback_screen").innerHTML=DonaCadena3("Llista de valoracions", "Lista de valoraciones", "Feedback list");
-	document.getElementById("current_feedback_descrip").innerHTML=DonaCadena3("Prem [Editar] per a veure, modificar o esborrar aquesta valoració", "Presione [Editar] para ver, modificar o borrar esta valoración", "Press [Edit] to view, modify or delete this feedback item");
+	document.getElementById("current_feedback_descrip").innerHTML=DonaCadena3("Prem [Editar] per a veure, modificar o esborrar aquesta valoraciÃ³", "Presione [Editar] para ver, modificar o borrar esta valoraciÃ³n", "Press [Edit] to view, modify or delete this feedback item");
 	document.getElementById("feedback-close_btn").value=DonaCadena3("Tancar", "Cerrar", "Close");
 
-	document.getElementById("reset-pass-title-text").innerHTML=DonaCadena3("Restabliment de contrasenya", "Reestablecimiento de contraseña", "Password reset");
+	document.getElementById("reset-pass-title-text").innerHTML=DonaCadena3("Restabliment de contrasenya", "Reestablecimiento de contraseÃ±a", "Password reset");
 	document.getElementById("reset-pass-subtitle-text").innerHTML=DonaCadena3("Troba el teu compte de NiMMbus", "Encuentre su cuenta de NiMMbus", "Find your NiMMbus account");
-	document.getElementById("reset-pass_user_descrip").innerHTML=DonaCadena3("Introdueixi el nom d'usuari o correu electrònic. Se t'enviarà un email amb un enllaç per canviar la contrasenya.", "Introduzca su nombre de usuario o el correo electrónico. Se le enviará un email con un enllace para cambiar la contraseña.", "Enter your username or email. An email will be sent to you with a link to change the password.");
-	document.getElementById("reset-pass_btn").value=DonaCadena3("Cerca", "Búsqueda", "Search");
+	document.getElementById("reset-pass_user_descrip").innerHTML=DonaCadena3("Introdueixi el nom d'usuari o correu electrÃ²nic. Se t'enviarÃ  un email amb un enllaÃ§ per canviar la contrasenya.", "Introduzca su nombre de usuario o el correo electrÃ³nico. Se le enviarÃ¡ un email con un enllace para cambiar la contraseÃ±a.", "Enter your username or email. An email will be sent to you with a link to change the password.");
+	document.getElementById("reset-pass_btn").value=DonaCadena3("Cerca", "BÃºsqueda", "Search");
 
-	document.getElementById("new-pass-title-text").innerHTML=DonaCadena3("Nova contrasenya", "Nueva contraseña", "New password");
-	document.getElementById("new-pass-subtitle-text").innerHTML=DonaCadena3("Canvia la teva contrasenya del teu compte de NiMMbus", "Cambie su contraseña para su cuenta de NiMMbus", "Change password in your NiMMbus account");
-	document.getElementById("new-pass_new_pass_screen").innerHTML=DonaCadena3("Contrasenya nova", "Contraseña nueva","New password");
-	document.getElementById("new-pass_new_pass_screen_descrip").innerHTML=DonaCadena3("Escriu directament la teva contrasenya nova.", "Escriva directamente su contraseña nueva.", "Write your new password here.");
-	document.getElementById("new-pass_new_pass_valid_screen").innerHTML=DonaCadena3("Validació de contrasenya", "Validación de contraseña","Verify password");
-	document.getElementById("new-pass_new_pass_valid_screen_descrip").innerHTML=DonaCadena3("Cal que tornis a escriure la teva contrasenya nova.", "Debes repetir la nueva contraseña.", "You need to repeat your new password.");
+	document.getElementById("new-pass-title-text").innerHTML=DonaCadena3("Nova contrasenya", "Nueva contraseÃ±a", "New password");
+	document.getElementById("new-pass-subtitle-text").innerHTML=DonaCadena3("Canvia la teva contrasenya del teu compte de NiMMbus", "Cambie su contraseÃ±a para su cuenta de NiMMbus", "Change password in your NiMMbus account");
+	document.getElementById("new-pass_new_pass_screen").innerHTML=DonaCadena3("Contrasenya nova", "ContraseÃ±a nueva","New password");
+	document.getElementById("new-pass_new_pass_screen_descrip").innerHTML=DonaCadena3("Escriu directament la teva contrasenya nova.", "Escriva directamente su contraseÃ±a nueva.", "Write your new password here.");
+	document.getElementById("new-pass_new_pass_valid_screen").innerHTML=DonaCadena3("ValidaciÃ³ de contrasenya", "ValidaciÃ³n de contraseÃ±a","Verify password");
+	document.getElementById("new-pass_new_pass_valid_screen_descrip").innerHTML=DonaCadena3("Cal que tornis a escriure la teva contrasenya nova.", "Debes repetir la nueva contraseÃ±a.", "You need to repeat your new password.");
 	document.getElementById("new-pass_btn").value=DonaCadena3("Canviar", "Canviar", "Change");
 
 	document.getElementById("new-user-title-text").innerHTML=DonaCadena3("Nou al NiMMbus? Registra't:", "Nuevo en NiMMbus? Registrese:", "New to NiMMbus? Sign up:");
 	document.getElementById("new-user-subtitle-text").innerHTML=DonaCadena3("Crea el teu compte de NiMMbus", "Cree su cuenta de NiMMbus", "Create your NiMMbus account");
 	document.getElementById("new-user_new_user_screen").innerHTML=DonaCadena3("Usuari", "Usuario", "Username");
 	document.getElementById("new-user_new_user_screen_descrip").innerHTML=DonaCadena3("Escriu el nom d'usuari que desitges.", "Escriva en nombre de usuario que desea.", "Write your username here.");
-	document.getElementById("new-user_new_pass_screen").innerHTML=DonaCadena3("Contrasenya", "Contraseña","Password");
-	document.getElementById("new-user_new_pass_screen_descrip").innerHTML=DonaCadena3("Escriu la teva contrasenya.", "Escriva directamente su contraseña.", "Write your new password here.");
-	document.getElementById("new-user_new_pass_valid_screen").innerHTML=DonaCadena3("Validació de contrasenya", "Validación de contraseña","Verify password");
-	document.getElementById("new-user_new_pass_valid_screen_descrip").innerHTML=DonaCadena3("Cal que tornis a escriure la teva contrasenya nova.", "Debes repetir la nueva contraseña.", "You need to repeat your new password.");
-	document.getElementById("new-user_email_screen").innerHTML=DonaCadena3("Correu electrònic", "Correo electrónico", "Email");
+	document.getElementById("new-user_new_pass_screen").innerHTML=DonaCadena3("Contrasenya", "ContraseÃ±a","Password");
+	document.getElementById("new-user_new_pass_screen_descrip").innerHTML=DonaCadena3("Escriu la teva contrasenya.", "Escriva directamente su contraseÃ±a.", "Write your new password here.");
+	document.getElementById("new-user_new_pass_valid_screen").innerHTML=DonaCadena3("ValidaciÃ³ de contrasenya", "ValidaciÃ³n de contraseÃ±a","Verify password");
+	document.getElementById("new-user_new_pass_valid_screen_descrip").innerHTML=DonaCadena3("Cal que tornis a escriure la teva contrasenya nova.", "Debes repetir la nueva contraseÃ±a.", "You need to repeat your new password.");
+	document.getElementById("new-user_email_screen").innerHTML=DonaCadena3("Correu electrÃ²nic", "Correo electrÃ³nico", "Email");
 	document.getElementById("new-user_email_screen_descrip").innerHTML=DonaCadena3("Per a validacions i notificacions per email", "Para validaciones y notificaciones por email", "For email notifications and verifications");
 	document.getElementById("new-user_btn").value=DonaCadena3("Registrar-se al NiMMbus", "Registrarse en NiMMBus", "Sign up for NiMMbus");
 
@@ -421,7 +421,7 @@ function DonaCadenaIdNoPotSerBuit(id)
 }
 
 
-// Funció inspirada en una de SitePoint Pty. Ltd, www.sitepoint.com
+// FunciÃ³ inspirada en una de SitePoint Pty. Ltd, www.sitepoint.com
 function Ajax() 
 {
   this.req = null;
@@ -436,7 +436,7 @@ function Ajax()
   this.responseXML = null;
   this.handleResp = null;
   this.responseFormat = 'text/plain', // 'text/plain', 'text/xml', 'object'
-  this.requestFormat = 'application/x-www-form-urlencoded'  //només per POST
+  this.requestFormat = 'application/x-www-form-urlencoded'  //nomÃ©s per POST
   this.structResp=null;
   this.mimeType = null;  
   this.headers = [];
@@ -458,7 +458,7 @@ function Ajax()
   };
   this.doGet = function(url, hand, response_format, struct) 
   {
-    //alert(url);  //·$·Per a depurar
+    //alert(url);  //Â·$Â·Per a depurar
     this.url = url;
     this.handleResp = hand;
     this.responseFormat = response_format || 'text/plain';
@@ -683,8 +683,8 @@ function ReplaceAll(s, find, replace)
 	return s.replace(new RegExp(find, 'g'), replace);
 }
 
-/*Aquesta funció fa un subconjunt del que fa encodeURIComponent(), que hem 
-  observat que remplaça les lletres accentuades per caràcters unicode i això no va bé.*/
+/*Aquesta funciÃ³ fa un subconjunt del que fa encodeURIComponent(), que hem 
+  observat que remplaÃ§a les lletres accentuades per carÃ cters unicode i aixÃ² no va bÃ©.*/
 function DonaCadenaPerValorDeFormulari(s)
 {
 	s=ReplaceAll(s, "&", "%26");
@@ -804,7 +804,7 @@ var email, target_title="", target_code="", target_code_space="", share_borrower
 			ParamActionAfterSignIn={"title":target_title, "code": target_code, "code_space": target_code_space, "share_borrower_1": share_borrower_1};
 		}
 		else
-			ShowInfo("long", DonaCadena3("Plana no identificada", "Página no identificada", "Unidentified page name") +": \""+ newpage+"\".");
+			ShowInfo("long", DonaCadena3("Plana no identificada", "PÃ¡gina no identificada", "Unidentified page name") +": \""+ newpage+"\".");
 	}
 
 }
@@ -925,7 +925,7 @@ function TiraAPantallaRespostaSiNoEntenc(root, no_usat)
 		return;
 	}
 	ShowInfo("long", DonaCadena3(
-				"El servidor ha respost però no és possible mostrar el resultat en aquest navegador.",
+				"El servidor ha respost perÃ² no Ã©s possible mostrar el resultat en aquest navegador.",
 				"El servidor ha respondido pero no es posible mostrar el resultado en este navegador.",
 				"The server responded but it is not possible to show the result on this browser."));
 	UpdateLastServer();
@@ -938,7 +938,7 @@ function DonaRootXML(doc, no_usat)
 	{
 		
 		ShowInfo("long", DonaCadena3(
-			"El servidor ha respost però no puc identificar la seva resposta.",
+			"El servidor ha respost perÃ² no puc identificar la seva resposta.",
 			"El servidor ha respondido pero no puedo identificar su respuesta.",
 			"The server responded but it can not be identified correctly."));
 		UpdateLastServer();
@@ -958,7 +958,7 @@ var exception_error;
 		UpdateLastServer();
 		return true;
 	}
-	//Si no trobo text, potser encara trovaré el codi
+	//Si no trobo text, potser encara trovarÃ© el codi
 	exception_error=GetXMLElementByName(root, "ows", "Exception");
 	if (exception_error)
 	{
@@ -995,7 +995,7 @@ var root, id_proces, id_obj;
 		return;
 	}
 
-	id_obj=DonaIDRecursDesDeRootXML(root);  //La execució de NB_RESOURCE:CREATE dona l'ID de recurs que s'està en procés de crear.
+	id_obj=DonaIDRecursDesDeRootXML(root);  //La execuciÃ³ de NB_RESOURCE:CREATE dona l'ID de recurs que s'estÃ  en procÃ©s de crear.
 	if (id_obj!="")
 		IdResourceToSaveChanges=id_obj;
 
@@ -1015,7 +1015,7 @@ var root, id_proces, id_obj;
 
 function DiguesOKIEntraANimmbusCallBack()
 {
-	ShowInfo("short", DonaCadena3("Tot bé", "Todo correcto", "Ok!"));
+	ShowInfo("short", DonaCadena3("Tot bÃ©", "Todo correcto", "Ok!"));
 	if (ActionAfterSignIn)
 		ActionAfterSignIn(ParamActionAfterSignIn);
 	else
@@ -1089,10 +1089,10 @@ var fn;
 					if (codi=="0")
 					{
 						RemoveInfo("permanent");
-						ShowInfo("short", DonaCadena3("Tot bé", "Todo correcto", "Ok!"));
-						//·$· M'agradaria obtenir l'identificador del codi del objecte creat/modificat aquí i posar-lo a IdResourceToSaveChanges 
+						ShowInfo("short", DonaCadena3("Tot bÃ©", "Todo correcto", "Ok!"));
+						//Â·$Â· M'agradaria obtenir l'identificador del codi del objecte creat/modificat aquÃ­ i posar-lo a IdResourceToSaveChanges 
 						UpdateLastServer();
-						//uso el truco següent: http://www.sitepoint.com/call-javascript-function-string-without-using-eval
+						//uso el truco segÃ¼ent: http://www.sitepoint.com/call-javascript-function-string-without-using-eval
 						fn=window[nom_funcio];
 						if (typeof fn === "function")
 							fn(); 
@@ -1113,7 +1113,7 @@ var fn;
 				{
 					var s=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 					if (s=="")
-						s=DonaCadena3("Error sense descripció. Codi", "Error sin descripción. Código", "Error without descripcion. Code")+ ": " +codi;
+						s=DonaCadena3("Error sense descripciÃ³. Codi", "Error sin descripciÃ³n. CÃ³digo", "Error without descripcion. Code")+ ": " +codi;
 						
 					RemoveInfo("permanent");
 					ShowInfo("long", s);
@@ -1170,7 +1170,7 @@ var root, output, identifier;
 							if (ActiveLanguage!=i)
 							{
 								ChangeLanguage(i);
-								ShowInfo("short", DonaCadena3("Idioma canviat a preferències.", "Idioma cambiado segun preferencias.", "Language changes to preferences."));
+								ShowInfo("short", DonaCadena3("Idioma canviat a preferÃ¨ncies.", "Idioma cambiado segun preferencias.", "Language changes to preferences."));
 							}
 						}
 					}
@@ -1323,7 +1323,7 @@ var root, output, identifier;
 					document.getElementById("href-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
 					document.getElementById("href-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
 					if (rights.indexOf("W")==-1)
-						document.getElementById("href-resource-subtitle-text").innerHTML=DonaCadena3("Descripció detallada d'aquest hiperenllaç (no tens drets de modificació)", "Descripción detallada de este hiperenlace (no tiene derechos de modificación)", "Detailed description of this hiperlink (you do not have modification rights)");
+						document.getElementById("href-resource-subtitle-text").innerHTML=DonaCadena3("DescripciÃ³ detallada d'aquest hiperenllaÃ§ (no tens drets de modificaciÃ³)", "DescripciÃ³n detallada de este hiperenlace (no tiene derechos de modificaciÃ³n)", "Detailed description of this hyperlink (you do not have modification rights)");
 				}
 			}
 		}
@@ -1402,7 +1402,7 @@ var root, output, identifier, s, georss;
 					document.getElementById("poi-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
 					document.getElementById("poi-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
 					if (rights.indexOf("W")==-1)
-						document.getElementById("poi-resource-subtitle-text").innerHTML=DonaCadena3("Descripció detallada d'aquest punt d'interés (no tens drets de modificació)", "Descripción detallada de este punto de interés (no tiene derechos de modificación)", "Detailed description of this point of interest (you do not have modification rights)");
+						document.getElementById("poi-resource-subtitle-text").innerHTML=DonaCadena3("DescripciÃ³ detallada d'aquest punt d'interÃ©s (no tens drets de modificaciÃ³)", "DescripciÃ³n detallada de este punto de interÃ©s (no tiene derechos de modificaciÃ³n)", "Detailed description of this point of interest (you do not have modification rights)");
 				}
 			}
 		}
@@ -1466,11 +1466,11 @@ var root, output, identifier, s, feedback_item, user_comment;
 		document.getElementById("feedback-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
 		document.getElementById("feedback-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
 		if (rights.indexOf("W")==-1)
-			document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("Descripció detallada d'aquesta valoració (no tens drets de modificació)", "Descripción detallada de esta valoración (no tiene derechos de modificación)", "Detailed description of this feedback (you do not have modification rights)");
+			document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("DescripciÃ³ detallada d'aquesta valoraciÃ³ (no tens drets de modificaciÃ³)", "DescripciÃ³n detallada de esta valoraciÃ³n (no tiene derechos de modificaciÃ³n)", "Detailed description of this feedback (you do not have modification rights)");
 	}
 	RemoveInfo("permanent");
 	IdResourceToSaveChanges=id;
-	TargetResourceToSaveChanges="";  //No estic segur que s'hagi de fer això aquí
+	TargetResourceToSaveChanges="";  //No estic segur que s'hagi de fer aixÃ² aquÃ­
 	UpdateLastServer();
 
 	return;
@@ -1548,7 +1548,7 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 					document.getElementById("citation-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
 					document.getElementById("citation-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
 					if (rights.indexOf("W")==-1)
-						document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadena3("Descripció detallada d'aquesta citació (no tens drets de modificació)", "Descripción detallada de esta citación (no tiene derechos de modificación)", "Detailed description of this citation (you do not have modification rights)");
+						document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadena3("DescripciÃ³ detallada d'aquesta citaciÃ³ (no tens drets de modificaciÃ³)", "DescripciÃ³n detallada de esta citaciÃ³n (no tiene derechos de modificaciÃ³n)", "Detailed description of this citation (you do not have modification rights)");
 				}
 			}
 		}
@@ -1630,7 +1630,7 @@ function DonaNomImgTipusRecurs(type)
 	return "";
 }
 
-var ResourcesPerPage=10;  //solució provisional a l'espera de que sigui conigurrable per usuari
+var ResourcesPerPage=10;  //soluciÃ³ provisional a l'espera de que sigui conigurrable per usuari
 
 function AvaluaRespostaEnumerateResources(doc, make_pannel_visible)
 {
@@ -1646,7 +1646,7 @@ var root, s, type;
 		ChangePannel("resources", true);
 
 	if (owc.properties.totalResults==0)
-		document.getElementById("resources-hits-text").innerHTML="<small>"+DonaCadena3("Useu el botó \"Nou\" per crear recursos", "Use el botón \"Nuevo\" para crear recursos", "Use the \"New\" button to create resources")+"</small>";
+		document.getElementById("resources-hits-text").innerHTML="<small>"+DonaCadena3("Useu el botÃ³ \"Nou\" per crear recursos", "Use el botÃ³n \"Nuevo\" para crear recursos", "Use the \"New\" button to create resources")+"</small>";
 	else
 		document.getElementById("resources-hits-text").innerHTML="["+owc.properties.startIndex + "," +(parseInt(owc.properties.startIndex)+owc.features.length-1)+ "] "+ DonaCadena3("de", "de", "of") + " " +  owc.properties.totalResults;
 	if (owc.properties.startIndex==1 || owc.properties.totalResults==0)
@@ -1714,7 +1714,7 @@ var root, s, type;
 				s+=owc.features[i].properties.title;
                 
 			s+="<br/><span class=\"white-area-li-shadow\"> ";
-			s+="<a class=\"white-area-li-shadow-link\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\', \'"+type+"\');\">"+DonaCadena3("Valoració", "Valoración", "Feedback")+"</a>&nbsp;&nbsp;&nbsp; ";
+			s+="<a class=\"white-area-li-shadow-link\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\', \'"+type+"\');\">"+DonaCadena3("ValoraciÃ³", "ValoraciÃ³n", "Feedback")+"</a>&nbsp;&nbsp;&nbsp; ";
                       		
 			if (owc.features[i].properties.rights && owc.features[i].properties.rights.indexOf("S")!=-1)
 				s+="<a class=\"white-area-li-shadow-link\" onClick=\"MostraShareResource(event, \'"+owc.features[i].id+"\', \'"+type+"\');\">"+DonaCadena3("Compartir", "Compartir", "Share")+"</a>&nbsp;&nbsp;&nbsp; ";
@@ -1780,7 +1780,7 @@ var root, output, identifier;
 								{
 									ChangeLanguage(i);
 									document.account_form.language.selectedIndex=ActiveLanguage;
-									ShowInfo("short", DonaCadena3("Idioma canviat a preferències.", "Idioma cambiado segun preferencias.", "Language changes to preferences."));
+									ShowInfo("short", DonaCadena3("Idioma canviat a preferÃ¨ncies.", "Idioma cambiado segun preferencias.", "Language changes to preferences."));
 								}
 								break;
 							}
@@ -1819,9 +1819,9 @@ function RetrieveUserData()
 function ChangePannel(id, add_hash)
 {
 var i_pannel, 
-	pannel=[{"id": "front-page", "parent": null, "title": {"cat": "Identificació al NiMMbus", "spa": "Identificación en NiMMbus", "eng": "NiMMbus login"}}, 
-		{"id": "reset-pass-page", "parent": null, "title": {"cat": "Reestabliment de contrasenya de NiMMbus", "spa": "Reestablecimiento de contraseña de NiMMbus", "eng": "NiMMbus reset password"}}, 
-		{"id": "new-pass-page", "parent": null, "title": {"cat": "Reestabliment de contrasenya de NiMMbus", "spa": "Reestablecimiento de contraseña de NiMMbus", "eng": "NiMMbus reset password"}}, 
+	pannel=[{"id": "front-page", "parent": null, "title": {"cat": "IdentificaciÃ³ al NiMMbus", "spa": "IdentificaciÃ³n en NiMMbus", "eng": "NiMMbus login"}}, 
+		{"id": "reset-pass-page", "parent": null, "title": {"cat": "Reestabliment de contrasenya de NiMMbus", "spa": "Reestablecimiento de contraseÃ±a de NiMMbus", "eng": "NiMMbus reset password"}}, 
+		{"id": "new-pass-page", "parent": null, "title": {"cat": "Reestabliment de contrasenya de NiMMbus", "spa": "Reestablecimiento de contraseÃ±a de NiMMbus", "eng": "NiMMbus reset password"}}, 
 		{"id": "new-user-page", "parent": null, "title": {"cat": "Registra't al NiMMbus", "spa": "Registrese en NiMMbus", "eng": "Sign up for NiMMbus"}},
 		{"id": "execute-token-page", "parent": null, "title": {"cat": "NiMMbus", "spa": "NiMMbus", "eng": "NiMMbus"}},
 		{"id": "new-user-page", "parent": null, "title": {"cat": "Registra't al NiMMbus", "spa": "Registrese en NiMMbus", "eng": "Sign up for NiMMbus"}},
@@ -1829,8 +1829,8 @@ var i_pannel,
 		{"id": "account", "parent": "main-page", "title": {"cat": "Compte de NiMMbus", "spa": "Cuenta de NiMMbus", "eng": "NiMMbus account"}}, 
 		{"id": "href-resource", "parent": "main-page", "title": {"cat": "NiMMbus", "spa": "NiMMbus", "eng": "NiMMbus"}}, 
 		{"id": "poi-resource", "parent": "main-page", "title": {"cat": "NiMMbus", "spa": "NiMMbus", "eng": "NiMMbus"}}, 
-		{"id": "feedback-resource", "parent": "main-page", "title": {"cat": "NiMMbus: Valoració", "spa": "NiMMbus: Valoración", "eng": "NiMMbus: Feedback"}}, 
-		{"id": "citation-resource", "parent": "main-page", "title": {"cat": "NiMMbus: Citació", "spa": "NiMMbus: Citación", "eng": "NiMMbus: Citation"}}, 
+		{"id": "feedback-resource", "parent": "main-page", "title": {"cat": "NiMMbus: ValoraciÃ³", "spa": "NiMMbus: ValoraciÃ³n", "eng": "NiMMbus: Feedback"}}, 
+		{"id": "citation-resource", "parent": "main-page", "title": {"cat": "NiMMbus: CitaciÃ³", "spa": "NiMMbus: CitaciÃ³n", "eng": "NiMMbus: Citation"}}, 
 		{"id": "resources", "parent": "main-page", "title": {"cat": "NiMMbus", "spa": "NiMMbus", "eng": "NiMMbus"}}, 
 		{"id": "feedback", "parent": "main-page", "title": {"cat": "NiMMbus: Valoracions", "spa": "NiMMbus: Valoraciones", "eng": "NiMMbus: Feedbacks"}}, 
 		{"id": "share", "parent": "main-page", "title": {"cat": "NiMMbus: Comapartir", "spa": "NiMMbus: Compartir", "eng": "NiMMbus: Share"}}
@@ -1854,7 +1854,7 @@ var i_pannel,
 			else
 			{
 				document.getElementById(pannel[i].id).style.visibility='hidden';
-				if (pannel[i].parent && pannel[i].parent!=pannel[i_pannel].parent)  //Evito apagar el pare que és el mateix pare que l'escollit.
+				if (pannel[i].parent && pannel[i].parent!=pannel[i_pannel].parent)  //Evito apagar el pare que Ã©s el mateix pare que l'escollit.
 					document.getElementById(pannel[i].parent).style.visibility='hidden';
 			}
 		}
@@ -1917,15 +1917,15 @@ function MostraHRefResource(id)
 	document.getElementById("href-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
-		document.getElementById("href-resource-title-text").innerHTML=DonaCadena3("Nou hiperenllaç", "Nuevo hiperenlace", "New hiperlink");
-		document.getElementById("href-resource-subtitle-text").innerHTML=DonaCadena3("Introdueix les característiques d'aquest hiperenllaç", "Introduce las características de este hiperenlace", "Define the characteristics of this hiperlink");
+		document.getElementById("href-resource-title-text").innerHTML=DonaCadena3("Nou hiperenllaÃ§", "Nuevo hiperenlace", "New hyperlink");
+		document.getElementById("href-resource-subtitle-text").innerHTML=DonaCadena3("Introdueix les caracterÃ­stiques d'aquest hiperenllaÃ§", "Introduce las caracterÃ­sticas de este hiperenlace", "Define the characteristics of this hyperlink");
 		document.getElementById("href-resource_btn").value=DonaCadena3("Crear", "Crear", "Create");
 		document.getElementById("href-resource-delete_btn").style.display='none';
 	}
 	else
 	{
-		document.getElementById("href-resource-title-text").innerHTML=DonaCadena3("Hiperenllaç", "Hiperenlace", "Hiperlink");
-		document.getElementById("href-resource-subtitle-text").innerHTML=DonaCadena3("Modifica les característiques d'aquest hiperenllaç", "Modifica las características de este hiperenlace", "Modify the characteristics of this hiperlink");
+		document.getElementById("href-resource-title-text").innerHTML=DonaCadena3("HiperenllaÃ§", "Hiperenlace", "Hyperlink");
+		document.getElementById("href-resource-subtitle-text").innerHTML=DonaCadena3("Modifica les caracterÃ­stiques d'aquest hiperenllaÃ§", "Modifica las caracterÃ­sticas de este hiperenlace", "Modify the characteristics of this hyperlink");
 		document.getElementById("href-resource_btn").value=DonaCadena3("Guardar canvis", "Guardar cambios", "Save changes");
 		document.getElementById("href-resource-delete_btn").style.display='inline';
 	}
@@ -1943,15 +1943,15 @@ function MostraPoiResource(id)
 	document.getElementById("poi-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
-		document.getElementById("poi-resource-title-text").innerHTML=DonaCadena3("Nou punt d'interés", "Nuevo punto de interés", "New point of interest");
-		document.getElementById("poi-resource-subtitle-text").innerHTML=DonaCadena3("Introdueix les característiques d'aquest punt", "Introduce las características de este punto", "Define the characteristics of this point");
+		document.getElementById("poi-resource-title-text").innerHTML=DonaCadena3("Nou punt d'interÃ©s", "Nuevo punto de interÃ©s", "New point of interest");
+		document.getElementById("poi-resource-subtitle-text").innerHTML=DonaCadena3("Introdueix les caracterÃ­stiques d'aquest punt", "Introduce las caracterÃ­sticas de este punto", "Define the characteristics of this point");
 		document.getElementById("poi-resource_btn").value=DonaCadena3("Crear", "Crear", "Create");
 		document.getElementById("poi-resource-delete_btn").style.display='none';
 	}
 	else
 	{
-		document.getElementById("poi-resource-title-text").innerHTML=DonaCadena3("Punt d'interés", "Punto de interés", "Point of interest");
-		document.getElementById("poi-resource-subtitle-text").innerHTML=DonaCadena3("Modifica les característiques d'aquest punt", "Modifica las características de este punto", "Modify the characteristics of this point");
+		document.getElementById("poi-resource-title-text").innerHTML=DonaCadena3("Punt d'interÃ©s", "Punto de interÃ©s", "Point of interest");
+		document.getElementById("poi-resource-subtitle-text").innerHTML=DonaCadena3("Modifica les caracterÃ­stiques d'aquest punt", "Modifica las caracterÃ­sticas de este punto", "Modify the characteristics of this point");
 		document.getElementById("poi-resource_btn").value=DonaCadena3("Guardar canvis", "Guardar cambios", "Save changes");
 		document.getElementById("poi-resource-delete_btn").style.display='inline';
 	}
@@ -1973,16 +1973,16 @@ function MostraFeedbackResource(id, target)
 	document.getElementById("feedback-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
-		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadena3("Nova valoració", "Nueva valoración", "New feedback");
-		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("Introdueix les característiques d'aquesta valoració", "Introduce las características de esta valoración", "Define the characteristics of this feedback");
+		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadena3("Nova valoraciÃ³", "Nueva valoraciÃ³n", "New feedback");
+		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("Introdueix les caracterÃ­stiques d'aquesta valoraciÃ³", "Introduce las caracterÃ­sticas de esta valoraciÃ³n", "Define the characteristics of this feedback");
 		document.getElementById("share-anonymous-feedback-resource_fieldset").style.display='inline'
 		document.getElementById("feedback-resource_btn").value=DonaCadena3("Crear", "Crear", "Create");
 		document.getElementById("feedback-resource-delete_btn").style.display='none';
 	}
 	else
 	{
-		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadena3("Valoració", "Valoración", "Feedback");
-		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("Modifica les característiques d'aquesta valoració", "Modifica las características de esta valoración", "Modify the characteristics of this feedback");
+		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadena3("ValoraciÃ³", "ValoraciÃ³n", "Feedback");
+		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadena3("Modifica les caracterÃ­stiques d'aquesta valoraciÃ³", "Modifica las caracterÃ­sticas de esta valoraciÃ³n", "Modify the characteristics of this feedback");
 		document.getElementById("share-anonymous-feedback-resource_fieldset").style.display='none'
 		document.getElementById("feedback-resource_btn").value=DonaCadena3("Guardar canvis", "Guardar cambios", "Save changes");
 		document.getElementById("feedback-resource-delete_btn").style.display='inline';
@@ -1992,7 +1992,7 @@ function MostraFeedbackResource(id, target)
 function SurtDeAddFeedbackCallBack()
 {
 	//DetermineCitationID
-	ShowInfo("short", DonaCadena3("Citació creada", "Citación creada", "Citation Created"));
+	ShowInfo("short", DonaCadena3("CitaciÃ³ creada", "CitaciÃ³n creada", "Citation Created"));
 	RetrieveUserMinPreferences();
 	EnumerateResources(1, false);
 	MostraFeedbackResource('', null);
@@ -2018,7 +2018,7 @@ var root, id_proces, id_obj;
 	process_succeeded=GetXMLElementByName(root, "wps", "ProcessSucceeded");
 	if (process_succeeded)
 	{
-		//Si ha retornat de manera immediata amb una ProcessSucceeded vol dir que no calia crear cap target. Es podria comprobar més bé mirant is "msg_id:" és 99 però no em cal.
+		//Si ha retornat de manera immediata amb una ProcessSucceeded vol dir que no calia crear cap target. Es podria comprobar mÃ©s bÃ© mirant is "msg_id:" Ã©s 99 perÃ² no em cal.
 		id_obj=DonaIDRecursDesDeRootXML(root);
 		RemoveInfo("permanent");
 		return id_obj;
@@ -2031,10 +2031,10 @@ function AvaluaRespostaRetrieveTarget(doc, nom_funcio)
 var target_id;
 	//Determina si la resposta a estat "error" "ja existeix" i puc obtenir el target_id
 	target_id=AvaluaRespostaCreaTargetNoNecessari(doc);
-	if (target_id==null)  // El fitxer doc no és ni tant sols un xml que es pugui entendre.
+	if (target_id==null)  // El fitxer doc no Ã©s ni tant sols un xml que es pugui entendre.
 		return;
 	if (target_id=="")
-		AvaluaResposta(doc, nom_funcio);  //El recurs no existia i està en procés de creació
+		AvaluaResposta(doc, nom_funcio);  //El recurs no existia i estÃ  en procÃ©s de creaciÃ³
 	else
 	{
 		RetrieveUserMinPreferences();
@@ -2043,13 +2043,13 @@ var target_id;
 	}
 }
 
-//Funció inspirada en SendCitationResourceChanges() però molt més automàtica.
+//FunciÃ³ inspirada en SendCitationResourceChanges() perÃ² molt mÃ©s automÃ tica.
 function EntraAAddFeedback(target)
 {
 	ActionAfterSignIn=TancaFinestraNimmbus;
 	ParamActionAfterSignIn=null;
 
-        ShowInfo("permanent", DonaCadena3("Citatió enviada", "Citación enviada", "Citation sent"));
+        ShowInfo("permanent", DonaCadena3("CitatiÃ³ enviada", "CitaciÃ³n enviada", "Citation sent"));
 	ajaxExecuteNB=new Ajax();	
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:CREATE&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+
 				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+"&TYPE=CITATION"+"&TITLE="+target.title+
@@ -2067,15 +2067,15 @@ function MostraCitationResource(id)
 	document.getElementById("citation-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
-		document.getElementById("citation-resource-title-text").innerHTML=DonaCadena3("Nova citació", "Nueva citación", "New citation");
-		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadena3("Introdueix les característiques d'aquesta citació", "Introduce las características de esta citación", "Define the characteristics of this citation");
+		document.getElementById("citation-resource-title-text").innerHTML=DonaCadena3("Nova citaciÃ³", "Nueva citaciÃ³n", "New citation");
+		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadena3("Introdueix les caracterÃ­stiques d'aquesta citaciÃ³", "Introduce las caracterÃ­sticas de esta citaciÃ³n", "Define the characteristics of this citation");
 		document.getElementById("citation-resource_btn").value=DonaCadena3("Crear", "Crear", "Create");
 		document.getElementById("citation-resource-delete_btn").style.display='none';
 	}
 	else
 	{
-		document.getElementById("citation-resource-title-text").innerHTML=DonaCadena3("Citació", "Citación", "Citation");
-		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadena3("Modifica les característiques d'aquesta citació", "Modifica las características de esta citación", "Modify the characteristics of this citation");
+		document.getElementById("citation-resource-title-text").innerHTML=DonaCadena3("CitaciÃ³", "CitaciÃ³n", "Citation");
+		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadena3("Modifica les caracterÃ­stiques d'aquesta citaciÃ³", "Modifica las caracterÃ­sticas de esta citaciÃ³n", "Modify the characteristics of this citation");
 		document.getElementById("citation-resource_btn").value=DonaCadena3("Guardar canvis", "Guardar cambios", "Save changes");
 		document.getElementById("feedback-resource-delete_btn").style.display='inline';
 	}
@@ -2102,7 +2102,7 @@ var id=DonaValorDeFormulari("RESOURCE", query, true);
 
 	StopPropagationClick(event);
 	IdResourceToSaveChanges=id;
-	TargetResourceToSaveChanges="";  //No estic segur que estigui bé ·$·
+	TargetResourceToSaveChanges="";  //No estic segur que estigui bÃ© Â·$Â·
 	
 	EnumerateFeedbackResource(id);
 	PopulateCompactDescriptionResource(id, "feedback_target_compact_screen", "feedback_target_compact_descrip");
@@ -2145,7 +2145,7 @@ var root, output, identifier, text_current_share_list, has_anonymous=false;
 
 	text_current_share_list="";
 
-	//Aquest és una mica especial donat que si no hi ha outputs també té sentit la resposta.
+	//Aquest Ã©s una mica especial donat que si no hi ha outputs tambÃ© tÃ© sentit la resposta.
 	for (var item=0; output && item<output.length; item++)
 	{
 		identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
@@ -2272,7 +2272,7 @@ var user, name, email;
 	while (document.share_form.new_share_select.options.length)
 		document.share_form.new_share_select.options[0]=null;
 
-	//Aquest és una mica especial donat que si no hi ha outputs també té sentit la resposta.
+	//Aquest Ã©s una mica especial donat que si no hi ha outputs tambÃ© tÃ© sentit la resposta.
 	for (var item=0; output && item<output.length; item++)
 	{
 		identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
@@ -2308,7 +2308,7 @@ function RetrieveShareAuthorizedList(type)
 
 function SurtDeAddShareCallBack()
 {
-	ShowInfo("short", DonaCadena3("Afegit", "Añadido", "Added"));
+	ShowInfo("short", DonaCadena3("Afegit", "AÃ±adido", "Added"));
 	EnumerateShareResource(IdResourceToSaveChanges);
 }
 
@@ -2337,7 +2337,7 @@ function AddShareResource(tothom)
 				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER="+document.share_form.new_share.value+"&RIGHTS=R"+(document.share_form.W.checked ? "W":"")+(document.share_form.S.checked ? "S":""), AvaluaResposta, "text/xml", 
 				"SurtDeAddShareCallBack");
 	}
-        ShowInfo("permanent", DonaCadena3("Afegint...", "Añadiendo...", "Adding..."));
+        ShowInfo("permanent", DonaCadena3("Afegint...", "AÃ±adiendo...", "Adding..."));
 
 	return true;
 }
@@ -2525,16 +2525,16 @@ function SendResourceDelete(type)
 {
 var SurtDeResourceDeleteCallBack, s;
 
-	s=DonaCadena3("Estàs segur que vols eliminar del tot ", "¿Está seguro que desea eliminar completamente ", "Are you sure that you want to completely delete this ");
+	s=DonaCadena3("EstÃ s segur que vols eliminar del tot ", "Â¿EstÃ¡ seguro que desea eliminar completamente ", "Are you sure that you want to completely delete this ");
 
 	if (type=="HREF")
-		s+=DonaCadena3("aquest hiperenllaç", "este hiperenllace", "hiperlink");
+		s+=DonaCadena3("aquest hiperenllaÃ§", "este hiperenllace", "hyperlink");
 	else if (type=="POI")
-		s+=DonaCadena3("aquest punt d'interés", "este punto de interés", "point of interest");
+		s+=DonaCadena3("aquest punt d'interÃ©s", "este punto de interÃ©s", "point of interest");
 	else if (type=="FEEDBACK")
-		s+=DonaCadena3("aquesta valoració", "esta valoración", "feedback item");
+		s+=DonaCadena3("aquesta valoraciÃ³", "esta valoraciÃ³n", "feedback item");
 	else if (type=="CITATION")
-		s+=DonaCadena3("aquesta citació", "esta citación", "citation");
+		s+=DonaCadena3("aquesta citaciÃ³", "esta citaciÃ³n", "citation");
 	else
 	{
 	        ShowInfo("long", DonaCadena3("Tipus de recurs no identificat", "Tipo de recurso no identificado", "Unidentified resource type"));
@@ -2561,7 +2561,7 @@ var SurtDeResourceDeleteCallBack, s;
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:DELETE&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+
 				"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+"&RESOURCE="+IdResourceToSaveChanges,
 				 AvaluaResposta, "text/xml", "SurtDeResourceDeleteCallBack");
-        ShowInfo("permanent", DonaCadena3("Petició enviada", "Petición enviada", "Request sent"));
+        ShowInfo("permanent", DonaCadena3("PeticiÃ³ enviada", "PeticiÃ³n enviada", "Request sent"));
 	return false;
 }
 
@@ -2569,7 +2569,7 @@ function SurtDeHRefResourceChanges(avis)
 {
 	if (avis)
 	{
-		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
+		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "Â¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
 			return false;
 	}
 	ChangePannel("resources", true);
@@ -2584,7 +2584,7 @@ function SurtDeHRefResourceChangesCallBack()
 
 function SurtDeHRefResourceDeleteCallBack()
 {
-	ShowInfo("short", DonaCadena3("Hiperenllaç esborrat", "Hiperenllace eliminado", "Hiperlink deleted"));
+	ShowInfo("short", DonaCadena3("HiperenllaÃ§ esborrat", "Hiperenllace eliminado", "Hyperlink deleted"));
 	SurtDeHRefResourceChanges(false);
 	EnumerateResources(1, true);
 }
@@ -2593,7 +2593,7 @@ function SurtDePoiResourceChanges(avis)
 {
 	if (avis)
 	{
-		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
+		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "Â¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
 			return false;
 	}
 	ChangePannel("resources", true);
@@ -2608,7 +2608,7 @@ function SurtDePoiResourceChangesCallBack()
 
 function SurtDePoiResourceDeleteCallBack()
 {
-	ShowInfo("short", DonaCadena3("Punt d'interés esborrat", "Punto de interés eliminado", "Point of interest deleted"));
+	ShowInfo("short", DonaCadena3("Punt d'interÃ©s esborrat", "Punto de interÃ©s eliminado", "Point of interest deleted"));
 	SurtDePoiResourceChanges(false);
 	EnumerateResources(1, true);
 }
@@ -2640,7 +2640,7 @@ var d;
 	{
 		document.getElementById("reason-poi-resource_alert").innerHTML+=DonaCadena3("Velocitat", "Velocidad", "Speed")+": "+position.coords.speed*3.6 + " km/h. ";
 		if (position.coords.heading)
-			document.getElementById("reason-poi-resource_alert").innerHTML+=DonaCadena3("Direcció", "Dirección", "Heading")+": "+position.coords.heading + ".";
+			document.getElementById("reason-poi-resource_alert").innerHTML+=DonaCadena3("DirecciÃ³", "DirecciÃ³n", "Heading")+": "+position.coords.heading + ".";
 	}
 }
 
@@ -2649,17 +2649,17 @@ function GetPoiFromDeviceErrorCallBack(error)
 	switch (error.code) 
 	{
 		case error.PERMISSION_DENIED:
-			ShowInfo("long", DonaCadena3("L'usuari ha denegat la petició de geolocalització.", "El usuario ha denegado la petición de geolocalización.", "User denied the request for Geolocation."));
+			ShowInfo("long", DonaCadena3("L'usuari ha denegat la peticiÃ³ de geolocalitzaciÃ³.", "El usuario ha denegado la peticiÃ³n de geolocalizaciÃ³n.", "User denied the request for Geolocation."));
 			break;
 	        case error.POSITION_UNAVAILABLE:
-			ShowInfo("long", DonaCadena3("La informació de geolocalització no està disponible.", "La informació de geolocalització no està disponible", "Location information is unavailable."));
+			ShowInfo("long", DonaCadena3("La informaciÃ³ de geolocalitzaciÃ³ no estÃ  disponible.", "La informaciÃ³ de geolocalitzaciÃ³ no estÃ  disponible", "Location information is unavailable."));
 			break;
         	case error.TIMEOUT:
-			ShowInfo("long", DonaCadena3("La petició per obtenir la geolocalitzacion ha caducat.", "La petición para obtenir la geolocalización ha caducado.", "The request to get user location timed out."));
+			ShowInfo("long", DonaCadena3("La peticiÃ³ per obtenir la geolocalitzacion ha caducat.", "La peticiÃ³n para obtenir la geolocalizaciÃ³n ha caducado.", "The request to get user location timed out."));
 			break;
 		case error.UNKNOWN_ERROR:
 		default:
-			ShowInfo("long", DonaCadena3("Error desconnegut en la geolocalització.", "Error desconocido en la geolocalización.", "Unknown error occurred in geolocation."));
+			ShowInfo("long", DonaCadena3("Error desconnegut en la geolocalitzaciÃ³.", "Error desconocido en la geolocalizaciÃ³n.", "Unknown error occurred in geolocation."));
 			break;
 	}
 }
@@ -2670,21 +2670,21 @@ function GetPoiFromDevice()
 {
 	if (navigator.geolocation) 
 	{
-		ShowInfo("permanent", DonaCadena3("Intentant obtenint la informació de geolocalització", "Intentando obtener la información de geolocalización", "Trying to get the geolocation information"));
+		ShowInfo("permanent", DonaCadena3("Intentant obtenint la informaciÃ³ de geolocalitzaciÃ³", "Intentando obtener la informaciÃ³n de geolocalizaciÃ³n", "Trying to get the geolocation information"));
 		navigator.geolocation.getCurrentPosition(GetPoiFromDeviceCallBack, GetPoiFromDeviceErrorCallBack);		
 		if (TimeOutGPS)
 			clearTimeout(TimeOutGPS);
-		TimeOutGPS=setTimeout("ShowInfo('short', DonaCadena3('Intentant obtenint més exactitud', 'Intentando obtener más exactitud', 'Trying to get more accuracy'));navigator.geolocation.getCurrentPosition(GetPoiFromDeviceCallBack, GetPoiFromDeviceErrorCallBack, {maximumAge:600000, timeout:12000, enableHighAccuracy: true});", 1800);
+		TimeOutGPS=setTimeout("ShowInfo('short', DonaCadena3('Intentant obtenint mÃ©s exactitud', 'Intentando obtener mÃ¡s exactitud', 'Trying to get more accuracy'));navigator.geolocation.getCurrentPosition(GetPoiFromDeviceCallBack, GetPoiFromDeviceErrorCallBack, {maximumAge:600000, timeout:12000, enableHighAccuracy: true});", 1800);
 	}
 	else 
-		ShowInfo("long", DonaCadena3("La geolocalització des del dispositiu no està suportada en aquest navegador d'Internet", "La geolocalización desde el dispositivo no está suportada en este navegador de Internet", "Geolocation is not supported by this Internet browser"));
+		ShowInfo("long", DonaCadena3("La geolocalitzaciÃ³ des del dispositiu no estÃ  suportada en aquest navegador d'Internet", "La geolocalizaciÃ³n desde el dispositivo no estÃ¡ suportada en este navegador de Internet", "Geolocation is not supported by this Internet browser"));
 }
 
 function SurtDeFeedbackResourceChanges(avis)
 {
 	if (avis)
 	{
-		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
+		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "Â¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
 			return false;
 	}
 	if (ActionAfterSignIn==TancaFinestraNimmbus)
@@ -2702,7 +2702,7 @@ function SurtDeFeedbackResourceChangesCallBack()
 
 function SurtDeFeedbackResourceDeleteCallBack()
 {
-	ShowInfo("short", DonaCadena3("Valoració esborrada", "Valoración eliminada", "Feedback deleted"));
+	ShowInfo("short", DonaCadena3("ValoraciÃ³ esborrada", "ValoraciÃ³n eliminada", "Feedback deleted"));
 	SurtDeFeedbackResourceChanges(false);
 	EnumerateResources(1, true);
 }
@@ -2711,7 +2711,7 @@ function SurtDeCitationResourceChanges(avis)
 {
 	if (avis)
 	{
-		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
+		if (false==confirm(DonaCadena3("Vol sortir sense guardar?", "Â¿Desea salir sin guardar?", "Do you want to exit without saving changes?")))
 			return false;
 	}
 	ChangePannel("resources", true);
@@ -2726,7 +2726,7 @@ function SurtDeCitationResourceChangesCallBack()
 
 function SurtDeCitationResourceDeleteCallBack()
 {
-	ShowInfo("short", DonaCadena3("Citació esborrada", "Citación eliminada", "Citation deleted"));
+	ShowInfo("short", DonaCadena3("CitaciÃ³ esborrada", "CitaciÃ³n eliminada", "Citation deleted"));
 	SurtDeCitationResourceChanges(false);
 	EnumerateResources(1, true);
 }
@@ -2921,12 +2921,12 @@ function SendAccountChanges()
 		clearTimeout(NewUserChangeTimeOut);
 	if (document.account_form.current_pass.value!="" && document.account_form.current_pass.value!=document.sign_in.pass.value)
 	{
-		ShowInfo("long", DonaCadena3("La teva contrasenya actual no coincideix amb la que has indicat.", "Su contraseña actual no coincide con la que ha indicado.", "Your current password does not match with the one provided."));
+		ShowInfo("long", DonaCadena3("La teva contrasenya actual no coincideix amb la que has indicat.", "Su contraseÃ±a actual no coincide con la que ha indicado.", "Your current password does not match with the one provided."));
 		return false;
 	}
 	if (document.account_form.new_pass.value!="" && document.account_form.new_pass.value!=document.account_form.new_pass_valid.value)
 	{
-		ShowInfo("long", DonaCadena3("La nova contrasenya no coincideix amb la de validació.", "Su nueva contraseña no coincide con la de validación.", "Your new password does not match with the validation one."));
+		ShowInfo("long", DonaCadena3("La nova contrasenya no coincideix amb la de validaciÃ³.", "Su nueva contraseÃ±a no coincide con la de validaciÃ³n.", "Your new password does not match with the validation one."));
 		return false;
 	}
 	RemoveInfo("long");
@@ -3007,11 +3007,11 @@ var elem;
 					if (process_name=="NB_USER:AVAILABLE")
 					{
 						if (s=="available")
-							elem.innerHTML=DonaCadena3("Disponible!", "¡Disponible!", "Available!");
+							elem.innerHTML=DonaCadena3("Disponible!", "Â¡Disponible!", "Available!");
 						else if (s=="empty")
 							elem.innerHTML=DonaCadena3("El nom d'usuari no pot ser buit", "El nombre de usuario no puede ser blanco", "Username can't be blank");
 						else if (s=="same")
-							elem.innerHTML=DonaCadena3("El nom d'usuari és el que ja tens", "El nombre de usuario es el que ya tiene", "Username is what you already have");
+							elem.innerHTML=DonaCadena3("El nom d'usuari Ã©s el que ja tens", "El nombre de usuario es el que ya tiene", "Username is what you already have");
 						else if (s=="taken")
 							elem.innerHTML=DonaCadena3("El nom d'usuari ha estat reservada per altres", "El nombre de usuario ha sido reservado por otros", "Username has already been taken");							
 						UpdateLastServer();
@@ -3023,7 +3023,7 @@ var elem;
 						else if (s=="medium")
 							elem.innerHTML=DonaCadena3("Robustesa mitjana", "Robustez media", "Medium");
 						else if (s=="weak")
-							elem.innerHTML=DonaCadena3("Fràgil", "Frágil", "Weak");
+							elem.innerHTML=DonaCadena3("FrÃ gil", "FrÃ¡gil", "Weak");
 						else if (s=="user")
 							elem.innerHTML=DonaCadena3("No pot contenir el nom d'usuari", "No puede contener el nombre de usuario", "Cannot contain the user name");							
 						else if (s=="short")
@@ -3146,9 +3146,9 @@ function CheckPassValidCorrectness(alert_id, pass, pass_valid)
 		document.getElementById(alert_id).style.display="inline";
 
 		if (pass==pass_valid)
-			document.getElementById(alert_id).innerHTML=DonaCadena3("Correcte!", "¡Correcto!", "Ok!");
+			document.getElementById(alert_id).innerHTML=DonaCadena3("Correcte!", "Â¡Correcto!", "Ok!");
 		else
-			document.getElementById(alert_id).innerHTML=DonaCadena3("Error de verificació de contrasenya", "Error de verificación de contraseña", "Password verification error");
+			document.getElementById(alert_id).innerHTML=DonaCadena3("Error de verificaciÃ³ de contrasenya", "Error de verificaciÃ³n de contraseÃ±a", "Password verification error");
 	}
 	PassValidChangeTimeOut=0;
 	return;
@@ -3192,9 +3192,9 @@ function CheckCurrentPassCorrectness()
 		document.getElementById("current_pass_alert").style.display="inline";
 	
 		if (document.account_form.current_pass.value==document.sign_in.pass.value)
-			document.getElementById("current_pass_alert").innerHTML=DonaCadena3("Correcta!", "¡Correcta!", "Ok!");
+			document.getElementById("current_pass_alert").innerHTML=DonaCadena3("Correcta!", "Â¡Correcta!", "Ok!");
 		else
-			document.getElementById("current_pass_alert").innerHTML=DonaCadena3("Contrasenya incorrecta", "Contraseña incorrecta!", "Wrong password");
+			document.getElementById("current_pass_alert").innerHTML=DonaCadena3("Contrasenya incorrecta", "ContraseÃ±a incorrecta!", "Wrong password");
 	}
 	CurrentPassChangeTimeOut=0;
 	return;
@@ -3734,9 +3734,9 @@ Language: English
 <span class="caret-inner"></span>
 </div>
 <a class="dropdown-list_active" onClick="ChangeLanguage(0);SwitchDropDownList('dropdown-language', 'front-language-list');">
-Català</a>
+CatalÃ </a>
 <a class="dropdown-list_active" onClick="ChangeLanguage(1);SwitchDropDownList('dropdown-language', 'front-language-list');">
-Español</a>
+EspaÃ±ol</a>
 <a class="dropdown-list_active" onClick="ChangeLanguage(2);SwitchDropDownList('dropdown-language', 'front-language-list');">
 English</a>
 </div>
@@ -4296,8 +4296,8 @@ Sign out</a>
 <label class="control-label" id="language_screen" for="language_screen_value"></label>
 <div class="controls">
 <select class="text-input" id="language_screen_value" name="language">
-<option value="cat">Català</option>
-<option value="spa">Español</option>
+<option value="cat">CatalÃ </option>
+<option value="spa">EspaÃ±ol</option>
 <option value="eng">English</option>
 </select>
 <p id="language_screen_descrip"></p>
