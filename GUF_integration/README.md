@@ -55,7 +55,11 @@ Example of sucessful response:
 </feed>
 ```
 
-To get more information about a specific feedback item you should extract the resource_id from the atom response entry and follow the RETRIEVE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE=eng&USER=Anonymous&RESOURCE={resource_id}.
+To get more information about a specific feedback item you have two alternatives:
+
+The simpler (but not necessarily appropiate) alternative is to modify the above request to add CONTENT=full. By doing so the full content of the element is inserted in the "content" element of the atom file.
+
+The second alternative is to extract the resource_id from the atom response entry and follow the RETRIEVE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE=eng&USER=Anonymous&RESOURCE={resource_id}.
 
 Please note that this URL is provided directly in each entry of the atom feed in the link element.
 
@@ -197,7 +201,7 @@ Example of a succesful feedback retrieval:
 						</guf:userIdentifier>						<guf:userDetails>
 							<cit:CI_Individual>
 								<cit:name>
-									<gco:CharacterString>Joan Masó</gco:CharacterString>
+									<gco:CharacterString>Joan MasÃ³</gco:CharacterString>
 								</cit:name>
 								<cit:contactInfo>
 									<cit:CI_Contact>
