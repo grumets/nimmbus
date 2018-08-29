@@ -10,7 +10,9 @@ For each entry in a catalogue, a button with a text [Add feedback] is expected, 
 
 The button will start another window with the NiMMbus interface (href target=_blank). To ease the process to the user, the link to NiMMbus can be populated with the target_code and target_codespace of the catalogue entry (a target_title is also recommended).
 
-To create the URL please follow the template: https://www.opengis.uab.cat/nimmbus/index.htm?target_title={target_title}&target_code={target_code}&target_codespace={target_codespace}&page=ADDFEEDBACK&share_borrower_1=Anonymous
+To create the URL please follow the template: https://www.opengis.uab.cat/nimmbus/index.htm?target_title={target_title}&target_code={target_code}&target_codespace={target_codespace}&page=ADDFEEDBACK&share_borrower_1=Anonymous&access_token_type={SSO_system}
+
+At the moment, Single-Sign-On systems available are: NextGEOSS, LandSense, Google or NiMMbus.
 
 For more details go to [test htm](../client_js/test.htm).
 
@@ -201,7 +203,7 @@ Example of a succesful feedback retrieval:
 						</guf:userIdentifier>						<guf:userDetails>
 							<cit:CI_Individual>
 								<cit:name>
-									<gco:CharacterString>Joan Masó</gco:CharacterString>
+									<gco:CharacterString>Joan Maso</gco:CharacterString>
 								</cit:name>
 								<cit:contactInfo>
 									<cit:CI_Contact>
