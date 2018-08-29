@@ -1,4 +1,5 @@
 /*
+	This is part of the NiMMbus libraries.
   The main objective of this library is to read an XML Atom encoding for OGC OWS Context
   and return the same object structure that is specified in GeoJSON encoding for OWS Context
 
@@ -46,16 +47,18 @@ return point_coords
 
 function ParseOWSContextAtomAuthor(author)
 {
-	this.name=GetValueXMLElementByName(author, "atom", "name");
-	this.email=GetValueXMLElementByName(author, "atom", "email");
-	this.uri=GetValueXMLElementByName(author, "atom", "uri");
+	return {
+		name: GetValueXMLElementByName(author, "atom", "name"),
+		email: GetValueXMLElementByName(author, "atom", "email"),
+		uri: GetValueXMLElementByName(author, "atom", "uri")
+	}
 }
 
 function ParseOWSContextAtomAuthors(entry)
 {
 var i_author=0;
 
-	var authors=new Array();
+	var authors=[];
 	
 	var elems=entry.childNodes;
 	if (elems)
@@ -64,7 +67,7 @@ var i_author=0;
 		{
 			if (elems[item].nodeName=="author" || elems[item].nodeName=="atom:author")
 			{
-				authors[i_author]=new ParseOWSContextAtomAuthor(elems.item(item));
+				authors[i_author]=ParseOWSContextAtomAuthor(elems.item(item));
 				i_author++;
 			}
 		}
@@ -74,17 +77,19 @@ var i_author=0;
 
 function ParseOWSContextAtomLink(link)
 {
-	this.href=GetValueXMLAttributeByName(link, "atom", "href");
-	this.type=GetValueXMLAttributeByName(link, "atom", "type");
-        this.hreflang=GetValueXMLAttributeByName(link, "atom", "hreflang");
-        this.title=GetValueXMLAttributeByName(link, "atom", "title");
-        this.length=GetValueXMLAttributeByName(link, "atom", "length");
+	return {
+			href: GetValueXMLAttributeByName(link, "atom", "href"),
+			type: GetValueXMLAttributeByName(link, "atom", "type"),
+			hreflang: GetValueXMLAttributeByName(link, "atom", "hreflang"),
+			title: GetValueXMLAttributeByName(link, "atom", "title"),
+			length: GetValueXMLAttributeByName(link, "atom", "length")
+		};
 }
 
 function ParseOWSContextAtomLinks(entry)
 {
 var i_link=0;
-var rel;
+var rel, links={};
 
 	var elems=entry.childNodes;
 	if (elems)
@@ -96,47 +101,48 @@ var rel;
 				rel=GetValueXMLAttributeByName(elems[item], "atom", "rel");
 				if (rel=="alternate" || rel==null)
 				{
-					if (!this.alternates)
-						this.alternates=new Array();
-					this.alternates[this.alternates.length]=new ParseOWSContextAtomLink(elems[item]);
+					if (!links.alternates)
+						links.alternates=[];
+					links.alternates[links.alternates.length]=ParseOWSContextAtomLink(elems[item]);
 				}
 				if (rel=="related")
 				{
-					if (!this.relateds)
-						this.relateds=new Array();
-					this.relateds[this.relateds.length]=new ParseOWSContextAtomLink(elems[item]);
+					if (!links.relateds)
+						links.relateds=[];
+					links.relateds[links.relateds.length]=ParseOWSContextAtomLink(elems[item]);
 				}
 				if (rel=="self")
 				{
-					if (!this.selfs)
-						this.selfs=new Array();
-					this.selfs[this.selfs.length]=new ParseOWSContextAtomLink(elems[item]);
+					if (!links.selfs)
+						links.selfs=[];
+					links.selfs[links.selfs.length]=ParseOWSContextAtomLink(elems[item]);
 				}
 				if (rel=="enclosure")
 				{
-					if (!this.enclosures)
-						this.enclosures=new Array();
-					this.enclosures[this.enclosures.length]=new ParseOWSContextAtomLink(elems[item]);
+					if (!links.enclosures)
+						links.enclosures=[];
+					links.enclosures[links.enclosures.length]=ParseOWSContextAtomLink(elems[item]);
 				}
 				if (rel=="icon")
 				{
-					if (!this.icons)
-						this.icons=new Array();
-					this.icons[this.icons.length]=new ParseOWSContextAtomLink(elems[item]);
+					if (!links.icons)
+						links.icons=[];
+					links.icons[links.icons.length]=ParseOWSContextAtomLink(elems[item]);
 				}
 				if (rel=="via")
 				{
-					if (!this.via)
-						this.via=new ParseOWSContextAtomLink(elems[item]);
+					if (!links.via)
+						links.via=ParseOWSContextAtomLink(elems[item]);
 				}
 			}
 		}
 	}
+	return links;
 }
 
 function ParseOWSContextGmlPos(gml_pos)
 {
-	coords=new Array();
+var coords=[];
 	if (gml_pos && gml_pos.childNodes[0] && gml_pos.childNodes[0].nodeValue)
 	{
 		var s=gml_pos.childNodes[0].nodeValue;
@@ -150,16 +156,18 @@ function ParseOWSContextGmlPos(gml_pos)
 
 function ParseOWSContextGmlPoint(gml_point)
 {
-	this.type="Point";
+var point={};
+	point.type="Point";
 	var elems=gml_point.childNodes;
 	if (elems)
 	{
 		for (var item=0; item<elems.length; item++)
 		{
 			if (elems[item].nodeName=="pos" || elems[item].nodeName=="gml:pos")
-				this.coordinates=ParseOWSContextGmlPos(elems.item(item));
+				point.coordinates=ParseOWSContextGmlPos(elems.item(item));
 		}
 	}
+	return point;
 }
 
 function ParseOWSContextGeoRSSWhere(georss_where)
@@ -170,7 +178,7 @@ function ParseOWSContextGeoRSSWhere(georss_where)
 		for (var item=0; item<elems.length; item++)
 		{
 			if (elems[item].nodeName=="Point" || elems[item].nodeName=="gml:Point")
-				return new ParseOWSContextGmlPoint(elems.item(item));
+				return ParseOWSContextGmlPoint(elems.item(item));
 		}
 	}
 	return null;
@@ -209,16 +217,18 @@ function ParseOWSContextAtomEntryGeoRSSElevation(entry)
 
 function ParseOWSContextAtomCategory(category)
 {
-  this.term=GetValueXMLAttributeByName(category, "atom", "term");
-	this.scheme=GetValueXMLAttributeByName(category, "atom", "scheme");
-	this.label=GetValueXMLAttributeByName(category, "atom", "label");
+  	return {
+		term: GetValueXMLAttributeByName(category, "atom", "term"),
+		scheme: GetValueXMLAttributeByName(category, "atom", "scheme"),
+		label: GetValueXMLAttributeByName(category, "atom", "label")
+	}
 }
 
 function ParseOWSContextAtomCategories(entry)
 {
 var i_category=0;
 
-	var categories=new Array();
+	var categories=[];
 	
 	var elems=entry.childNodes;
 	if (elems)
@@ -227,7 +237,7 @@ var i_category=0;
 		{
 			if (elems[item].nodeName=="category" || elems[item].nodeName=="atom:category")
 			{
-				categories[i_category]=new ParseOWSContextAtomCategory(elems.item(item));
+				categories[i_category]=ParseOWSContextAtomCategory(elems.item(item));
 				i_category++;
 			}
 		}
@@ -237,57 +247,63 @@ var i_category=0;
 
 function ParseOWSContextAtomEntryProperties(entry)
 {
-	this.title=GetValueXMLElementByName(entry, "atom", "title");
-	this.subtitle=GetValueXMLElementByName(entry, "atom", "subtitle");
-	this.updated=GetValueXMLElementByName(entry, "atom", "updated");
-	this.authors=ParseOWSContextAtomAuthors(entry);
-	this.publisher=GetValueXMLElementByName(entry, "atom", "publisher");
-	this.rights=GetValueXMLElementByName(entry, "dc", "rights");
-	this.elevation=ParseOWSContextAtomEntryGeoRSSElevation(entry);
-	this.content=GetValueXMLElementByName(entry, "atom", "content");
-	this.links=new ParseOWSContextAtomLinks(entry);
-	//this.temporalExtent 
+	return {
+		title: GetValueXMLElementByName(entry, "atom", "title"),
+		subtitle: GetValueXMLElementByName(entry, "atom", "subtitle"),
+		updated: GetValueXMLElementByName(entry, "atom", "updated"),
+		authors: ParseOWSContextAtomAuthors(entry),
+		publisher: GetValueXMLElementByName(entry, "atom", "publisher"),
+		rights: GetValueXMLElementByName(entry, "dc", "rights"),
+		elevation: ParseOWSContextAtomEntryGeoRSSElevation(entry),
+		content: GetValueXMLElementByName(entry, "atom", "content"),
+		links: ParseOWSContextAtomLinks(entry),
+	//temporalExtent 
 	//preview
 	//contentByRef, offering
 	//contextMetadata
 	//active, minScaleDenominator, maxScaleDenominator, folder
-	this.categories=ParseOWSContextAtomCategories(entry);
+		categories: ParseOWSContextAtomCategories(entry)
+	}
 }
 
 function ParseOWSContextAtomEntry(entry)
 {
-	this.id=GetValueXMLElementByName(entry, "atom", "id");
-	this.properties=new ParseOWSContextAtomEntryProperties(entry);
-	this.geometry=ParseOWSContextAtomEntryGeoRSSPosition(entry);
+	return {
+		id: GetValueXMLElementByName(entry, "atom", "id"),
+		properties: ParseOWSContextAtomEntryProperties(entry),
+		geometry: ParseOWSContextAtomEntryGeoRSSPosition(entry)
+	}
 }
 
 function ParseOWSContextAtomMainProperties(root)
 {
-	this.lang=GetValueXMLAttributeByName(root, "xml", "lang");
-	this.title=GetValueXMLElementByName(root, "atom", "title");
-	this.subtitle=GetValueXMLElementByName(root, "atom", "subtitle");
-	this.updated=GetValueXMLElementByName(root, "atom", "updated");
-	this.authors=ParseOWSContextAtomAuthors(root);
-	this.publisher=GetValueXMLElementByName(root, "atom", "publisher");
-	this.creator=GetValueXMLElementByName(root, "atom", "creator");
-	this.rights=GetValueXMLElementByName(root, "dc", "rights");
-	this.links=new ParseOWSContextAtomLinks(root);
-	//this.areaOfInterest  deduir de georss where.
-	//this.timeIntervalOfInterest
+	return {
+		lang: GetValueXMLAttributeByName(root, "xml", "lang"),
+		title: GetValueXMLElementByName(root, "atom", "title"),
+		subtitle: GetValueXMLElementByName(root, "atom", "subtitle"),
+		updated: GetValueXMLElementByName(root, "atom", "updated"),
+		authors: ParseOWSContextAtomAuthors(root),
+		publisher: GetValueXMLElementByName(root, "atom", "publisher"),
+		creator: GetValueXMLElementByName(root, "atom", "creator"),
+		rights: GetValueXMLElementByName(root, "dc", "rights"),
+		links: ParseOWSContextAtomLinks(root),
+	//areaOfInterest  deduir de georss where.
+	//timeIntervalOfInterest
 	//contextMetadata
 	//categories
         /*I also include this 3 tags documented in http://www.opensearch.org/Specifications/OpenSearch/1.1/
           even if they are not included in the OGC 14-055 document.*/
-	this.totalResults=GetValueXMLElementByName(root, "opensearch", "totalResults");
-        this.startIndex=GetValueXMLElementByName(root, "opensearch", "startIndex");
-        this.itemsPerPage=GetValueXMLElementByName(root, "opensearch", "itemsPerPage");
+		totalResults: GetValueXMLElementByName(root, "opensearch", "totalResults"),
+		startIndex: GetValueXMLElementByName(root, "opensearch", "startIndex"),
+		itemsPerPage: GetValueXMLElementByName(root, "opensearch", "itemsPerPage")
+	}
 }
 
 function ParseOWSContextAtomEntries(root)
 {
 var i_entry=0;
 
-	var features=new Array();
+	var features=[];
 	
 	var elems=root.childNodes;
 	if (elems)
@@ -296,7 +312,7 @@ var i_entry=0;
 		{
 			if (elems[item].nodeName=="entry" || elems[item].nodeName=="atom:entry")
 			{
-				features[i_entry]=new ParseOWSContextAtomEntry(elems.item(item));
+				features[i_entry]=ParseOWSContextAtomEntry(elems.item(item));
 				i_entry++;
 			}
 		}
@@ -306,8 +322,10 @@ var i_entry=0;
 
 function ParseOWSContextAtom(root)
 {	
-	this.type="FeatureCollection";
-	this.id=GetValueXMLElementByName(root, "atom", "id");
-	this.properties=new ParseOWSContextAtomMainProperties(root);
-	this.features=ParseOWSContextAtomEntries(root);
+	return {
+		type: "FeatureCollection", 
+		id: GetValueXMLElementByName(root, "atom", "id"),
+		properties: ParseOWSContextAtomMainProperties(root),
+		features: ParseOWSContextAtomEntries(root)
+	}
 }

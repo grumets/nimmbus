@@ -654,21 +654,24 @@ English</a>
 </div>
 
 <div class="white-area" style="left: 50%; top: 130px; width: 300px; height: 80px;">
-<form id="sign_in" name="sign_in" class="packet_paragraph" method="get" method="GET" action="index.htm" target="_blank">
+<form id="sign_in" name="sign_in" class="packet_paragraph" method="get" action="." target="_blank">
 <p class="packet_paragraph" id="sign_in_create_citation"></p>
 <p class="packet_paragraph"><input id="sign_in_title" type="text" size="80" maxlength="254" class="text-input" style="width: 296px;" name="target_title" value="" placeholder="Title" autocomplete="on"></p>
-<p class="packet_paragraph"><input id="sign_in_code" type="text" size="80" maxlength="254" class="text-input" name="target_code" value="" style="width: 140px;" placeholder="code">
-<p class="packet_paragraph"><input id="sign_in_codespace" type="text" size="80" maxlength="254" class="text-input" name="target_codespace" value="" style="width: 140px;" placeholder="code space">
+<p class="packet_paragraph"><input id="sign_in_code" type="text" size="80" maxlength="254" class="text-input" name="target_code" value="" style="width: 140px;" placeholder="code"></p>
+<p class="packet_paragraph"><input id="sign_in_codespace" type="text" size="80" maxlength="254" class="text-input" name="target_codespace" value="" style="width: 140px;" placeholder="code space"></p>
 <input type="hidden" name="page" value="ADDFEEDBACK">
 <input type="hidden" name="share_borrower_1" value="Anonymous">
-<input id="sign_in_btn" class="submit_btn" type="submit" value="Sign in"></p>
+<select id="sign_in_access_token_type" name="access_token_type" class="text-input">
+  <option value="">NiMMbus</option>
+  <option value="nextgeoss">NextGEOSS</option>
+  <option value="landsense">LandSense</option>
+  <option value="google">Google</option>
+  <option value="debug">Debug</option>
+</select><br>
+<input id="sign_in_btn" class="submit_btn" type="submit" value="Sign in">
 </form>
 </div>
-
 </div>  <!--End of id="front-page" -->
-
-
-
 
 </body>
 </html>
