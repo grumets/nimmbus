@@ -24,6 +24,8 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * USER=
   * PASSWORD=
   * TOKEN= (optional)
+  * EMAIL=
+  * NAME=
 
 * User Modification
   * IDENTIFIER=NB_USER:MODIFY
@@ -74,7 +76,7 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * TITLE=
   * REASON=
   * TYPE=
-  * SHARE_BORROWER_#= (optional, user_id, user email or "Anonymous")
+  * SHARE_BORROWER_#= (optional, user_name, user email or "Anonymous")
   * SHARE_RIGHTS_#= (optional, a combination of the following letters R: Read, W: Write, S: Share. if Borrower is Anonymous this parameter does not apply and R is assumed)
 
 * Resource HREF creation particulatities
@@ -216,6 +218,7 @@ To manage publications within a feedback item, there are three strategies are av
   * PASSWORD=
   * RESOURCE=
   * BORROWER=
+  * BORROWER_TYPE= (optional. Needed if BORROWER= is provided and should be validated y external user system)
   * RIGHTS= (A combination of the following letters R: Read, W: Write, S: Share)
 
 * Delete a share target (borrower) to a resource
@@ -225,6 +228,7 @@ To manage publications within a feedback item, there are three strategies are av
   * PASSWORD=
   * RESOURCE=
   * BORROWER=
+  * BORROWER_TYPE= (optional. Needed if BORROWER= is provided and should be validated y external user system)
 
 * Resource share enumeration (Enumerates users (borrowers) that have access to a resource)
   * IDENTIFIER=NB_SHARE:ENUMERATE
@@ -239,7 +243,9 @@ To manage publications within a feedback item, there are three strategies are av
   * USER=
   * PASSWORD= 
   * SHARER=  (user SHARER= or BORROWER= but not both. If SHARER= is used, the USER= is the borrower and do not want to accept shares from SHARER=)
+  * SHARER_TYPE= (optional. Needed if SHARER= is provided and should be validated y external user system)
   * BORROWER= (if the USER= is the sharer and want to auto-deny sharing with the borrower. Used internaly with tokens)
+  * BORROWER_TYPE= (optional. Needed if BORROWER= is provided and should be validated y external user system)
 
 * Share authorized (Enumerates users (borrowers) that have authorized to have access to a resource type from this user)
   * IDENTIFIER=NB_SHARE:AUTORIZED
@@ -250,7 +256,7 @@ To manage publications within a feedback item, there are three strategies are av
 
 ## NB_SYNC class request operations
 
-* Write request status request.
+* Request status of a previous create, edit or delete process.
   * IDENTIFIER=NB_SYNC:GETRETURN
   * LANGUAGE=cat,spa,eng
   * SYNC_ID=
