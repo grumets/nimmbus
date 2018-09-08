@@ -1,7 +1,9 @@
 /*
-  The main objective of this library is to compile a set of functions that makes reading an XML a bit easier
-     Developed by Joan Masó.
-     License: Attribution 4.0 International (CC BY 4.0) http://creativecommons.org/licenses/by/4.0/
+	This is part of the NiMMbus libraries.
+	The main objective of this library is to compile a set of functions that makes reading an XML a bit easier.
+	It also includes the AJAX function loadFile();
+	Developed by Joan Masó.
+	License: Attribution 4.0 International (CC BY 4.0) http://creativecommons.org/licenses/by/4.0/
 */
 
 
@@ -65,4 +67,70 @@ var a;
 	    	return root.getElementsByTagName(name);
 	}
     	return root.getElementsByTagName(name);
+}
+
+function IsXMLMimeType(mimetype)
+{
+	if (typeof mimetype!=="undefined" && (mimetype=="text/xml" || mimetype=="application/xml" || 
+		mimetype=="application/vnd.ogc.gml" || mimetype=="application/vnd.ogc.gml/3.1.1" || 
+		mimetype=="subtype=gml/3.1.1"))
+		return true;
+	else
+		return false;
+}
+
+function loadFile(path, mimetype, success, error, extra_param)
+{
+var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function()
+	{
+        	if (xhr.readyState === XMLHttpRequest.DONE) 
+		{
+	            	if (xhr.status === 200) 
+			{
+				if (mimetype && mimetype!="" && mimetype!=xhr.getResponseHeader('content-type'))
+				{
+			                if (error)
+					{
+						var s=null;
+						if (xhr.response)
+						{
+							var s=xhr.response;
+							if (-1!=s.indexOf("<body>"))
+								s=s.substring(s.indexOf("<body>"));
+						}
+						error("Wrong response content type:"+ xhr.getResponseHeader('content-type') + "\n\nResponse headers:\n"+ ((xhr.getAllResponseHeaders && xhr.getAllResponseHeaders()) ? xhr.getAllResponseHeaders() : "") + ((s) ? "\nResponse Body:\n"+s : ""), extra_param);
+					}
+				}
+				else
+				{
+	                		if (success)
+					{
+						if (IsXMLMimeType(mimetype))
+							success(xhr.responseXML, extra_param);
+						else
+							success(xhr.responseText, extra_param);
+					}
+				}
+			} 
+			else 
+			{
+                		if (error)
+				{
+					var s=null;
+					if (xhr.response)
+					{
+						var s=xhr.response;
+						if (-1!=s.indexOf("<body>"))
+							s=s.substring(s.indexOf("<body>"));
+					}
+					error(xhr.status + ": " +xhr.statusText + "\n\nURL: "+ path + ((xhr.getAllResponseHeaders && xhr.getAllResponseHeaders()) ? "\n\nResponse headers:\n"+ xhr.getAllResponseHeaders() : "") + ((s) ? "\nResponse Body:\n"+s : ""), extra_param);
+				}
+			}
+		}
+	};
+	xhr.open("GET", path, true);
+	//xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=ISO-8859-1');
+	//xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+	xhr.send();
 }
