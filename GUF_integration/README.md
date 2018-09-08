@@ -75,6 +75,7 @@ You can call the function directly or you can provide a button or link to "activ
 <a href="javascript:void();" onClick='GUFShowFeedbackInHTMLDiv(document.getElementById("div_guf"), "div_guf_internal", "resource", "CORINE map", "1234-5678-901234567", "http://www.bob.com/resources", "eng";'>Add user feedback or review previous feedback</a>"
 ```
 
+You can see all elements together in a complete [example](../client_js/test_guf_previ.htm)
 
 
 ## Javascript for the Web API
@@ -93,7 +94,7 @@ To create the URL please follow the template: https://www.opengis.uab.cat/nimmbu
 
 At the moment, Single-Sign-On systems available are: NextGEOSS, LandSense, Google or NiMMbus (being "NiMMbus" the default value).
 
-For more details go to [test htm](../client_js/test.htm).
+For more details go to to the [example](../client_js/test.htm).
 
 #### How to open the "add feedback" page in a new window
 You can use the window.open Javascript function to open the new window. Once the use clicks on save, the window will be closed and the focus will return to the main page.
