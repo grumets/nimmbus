@@ -36,6 +36,8 @@ The modular library is composed of 5 JavaScript files that should be included in
 
 ```
 
+You can get the files from [here](/joanma747/nimmbus/tree/master/client_js) or you can simply point to the full URL in https://raw.githubusercontent.com/joanma747/nimmbus/master/client_js
+
 ### Step 2: Define a division in your HTML page.
 The GUF widget will be shown in the area of the page you want. You shoudl define a division using relative position. In cao of a realtive division, the size will be redimensioned automatically when it is populated and what is below the division will be moved down to avoid overlapping with the GUF widget.
 
