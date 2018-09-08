@@ -1,26 +1,113 @@
-# Instructions for the integration of the GUF system (based on the NiMMbus service) in a catalogue
+# Instructions for the integration of the GUF system (based on the NiMMbus service) in your resources
 
-This page provides general instructions for integration. You can see an working examples of this procedure here:
+This page provides general instructions for the GUF integration with your resources. They can be part of your catalogue or can be individual web pages. A "resource" can be anything that has an identifier in the web. Nevertheless, it is expected that your resources have some spatial component. In this page we explain two ways to integrate the Geospatial User Feedback in your web application:
+
+The first one offers a **JavaScript API and a widget** that is very simple to integrate but, in contrast, provides a relative low level of flexibility. People with basic knowledge on javascript should select this one first. Basic knowledge on how to call a JavaScript function and include a library is required.
+
+The second one offers access to the **Javascript for the Web API** where the programmer retrieves directly the feedback items encoded in XML and should generate a presentation himself/herself. It provides full control on how the content is shown in the screen but it requires cosiderable more knowledge on JavaScript programming, including XML parsing and AJAX calls.
+
+There is a more complex and flexible posibility based on communicating with the server directly using the *Web API*. That will require to build a GUI for providing feedback that can take many days to build. For more information about the Web API see: ([Web API](../API))
+
+Since the first level is build on top of second level, you can investigate how to use the second level by inspecting the JavaScript code provided in the libraries used in the first level. You can create your own intermediate levels by reusing some part of this code in you own application.
+
+## What do you need to know before integrating the GUF.
+
+The integration offered in this page assumes that you want to provide feedback about a **single resource**. Provide feedback about several resources in a single page is also possible but you might requere to call the widget several times or from several places.
+
+To be able to start working with the integration, you need to have your resources uniquely identified in your system using a "code" (a.k.a. an identifier). Only identified resources can be associated to feedback items. This "code" needs to be unique in a "codespace". The convination of "code" and "codespace" should provide an identifier that can be considered unique and global. If you do not use the concept of "codespace" or "namespace", we recommend that you use the URL of your web service as the "codespace". Generally, the "codespace" is common to all your resources and can be hardcoded in your application.
+
+## JavaScript API and widget
+
+You can see this procedure in action in the following working examples:
+  * [integration with the ECOPotential](http://maps.ecopotential-project.eu).
+  * [integration with the ENEON Graph](http://www.eneon.net/graph-ev-sdg).
+
+The integration is extermelly simple
+
+### Step 1: Include the javascript library in your HTML page.
+The modular library is composed of 5 JavaScript files that should be included in your Javascript application at the begining of you web page, commonly in the <head> seccion
+
+```js
+<script language="JavaScript" src="xml.js"></script>
+<script language="JavaScript" src="owc_atom.js"></script>
+<script language="JavaScript" src="wps_iso_guf.js"></script>
+<script language="JavaScript" src="guf_locale.js"></script>
+<script language="JavaScript" src="guf.js"></script>
+
+```
+
+### Step 2: Define a division in your HTML page.
+The GUF widget will be shown in the area of the page you want. You shoudl define a division using relative position. In cao of a realtive division, the size will be redimensioned automatically when it is populated and what is below the division will be moved down to avoid overlapping with the GUF widget.
+
+```js
+<div id="div_guf" style="position: relative; width: 60%"></div>
+```
+
+In the example we create a division with the identifier "div_guf". For the moment, the division is small and it is not visible to the user because it has no content.
+
+### Step 3: Fill the division with the GUF widget.
+This will require that you call a JavaScript function with the name: GUFShowFeedbackInHTMLDiv().
+
+This function has the following parameters in sequence:
+  * elem: The object that points to the division created in step 2. To get the object you can call a common JavaScript procedure: document.getElementById("div_guf")
+  * seed_div_id: A prefix for some divisions that are going to be created inside the widget. Having this name will allow you get access to the text created in the division or even to manipulate it.
+  * rsc_type: A text that is shown as the name of the resource. You can use "resource", "dataset" or a more concrete text for this resource in particular.
+  * title: If there is no previous feedback about this resource, a citation is created in the GUF system that includes this "title".
+  * code: A unique identifier of the resource in your system.
+  * codespace: A "codespace" where the "code" is considered unique. A codespace should be a global identifier (e.g. a URI). If you do not use the concept of "codespace" or "namespace", we recommend that you use the URL of your web service as the "codespace".
+  * lang: The language used in the HTML page. you can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
+
+```js
+	GUFShowFeedbackInHTMLDiv(document.getElementById("div_guf"),
+			"div_guf_internal", 
+			"resource", 
+			"CORINE map", 
+			"1234-5678-901234567", 
+			"http://www.bob.com/resources", 
+			"eng");
+```
+
+You can call the function directly or you can provide a button or link to "activate" the widget when the user requests it. This can be done with this code:
+
+```html
+<a href="javascript:void();" onClick='GUFShowFeedbackInHTMLDiv(document.getElementById("div_guf"), "div_guf_internal", "resource", "CORINE map", "1234-5678-901234567", "http://www.bob.com/resources", "eng";'>Add user feedback or review previous feedback</a>"
+```
+
+
+
+## Javascript for the Web API
+
+You can see this procedure in action in the following working examples:
   * [integration with the DAB API](http://www.creaf.uab.cat/temp/dab) ([source code](guf_dab_nimmbus.htm)).
   * [integration with the INSPIRE Portal](http://www.creaf.uab.cat/temp/inspire) ([source code](guf_inspire_nimmbus.htm)).
 
-## How to include a button to add feedback for a catalogue entry
+### Step 1: Include a button to add feedback for resource (e.g. a catalogue entry)
 
 For each entry in a catalogue, a button with a text [Add feedback] is expected, at the end of the general description of the resource.
 
 The button will start another window with the NiMMbus interface (href target=_blank). To ease the process to the user, the link to NiMMbus can be populated with the target_code and target_codespace of the catalogue entry (a target_title is also recommended).
 
-To create the URL please follow the template: https://www.opengis.uab.cat/nimmbus/index.htm?target_title={target_title}&target_code={target_code}&target_codespace={target_codespace}&page=ADDFEEDBACK&share_borrower_1=Anonymous&access_token_type={SSO_system}
+To create the URL please follow the template: https://www.opengis.uab.cat/nimmbus?target_title={target_title}&target_code={target_code}&target_codespace={target_codespace}&page=ADDFEEDBACK&share_borrower_1=Anonymous&access_token_type={SSO_system}
 
-At the moment, Single-Sign-On systems available are: NextGEOSS, LandSense, Google or NiMMbus.
+At the moment, Single-Sign-On systems available are: NextGEOSS, LandSense, Google or NiMMbus (being "NiMMbus" the default value).
 
 For more details go to [test htm](../client_js/test.htm).
 
-## How to request feedback about a catalogue entry
+#### How to open the "add feedback" page in a new window
+You can use the window.open Javascript function to open the new window. Once the use clicks on save, the window will be closed and the focus will return to the main page.
+```js
+window.open("https://www.opengis.uab.cat/nimmbus/index.htm?...", "Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
+```
+
+The use of the JavaScript function GUFAfegirFeedbackCapa(title, code, codespace, lang) (in guf.js) can simplyfy this task.
+
+### Step 2: Request feedback about a catalogue entry
 
 For each entry in the catalogue, a list of previous user feedback items is expected to be shown. To do that the NiMMbus API allows for an easy retrieval of this information as an ATOM file format.
 
 To create the URL please follow the ENUMERATE template: https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1={catalogue_id}&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2={catalogue_namespace}&TRG_OPR_2=EQ
+
+To submit a request to the server with a URL without loosing the current page content you can use the loadFile() function (in xml.js) that will retrieve the xml document assincronously.
 
 Example of sucessful response:
 ```xml 
@@ -57,13 +144,26 @@ Example of sucessful response:
 </feed>
 ```
 
+Parsing XML in JavaScript is not and easy task. We recommend that you use the following function to convert the ATOM XML encoding to a JavaScript object that follows the OWS Context JSON encoding.
+```js
+	var owc=ParseOWSContextAtom(doc.documentElement);
+	for (var i=0; i<owc.features.length; i++)
+	{
+		title=owc.features[i].properties.title;
+	}
+```
+See the function CarregaFeedbacksAnteriors() for more details on how to do that.
+
 To get more information about a specific feedback item you have two alternatives:
 
+### Step 3a: Get more information about a specific feedback item all in once
 The simpler (but not necessarily appropiate) alternative is to modify the above request to add CONTENT=full. By doing so the full content of the element is inserted in the "content" element of the atom file.
+
+### Step 3b: Get more information about a specific feedback item one by one
 
 The second alternative is to extract the resource_id from the atom response entry and follow the RETRIEVE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE=eng&USER=Anonymous&RESOURCE={resource_id}.
 
-Please note that this URL is provided directly in each entry of the atom feed in the link element.
+Please note that this URL is provided directly in each entry of the atom feed in a link element.
 
 Example of a succesful feedback retrieval:
 ```xml
@@ -306,3 +406,11 @@ wps:ExecuteResponse/wps:ProcessOutputs/wps:Output[ows:Identifier="feedback"]/wps
 
 Comment motivation:
 wps:ExecuteResponse/wps:ProcessOutputs/wps:Output[ows:Identifier="feedback"]/wps:Data/wps:ComplexData/guf:GUF_FeedbackItem/guf:userComment/guf:GUF_UserComment/guf:motivation/guf:GUF_MotivationCode/@codeListValue
+
+Parsing XML is not easy in JavaScript is not easy. We recommend that you use the GetRetrieveResourceFeedbackOutputs() function to convert the XML encoding to a JavaScript object that easier to use.
+
+```js
+	var guf=GetRetrieveResourceFeedbackOutputs(doc.documentElement);
+	if (guf.comment)
+		comment_text=guf.comment;
+```
