@@ -11,8 +11,10 @@ Materials:
 Several integrations have been illustrated in [www.eneon.org](ENEON graph), the INSPIRE catalogue, GEO-DAB API test instance, [maps.ecopotential-project.eu](ECOPotential maps browser), etc. 
 
 ```
-This project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreement No 730329. 
-This documentation and implementation reflects only the author's view and the Agency is not responsible for any use that may be made of the information it contains. 
+This project has received funding from the European Union Horizon 2020 research and innovation programme
+under grant agreement No 730329. 
+This documentation and implementation reflects only the author's view and the Agency is not 
+responsible for any use that may be made of the information it contains. 
 ```
 
 ## Other geospatial user feedback initiatives
