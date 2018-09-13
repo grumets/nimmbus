@@ -4,17 +4,17 @@ This page provides general instructions for the GUF integration with your resour
 
 The first one offers a **JavaScript API and a widget** that is very simple to integrate but, in contrast, provides a relative low level of flexibility. People with basic knowledge on javascript should select this one first. Basic knowledge on how to call a JavaScript function and include a library is required.
 
-The second one offers access to the **Javascript for the Web API** where the programmer retrieves directly the feedback items encoded in XML and should generate a presentation himself/herself. It provides full control on how the content is shown in the screen but it requires cosiderable more knowledge on JavaScript programming, including XML parsing and AJAX calls.
+The second one offers access to the **Javascript for the Web API** where the programmer retrieves directly the feedback items encoded in XML and should generate a presentation himself/herself. It provides full control on how the content is shown in the screen but it requires considerable more knowledge on JavaScript programming, including XML parsing and AJAX calls.
 
-There is a more complex and flexible posibility based on communicating with the server directly using the *Web API*. That will require to build a GUI for providing feedback that can take many days to build. For more information about the Web API see: ([Web API](../API))
+There is a more complex and flexible possibility based on communicating with the server directly using the *Web API*. That will require to build a GUI for providing feedback that can take many days to build. For more information about the Web API see: ([Web API](../API))
 
-Since the first level is build on top of second level, you can investigate how to use the second level by inspecting the JavaScript code provided in the libraries used in the first level. You can create your own intermediate levels by reusing some part of this code in you own application.
+Since the first level is build on top of second level, you can investigate how to use the second level by inspecting the JavaScript code provided in the libraries used in the first level. You can create your own intermediate levels by reusing some part of this code in your own application.
 
 ## What do you need to know before integrating the GUF.
 
-The integration offered in this page assumes that you want to provide feedback about a **single resource**. Provide feedback about several resources in a single page is also possible but you might requere to call the widget several times or from several places.
+The integration offered in this page assumes that you want to provide feedback about a **single resource**. Provide feedback about several resources in a single page is also possible but you might require to call the widget several times or from several places.
 
-To be able to start working with the integration, you need to have your resources uniquely identified in your system using a "code" (a.k.a. an identifier). Only identified resources can be associated to feedback items. This "code" needs to be unique in a "codespace". The convination of "code" and "codespace" should provide an identifier that can be considered unique and global. If you do not use the concept of "codespace" or "namespace", we recommend that you use the URL of your web service as the "codespace". Generally, the "codespace" is common to all your resources and can be hardcoded in your application.
+To be able to start working with the integration, you need to have your resources uniquely identified in your system using a "code" (a.k.a. an identifier). Only identified resources can be associated to feedback items. This "code" needs to be unique in a "codespace". The combination of "code" and "codespace" should provide an identifier that can be considered unique and global. If you do not use the concept of "codespace" or "namespace", we recommend that you use the URL of your web service as the "codespace". Generally, the "codespace" is common to all your resources and can be hardcoded in your application.
 
 ## JavaScript API and widget
 
@@ -22,10 +22,10 @@ You can see this procedure in action in the following working examples:
   * [integration with the ECOPotential](http://maps.ecopotential-project.eu).
   * [integration with the ENEON Graph](http://www.eneon.net/graph-ev-sdg).
 
-The integration is extermelly simple
+The integration is extremely simple
 
 ### Step 1: Include the javascript library in your HTML page.
-The modular library is composed of 5 JavaScript files that should be included in your Javascript application at the begining of you web page, commonly in the <head> seccion
+The modular library is composed of 5 JavaScript files that should be included in your Javascript application at the beginning of you web page, commonly in the <head> section
 
 ```js
 <script language="JavaScript" src="xml.js"></script>
@@ -36,11 +36,10 @@ The modular library is composed of 5 JavaScript files that should be included in
 
 ```
 
-You can get the files from [here](/joanma747/nimmbus/tree/master/client_js) or you can simply point to the full URL in https://raw.githubusercontent.com/joanma747/nimmbus/master/client_js or may be better form the nimmbus sied itself http://www.opengis.uab.cat/nimmbus
-
+You can get the files from [here](/joanma747/nimmbus/tree/master/client_js) or you can simply point to the full URL in https://raw.githubusercontent.com/joanma747/nimmbus/master/client_js.
 
 ### Step 2: Define a division in your HTML page.
-The GUF widget will be shown in the area of the page you want. You shoudl define a division using relative position. In cao of a realtive division, the size will be redimensioned automatically when it is populated and what is below the division will be moved down to avoid overlapping with the GUF widget.
+The GUF widget will be shown in the area of the page you want. You should define a division using relative position. In case of a relative division, the size will be redimensioned automatically when it is populated and what is below the division will be moved down to avoid overlapping with the GUF widget.
 
 ```js
 <div id="div_guf" style="position: relative; width: 60%"></div>
@@ -95,15 +94,15 @@ To create the URL please follow the template: https://www.opengis.uab.cat/nimmbu
 
 At the moment, Single-Sign-On systems available are: NextGEOSS, LandSense, Google or NiMMbus (being "NiMMbus" the default value).
 
-For more details go to to the [example](../client_js/test.htm).
+For more details go to the [example](../client_js/test.htm).
 
 #### How to open the "add feedback" page in a new window
-You can use the window.open Javascript function to open the new window. Once the use clicks on save, the window will be closed and the focus will return to the main page.
+You can use the window.open Javascript function to open the new window. Once the user clicks on save, the window will be closed and the focus will return to the main page.
 ```js
 window.open("https://www.opengis.uab.cat/nimmbus/index.htm?...", "Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
 ```
 
-The use of the JavaScript function GUFAfegirFeedbackCapa(title, code, codespace, lang) (in guf.js) can simplyfy this task.
+The use of the JavaScript function GUFAfegirFeedbackCapa(title, code, codespace, lang) (in guf.js) can simplify this task.
 
 ### Step 2: Request feedback about a catalogue entry
 
@@ -111,9 +110,9 @@ For each entry in the catalogue, a list of previous user feedback items is expec
 
 To create the URL please follow the ENUMERATE template: https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1={catalogue_id}&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2={catalogue_namespace}&TRG_OPR_2=EQ
 
-To submit a request to the server with a URL without loosing the current page content you can use the loadFile() function (in xml.js) that will retrieve the xml document assincronously.
+To submit a request to the server with a URL without losing the current page content you can use the loadFile() function (in xml.js) that will retrieve the xml document asynchronously.
 
-Example of sucessful response:
+Example of successful response:
 ```xml 
 <?xml version="1.0" encoding="iso-8859-1"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xmlns:owc="http://www.opengis.net/owc/1.0" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xml:lang="ca">
@@ -148,7 +147,7 @@ Example of sucessful response:
 </feed>
 ```
 
-Parsing XML in JavaScript is not and easy task. We recommend that you use the following function to convert the ATOM XML encoding to a JavaScript object that follows the OWS Context JSON encoding.
+Parsing XML in JavaScript is not an easy task. We recommend that you use the following function to convert the ATOM XML encoding to a JavaScript object that follows the OWS Context JSON encoding.
 ```js
 	var owc=ParseOWSContextAtom(doc.documentElement);
 	for (var i=0; i<owc.features.length; i++)
@@ -161,7 +160,7 @@ See the function CarregaFeedbacksAnteriors() for more details on how to do that.
 To get more information about a specific feedback item you have two alternatives:
 
 ### Step 3a: Get more information about a specific feedback item all in once
-The simpler (but not necessarily appropiate) alternative is to modify the above request to add CONTENT=full. By doing so the full content of the element is inserted in the "content" element of the atom file.
+The simpler (but not necessarily appropriate) alternative is to modify the above request to add CONTENT=full. By doing so the full content of the element is inserted in the "content" element of the atom file.
 
 ### Step 3b: Get more information about a specific feedback item one by one
 
@@ -169,7 +168,7 @@ The second alternative is to extract the resource_id from the atom response entr
 
 Please note that this URL is provided directly in each entry of the atom feed in a link element.
 
-Example of a succesful feedback retrieval:
+Example of a successful feedback retrieval:
 ```xml
 <?xml version="1.0" encoding="iso-8859-1"?>
 <wps:ExecuteResponse xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" 
