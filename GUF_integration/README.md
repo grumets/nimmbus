@@ -6,7 +6,7 @@ The first one offers a **JavaScript API and a widget** that is very simple to in
 
 The second one offers access to the **Javascript for the Web API** where the programmer retrieves directly the feedback items encoded in XML and should generate a presentation himself/herself. It provides full control on how the content is shown in the screen but it requires considerable more knowledge on JavaScript programming, including XML parsing and AJAX calls.
 
-There is a more complex and flexible possibility based on communicating with the server directly using the *Web API*. That will require to build a GUI for providing feedback that can take many days to build. For more information about the Web API see: ([Web API](../API))
+There is a more complex and flexible possibility based on communicating with the server directly using the *Web API*. That will require to build a GUI for providing feedback that can take many days to build. For more information about the Web API see: ([Web API](../API)).
 
 Since the first level is build on top of second level, you can investigate how to use the second level by inspecting the JavaScript code provided in the libraries used in the first level. You can create your own intermediate levels by reusing some part of this code in your own application.
 
