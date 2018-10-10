@@ -1,0 +1,32 @@
+[[Overview]]
+== Overview
+
+This document describes NiMMbus system and its characteristics. Next subsection describes ho to sign-in the system, and allowed single-sign-on systems for users.
+
+Following sections in the document (_under construction_) explain the different pages of the system:
+
+* resources: describes the main page after sing-in: the resource list
+* citation: describes the citation resource page
+* publication: describes the publication resource page
+* feedback: describes the feedback resource page and also how to manage feedback items for other resources
+* user: describes the user page and also how to share resources with other users
+
+Moreover there are two appendices, the first one with the document history (list of versions), and the second one describing test pages created to support in NiMMbus integration in other community portals.
+
+=== Sign-in in NiMMbus
+
+The Log In page to the system is:
+
+[#2_1_log_in]
+.Log in
+image::images/2_1_log_in.png[]
+
+At the moment, several single-sign-one systems have been connected:
+
+* NextGEOSS
+* LandSense
+* Google
+
+Moreover a user in the NiMMbus user system can be created to sign-in.
+
+// See more details about user creation an management in section USER ·· com es feia el link a una altra secció?

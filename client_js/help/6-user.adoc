@@ -1,0 +1,10 @@
+[[User]]
+== User
+
+=== User options
+
+explicar la pàgina user
+
+=== Sharing Resources
+
+how to share with other users

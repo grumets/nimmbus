@@ -1,0 +1,4 @@
+[[Resources]]
+== Resources
+
+explicar la pàgina principal de llista de recursos

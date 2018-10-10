@@ -1,0 +1,10 @@
+[[Feedback]]
+== Feedback
+
+=== Feedback elements
+
+explicar la pàgina FB
+
+=== Managing feedbacks of a resource
+
+how to add new or edit feedbacks about a target

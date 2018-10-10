@@ -1,0 +1,61 @@
+// *****************************************************************************
+// please provide the following elements
+// *****************************************************************************
+// name of the help after the colon
+:title: NiMMbus Help
+:postedDate: 2018-10-08
+// name of all editors. Separate multiple editors by comma, e.g. John Wayne, Bud Spencer
+:editor: Alaitz Zabala, Joan Maso
+// *****************************************************************************
+// done, please continue with the imports at line 62 of this document
+// *****************************************************************************
+
+:titletext: {title}
+:doctype: book
+:encoding: utf-8
+:lang: en
+:toc: left
+:toclevels: 3
+:numbered:
+:sectanchors:
+:source-highlighter: coderay
+// set media to output format print or screen for pdf export
+:media: print
+
+= {title}
+
+Posted Date: {postedDate}
+
+Reference URL for this document: https://www.opengis.uab.cat/nimmbus/help
+
+Editor: {editor}
+
+Title: {titletext}
+
+''''
+
+include::1-summary.adoc[]
+
+// *****************************************************************************
+// Organize your included files as appropriate
+// *****************************************************************************
+include::2-overview.adoc[]
+
+//include::3-resources.adoc[]
+
+//include::4-citation.adoc[]
+
+//include::5-feedback.adoc[]
+
+//include::6-user.adoc[]
+
+////
+Revision History should be the last annex before the Bibliography
+Bibliography should be the last annex
+////
+include::annex-history.adoc[]
+include::annex-test-pages.adoc[]
+
+// *****************************************************************************
+// Now jump to the first file, 0-summary.adoc and start editing it for content.
+// *****************************************************************************

@@ -1,0 +1,19 @@
+[appendix]
+[[TestPages]]
+== Test pages for NiMMbus GUF integration
+
+To show NiMMbus GUF integration options, several test pages have been created. More information on NiMMbus integration can be found in NiMMbus GitHub, in https://github.com/joanma747/nimmbus/tree/master/GUF_integration[GUF integration] section.
+
+=== Option 1: JavaScript API and widget
+
+A couple of test pages have been created to show the use of the widget to integrate NiMMbus GUF in any community portal:
+
+   * General example: link:../test_widget.htm[test_widget.htm]
+   * Corine Land Cover 2012 examle: link:../test_widget_corine.htm[test_widget_corine.htm]
+
+=== Option 2: JavaScript for the Web API
+
+A couple of test pages have been created how to directly use the NiMMbus API to add or retrieve feedback items:
+
+   * New feedback example: link:../test_new_feedback.htm[test_new_feedback.htm]
+   * Retrieve feedback example: _under development_
