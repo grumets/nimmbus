@@ -1,0 +1,700 @@
+/*
+	This is part of the NiMMbus libraries.
+  The main objective of this library is to expose localised strings that are useful both for NiMMbus application and for other GUF applications
+     Developed by Joan Masó and Alaitz Zabala.
+     License: Attribution 4.0 International (CC BY 4.0) http://creativecommons.org/licenses/by/4.0/
+*/
+
+var LanguagesNB=["cat","spa","eng"];
+var ActiveLanguage=2;
+var Terms_and_Privacy_Last_Updated="02/10/2018";
+
+//Global message variables start by "Msg_" 
+var Msg_NiMMbus={cat: "NiMMbus", spa: "NiMMbus", eng: "NiMMbus"};
+var Msg_Welcome_NiMMbus={cat: "Benvinguts al NiMMbus", spa: "Bienvenidos al NiMMbus", eng: "Welcome to NiMMbus"};
+var Msg_EO_everywhere_Share={cat: "La observació de la terra a tot arreu. Comparteix informació i valoracions amb altres.", spa: "La observación de la tierra en todas partes. Comparte información y valoraciones con los demás.", eng: "Earth observation everywhere. Share information and feedback with others."};
+var Msg_Exit_NiMMbus_question={cat: "Realment vols sortir del NiMMbus? (Les accions no guardades es perdran)", spa: "¿Realmente desea salir de NiMMbus? (La acciones no guardadas se perderán)", eng: "Do you really want to exit NiMMbus? (The unsaved actions will be lost)"};
+var Msg_cannot_be_blank={cat: "no pot ser buit.", spa: "no puede estar vacio.", eng: "cannot be blank."};
+var Msg_Revalidating_authentication={cat: "Revalidant l'autentificació en", spa: "Revalidando la autentificación en", eng: "Revalidating authentication in"};
+var Msg_seconds={cat: "segons", spa: "segundos", eng: "seconds"};
+var Msg_Unsupported_language={cat: "Idioma no suportat", spa: "Idioma no soportado", eng: "Unsupported language"};
+var Msg_Language_changed_preferences={cat: "Idioma canviat a preferències de l'usuari.", spa: "Idioma cambiado según preferencias del usuario.", eng: "Language changed according to user preferences."}
+var Msg_Unidentified_key={cat: "Clau no identificada", spa: "Clave no identificada", eng: "Unidentified key"};
+var Msg_Unidentified_page={cat: "Plana no identificada", spa: "Página no identificada", eng: "Unidentified page name"};
+var Msg_Valid_token_required={cat: "És necessari tenir un passi vàlid.", spa: "Es necesario tener un pase válido.", eng: "Valid token required."};
+var Msg_TARGET_TILE_and_CODE_needed={cat: "És necessari indicar TARGET_TITLE= i TARGET_CODE=.", spa: "Es necesario indicar TARGET_TITLE= i TARGET_CODE=.", eng: "TARGET_TITLE= and TARGET_CODE= should be provided."};
+var Msg_Server_answer_cannot_be_shown={cat: "El servidor ha respost però no és possible mostrar el resultat en aquest navegador.", spa: "El servidor ha respondido pero no es posible mostrar el resultado en este navegador.", eng: "The server responded but it is not possible to show the result on this browser."};
+var Msg_Server_answer_cannot_be_identified={cat: "El servidor ha respost però no puc identificar la seva resposta.", spa: "El servidor ha respondido pero no puedo identificar su respuesta.", eng: "The server responded but it cannot be identified correctly."};
+var Msg_Ok={cat: "Tot bé", spa: "Todo correcto", eng: "Ok!"};
+var Msg_Available_={cat: "Disponible!", spa: "¡Disponible!", eng: "Available!"};
+var Msg_Done={cat: "Fet", spa: "Hecho", eng: "Done"};
+var Msg_Error_without_description={cat: "Error sense descripció. Codi", spa: "Error sin descripción. Código", eng: "Error without description. Code"};
+var Msg_Failure_loading_Google_libraries={cat: "Error en carregar les llibreries de les comptes de Google", spa: "Error al cargar las librerías de las cuentas de Google", eng: "Failure loading Google account libraries"};
+var Msg_LandSense_login_failed={cat: "Error o cancel·lació de la identificació amb el compte de LandSense", spa: "Error o cancelación de la identificación en la cuenta de LandSense", eng: "Login in your LandSense account failed or cancelled"};
+var Msg_NextGEOSS_login_failed={cat: "Error o cancel·lació de la identificació amb el compte de NextGEOSS", spa: "Error o cancelación de la identificación en la cuenta de NextGEOSS", eng: "Login in your NextGEOSS account failed or cancelled"};
+var Msg_Google_login_failed={cat: "Error o cancel·lació de la identificació amb el compte de Google", spa: "Error o cancelación de la identificación en la cuenta de Google", eng: "Login in your Google account failed or cancelled"};
+var Msg_Google_Account_info_not_retrieved={cat: "No puc obtenir la informació sobre l'usuari del compte de Google", spa: "No puedo obtener la información sobre el usuario la cuenta de Google", eng: "The user information of the Google Account cannot be retrieved"};
+var Msg_Requesting_data_={cat: "Demanant dades...", spa: "Pidiendo datos...", eng: "Requesting data..."};
+var Msg_Requesting_resource_list_={cat: "Demanant llista de recursos...", spa: "Pidiendo lista de recursos...", eng: "Requesting resource list..."};
+var Msg_Message_sent={cat: "Missatge enviat", spa: "Mensaje enviado", eng: "Message sent"};
+var Msg_Resource_sent={cat: "Recurs enviat", spa: "Recurso enviado", eng: "Resource sent"};
+var Msg_Modifications_sent={cat: "Modificacions enviades", spa: "Modificaciones enviadas", eng: "Modifications sent"};
+var Msg_Request_sent={cat: "Petició enviada", spa: "Petición enviada", eng: "Request sent"};
+var Msg_Changes_sent={cat: "Canvis enviats", spa: "Cambios enviados", eng: "Changes send"};
+var Msg_Role={cat: "Rol", spa: "Rol", eng: "Role"};
+var Msg_of={cat: "de", spa: "de", eng: "of"};
+var Msg_Create={cat: "Crear", spa: "Crear", eng: "Create"};
+//var Msg_Add={cat: "Afegir", spa: "Añadir", eng: "Add"}; --> l_msg_Add
+var Msg_Adding_={cat: "Afegint...", spa: "Añadiendo...", eng: "Adding..."};
+var Msg_Added={cat: "Afegit", spa: "Añadido", eng: "Added"};
+var Msg_Delete={cat: "Eliminar", spa: "Eliminar", eng: "Delete"};
+var Msg_Deleting_={cat: "Eliminant...", spa: "Eliminando...", eng: "Deleting..."};
+var Msg_Deleted={cat: "Eliminat", spa: "Eliminado", eng: "Deleted"};
+var Msg_Cancel={cat: "Cancel·lar", spa: "Cancelar", eng: "Cancel"};
+var Msg_Edit={cat: "Editar", spa: "Editar", eng: "Edit"};
+var Msg_Requesting_={cat: "Sol·licitant...", spa: "Solicitando...", eng: "Requesting..."};
+var Msg_Searching_={cat: "Cercant...", spa: "Buscando...", eng: "Searching..."};
+var Msg_Changing_={cat: "Canviant...", spa: "Cambiando...", eng: "Changing..."};
+var Msg_Read={cat: "Llegir", spa: "Leer", eng: "Read"};
+var Msg_Write={cat: "Escriure", spa: "Escribir", eng: "Write"};
+var Msg_Checking={cat: "Comprovant...", spa: "Comprobando...", eng: "Checking..."};
+var Msg_Share={cat: "Compartir", spa: "Compartir", eng: "Share"};
+var Msg_Tag={cat: "Etiquetar", spa: "Etiquetar", eng: "Tag"};
+var Msg_Save_changes={cat: "Guardar canvis", spa: "Guardar cambios", eng: "Save changes"};
+var Msg_Exit_without_saving_changes={cat: "Vol sortir sense guardar?", spa: "¿Desea salir sin guardar?", eng: "Do you want to exit without saving changes?"};
+var Msg_Owner={cat: "Propietari", spa: "Propietario", eng: "Owner"};
+var Msg_Today={cat: "Avui", spa: "Hoy", eng: "Today"};
+
+var Msg_Sure_completely_delete_={cat: "Estàs segur que vols eliminar del tot ", spa: "¿Está seguro que desea eliminar completamente ", eng: "Are you sure that you want to completely delete "};
+var Msg_this_Hyperlink={cat: "aquest hiperenllaç", spa: "este hiperenlace", eng: "this Hyperlink"};
+var Msg_this_PoI={cat: "aquest punt d'interès", spa: "este punto de interés", eng: "this point of interest"};
+var Msg_this_feedback_item={cat: "aquesta valoració", spa: "esta valoración", eng: "this feedback item"};
+var Msg_this_citation={cat: "aquesta citació", spa: "esta citación", eng: "this citation"};
+var Msg_this_publication={cat: "aquesta publicació", spa: "esta publicación", eng: "this publication"};
+var Msg_Hyperlink_deleted={cat: "Hiperenllaç esborrat", spa: "Hiperenlace eliminado", eng: "Hyperlink deleted"};
+var Msg_PoI_deleted={cat: "Punt d'interès esborrat", spa: "Punto de interés eliminado", eng: "Point of interest deleted"};
+var Msg_Feedback_deleted={cat: "Valoració esborrada", spa: "Valoración eliminada", eng: "Feedback deleted"};
+var Msg_Citation_deteled={cat: "Citació esborrada", spa: "Citación eliminada", eng: "Citation deleted"};
+var Msg_Publication_deteled={cat: "Publicació esborrada", spa: "Publicación eliminada", eng: "Publication deleted"};
+
+var Msg_Use_New_button_to_create_resources={cat: "Useu el botó \"Nou\" per crear recursos", spa: "Use el botón \"Nuevo\" para crear recursos", eng: "Use the \"New\" button to create resources"};
+var Msg_Cannot_found_resource_identifier={cat: "Identificador de recurs no trobat.", spa: "Identificador de recurso no encontrado.", eng: "Cannot found resource identifier."};
+//var Msg_Resource_type_={cat: "Tipus de recurs_", spa: "Tipo de recurso:", eng: "Resource type:"};
+var Msg_Unsupported_resource_type={cat: "Tipus de recurs no suportat", spa: "Tipo de recurso no soportado.", eng: "Unsupported resource type"};
+var Msg_Unidentified_resource_type={cat: "Tipus de recurs no identificat", spa: "Tipo de recurso no identificado", eng: "Unidentified resource type"};
+
+var Msg_Hyperlink={cat: "Hiperenllaç", spa: "Hiperenlace", eng: "Hyperlink"};
+var Msg_Modify_hyperlink_characteristics={cat: "Modifica les característiques d'aquest hiperenllaç", spa: "Modifica las características de este hiperenlace", eng: "Modify the characteristics of this Hyperlink"};
+var Msg_New_Hyperlink={cat: "Nou hiperenllaç", spa: "Nuevo hiperenlace", eng: "New Hyperlink"};
+var Msg_Define_hyperlink_characteristics={cat: "Introdueix les característiques d'aquest hiperenllaç", spa: "Introduce las características de este hiperenlace", eng: "Define the characteristics of this Hyperlink"};
+var Msg_Hyperlink_detailed_description_no_modification={cat: "Descripció detallada d'aquest hiperenllaç (no tens drets de modificació)", spa: "Descripción detallada de este hiperenlace (no tiene derechos de modificación)", eng: "Detailed description of this Hyperlink (you do not have modification rights)"};
+
+var Msg_PoI={cat: "Punt d'interès", spa: "Punto de interés", eng: "Point of interest"};
+var Msg_Modify_PoI_characteristics={cat: "Modifica les característiques d'aquest punt", spa: "Modifica las características de este punto", eng: "Modify the characteristics of this point"};
+var Msg_New_PoI={cat: "Nou punt d'interès", spa: "Nuevo punto de interés", eng: "New point of interest"};
+var Msg_Define_PoI_characteristics={cat: "Introdueix les característiques d'aquest punt", spa: "Introduce las características de este punto", eng: "Define the characteristics of this point"};
+var Msg_PoI_detailed_description_no_modification={cat: "Descripció detallada d'aquest punt d'interès (no tens drets de modificació)", spa: "Descripción detallada de este punto de interés (no tiene derechos de modificación)", eng: "Detailed description of this point of interest (you do not have modification rights)"};
+
+var Msg_Feedback={cat: "Valoració", spa: "Valoración", eng: "Feedback"};
+var Msg_Modify_feedback_characteristics={cat: "Modifica les característiques d'aquesta valoració", spa: "Modifica las características de esta valoración", eng: "Modify the characteristics of this feedback"};
+var Msg_New_feedback={cat: "Nova valoració", spa: "Nueva valoración", eng: "New feedback"};
+var Msg_Define_feedback_characteristics={cat: "Introdueix les característiques d'aquesta valoració", spa: "Introduce las características de esta valoración", eng: "Define the characteristics of this feedback"};
+var Msg_FB_item_detailed_description_no_modification={cat: "Descripció detallada d'aquesta valoració (no tens drets de modificació)", spa: "Descripción detallada de esta valoración (no tiene derechos de modificación)", eng: "Detailed description of this feedback (you do not have modification rights)"};
+
+var Msg_Targeted_resources={cat: "Recursos valorats", spa: "Recursos valorados", eng: "Targeted resources"};
+var Msg_List_available_resources_as_targets={cat: "Llista de recursos disponibles com a objecte de la valoració", spa: "Lista de recursos disponibles como objeto de la valoración", eng: "List of available resources as feedback target"};
+var Msg_Resource_already_targeted={cat: "Recurs actualment ja valorat en aquesta valoració.", spa: "Recurso actualmente ya valorado en esta valoración.", eng: "Resource already targeted in this feedback item."};
+//var Msg_Resource_already_targeted_no_added_again={cat: "Recurs actualment ja valorat o que és la pròpia valoració, no s'afegirà de nou.", spa: "Recurso actualmente ya valorado o que es la valoración en sí misma, no se añadirá de nuevo.", eng: "Resource already targeted or that is the feedback item itself, it will not be added again."};
+var Msg_Feedback_item_selecting_targets_for={cat: "Aquesta és la pròpia valoració per la que estàs escollint recursos a valorar.", spa: "Esta es la propia valoración para la que estás escogiendo recursos a valorar.", eng: "This is the feedback item you are selecting targets for."};
+var Msg_Target_without_NiMMbus_id={cat: "Un dels recursos valorats no té identificador de recurs de NiMMbus.", spa: "Uno de los recursos valorador no tiene identificador de recurso de NiMMbus.", eng: "One of target resources in this feedback does not have NiMMbus resource identifier."};
+var Msg_Related_publications={cat: "Publicacions relacionades", spa: "Publicaciones relacionadas", eng: "Related publications"};
+var Msg_List_available_publications_for_feedback={cat: "Llista de publicacions disponibles per la valoració", spa: "Lista de publicacions disponibles per la valoración", eng: "List of available publications for the feedback item"};
+var Msg_Publication_already_related={cat: "Publicació actualment ja relacionada amb aquesta valoració.", spa: "Publicación actualmente ya relacionada con esta valoración.", eng: "Publication already related with this feedback item."};
+//var Msg_Publication_already_related_no_added_again={cat: "Publicació actualment ja relacionada amb aquesta valoració, no s'afegirà de nou.", spa: "Publicación actualmente ya relacionada con esta valoración, no se añadirá de nuevo.", eng: "Publication already related with this feedback item, it will not be added again."};
+var Msg_Public_without_NiMMbus_id={cat: "Una de les publicacions no té identificador de recurs de NiMMbus.", spa: "Una de las publicaciones no tiene identificador de recurso de NiMMbus.", eng: "One of the publications in this feedback does not have NiMMbus resource identifier."};
+
+var Msg_Citation={cat: "Citació", spa: "Citación", eng: "Citation"};
+var Msg_Modify_citation_characteristics={cat: "Modifica les característiques d'aquesta citació", spa: "Modifica las características de esta citación", eng: "Modify the characteristics of this citation"};
+var Msg_New_citation={cat: "Nova citació", spa: "Nueva citación", eng: "New citation"};
+var Msg_Define_citation_characteristics={cat: "Introdueix les característiques d'aquesta citació", spa: "Introduce las características de esta citación", eng: "Define the characteristics of this citation"};
+var Msg_Citation_sent={cat: "Citació enviada", spa: "Citación enviada", eng: "Citation sent"};
+var Msg_Citation_created={cat: "Citació creada", spa: "Citación creada", eng: "Citation created"};
+var Msg_Citation_detailed_description_no_modification={cat: "Descripció detallada d'aquesta citació (no tens drets de modificació)", spa: "Descripción detallada de esta citación (no tiene derechos de modificación)", eng: "Detailed description of this citation (you do not have modification rights)"};
+
+var Msg_Publication={cat: "Publicació", spa: "Publicación", eng: "Publication"};
+var Msg_Modify_publication_characteristics={cat: "Modifica les característiques d'aquesta publicació", spa: "Modifica las características de esta publicación", eng: "Modify the characteristics of this publication"};
+var Msg_New_publication={cat: "Nova publicació", spa: "Nueva publicación", eng: "New publication"};
+var Msg_Define_publication_characteristics={cat: "Introdueix les característiques d'aquesta publicació", spa: "Introduce las características de esta publicación", eng: "Define the characteristics of this publication"};
+var Msg_Publication_detailed_description_no_modification={cat: "Descripció detallada d'aquesta publicació (no tens drets de modificació)", spa: "Descripción detallada de esta publicación (no tiene derechos de modificación)", eng: "Detailed description of this publication (you do not have modification rights)"};
+
+var Msg_Accuracy={cat: "Exactitud", spa: "Exactitud", eng: "Accuracy"};
+var Msg_Got_it_at={cat: "Obtinguda a les", spa: "Obtenida a las", eng: "Got it at"};
+var Msg_Speed={cat: "Velocitat", spa: "Velocidad", eng: "Speed"};
+var Msg_Heading={cat: "Direcció", spa: "Dirección", eng: "Heading"};
+var Msg_Geolocation_denied={cat: "L'usuari ha denegat la petició de geolocalització.", spa: "El usuario ha denegado la petición de geolocalización.", eng: "User denied the request for Geolocation."};
+var Msg_Geolocation_unavailable={cat: "La informació de geolocalització no està disponible.", spa: "La información de geolocalización no está disponible", eng: "Location information is unavailable."};
+var Msg_Geolocation_timed_out={cat: "La petició per obtenir la geolocalització ha caducat.", spa: "La petición para obtener la geolocalización ha caducado.", eng: "The request to get user location timed out."};
+var Msg_Geolocation_unkown_error={cat: "Error desconegut en la geolocalització.", spa: "Error desconocido en la geolocalización.", eng: "Unknown error occurred in geolocation."};
+var Msg_Geolocation_trying={cat: "Intentant obtenint la informació de geolocalització", spa: "Intentando obtener la información de geolocalización", eng: "Trying to get the geolocation information"};
+var Msg_Trying_get_more_accuracy={cat: "Intentant obtenint més exactitud", spa: "Intentando obtener más exactitud", eng: "Trying to get more accuracy"};
+var Msg_Geolocation_not_supported={cat: "La geolocalització des del dispositiu no està suportada en aquest navegador d'Internet", spa: "La geolocalización desde el dispositivo no está suportada en este navegador de Internet", eng: "Geolocation is not supported by this Internet browser"};
+
+var Msg_Myself={cat: "Jo mateix", spa: "Yo mismo", eng: "Myself"};
+//var Msg_Pwd={cat: "Contrasenya", spa: "Contraseña", eng: "Password"}; --> l_msg_Pwd
+//var Msg_New_Pwd={cat: "Contrasenya nova", spa: "Contraseña nueva", eng: "New password"}; --> l_msg_New_Pwd
+var Msg_Current_pwd_not_match_provided={cat: "La teva contrasenya actual no coincideix amb la que has indicat.", spa: "Su contraseña actual no coincide con la que ha indicado.", eng: "Your current password does not match with the one provided."};
+var Msg_New_pwd_not_match_validation={cat: "La nova contrasenya no coincideix amb la de validació.", spa: "Su nueva contraseña no coincide con la de validación.", eng: "Your new password does not match with the validation one."};
+var Msg_Strong={cat: "Robusta", spa: "Robusta", eng: "Strong"};
+var Msg_Medium={cat: "Robustesa mitjana", spa: "Robustez media", eng: "Medium"};
+var Msg_Weak={cat: "Fràgil", spa: "Frágil", eng: "Weak"};
+var Msg_Cannot_contain_username={cat: "No pot contenir el nom d'usuari", spa: "No puede contener el nombre de usuario", eng: "Cannot contain the user name"};
+var Msg_Pwd_verification_error={cat: "Error de verificació de contrasenya", spa: "Error de verificación de contraseña", eng: "Password verification error"};
+var Msg_Wrong_pwd={cat: "Contrasenya incorrecta", spa: "Contraseña incorrecta!", eng: "Wrong password"};
+var Msg_Too_short={cat: "Massa curta", spa: "Demasiado corta", eng: "Too short"};
+var Msg_Username_cannot_be_blank={cat: "El nom d'usuari no pot ser buit", spa: "El nombre de usuario no puede ser blanco", eng: "Username cannot be blank"};
+var Msg_Username_is_what_you_have={cat: "El nom d'usuari és el que ja tens", spa: "El nombre de usuario es el que ya tiene", eng: "Username is what you already have"};
+var Msg_Username_already_taken={cat: "El nom d'usuari ha estat reservat per altres", spa: "El nombre de usuario ha sido reservado por otros", eng: "Username has already been taken"};
+//var Msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Email"}; --> l_msg_Email
+
+var Msg_NiMMbus_login={"cat": "Identificació al NiMMbus", "spa": "Identificación en NiMMbus", "eng": "NiMMbus login"};
+var Msg_NiMMbus_reset_pwd={"cat": "Reestabliment de contrasenya de NiMMbus", "spa": "Reestablecimiento de contraseña de NiMMbus", "eng": "NiMMbus reset password"}; 
+var Msg_SignUp_NiMMbus={"cat": "Registra't al NiMMbus", "spa": "Regístrese en NiMMbus", "eng": "Sign up for NiMMbus"};
+var Msg_NiMMbus_account={"cat": "Compte de NiMMbus", "spa": "Cuenta de NiMMbus", "eng": "NiMMbus account"};
+var Msg_NiMMbus_Feedback={"cat": "NiMMbus: Valoració", "spa": "NiMMbus: Valoración", "eng": "NiMMbus: Feedback"};
+var Msg_NiMMbus_Citation={"cat": "NiMMbus: Citació", "spa": "NiMMbus: Citación", "eng": "NiMMbus: Citation"};
+var Msg_NiMMbus_Publication={"cat": "NiMMbus: Publicació", "spa": "NiMMbus: Publicación", "eng": "NiMMbus: Publication"};
+var Msg_NiMMbus_Resources={"cat": "NiMMbus: Recursos", "spa": "NiMMbus: Recursos", "eng": "NiMMbus: Resources"};
+var Msg_NiMMbus_Feedbacks={"cat": "NiMMbus: Valoracions", "spa": "NiMMbus: Valoraciones", "eng": "NiMMbus: Feedbacks"};
+var Msg_NiMMbus_Share={"cat": "NiMMbus: Compartir", "spa": "NiMMbus: Compartir", "eng": "NiMMbus: Share"};
+
+//Needed for Test_*.html
+var Msg_NiMMbus_Test_Pages={cat: "Tests de NiMMbus", spa: "Tests de NiMMbus", eng: "NiMMbus test pages"};
+var Msg_small_Lang={cat: "<small>Idioma:</small> Català", spa: "<small>Idioma:</small> Español", eng: "<small>Language:</small> English"};
+var Msg_Title={cat: "Títol", spa: "Título", eng: "Title"};
+var Msg_Identifier={cat: "Identificador", spa: "Identificador", eng: "Identifier"};
+var Msg_Namespace={cat: "Espai de noms", spa: "Espacio de nombres", eng: "Namespace"};
+var Msg_Terms_use={cat: "Condicions d'Ús", spa: "Condiciones de Uso", eng: "Terms of Use"};
+var Msg_Privacy_Statement={cat: "Declaració de Privacitat", spa: "Declaración de Privacidad", eng: "Privacy Statement"};
+var Msg_Last_Update={cat: "Darrera actualització", spa: "Última actualización", eng: "Last updated"};
+
+function DonaCadenaJSON(s)
+{
+	if (ActiveLanguage==0)
+		return s.cat;
+	else if (ActiveLanguage==1)
+		return s.spa;
+	else if (ActiveLanguage==2)
+		return s.eng;
+}
+
+function GetActiveLanguageIndex(language)
+{
+	for (var i=0; i<LanguagesNB.length; i++)
+	{
+		if (LanguagesNB[i]==language)
+			return i;
+	}
+	return -1;
+}
+
+function ChangeLanguage(lang, resources_per_page)
+{
+//Local message variables start by "l_msg_"
+var l_msg_Username_or_email={cat: "Usuari o email", spa: "Usuario o email", eng: "Username or email"};
+var l_msg_Pwd={cat: "Contrasenya", spa: "Contraseña", eng: "Password"};
+var l_msg_New_to_NiMMbus_SignUp={cat: "Nou al NiMMbus? Registra't", spa: "Nuevo en NiMMbus? Regístrese", eng: "New to NiMMbus? Sign up"};
+var l_msg_Username={cat: "Usuari", spa: "Usuario", eng: "Username"};
+var l_msg_For_Email_Notificactions={cat: "Per a validacions i notificacions per email", spa: "Para validaciones y notificaciones por email", eng: "For email notifications and verifications"};
+var l_msg_SignUp_for_NiMMbus={cat: "Registrar-se al NiMMbus", spa: "Registrarse en NiMMBus", eng: "Sign up for NiMMbus"};
+var l_msg_Close_Sortir={cat: "Sortir", spa: "Salir", eng: "Close"}; //·$·
+var l_msg_Close_Tancar={cat: "Tancar", spa: "Cerrar", eng: "Close"};
+var l_msg_Close_SignOut={cat: "Sortir", spa: "Salir", eng: "Sign out"};
+var l_msg_All={cat: "Tots", spa: "Todos", eng: "All"};
+//var l_msg_Filter_by_type_={cat: "Filtrar per tipus:", spa: "Filtrar por tipo:", eng: "Filter by type:"};
+//var l_msg_Filter_by_owner_={cat: "Filtrar per propietari:", spa: "Filtrar por propietario:", eng: "Filter by owner:"};
+var l_msg_see_newer_resources={cat: "Veure recursos més nous", spa: "Ver recursos más nuevos", eng: "See newer resources"};
+var l_msg_see_older_resources={cat: "Veure recursos més antics", spa: "Ver recursos más antiguos", eng: "See older resources"};
+var l_msg_For_example_={cat: "Per exemple:", spa: "Por ejemplo:", eng: "For example:"};
+var l_msg_Motivation={cat: "Motivació", spa: "Motivación", eng: "Motivation"};
+var l_msg_Reason_why={cat: "Motiu pel qual el recurs resulta rellevant", spa: "Motivo por el cual el recurso resulta relevante", eng: "Reason why the resource is relevant"};
+var l_msg_Discard={cat: "Descartar", spa: "Descartar", eng: "Discard"};
+var l_msg_Add={cat: "Afegir", spa: "Añadir", eng: "Add"};
+var l_msg_Abstract={cat: "Resum", spa: "Resumen", eng: "Abstract"};
+var l_msg_Resource_Edition={cat: "Edició del recurs", spa: "Edición del recurso", eng: "Resource edition"};
+var l_msg_Edition={cat: "Edició", spa: "Edición", eng: "Edition"};
+var l_msg_Version_of_the_resource={cat: "Versió del recurs citat", spa: "Versión del recurso citado", eng: "Version of the cited resource"};
+var l_msg_Edition_date={cat: "Data d'edició", spa: "Fecha de edición", eng: "Edition date"};
+var l_msg_Date_of_edition={cat: "Data de l'edició", spa: "Fecha de la edición", eng: "Date of the edition"};
+var l_msg_Code={cat: "Codi", spa: "Código", eng: "Code"};
+var l_msg_resource_id_eg={cat: "Identificador del recurs. P. ex.:", spa: "Identificador del recurso. P. ej.:", eng: "Resource identifier. E.g.:"};
+var l_msg_Namespace_where_id_unique_eg_={cat: "Espai de noms on l'identificador és únic. P. ex.:", spa: "Espacio de nombres donde el identificador es único. P. ej.:", eng: "Namespace where the identifier is unique. E.g.:"};
+var l_msg_Series_which_resource_is_part_of={cat: "Sèrie de la que el recurs forma part", spa: "Serie de la cual el recurso forma parte", eng: "Series which the resource is part of"};
+var l_msg_Series_name={cat: "Nom de la sèrie", spa: "Nombre de la serie", eng: "Series name"};
+var l_msg_Series_name_of_which_this_resource={cat: "Nom de la sèrie o del recurs agregat del qual aquest recurs forma part", spa: "Nombre de la serie o del recurso agregado del cual este recurso forma parte", eng: "Name of the series, or aggregate resource, of which the resource is a part"};
+var l_msg_Series_issue_id={cat: "Identificador de l'element de la sèrie", spa: "Identificador del elemento de la serie", eng: "Series issue identification"};
+var l_msg_Id_of_the_issue_within_series={cat: "Identificador de l'element concret de la sèrie del qual aquest recurs forma part", spa: "Identificador del elemento concreto de la serie del cual este recurso forma parte", eng: "Identifier of the issue within the series of which the resource is part"};
+var l_msg_Id_of_the_issue_within_series_eg_={cat: "Identificador de l'element concret de la sèrie del qual aquest recurs forma part. P. ex.:", spa: "Identificador del elemento concreto de la serie del cual este recurso forma parte. P. ej.:", eng: "Identifier of the issue within the series of which the resource is part. E.g.:"};
+var l_msg_Pages_in_the_issue={cat: "Pàgines dins l'element de la sèrie", spa: "Páginas dentro del elemento de la serie", eng: "Pages in the series issue"};
+var l_msg_Pages_resource_fills_in={cat: "Pàgines que ocupa el recurs en aquest element de la sèrie. P. ex.: 358-368", spa: "Páginas que ocupa el recurso en este elemento de la serie. P. ej.: 358-368", eng: "Pages that this resource fills in this series issue. E.g.: 358-368"};
+var l_msg_Other_citation_details={cat: "Altres detalls de la citació", spa: "Otros detalles de la cita", eng: "Other citation details"};
+var l_msg_Other_info_requiered_citation={cat: "Altra informació necessària per complementar la citació", spa: "Otra información necesaria para complementar la citación", eng: "Other information required to complete the citation"};
+var l_msg_OnlineResource={cat: "Recurs en línia", spa: "Recurso en línea", eng: "Online resource"};
+var l_msg_URL_link={cat: "Adreça URL", spa: "Dirección URL", eng: "URL Link"};
+var l_msg_Online_resource_related_eg_={cat: "Recurs en línia relacionat amb l'element. P. ex.:", spa: "Recurso en línea relacionado con el elemento. P. ej.:", eng: "Online resource related to the element. E.g.:"};
+var l_msg_URL_description={cat: "Descripció URL", spa: "Descripción URL", eng: "URL description"};
+var l_msg_Detailed_description_onlineresource_eg_={cat: "Descripció detallada de què és o què fa el recurs en línia. P. ex.:", spa: "Descripción detallada de qué es o qué hace el recurso en línea. P. ej.", eng: "Detailed description of what the online resource is/does. E.g."};
+var l_msg_URL_function={cat: "Funció URL", spa: "Función URL", eng: "URL Function"};  
+var l_msg_URL_function_eg_={cat: "Funció del recurs en línia. P. ex.:", spa: "Función del recurso en línea. P. ex.:", eng: "Function of the link. E.g.:"};
+
+var l_msg_Verify_pwd={cat: "Validació de contrasenya", spa: "Validación de contraseña", eng: "Verify password"};
+var l_msg_Repeat_password={cat: "Cal que tornis a escriure la teva contrasenya nova.", spa: "Debes repetir la nueva contraseña.", eng: "You need to repeat your new password."};
+var l_msg_New_Pwd={cat: "Contrasenya nova", spa: "Contraseña nueva", eng: "New password"};
+var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Email"};
+	
+	ActiveLanguage=lang;
+
+	document.getElementById("head_title").innerHTML=DonaCadenaJSON(Msg_NiMMbus_login);
+	document.getElementById("front-welcome-text-title").innerHTML=DonaCadenaJSON(Msg_Welcome_NiMMbus);
+	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON(Msg_EO_everywhere_Share);
+	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
+	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
+	
+	document.getElementById("front-signin-nimmbus-lang").innerHTML=DonaCadenaJSON({cat: "Identificació usuaris NiMMbus", spa: "Identificación usuarios NiMMbus", eng: "Login with NiMMbus user"});
+	document.getElementById("sign_in_user").placeholder=DonaCadenaJSON(l_msg_Username_or_email);
+	document.getElementById("sign_in_pass").placeholder=DonaCadenaJSON(l_msg_Pwd);
+	document.getElementById("sign_in_btn").value=DonaCadenaJSON({cat: "Iniciar sessió", spa: "Iniciar sesión", eng: "Sign in"});
+	document.getElementById("sign_in_forgot").innerHTML=DonaCadenaJSON({cat: "Has oblidat la contrasenya?", spa: "¿Ha olvidado la contraseña?", eng: "Forgot the password?"});
+
+	document.getElementById("front-signup-lang").innerHTML=DonaCadenaJSON(l_msg_New_to_NiMMbus_SignUp);
+	document.getElementById("sign_up_user").placeholder=DonaCadenaJSON(l_msg_Username);
+	document.getElementById("sign_up_pass").placeholder=DonaCadenaJSON(l_msg_Pwd);
+	document.getElementById("sign_up_pass_valid").placeholder=DonaCadenaJSON({cat: "Verificació de contrasenya", spa: "Verificación de contraseña", eng: "Password verification"});
+	document.getElementById("sign_up_btn").value=DonaCadenaJSON(l_msg_SignUp_for_NiMMbus);
+
+	document.getElementById("front-signin-external-lang").innerHTML=DonaCadenaJSON({cat: "Identificació via federacions externes", spa: "Identificación vía federaciones externas", eng: "Login with external federations"});
+
+	document.getElementById("settings-tooltip-text").innerHTML=DonaCadenaJSON({cat: "Configuració", spa: "Configuración", eng: "Settings"});
+	document.getElementById("settings-profile").innerHTML=DonaCadenaJSON({cat: "Perfil", spa: "Perfil", eng: "Profile"});
+	document.getElementById("settings-signout").innerHTML=DonaCadenaJSON(l_msg_Close_SignOut);
+
+	document.getElementById("main-left-pannel-since-text").innerHTML=DonaCadenaJSON({cat: "Membre des de", spa: "Miembro desde", eng: "Member since"});
+
+	document.getElementById("resources-title-text").innerHTML=DonaCadenaJSON({cat: "Recursos", spa: "Recursos", eng: "Resources"});
+	document.getElementById("resources-subtitle-text").innerHTML=DonaCadenaJSON({cat: "Llista de recursos disponibles", spa: "Lista de recursos disponibles", eng: "List of available resources"});
+	
+	document.getElementById("resource-type_screen").innerHTML=DonaCadenaJSON({cat: "Filtrar per tipus:", spa: "Filtrar por tipo:", eng: "Filter by type:"});
+	document.getElementById("all-resource-type-value").innerHTML=DonaCadenaJSON(l_msg_All);
+	document.getElementById("feedback-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Feedback);
+	document.getElementById("citation-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Citation);
+	document.getElementById("publicat-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Publication);
+	document.getElementById("href-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Hyperlink);
+	document.getElementById("poi-resource-type-value").innerHTML=DonaCadenaJSON(Msg_PoI);	
+	
+	document.getElementById("owner-type_screen").innerHTML=DonaCadenaJSON({cat: "Filtrar per propietari:", spa: "Filtrar por propietario:", eng: "Filter by owner:"});
+	document.getElementById("all-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_All);
+	document.getElementById("me-owner-type-value").innerHTML=DonaCadenaJSON({cat: "Recursos propis", spa: "Recursos propios", eng: "Owned resources"});
+	document.getElementById("others-owner-type-value").innerHTML=DonaCadenaJSON({cat: "Recursos compartits amb mi", spa: "Recursos compartidos conmigo", eng: "Resources shared with me"});
+	
+	document.getElementById("newer-resources-tooltip-text").innerHTML=DonaCadenaJSON(l_msg_see_newer_resources);
+	document.getElementById("older-resources-tooltip-text").innerHTML=DonaCadenaJSON(l_msg_see_older_resources);
+	document.getElementById("newer-resource-selector-tooltip-text").innerHTML=DonaCadenaJSON(l_msg_see_newer_resources);
+	document.getElementById("older-resource-selector-tooltip-text").innerHTML=DonaCadenaJSON(l_msg_see_older_resources);
+	
+	document.getElementById("new-resource_btn").value=innerHTML=DonaCadenaJSON({cat: "Nou", spa: "Nuevo", eng: "New"});
+	document.getElementById("new-resource-tooltip-text").innerHTML=DonaCadenaJSON({cat: "Crear nou recurs", spa: "Crear nuevo recurso", eng: "Create new resource"});
+	document.getElementById("new-resource-href").innerHTML=DonaCadenaJSON(Msg_Hyperlink);
+	document.getElementById("new-resource-poi").innerHTML=DonaCadenaJSON(Msg_PoI);
+	/* Decidim que no permetem crear valoracions des del botó "Nou" del menú de l'esquerra, només des de la llista de recursos.
+	   Ens podem plantejar mantenir l'opció i fer sortir una pàgina on expliqui com fer-ho: FB sobre recurs existent o FB sobre una citació
+		 Potser es pot dir "Valoració sobre una nova citació" i ja serveix per fer com la pàgina test i alhora ajuda a entrendre que 
+		 si vols fer FB d'una altre element vas per un altre lloc.
+		 document.getElementById("new-resource-feedback").innerHTML=DonaCadenaJSON(Msg_Feedback);*/
+	document.getElementById("new-resource-citation").innerHTML=DonaCadenaJSON(Msg_Citation);
+	document.getElementById("new-resource-publication").innerHTML=DonaCadenaJSON(Msg_Publication);
+
+	document.getElementById("left-pannel-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
+	document.getElementById("left-pannel-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
+	document.getElementById("left-pannel-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+":<br>"+Terms_and_Privacy_Last_Updated+"</i>";	
+
+	for (var i=0; i<resources_per_page; i++)
+	{
+		if (document.getElementById("fb-resource-"+i))
+			document.getElementById("fb-resource-"+i).innerHTML=DonaCadenaJSON(Msg_Feedback);
+		if (document.getElementById("share-resource-"+i))
+			document.getElementById("share-resource-"+i).innerHTML=DonaCadenaJSON(Msg_Share);
+		if (document.getElementById("tag-resource-"+i))
+			document.getElementById("tag-resource-"+i).innerHTML=DonaCadenaJSON(Msg_Tag);
+	}
+	
+	document.getElementById("title-href-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+	document.getElementById("title-href-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Rius de Catalunya", spa: "Ríos de Cataluña", eng: "Catalonia rivers"});
+	document.getElementById("href-href-resource_screen").innerHTML=DonaCadenaJSON(Msg_Hyperlink);
+	document.getElementById("href-href-resource_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"http://www.gencat.net/mediamb/sig/bases/rius.mmz";
+	document.getElementById("mimetype-href-resource_screen").innerHTML=DonaCadenaJSON({cat: "Format", spa: "Formato", eng: "Format"});
+	document.getElementById("other-mimetype-href-resource_value").innerHTML=DonaCadenaJSON({cat: "Altres", spa: "Otros", eng: "Other"});
+	document.getElementById("mimetype-href-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Format del fitxer al qual apunta l'hiperenllaç", spa: "Formato del fichero al que apunta el hiperenlace", eng: "File format of the Hyperlink target"});
+	document.getElementById("reason-href-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Motivation);
+	document.getElementById("reason-href-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Reason_why);
+	document.getElementById("href-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_Hyperlink);
+	document.getElementById("href-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
+	document.getElementById("href-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+
+	document.getElementById("poi-gps-resource_btn").value=DonaCadenaJSON({cat: "Obtenir del dispositiu", spa: "Obtener del dispositivo", eng: "Get it from the device"});
+	document.getElementById("title-poi-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+	document.getElementById("title-poi-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Aplec de la sardana", spa: "Feria de abril", eng: "Olympic games stadium"});
+	document.getElementById("long-poi-resource_screen").innerHTML=DonaCadenaJSON({cat: "Longitud", spa: "Longitud", eng: "Longitude"});
+	document.getElementById("long-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Longitud en graus", spa: "Longitud en grados", eng: "Longitude in degrees"})+". "+DonaCadenaJSON(l_msg_For_example_)+" "+"3.25656";
+	document.getElementById("lat-poi-resource_screen").innerHTML=DonaCadenaJSON({cat: "Latitud", spa: "Latitud", eng: "Latitude"});
+	document.getElementById("lat-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Latitud en graus", spa: "Latitud en grados", eng: "Latitude in degrees"})+". "+DonaCadenaJSON(l_msg_For_example_)+" "+"41.3389";
+	document.getElementById("pos-accur-poi-resource_screen").innerHTML=DonaCadenaJSON(Msg_Accuracy);
+	document.getElementById("pos-accur-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Exactitud posicional preferiblement en m", spa: "Exactitud posicional preferiblemente en m", eng: "Positional accuracy, if possible in m"})+". "+DonaCadenaJSON(l_msg_For_example_)+" "+"25m";
+	document.getElementById("elevation-poi-resource_screen").innerHTML=DonaCadenaJSON({cat: "Elevació", spa: "Elevación", eng: "Elevation"});
+	document.getElementById("elevation-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Elevació en metres", spa: "Elevación en metros", eng: "Elevation in meters"})+". "+DonaCadenaJSON(l_msg_For_example_)+" "+"123.4";
+	document.getElementById("reason-poi-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Motivation);
+	document.getElementById("reason-poi-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Reason_why);
+	document.getElementById("poi-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_PoI);
+	document.getElementById("poi-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
+	document.getElementById("poi-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+
+	document.getElementById("target-feedback-publication-resource").innerHTML=DonaCadenaJSON({cat: "Recurs(os) objectiu de la valoració", spa: "Recurso(s) objetivo de la valoración", eng: "Feedback target resource(s)"});
+	document.getElementById("target_feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Add);			
+	document.getElementById("target_feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Afegir] per a escollir un nou recurs valorat", spa: "Presione [Añadir] para escoger un nuevo recurso valorado", eng: "Press [Add] to choose a new target item"});
+
+	document.getElementById("title-feedback-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+	document.getElementById("title-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Bon servidor de mapes", spa: "Buen servidor de mapas", eng: "Good map server"});
+	document.getElementById("abstract-feedback-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Abstract);
+	document.getElementById("abstract-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Descripció textual curta de la valoració", spa: "Descripción textual corta de la valoración", eng: "Brief narrative description of the feedback item"});
+	document.getElementById("reason-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Propòsit", spa: "Propósito", eng: "Purpose"});
+	document.getElementById("reason-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Raó o intenció per la qual explico la meva experiència i dono la meva valoració", spa: "Razón o intención por la cual explico mi experiencia y proporciono mi valoración", eng: "Reason or intention with which I explain my experience and provide this feedback"});
+	document.getElementById("contactRole-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Rol del contacte", spa: "Rol del contacto", eng: "Contact role"});
+	document.getElementById("commercialDataProd-contactRole-feedback-resource_value").innerHTML=DonaCadenaJSON(GUF_UserRoleCode["commercialDataProd"]);
+	document.getElementById("commercialAddedValue-contactRole-feedback-resource_value").innerHTML=DonaCadenaJSON(GUF_UserRoleCode["commercialAddedValue"]);
+	document.getElementById("researchDataProd-contactRole-feedback-resource_value").innerHTML=  DonaCadenaJSON(GUF_UserRoleCode["researchDataProd"]);
+	document.getElementById("researchEndUser-contactRole-feedback-resource_value").innerHTML=   DonaCadenaJSON(GUF_UserRoleCode["researchEndUser"]);
+	document.getElementById("decisionMaker-contactRole-feedback-resource_value").innerHTML=     DonaCadenaJSON(GUF_UserRoleCode["decisionMaker"]);
+	document.getElementById("generalPublic-contactRole-feedback-resource_value").innerHTML=     DonaCadenaJSON(GUF_UserRoleCode["generalPublic"]);
+	document.getElementById("contactRole-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Rol de l'usuari en el context d'aquesta valoració", spa: "Rol del usuario en el contexto de esta valoración", eng: "User's role in the context of this feedback item"});
+
+	document.getElementById("user-comment-publication-resource").innerHTML=DonaCadenaJSON({cat: "Comentari de l'usuari", spa: "Comentario del usuario", eng: "User comment"});
+	document.getElementById("comment-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Comentari", spa: "Comentario", eng: "Comment"});
+	document.getElementById("comment-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Comentari de l'usuari sobre el recurs", spa: "Comentario del usuario sobre el recurso", eng: "User's comment about the resource"});
+	document.getElementById("comment-motiv-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Motivació del comentari", spa: "Motivación del comentario", eng: "Comment motivation"});
+	document.getElementById("undefined-motivation-feedback-resource_value").innerHTML=     DonaCadenaJSON(GUF_MotivationCode["undefined"]);
+	document.getElementById("comment-motivation-feedback-resource_value").innerHTML=       DonaCadenaJSON(GUF_MotivationCode["comment"]);
+	document.getElementById("question-motivation-feedback-resource_value").innerHTML=      DonaCadenaJSON(GUF_MotivationCode["question"]);
+	document.getElementById("answer-motivation-feedback-resource_value").innerHTML=        DonaCadenaJSON(GUF_MotivationCode["answer"]);
+	document.getElementById("acceptedAnswer-motivation-feedback-resource_value").innerHTML=DonaCadenaJSON(GUF_MotivationCode["acceptedAnswer"]);
+	document.getElementById("response-motivation-feedback-resource_value").innerHTML=      DonaCadenaJSON(GUF_MotivationCode["response"]);
+	document.getElementById("justification-motivation-feedback-resource_value").innerHTML= DonaCadenaJSON(GUF_MotivationCode["justification"]);
+	document.getElementById("resolution-motivation-feedback-resource_value").innerHTML=    DonaCadenaJSON(GUF_MotivationCode["resolution"]);
+	document.getElementById("moderation-motivation-feedback-resource_value").innerHTML=    DonaCadenaJSON(GUF_MotivationCode["moderation"]);
+	document.getElementById("comment-motiv-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Motivació del comentari de l'usuari sobre el recurs", spa: "Motivación del comentario del usuario sobre el recurso", eng: "Motivation of user's comment about the resource"});
+
+	document.getElementById("rating-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Puntuació", spa: "Puntuación", eng: "Rating"});
+	/*document.getElementById("undefined-rating-feedback-resource_value").innerHTML=DonaCadenaJSON(Msg_Indefinit);
+	document.getElementById("oneStar-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "1 estrella: Molt dolent", spa: "1 estrella: Muy malo", eng: "1 star: very bad"});
+	document.getElementById("twoStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "2 estrelles: Dolent", spa: "2 estrellas: Malo", eng: "2 stars: Bad"});
+	document.getElementById("threeStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "3 estrelles: Regular", spa: "3 estrellas: Regular", eng: "3 stars: Regular"});
+	document.getElementById("fourStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "4 estrelles: Bo", spa: "4 estrellas: Bueno", eng: "4 stars: Good"});
+	document.getElementById("fiveStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "5 estrelles: Excel·lent", spa: "5 estrellas: Excelente", eng: "5 stars: Excellent"});*/
+	document.getElementById("rating-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Nombre d'estrelles que puntua subjectivament el recurs", spa: "Número de estrellas que puntúa subjetivamente el recurso", eng: "Number of stars that qualifies subjectively the resource"});
+
+	document.getElementById("public-feedback-publication-resource").innerHTML=DonaCadenaJSON({cat: "Publicació(ns) relacionades amb el recurs valorat", spa: "Publicación(es) relacionadas con el recurso valorado", eng: "Publication(s) related to the evaluated resource"});
+	//document.getElementById("public_feedback-resource_compact_screen").innerHTML=DonaCadenaJSON({cat: "Publicació(ns)", spa: "Publicación(es)", eng: "Publication(s)"});
+	document.getElementById("public_feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Add);			
+	document.getElementById("public_feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Afegir] per a escollir una nova publicació", spa: "Presione [Añadir] para escoger una nueva publicación", eng: "Press [Add] to choose a new publication"});		
+
+	document.getElementById("share-anonymous-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
+ 	document.getElementById("share-anonymous-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquesta valoració amb tothom", spa: "Compartir este valoración con todos", eng: "If check this feedback will be visible to everyone"});
+
+	document.getElementById("feedback-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_Feedback);
+	document.getElementById("feedback-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
+	document.getElementById("feedback-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+
+	document.getElementById("title-citation-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+	document.getElementById("title-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Mapa Cobertes del Sòl de Catalunya", spa: "Sistema de Información sobre Ocupación del Suelo de España", eng: "Corine Land Cover 2012"});
+		
+	document.getElementById("edition-citation-resource").innerHTML=DonaCadenaJSON(l_msg_Resource_Edition);
+	document.getElementById("edition-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Edition);
+	document.getElementById("edition-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Version_of_the_resource);
+	document.getElementById("edition-date-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Edition_date);
+	document.getElementById("edition-date-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Date_of_edition);
+	document.getElementById("identifier-citation-resource").innerHTML=DonaCadenaJSON({cat: "Identificador de la citació", spa: "Identificador de la citación", eng: "Citation identifier"});
+	document.getElementById("id-code-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Code);
+	document.getElementById("id-code-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_resource_id_eg)+" "+"c90fd0c1-ebdf-4df9-9216-4592ed843644";
+	document.getElementById("id-namespace-citation-resource_screen").innerHTML=DonaCadenaJSON(Msg_Namespace);
+	document.getElementById("id-namespace-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Namespace_where_id_unique_eg_)+" "+"http://sdi.eea.europa.eu/catalogue";
+	document.getElementById("series-citation-resource").innerHTML=DonaCadenaJSON(l_msg_Series_which_resource_is_part_of);
+	document.getElementById("series-name-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Series_name);
+	document.getElementById("series-name-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Series_name_of_which_this_resource);
+	document.getElementById("series-issue-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Series_issue_id);
+	document.getElementById("series-issue-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Id_of_the_issue_within_series);
+	document.getElementById("series-page-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Pages_in_the_issue);
+	document.getElementById("series-page-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Pages_resource_fills_in);
+	document.getElementById("other-cit-details-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Other_citation_details);
+	document.getElementById("other-cit-details-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Other_info_requiered_citation);
+	document.getElementById("url-citation-resource").innerHTML=DonaCadenaJSON(l_msg_OnlineResource);
+	document.getElementById("url-link-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_URL_link);
+	document.getElementById("url-link-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Online_resource_related_eg_)+" "+"http://land.copernicus.eu/pan-european/corine-land-cover/clc-2012/view";
+	document.getElementById("url-descrip-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_URL_description);
+	document.getElementById("url-descrip-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Detailed_description_onlineresource_eg_)+" "+DonaCadenaJSON({cat: "Exploració de les dades en un navegador", spa: "Exploración de los datos en un navegador", eng: "View the data on a web browser"});
+	document.getElementById("url-function-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_URL_function);	
+	document.getElementById("undefined-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["undefined"]);
+	document.getElementById("download-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["download"]);
+	document.getElementById("information-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["information"]);
+	document.getElementById("offlineAccess-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["offlineAccess"]);
+	document.getElementById("order-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["order"]);
+	document.getElementById("search-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["search"]);
+	document.getElementById("completeMetadata-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["completeMetadata"]);
+	document.getElementById("browseGraphic-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["browseGraphic"]);
+	document.getElementById("upload-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["upload"]);
+	document.getElementById("emailService-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["emailService"]);
+	document.getElementById("browsing-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["browsing"]);	
+	document.getElementById("fileAccess-url-function-citation-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["fileAccess"]);
+	document.getElementById("url-function-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_URL_function_eg_)+" "+DonaCadenaJSON({cat: "Exploració", spa: "Exploración", eng: "View"});
+	document.getElementById("citation-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_Citation);
+	document.getElementById("citation-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
+	document.getElementById("citation-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+
+	document.getElementById("title-publication-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+	document.getElementById("title-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"Daytime urban heat islands from Landsat ETM+ and Corine land cover data: An application to major cities in Greece";
+	document.getElementById("edition-publication-resource").innerHTML=DonaCadenaJSON(l_msg_Resource_Edition);
+	document.getElementById("edition-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Edition);
+	document.getElementById("edition-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Version_of_the_resource);
+	document.getElementById("edition-date-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Edition_date);
+	document.getElementById("edition-date-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Date_of_edition);
+	document.getElementById("identifier-publication-resource").innerHTML=DonaCadenaJSON({cat: "Identificador de la publicació", spa: "Identificador de la publicación", eng: "Publication identifier"});
+	document.getElementById("id-code-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Code);
+	document.getElementById("id-code-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_resource_id_eg)+" "+"10.1016/j.solener.2006.06.014";
+	document.getElementById("id-namespace-publication-resource_screen").innerHTML=DonaCadenaJSON(Msg_Namespace);
+	document.getElementById("id-namespace-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Namespace_where_id_unique_eg_)+" "+"https://www.doi.org/";
+	document.getElementById("series-publication-resource").innerHTML=DonaCadenaJSON(l_msg_Series_which_resource_is_part_of);
+	document.getElementById("series-name-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Series_name);
+	document.getElementById("series-name-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Series_name_of_which_this_resource)+" "+"Solar Energy";
+	document.getElementById("series-issue-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Series_issue_id);
+	document.getElementById("series-issue-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Id_of_the_issue_within_series_eg_)+" "+"Volume 81, Issue 3";
+	document.getElementById("series-page-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Pages_in_the_issue);
+	document.getElementById("series-page-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Pages_resource_fills_in);
+	document.getElementById("other-cit-details-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Other_citation_details);
+	document.getElementById("other-cit-details-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Other_info_requiered_citation);
+	document.getElementById("url-publication-resource").innerHTML=DonaCadenaJSON(l_msg_OnlineResource);
+	document.getElementById("url-link-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_URL_link);
+	document.getElementById("url-link-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Online_resource_related_eg_)+" "+"http://www.sciencedirect.com/science/article/pii/S0038092X06001885";
+	document.getElementById("url-descrip-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_URL_description);
+	document.getElementById("url-descrip-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Detailed_description_onlineresource_eg_)+" "+DonaCadenaJSON({cat: "Informació (i possible descàrrega) sobre l'article", spa: "Información (y posible descarga) sobre el artículo", eng: "Paper information (and possible download)"});
+	document.getElementById("url-function-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_URL_function);
+	document.getElementById("undefined-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["undefined"]);
+	document.getElementById("download-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["download"]);
+	document.getElementById("information-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["information"]);
+	document.getElementById("offlineAccess-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["offlineAccess"]);
+	document.getElementById("order-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["order"]);
+	document.getElementById("search-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["search"]);
+	document.getElementById("completeMetadata-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["completeMetadata"]);
+	document.getElementById("browseGraphic-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["browseGraphic"]);
+	document.getElementById("upload-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["upload"]);
+	document.getElementById("emailService-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["emailService"]);
+	document.getElementById("browsing-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["browsing"]);	
+	document.getElementById("fileAccess-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["fileAccess"]);
+	document.getElementById("url-function-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_URL_function_eg_)+" "+DonaCadenaJSON({cat: "Informació", spa: "Información", eng: "Information"});
+	document.getElementById("abstract-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Abstract);
+	document.getElementById("abstract-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Resum de la publicació", spa: "Resumen de la publicación", eng: "Abstract of the publication"});
+
+	document.getElementById("category-publication-resource_screen").innerHTML=DonaCadenaJSON({cat: "Categoria", spa: "Categoría", eng: "Category"});
+	document.getElementById("undefined-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["undefined"]);
+	document.getElementById("bookChapter-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["bookChapter"]);
+	document.getElementById("book-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["book"]);
+	document.getElementById("report-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["report"]);
+	document.getElementById("journalArticle-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["journalArticle"]);
+	document.getElementById("magazineNewspaper-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["magazineNewspaper"]);
+	document.getElementById("atlasMap-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["atlasMap"]);
+	document.getElementById("applicationProgram-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["applicationProgram"]);
+	document.getElementById("conferenceProceedings-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["conferenceProceedings"]);
+	document.getElementById("multimediaContent-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["cdDvdBlueRay"]);
+	document.getElementById("socialMediaComment-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["socialMediaComment"]);
+	document.getElementById("blogWiki-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["blogWiki"]);
+	document.getElementById("webSite-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["webSite"]);
+	document.getElementById("webPage-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["webPage"]);
+	document.getElementById("videoAudio-category-publication-resource_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["videoAudio"]);
+	document.getElementById("tutorialManual-publication-resource_screen_value").innerHTML=DonaCadenaJSON(QCM_PublicationCategoryCode["tutorialManual"]);
+	document.getElementById("category-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Tipus de publicació. P. ex. Capítol de llibre", spa: "Tipo de publicación. P. ej. Capítulo de libro", eng: "Type of publication. E.g. Book chapter"});
+
+	document.getElementById("publication-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_Publication);
+	document.getElementById("publication-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
+	document.getElementById("publication-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+
+	document.getElementById("account-title-text").innerHTML=DonaCadenaJSON({cat: "Compte", spa: "Cuenta", eng: "Account"});
+	document.getElementById("account-subtitle-text").innerHTML=DonaCadenaJSON({cat: "Canvia les característiques bàsiques del teu compte i la configuració d'idioma", spa: "Cambie las características básicas de su cuenta y la configuración de idioma", eng: "Change your basic account and language settings."});
+	document.getElementById("new_user_screen").innerHTML=DonaCadenaJSON(l_msg_Username);
+	document.getElementById("new_user_descrip").innerHTML=DonaCadenaJSON({cat: "Pots canviar el teu usuari en qualsevol moment.", spa: "Puede cambiar su usuario en cualquier momento.", eng: "Your username can be changed anytime."});
+	document.getElementById("email_screen").innerHTML=DonaCadenaJSON(l_msg_Email);
+	document.getElementById("email_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_Email_Notificactions);
+	document.getElementById("name_screen").innerHTML=DonaCadenaJSON({cat: "Nom", spa: "Nombre", eng: "Name"});
+	document.getElementById("name_screen_descrip").innerHTML=DonaCadenaJSON({cat: "El teu nom i cognoms", spa: "Su nombre y apellidos", eng: "Your name and surname"});
+	document.getElementById("bio_screen").innerHTML=DonaCadenaJSON({cat: "Biografia", spa: "Biografía", eng: "Bio"});
+	document.getElementById("bio_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Un text curt que et descriu", spa: "Un texto corto que le describe", eng: "About yourself in a few words."});
+	document.getElementById("current_pass_screen").innerHTML=DonaCadenaJSON({cat: "Contrasenya actual", spa: "Contraseña actual", eng: "Current password"});
+	document.getElementById("current_pass_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Cal que proporcionis la contrasenya actual si la vols canviar.", spa: "Es necesario proporcionar la contraseña actual si desea cambiarla.", eng: "Your current password is needed only if you want to change it."});
+	document.getElementById("new_pass_screen").innerHTML=DonaCadenaJSON(l_msg_New_Pwd);
+	document.getElementById("new_pass_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Pots canviar la teva contrasenya en qualsevol moment.", spa: "Puede cambiar su contraseña en cualquier momento.", eng: "Your password can be changed anytime."});
+	document.getElementById("new_pass_valid_screen").innerHTML=DonaCadenaJSON(l_msg_Verify_pwd);
+	document.getElementById("new_pass_valid_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Cal que tornis a escriure la teva contrasenya.", spa: "Debes repetir la contraseña.", eng: "You need to repeat your new password."});
+	document.getElementById("language_screen").innerHTML=DonaCadenaJSON({cat: "Idioma", spa: "Idioma", eng: "Language"});
+	document.getElementById("language_screen_descrip").innerHTML=DonaCadenaJSON({cat: "L'idioma que fas servir (l'entorn canviarà a aquest idioma).", spa: "El idioma que usas (el entorno cambiará a este idioma).", eng: "The language you use (the interface will change to this language)."});
+	document.getElementById("account_btn").value=DonaCadenaJSON(Msg_Save_changes);
+	document.getElementById("account-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+
+	document.getElementById("share-title-text").innerHTML=DonaCadenaJSON(Msg_Share);
+	document.getElementById("share-subtitle-text").innerHTML=DonaCadenaJSON({cat: "Comparteix aquest recurs amb els altres", spa: "Comparte este recurso con otros", eng: "Share this resource with others"});
+	document.getElementById("new_share_screen").innerHTML=DonaCadenaJSON(l_msg_Username_or_email);
+	document.getElementById("new_share_descrip").innerHTML=DonaCadenaJSON({cat: "Escriu un nom d'usuari de NiMMbus o un email, escull els drets i prem [Afegir]", spa: "Escriba un nombre de usuario de NiMMbus o un email, escoja los derechos y presione [Añadir]", eng: "Type a username in NiMMbus or an email, choose the rights and press [Add]"});
+	document.getElementById("new_share_open_screen").innerHTML=DonaCadenaJSON(l_msg_All);
+	document.getElementById("new_share_open_read_label").innerHTML=DonaCadenaJSON({cat: "Obrir a tothom per llegir", spa: "Abrir a todos para lectura", eng: "Open to everybody for reading"});
+	document.getElementById("new_share_open_descrip").innerHTML=DonaCadenaJSON({cat: "Marca aquesta casella si vols obrir l'accés a aquest recurs a tothom (fins i tot sense identificar-se)", spa: "Marque esta casilla si desea abrir el acceso a este recurso a todos (incluso sin identificarse)", eng: "Check this box if you want to open the access to this resource to everyone (even if they are not identified)"});
+	document.getElementById("new_share_open_btn").value=DonaCadenaJSON(l_msg_Add);
+	document.getElementById("new_share_rights_read_label").innerHTML=DonaCadenaJSON(Msg_Read);
+	document.getElementById("new_share_rights_write_label").innerHTML=DonaCadenaJSON(Msg_Write);
+	document.getElementById("new_share_rights_share_label").innerHTML=DonaCadenaJSON(Msg_Share);
+	document.getElementById("new_share_btn").value=DonaCadenaJSON(l_msg_Add);
+	document.getElementById("current_share_screen").innerHTML=DonaCadenaJSON({cat: "Llista de comparticions", spa: "Lista de comparticiones", eng: "Sharing list"});
+	document.getElementById("current_share_descrip").innerHTML=DonaCadenaJSON({cat: "Fes clic a les creus per esborrar usuaris de la llista.", spa: "Haga clic a las cruces para borrar usuarios de la lista.", eng: "Click on the crosses to remove users from the list."});
+	document.getElementById("share-close_btn").value=DonaCadenaJSON(l_msg_Close_Tancar);
+
+	document.getElementById("feedback-title-text").innerHTML=DonaCadenaJSON({cat: "Valoracions", spa: "Valoraciones", eng: "Feedback items"});
+	document.getElementById("feedback-subtitle-text").innerHTML=DonaCadenaJSON({cat: "Valoracions sobre el recurs:", spa: "Valoraciones sobre el recurso:", eng: "Feedback about the resource:"});
+	document.getElementById("feedback_target_compact_screen").innerHTML=DonaCadenaJSON({cat: "Recurs valorat", spa: "Recurso valorado", eng: "Target resource"});
+	document.getElementById("new_feedback_screen").innerHTML=DonaCadenaJSON(Msg_Feedback);
+	document.getElementById("new_feedback_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Afegir] per a crear una nova valoració sobre aquest recurs", spa: "Presione [Añadir] para crear una nueva valoración sobre este recurso", eng: "Press [Add] to create a new feedback item about this resource"});
+	document.getElementById("new_feedback_btn").value=DonaCadenaJSON(l_msg_Add);
+	document.getElementById("current_feedback_screen").innerHTML=DonaCadenaJSON({cat: "Llista de valoracions", spa: "Lista de valoraciones", eng: "Feedback list"});
+	document.getElementById("current_feedback_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Editar] per a veure, modificar o esborrar aquesta valoració", spa: "Presione [Editar] para ver, modificar o borrar esta valoración", eng: "Press [Edit] to view, modify or delete this feedback item"});
+	document.getElementById("feedback-close_btn").value=DonaCadenaJSON(l_msg_Close_Tancar);
+
+	document.getElementById("reset-pass-title-text").innerHTML=DonaCadenaJSON({cat: "Restabliment de contrasenya", spa: "Restablecimiento de contraseña", eng: "Password reset"});
+	document.getElementById("reset-pass-subtitle-text").innerHTML=DonaCadenaJSON({cat: "Troba el teu compte de NiMMbus", spa: "Encuentre su cuenta de NiMMbus", eng: "Find your NiMMbus account"});
+	document.getElementById("reset-pass_user_descrip").innerHTML=DonaCadenaJSON({cat: "Introdueixi el nom d'usuari o correu electrònic. Se t'enviarà un email amb un enllaç per canviar la contrasenya.", spa: "Introduzca su nombre de usuario o el correo electrónico. Se le enviará un email con un enlace para cambiar la contraseña.", eng: "Enter your username or email. An email will be sent to you with a link to change the password."});
+	document.getElementById("reset-pass_btn").value=DonaCadenaJSON({cat: "Cerca", spa: "Búsqueda", eng: "Search"});
+
+	document.getElementById("new-pass-title-text").innerHTML=DonaCadenaJSON({cat: "Nova contrasenya", spa: "Nueva contraseña", eng: "New password"});
+	document.getElementById("new-pass-subtitle-text").innerHTML=DonaCadenaJSON({cat: "Canvia la teva contrasenya del teu compte de NiMMbus", spa: "Cambie su contraseña para su cuenta de NiMMbus", eng: "Change password in your NiMMbus account"});
+	document.getElementById("new-pass_new_pass_screen").innerHTML=DonaCadenaJSON(l_msg_New_Pwd);
+	document.getElementById("new-pass_new_pass_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Escriu directament la teva contrasenya nova.", spa: "Escriba directamente su contraseña nueva.", eng: "Write your new password here."});
+	document.getElementById("new-pass_new_pass_valid_screen").innerHTML=DonaCadenaJSON(l_msg_Verify_pwd);
+	document.getElementById("new-pass_new_pass_valid_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Repeat_password);
+	document.getElementById("new-pass_btn").value=DonaCadenaJSON({cat: "Canviar", spa: "Cambiar", eng: "Change"});
+
+	document.getElementById("new-user-title-text").innerHTML=DonaCadenaJSON(l_msg_New_to_NiMMbus_SignUp)+":";
+	document.getElementById("new-user-subtitle-text").innerHTML=DonaCadenaJSON({cat: "Crea el teu compte de NiMMbus", spa: "Cree su cuenta de NiMMbus", eng: "Create your NiMMbus account"});
+	document.getElementById("new-user_new_user_screen").innerHTML=DonaCadenaJSON(l_msg_Username);
+	document.getElementById("new-user_new_user_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Escriu el nom d'usuari que desitges.", spa: "Escriba el nombre de usuario que desea.", eng: "Write your username here."});
+	document.getElementById("new-user_new_pass_screen").innerHTML=DonaCadenaJSON(l_msg_Pwd);
+	document.getElementById("new-user_new_pass_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Escriu la teva contrasenya.", spa: "Escriba directamente su contraseña.", eng: "Write your new password here."});
+	document.getElementById("new-user_new_pass_valid_screen").innerHTML=DonaCadenaJSON(l_msg_Verify_pwd);
+	document.getElementById("new-user_new_pass_valid_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Repeat_password);
+	document.getElementById("new-user_email_screen").innerHTML=DonaCadenaJSON(l_msg_Email);
+	document.getElementById("new-user_email_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_Email_Notificactions);
+	document.getElementById("new-user_btn").value=DonaCadenaJSON(l_msg_SignUp_for_NiMMbus);
+
+	document.getElementById("new-user-title-text").innerHTML=DonaCadenaJSON(l_msg_New_to_NiMMbus_SignUp)+":";
+
+	document.getElementById("execute-token-title-text").innerHTML=DonaCadenaJSON({cat: "Sol·licitud", spa: "Solicitud", eng: "Request"});
+	document.getElementById("execute-token-wait-text").innerHTML=DonaCadenaJSON({cat: "Espereu...", spa: "Espere...", eng: "Please wait..."});
+}
+
+// Index Temporary Out of Service
+
+function ChangeLanguageIndexTOS(lang)
+{
+	ActiveLanguage=lang;
+	document.getElementById("front-welcome-text-title").innerHTML=DonaCadenaJSON(Msg_Welcome_NiMMbus);
+	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON(Msg_EO_everywhere_Share);		
+	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
+	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
+	document.getElementById("front-temp-oos-lang").innerHTML=DonaCadenaJSON({cat: "Servei temporalment fora de servei", 
+		spa: "Servicio temporalmente fuera de servicio", eng: "Temporary Out of Service"});
+	document.getElementById("front-temp-bts-lang").innerHTML=DonaCadenaJSON({cat: "Data i hora prevista del restabliment del servei", 
+		spa: "Fecha y hora prevista de restablecimiento del servicio", eng: "Expected date and time for service restoration"})+": 17-09-2018 14:00 CET";
+}
+
+// Test New Feedback Page
+
+function ChangeLanguageTestNewFeedback(lang)
+{
+	ActiveLanguage=lang;
+	
+	document.getElementById("head_title").innerHTML=DonaCadenaJSON({cat: "Test per afegir Valoracions", spa: "Test para añadir valoraciones", eng: "NiMMbus Test New Feedback"});
+	document.getElementById("front-welcome-text-title").innerHTML=DonaCadenaJSON(Msg_NiMMbus_Test_Pages);
+	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON({cat: "Test per a crear valoracions d'un recurs (descrit pel seu títol, identificador i espai de noms)",
+				spa: "Test para crear valoraciones de un recurso (descrito por su título, identificador y espacio de nombres)", 
+				eng: "Test to create feedback items about a resource (described by its title, identifier and namespace)"});
+	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
+	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
+	document.getElementById("sign_in_title").placeholder=DonaCadenaJSON(Msg_Title);
+	document.getElementById("sign_in_code").placeholder=DonaCadenaJSON(Msg_Identifier);
+	document.getElementById("sign_in_codespace").placeholder=DonaCadenaJSON(Msg_Namespace);
+	document.getElementById("sign_in_access_token_type_title").innerHTML=DonaCadenaJSON({cat: "Descriu el tipus d'usuari per a entrar a NiMMbus", spa: "Describe el tipo de usuario para entrar en NiMMbus", eng: "Describe the type of user to sign in NiMMbus"});
+	document.getElementById("sign_in_btn").value=DonaCadenaJSON(Msg_Create);
+	document.getElementById("sign_in_create_citation").innerHTML=DonaCadenaJSON({cat: "Descriu la citació al recurs sobre el qual donaràs valoracions", spa: "Describe la citación al recurso sobre el qual darás valoraciones", eng: "Describe the citation to the resource you are going to give feedback"});		
+}
+
+
+// Test Widget Page
+
+function ChangeLanguageTestWidget(lang)
+{
+	ActiveLanguage=lang;
+	
+	document.getElementById("head_title").innerHTML=DonaCadenaJSON({cat: "Test del NiMMbus Widget", spa: "Test del NiMMbus Widget", eng: "NiMMbus Test Widget"});
+	document.getElementById("front-welcome-text-title").innerHTML=DonaCadenaJSON(Msg_NiMMbus_Test_Pages);
+	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON({cat: "Test per a mostrar l'ús de l'API JavaScript i el Widget de NiMMbus per crear i mostrar valoracions",
+				spa: "Test para mostrar el uso del API JavaScript y el Widget de NiMMbus per crear y mostrar valoraciones", 
+				eng: "Test to show JavaScrip API and NiMMbus widget use to create and recover feedbacks"});
+	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
+	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
+	document.getElementById("sign_in_resource_type").innerHTML=DonaCadenaJSON({cat: "Text de tipus de recurs:", spa: "Texto de tipo de recurso:", eng: "Resource type text:"});
+	document.getElementById("sign_in_title").innerHTML=DonaCadenaJSON(Msg_Title)+':';
+	document.getElementById("sign_in_code").innerHTML=DonaCadenaJSON(Msg_Identifier)+':';
+	document.getElementById("sign_in_codespace").innerHTML=DonaCadenaJSON(Msg_Namespace)+':';
+	document.getElementById("sign_in_btn").value=DonaCadenaJSON({cat: "Afegir/Revisar valoracions prèvies", spa: "Añadir/Revisar valoraciones previas", eng: "Add/Review previous feedback items"});
+	document.getElementById("clear_btn").value=DonaCadenaJSON({cat: "Buidar", spa: "Vaciar", eng: "Clear"});
+}
+
+// Test Widget Corine Example Page
+
+function ChangeLanguageTestWidgetCorine(lang)
+{
+	var l_msg_here={cat: "aquí", spa: "aquí", eng: "here"};
+	
+	ActiveLanguage=lang;
+	
+	document.getElementById("head_title").innerHTML=DonaCadenaJSON({cat: "Test del NiMMbus Widget al CLC2012", spa: "Test del NiMMbus Widget en el CLC2012", eng: "NiMMbus Test Widget CLC2012"});
+	document.getElementById("front-welcome-text-title").innerHTML=DonaCadenaJSON(Msg_NiMMbus_Test_Pages);
+	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON({cat: "Exemple d'integració de l'API JavaScript i el Widget de NiMMbus a les metadades del Corine Land Cover 2012",
+				spa: "Ejemplo de integración del API JavaScript y el Widget de NiMMbus en los metadatos del Corine Land Cover 2012", 
+				eng: "Example of JavaScrip API and NiMMbus widget integration in Corine Land Cover 2012 metadata"});
+	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
+	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang)
+	
+	document.getElementById("title").innerHTML=DonaCadenaJSON({cat: "<b>Exemple del Corine Land Cover 2012 amb el NiMMbus GUF widget</b>", spa: "<b>Ejemplo del Corine Land Cover 2012 con el NiMMbus GUF widget</b>", eng: "<b>Corine Land Cover 2012 with NiMMbus GUF widget example</b>"});	
+	document.getElementById("explanation_1").innerHTML=DonaCadenaJSON({cat: "L'objectiu d'aquest exemple és il·lustrar com incloure el mecanisme de valoracions d'usuari (GUF) als catàlegs d'una comunitat.", spa: "El objetivo de este ejemplo es ilustrar cómo incluir el mecanismo de valoraciones de usuarios (GUF) en los catálogos de una comunidad.", eng: "The objective of this example is to illustrate how to include the Geospatial User Feedback (GUF) mechanism in community catalogues."});
+	document.getElementById("explanation_2").innerHTML=DonaCadenaJSON({cat: "Simularem l'existència d'un catàleg que podem manipular utilitzant les metadades Corine Land Cover 2012 (extret de",
+		spa: "Simularemos la existencia de un catálogo que podemos manipular utilizando los metadatos de Corine Land Cover 2012 (extraídos de",
+		eng: "We will simulate the existence of a catalogue that we can manipulate using the Corine Land Cover 2012 metadata (extracted from"})+" Copernicus Land Service <a href=\"https://land.copernicus.eu/pan-european/corine-land-cover/clc-2012?tab=metadata\" target=\"_blank\">"+DonaCadenaJSON(l_msg_here)+"</a>).";
+	document.getElementById("explanation_3").innerHTML=DonaCadenaJSON({cat: "A continuació, a la <u style=\"background-color: #E8E8E8;\">part esquerra</u>, podeu veure les metadades extretes del catàleg i disponibles a",
+		spa: "A continuación, en el <u style=\"background-color: #E8E8E8;\">lado izquierdo</u>, puede ver los metadatos extraídos del catálogo y disponibles en",
+		eng: "Below, on the <u style=\"background-color: #E8E8E8;\">left side</u>, you can see the metadata extracted from the catalogue and available in"})+" <a href=\"test_widget_corine_original.htm\" target=\"_blank\">test_widget_corine_original.htm</a>.";		
+	document.getElementById("explanation_4").innerHTML=DonaCadenaJSON({cat: "A la <u style=\"background-color: #D6F7FA;\">part dreta</u>, podeu veure la pàgina de metadades modificada per incloure el widget GUF, disponible a", 
+		spa: "En el <u style=\"background-color: #D6F7FA;\">lado derecho</u>, puede ver la página de metadatos modificados para incluir el widget GUF, disponible en", 
+		eng: "On the <u style=\"background-color: #D6F7FA;\">right side</u> you can see the modified metadata page to include GUF widget, available in"})+" <a href=\"test_widget_corine_wt_guf.htm\" target=\"_blank\">test_widget_corine_wt_guf.htm</a>.";
+	document.getElementById("explanation_5").innerHTML=DonaCadenaJSON({cat: "Les instruccions per integrar el GUF es poden trobar a la ", spa: "Las instrucciones para integrar el GUF se pueden encontrar en la ", eng: "The instructions to integrate the GUF can be found in the "})+" <a href=\"https://github.com/joanma747/nimmbus/tree/master/GUF_integration\" target=\"_blank\">"+DonaCadenaJSON({cat: "pàgina d'Integració del NiMMbus a GitHub", spa: "página de Integración del NiMMbus en GitHub", eng: "NiMMbus integration GitHub page"})+"</a>.";
+	document.getElementById("explanation_6").innerHTML=DonaCadenaJSON({cat: "Aquest exemple va ser l'exercici del \"Tema 5 - Integració de valoracions d'usuaris aplicats a recursos\" al Segon Esdeveniment de Formació NextGEOSS (11 de setembre de 2018, Ginebra). Més informació sobre aquest exercici ", spa: "Este ejemplo fue el ejercicio del \"Tema 5 - Integración de las valoraciones de usuarios aplicada a los recursos\" en el Segundo Evento de Formación NextGEOSS (11 de septiembre de 2018, Ginebra). Más información sobre este ejercicio ", eng: "This example was the hands-on for the \"Topic 5 - Integration of geospatial user feedback applied to resources\" in the Second NextGEOSS Training event (11th September 2018, Geneva). More information about this hands-on "})+"<a href=\"https://github.com/ec-nextgeoss/nextgeoss-training-user-feedback/\" target=\"_blank\">"+DonaCadenaJSON(l_msg_here)+"</a>.";
+}

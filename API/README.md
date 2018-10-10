@@ -107,6 +107,12 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * URL_LINK=
   * URL_DESCRIP=
   * URL_FUNCTION=
+  * EDITION=
+  * EDITION_DATE=	//Format YYYY-MM-DD is required
+  * SERIES_NAME=
+  * SERIES_ISSUE_ID=
+  * SERIES_PAGE=
+  * OTHER_CIT_DETAILS=
 
 * Resource Publication creation particulatities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=PUBLICAT
@@ -115,7 +121,14 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * URL_LINK=
   * URL_DESCRIP=
   * URL_FUNCTION=
+  * EDITION=
+  * EDITION_DATE=	//Format YYYY-MM-DD is required
+  * SERIES_NAME=
+  * SERIES_ISSUE_ID=
+  * SERIES_PAGE=
+  * OTHER_CIT_DETAILS=
   * CATEGORY=
+  * ABSTRACT=
 
 * Resource enumeration
   * IDENTIFIER=NB_RESOURCE:ENUMERATE
@@ -129,6 +142,8 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * CONTENT= (Optional, default is empty. If CONTENT=full the content element (of each entry) contains the complex content for TYPE=FEEDBACK, TYPE=CITATION and TYPE=PUBLICAT)
   * XSL= (full url or "mm32". Optional)
   * CRS=  (for the moment only for application/x-mmzx output and for TYPE=POINT)
+  * OWNER= (Optional, default is empty or ALL. If OWNER=ME, only resources owned by USER are listed. If OWNER=OTHERS, only resources directly shared with USER are listed. 
+	Default value means that resources owned by USER as well as resources directly shared with him/her are shown. ALL is assumed if any other no-predefined option is used)
   * TARGET= (resource_id. Optional filter applicable if TYPE=FEEDBACK)
   * TRG_TYPE_#= (Optional filter applicable if TYPE=FEEDBACK. Currently can only be CITATION)
   * TRG_FLD_#= (Optional filter applicable if TYPE=FEEDBACK. Currently can only be CODE or NAMESPACE)
@@ -195,6 +210,12 @@ To manage publications within a feedback item, there are three strategies are av
   * URL_LINK=
   * URL_DESCRIP=
   * URL_FUNCTION=
+  * EDITION=
+  * EDITION_DATE=	//Format YYYY-MM-DD is required
+  * SERIES_NAME=
+  * SERIES_ISSUE_ID=
+  * SERIES_PAGE=
+  * OTHER_CIT_DETAILS=
 
 * Resource Publication modification particulatities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=PUBLICAT
@@ -203,7 +224,14 @@ To manage publications within a feedback item, there are three strategies are av
   * URL_LINK=
   * URL_DESCRIP=
   * URL_FUNCTION=
+  * EDITION=
+  * EDITION_DATE=	//Format YYYY-MM-DD is required
+  * SERIES_NAME=
+  * SERIES_ISSUE_ID=
+  * SERIES_PAGE=
+  * OTHER_CIT_DETAILS=
   * CATEGORY=
+  * ABSTRACT=
 
 * Resource deletion
   * IDENTIFIER=NB_RESOURCE:DELETE

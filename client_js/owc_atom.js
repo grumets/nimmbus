@@ -27,7 +27,7 @@
 
 //Generic functions to access XML fragments.
 
-/*I apply a simplified solution that I fould here:
+/*I apply a simplified solution that I found here:
 
 http://stackoverflow.com/questions/2207941/getelementsbytagname-problem-in-chrome-and-safari
 

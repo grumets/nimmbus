@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title id="head_title">NiMMbus Test Widget Corine</title>
+
+<link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link rel="stylesheet" href="nimmbus.css">
+
+<script language="JavaScript" src="Nmmblang.js"></script>
+
+<script language="JavaScript" src="xml.js"></script>
+<script language="JavaScript" src="owc_atom.js"></script>
+<!--script language="JavaScript" src="wps_iso_guf.js" async defer></script>
+<script language="JavaScript" src="guf_locale.js" async defer></script-->
+<script language="JavaScript" src="wps_iso_guf.js"></script>
+<script language="JavaScript" src="guf_locale.js"></script>
+<script language="JavaScript" src="guf.js"></script>
+
+<script>
+<!--
+
+//From: http://www.technicaladvices.com/2012/07/16/preventing-backspace-from-navigating-back-in-all-the-browsers/
+document.onkeydown = function (event) 
+{
+	
+	if (!event) { /* This will happen in IE */
+		event = window.event;
+	}
+		
+	var keyCode = event.keyCode;
+	
+	if (keyCode == 8 &&
+		((event.target || event.srcElement).tagName != "TEXTAREA") && 
+		((event.target || event.srcElement).tagName != "INPUT")) { 
+		
+		if (navigator.userAgent.toLowerCase().indexOf("msie") == -1) {
+			event.stopPropagation();
+		} else {
+			event.returnValue = false;
+		}
+		
+		return false;
+	}
+};	
+
+function InitFrontPage()
+{
+	ChangeLanguageTestWidgetCorine(ActiveLanguage);
+}
+
+var TimeOutBoxCloser=0;
+var CloseDropDownListOutMenu=null;
+var CloseDropDownListOutSubMenu=null;
+
+function SwitchDropDownList(menu_id, submenu_id)
+{
+	if (document.getElementById(submenu_id).style.visibility=="")
+		document.getElementById(submenu_id).style.visibility="hidden";
+
+	if (document.getElementById(submenu_id).style.visibility=="hidden")
+	{
+		document.getElementById(submenu_id).style.visibility="visible";
+		//Remove menu when clicking outside: http://www.techjunkie.com/close-div-click-outside/
+		CloseDropDownListOut(CloseDropDownListOutSubMenu);
+
+		CloseDropDownListOutMenu=menu_id;
+		CloseDropDownListOutSubMenu=submenu_id;
+
+		document.body.removeEventListener('click', CloseDropDownListOutEvent, false);
+		if (TimeOutBoxCloser)
+			clearTimeout(TimeOutBoxCloser);
+		TimeOutBoxCloser=setTimeout("document.body.addEventListener('click', CloseDropDownListOutEvent, false);", 300);
+	}
+	else
+		CloseDropDownListOut(submenu_id);
+}
+
+function CloseDropDownListOut(id)
+{
+	document.body.removeEventListener('click', CloseDropDownListOut, false);
+	if (id)
+		document.getElementById(id).style.visibility='hidden';
+}
+
+function CloseDropDownListOutEvent(event)
+{
+	if (!event)
+		event=window.event;
+	if(event.target.id != CloseDropDownListOutMenu)
+	{
+		CloseDropDownListOut(CloseDropDownListOutSubMenu);
+		CloseDropDownListOutSubMenu=null;		
+	}
+}	
+
+//extracted from https://www.w3schools.com/howto/howto_html_include.asp
+function includeHTML()
+{
+  var z, i, elmnt, file, xhttp;
+  /*loop through a collection of all HTML elements:*/
+  z = document.getElementsByTagName("*");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("w3-include-html");
+    if (file) {
+      /*make an HTTP request using the attribute value as the file name:*/
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+          if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          /*remove the attribute, and call this function once more:*/
+          elmnt.removeAttribute("w3-include-html");
+          includeHTML();
+        }
+      }      
+      xhttp.open("GET", file, true);
+      xhttp.send();
+      /*exit the function:*/
+      return;
+    }
+  }
+}
+
+</script>
+</head>
+
+<!--body-->
+<body onLoad="InitFrontPage();">
+	 
+<div class="long-note-outer">
+<div id="long-note" class="note-inner"></div>
+</div>
+
+<div class="short-note-outer">
+<div id="short-note" class="note-inner"></div>
+</div>
+	
+<!-- *** IDENTIFICATION FRONT PAGE *** -->
+
+<div id="front-page">
+	
+<div class="front-bg">
+<img src="topoorto.jpg" style="display: block;">
+</div>
+
+<div class="front-welcome-text">
+<h1 id="front-welcome-text-title" style="line-height: normal; margin: 0px">Benvinguts al NiMMbus.</h1>
+<p id="front-welcome-text-subtitle" style="margin: 10px"></p>
+<br>
+<img src="NiMMbus.png" style="display: block;">
+<table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table>
+<br>
+<table style="width: 100%"><tr><td style="text-align: left; width: 27%"><p class="front-conditions-text"><a id="welcome-terms_of_use" href="TermsOfUse.htm" style="color: #CCD6DD">Terms_of_use</a></p></td>
+	<td style="text-align: center; width: 33%"><p class="front-conditions-text"><a id="welcome-privacy_statement" href="PrivacyStatement.htm" style="color: #CCD6DD">Privacy_Statement</a></p></td>
+	<td style="text-align: right"><p id="welcome-last_updated" class="front-conditions-text"><i>Last_updated_October_2_2018</i></p></td></tr></table>
+</div>
+
+<div class="front-language">
+<a class="dropdown-language" id="dropdown-language" onClick="SwitchDropDownList('dropdown-language', 'front-language-list');">
+<span id="front-language-lang">
+Language: English
+</span>
+<b class="caret"></b>
+</a>
+</div>
+
+<div id="front-language-list" class="dropdown-list" style="left: 85%; top: 70px; width: 70px; height: 70px;">
+<div class="dropdown-caret">
+<span class="caret-outer"></span>
+<span class="caret-inner"></span>
+</div>
+<a class="dropdown-list_active" onClick="ChangeLanguageTestWidgetCorine(0);SwitchDropDownList('dropdown-language', 'front-language-list');">
+Català</a>
+<a class="dropdown-list_active" onClick="ChangeLanguageTestWidgetCorine(1);SwitchDropDownList('dropdown-language', 'front-language-list');">
+Español</a>
+<a class="dropdown-list_active" onClick="ChangeLanguageTestWidgetCorine(2);SwitchDropDownList('dropdown-language', 'front-language-list');">
+English</a>
+</div>
+
+<div class="white-area" style="left: 50%; top: 130px; width: 35%; height: 80px;">
+<h2 class="white-area-title" id="title"><b></b></h2>
+<p class="packet_paragraph" id="explanation_1"></p>
+<p class="packet_paragraph" id="explanation_2"></p>
+<p class="packet_paragraph" id="explanation_3"></p>
+<p class="packet_paragraph" id="explanation_4"></p>
+<p class="packet_paragraph" id="explanation_5"></p>
+<p class="packet_paragraph" id="explanation_6"></p>
+</div>
+
+<div w3-include-html="test_widget_corine_original.htm" style="position: fixed; background-color: #E8E8E8; left: 3%; top: 550px; width: 45%;"></div>
+<div w3-include-html="test_widget_corine_wt_guf.htm" style="position: fixed; background-color: #D6F7FA; left: 50%; top: 550px; width: 45%;"></div>
+</div>  <!--End of id="front-page" -->
+
+<script>
+includeHTML();
+</script>
+
+</body>
+</html>

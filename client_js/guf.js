@@ -5,6 +5,11 @@
 	License: Attribution 4.0 International (CC BY 4.0) http://creativecommons.org/licenses/by/4.0/
 */
 
+//var ServerGUF="http://localhost/cgi-bin/server1/nimmbus.cgi";
+//var ClientGUF="http://localhost/nimmbus/index.htm";
+var ServerGUF="https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi";
+var ClientGUF="https://www.opengis.uab.cat/nimmbus/index.htm";
+
 function GUFShowFeedbackInHTMLDiv(elem, seed_div_id, rsc_type, title, code, codespace, lang)
 {
 	elem.innerHTML = GUFDonaCadenaFinestraFeedbackResource(seed_div_id, rsc_type, title, code, codespace, lang);
@@ -14,7 +19,7 @@ function GUFShowFeedbackInHTMLDiv(elem, seed_div_id, rsc_type, title, code, code
 
 function GUFShowPreviousFeedbackInHTMLDiv(div_id, rsc_type, code, codespace, lang)
 {
-	var url="https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + codespace + "&TRG_OPR_2=EQ";
+	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + codespace + "&TRG_OPR_2=EQ";
 	loadFile(url, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: div_id, rsc_type:rsc_type, lang: lang});
 }
 
@@ -121,7 +126,7 @@ var cdns=[];
 		}
 	}
 	cdns.push("<input type=\"button\" class=\"Verdana11px\" value=\"",
-		GUFDonaCadenaLang({"cat":"edita", "spa":"edita", "eng":"edit", "fre":"éditer"}, extra_param.lang), "\"",
+		GUFDonaCadenaLang({"cat":"Edita", "spa":"Edita", "eng":"Edit", "fre":"Éditer"}, extra_param.lang), "\"",
 		" onClick='GUFOpenNimmbus(\"", extra_param.lang, "\");' /> ",
 		GUFDonaCadenaLang({"cat":"les teves entrades prèvies", "spa":"tus entradas previas", "eng":"your previous entries", "fre":"vos entrées précédentes"}, extra_param.lang));
 	document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
@@ -155,63 +160,50 @@ var cdns=[];
 		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no és un xml guf", "spa":"El retorno no es xml guf", "eng":"Return is not xml guf", "fre":"Le retour n'est pas xml guf"}, extra_param.lang)); 
 		return;
 	}
-	
-	if (guf.purpose)
-		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Propòsit", "spa":"Proposito", "eng":"Purpose", "fre":"Raison"}, extra_param.lang), ":</b> ", guf.purpose, "<br/>");
 
 	if (guf.abstract)
 		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Abstrait"}, extra_param.lang), ":</b> ", guf.abstract, "<br/>");
 
-	if (guf.contactRole && GUFContactRoleDescription[guf.contactRole])
-		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Rol del contacte", "spa":"Rol del contacto", "eng":"Contact role", "fre":"Rôle de contact"}, extra_param.lang), ":</b> ", GUFDonaCadenaLang(GUFContactRoleDescription[guf.contactRole], extra_param.lang), "<br/>");
+	if (guf.purpose)
+		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Propòsit", "spa":"Propósito", "eng":"Purpose", "fre":"Raison"}, extra_param.lang), ":</b> ", guf.purpose, "<br/>");
+
+	if (guf.contactRole && GUF_UserRoleCode[guf.contactRole])
+		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Rol del contacte", "spa":"Rol del contacto", "eng":"Contact role", "fre":"Rôle de contact"}, extra_param.lang), ":</b> ", GUFDonaCadenaLang(GUF_UserRoleCode[guf.contactRole], extra_param.lang), "<br/>");
 
 	if (guf.comment)
-		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Comentari", "spa":"Comentari", "eng":"Comment", "fre":"Commentaire"}, extra_param.lang), ":</b> ", guf.comment, "<br/>");
+		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Comentari", "spa":"Comentario", "eng":"Comment", "fre":"Commentaire"}, extra_param.lang), ":</b> ", guf.comment, "<br/>");
 
-	if (guf.motivation && GUFMotivationDescription[guf.motivation])
-		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Motivació del comentari", "spa":"Motivación del comentario", "eng":"Comment motivation", "fre":"Motivation du commentaire"}, extra_param.lang), ":</b> ", GUFDonaCadenaLang(GUFMotivationDescription[guf.motivation], extra_param.lang), "<br/>");
+	if (guf.motivation && GUF_MotivationCode[guf.motivation])
+		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Motivació del comentari", "spa":"Motivación del comentario", "eng":"Comment motivation", "fre":"Motivation du commentaire"}, extra_param.lang), ":</b> ", GUFDonaCadenaLang(GUF_MotivationCode[guf.motivation], extra_param.lang), "<br/>");
 
 	if (guf.rating)	
 		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Puntuació", "spa":"Puntuación", "eng":"Rating", "fre":"Évaluation"}, extra_param.lang), ":</b> ", guf.rating, "/5<br/>");
 
-	/*if (guf.public)
+	if (guf.public)
 	{	
 		for (var i_publi=0; i_publi<guf.public.length; i_publi++)
 		{	
+			if (i_publi>0)
+				cdns.push("<br><b>", GUFDonaCadenaLang({"cat":"Publicació", "spa":"Publicación", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</b> ");
+			else
+				cdns.push("<b>", GUFDonaCadenaLang({"cat":"Publicació", "spa":"Publicación", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</b> ");
+			
+			if (guf.public[i_publi].title)
+				cdns.push(guf.public[i_publi].title, "; ");
+
 			if (guf.public[i_publi].identifier)
 			{
 	  			for (var i_id=0; i_id<guf.public[i_publi].identifier.length; i_id++)
   				{
-  					if (guf.public[i_publi].identifier[i_id].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
-  					{
-						cdns.push("<b>", GUFDonaCadenaLang({"cat":"Publicació", "spa":"Publicación", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</b> ", <div id=\"", extra_param.div_id, "_publi_", i_publi , "\"></div>");
-  						break;
-	  				}
-  				}
+	  				if (i_id==(guf.public[i_publi].identifier.length-1))
+	  					cdns.push(guf.public[i_publi].identifier[i_id].code, ", ", guf.public[i_publi].identifier[i_id].codeSpace);
+	  				else
+	  					cdns.push(guf.public[i_publi].identifier[i_id].code, ", ", guf.public[i_publi].identifier[i_id].codeSpace, "; ");
+					}
 			} 			
 		}
-	}*/
+	}
 	document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
-	/*if (guf.public)
-	{	
-		for (var i_publi=0; i_publi<guf.public.length; i_publi++)
-		{	
-			if (guf.public[i_publi].identifier)
-			{
-	  			for (var i_id=0; i_id<guf.public[i_publi].identifier.length; i_id++)
-  				{
-  					if (guf.public[i_publi].identifier[i_id].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
-  					{
-						var url="https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+extra_param.lang+"&RESOURCE=??&USER=Anonymous
-						guf.public[i_publi].identifier[i_id].code;
-						cdns.push("<b>", GUFDonaCadenaLang({"cat":"Publicació", "spa":"Publicación", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</b> ", <div id=\"", extra_param.div_id, "_publi_", i_publi , "\"></div>");
-						loadFile(owc.features[i].properties.links.alternates[0].href, "text/xml", CarregaFeedbackAnterior, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: owc.features[i].properties.links.alternates[0].href, div_id: extra_param.div_id + "_" + i, lang: extra_param.lang});
-  						break;
-	  				}
-  				}
-			} 			
-		}
-	}*/
 }
 
 var GUFFeedbackWindow=null;
@@ -219,19 +211,19 @@ function GUFOpenNimmbus(lang)
 {
 	if (GUFFeedbackWindow==null || GUFFeedbackWindow.closed)
 	{
-		GUFFeedbackWindow=window.open("https://www.opengis.uab.cat/nimmbus/index.htm", "Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
+		GUFFeedbackWindow=window.open(ClientGUF, "Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
 		GUFShaObertPopUp(GUFFeedbackWindow, lang);
 	}
 	else
 	{
-		GUFFeedbackWindow.location.href="https://www.opengis.uab.cat/nimmbus/index.htm";
+		GUFFeedbackWindow.location.href=ClientGUF;
 		GUFFeedbackWindow.focus();
 	}
 }
 
 function GUFDonaNomFitxerAddFeedback(title, code, codespace)
 {
-	return "https://www.opengis.uab.cat/nimmbus/index.htm?target_title=" + title + "&target_code=" + code + "&target_codespace=" + codespace + "&page=ADDFEEDBACK&share_borrower_1=Anonymous";
+	return ClientGUF+"?target_title=" + title + "&target_code=" + code + "&target_codespace=" + codespace + "&page=ADDFEEDBACK&share_borrower_1=Anonymous";
 }
 
 function GUFAfegirFeedbackCapa(title, code, codespace, lang)
@@ -258,16 +250,16 @@ var cdns=[];
 	cdns.push("<fieldset><legend>", 
 		GUFDonaCadenaLang({"cat":"Afegir valoracions a", "spa":"Añadir valoraciones a", "eng":"Add user feedback to", "fre":"Ajouter rétroaction de l'utilisateur de"}, lang), 
 		": ", rsc_type,
-		":</legend>");
+		"</legend>");
 
 	cdns.push("<input type=\"button\" class=\"Verdana11px\" value=\"",
-				  GUFDonaCadenaLang({"cat":"Afegir una valoració", "spa":"Añadir una valoración", "eng":"Add a user feedback", "fre":"Ajouter une rétroaction de l'utilisateur"}), "\"",
+				  GUFDonaCadenaLang({"cat":"Afegir una valoració", "spa":"Añadir una valoración", "eng":"Add a user feedback", "fre":"Ajouter une rétroaction de l'utilisateur"}, lang), "\"",
 				  " onClick='GUFAfegirFeedbackCapa(\"", title, "\", \"", code, "\", \"", codespace, "\", \"", lang, "\");' />",
 				  "</fieldset>");
 	cdns.push("<fieldset><legend>", 
 			GUFDonaCadenaLang({"cat":"Valoracions prèvies a", "spa":"Valoraciones previas a", "eng":"Previous user feedback to", "fre":"Précédent rétroaction de l'utilisateur de"}, lang), 
 			": ", rsc_type,
-			":</legend>");
+			"</legend>");
 	cdns.push("<div id=\"",div_id,"Previ\" class=\"Verdana11px\" style=\"width:98%\">",
 		"</div></fieldset>",
 		"</div></form>");
