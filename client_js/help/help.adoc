@@ -3,7 +3,7 @@
 // *****************************************************************************
 // name of the help after the colon
 :title: NiMMbus Help
-:postedDate: 2018-10-08
+:postedDate: 2018-10-11
 // name of all editors. Separate multiple editors by comma, e.g. John Wayne, Bud Spencer
 :editor: Alaitz Zabala, Joan Maso
 // *****************************************************************************
