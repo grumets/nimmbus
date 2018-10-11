@@ -26,7 +26,7 @@
 
 Posted Date: {postedDate}
 
-Reference URL for this document: https://www.opengis.uab.cat/nimmbus/help
+Reference URL for this document: https://www.opengis.uab.cat/nimmbus/help/help.html
 
 Editor: {editor}
 
