@@ -6,7 +6,9 @@
 	License: Attribution 4.0 International (CC BY 4.0) http://creativecommons.org/licenses/by/4.0/
 */
 
+"use strict"
 
+//Returns all nodes at all levels that has the abbreb_ns and the name
 function GetXMLElementByName(root, abbreb_ns, name)
 {
 var a;
@@ -18,6 +20,31 @@ var a;
 	    	return root.getElementsByTagName(name)[0];
 	}
     	return root.getElementsByTagName(name)[0];
+}
+
+//Return true if the node that has the abbreb_ns and the name. abbreb_ns can be '*' if we do not expect ns or if it does not matter.
+function HasXMLNodeTheRightName(node, abbreb_ns, name)
+{
+      	var ns_plus_name=node.nodeName.split(":");
+	if ((ns_plus_name[1] && (abbreb_ns==ns_plus_name[0] || abbreb_ns=='*') && ns_plus_name[1]==name) || 
+		(!ns_plus_name[1] && abbreb_ns=='*' && ns_plus_name[0]==name))
+		return node;
+}
+
+//Returns a child node that has the abbreb_ns and the name. abbreb_ns can be '*' if we do not expect ns or if it does not matter.
+function GetXMLChildElementByName(parent, abbreb_ns, name)
+{
+var x, ns_plus_name;
+	x = parent.childNodes;
+	for (var i = 0; i < x.length; i++) 
+	{ 
+	        if (x[i].nodeType == 1 /*ELEMENT_NODE*/) 
+		{
+			if (HasXMLNodeTheRightName(x[i], abbreb_ns, name))
+				return x[i];
+		}
+	}
+	return null;
 }
 
 
@@ -134,3 +161,22 @@ var xhr = new XMLHttpRequest();
 	//xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 	xhr.send();
 }
+
+/*Per si un dia ho necessito.
+function xml2Str(xmlNode) {
+   try {
+      // Gecko- and Webkit-based browsers (Firefox, Chrome), Opera.
+      return (new XMLSerializer()).serializeToString(xmlNode);
+  }
+  catch (e) {
+     try {
+        // Internet Explorer.
+        return xmlNode.xml;
+     }
+     catch (e) {  
+        //Other browsers without XML Serializer
+        alert('Xmlserializer not supported');
+     }
+   }
+   return false;
+}*/

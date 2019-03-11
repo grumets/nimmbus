@@ -262,7 +262,8 @@ function ParseOWSContextAtomEntryProperties(entry)
 	//contentByRef, offering
 	//contextMetadata
 	//active, minScaleDenominator, maxScaleDenominator, folder
-		categories: ParseOWSContextAtomCategories(entry)
+		categories: ParseOWSContextAtomCategories(entry),		
+		openData: GetValueXMLElementByName(entry, "nmmb", "openData")
 	}
 }
 

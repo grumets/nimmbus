@@ -25,17 +25,25 @@ You can see this procedure in action in the following working examples:
 The integration is extremely simple.
 
 ### Step 1: Include the JavaScript library in your HTML page
-The modular library is composed of 5 JavaScript files that should be included in your Javascript application at the beginning of you web page, commonly in the <head> section:
+The modular library is composed of several JavaScript files and a style sheet that should be included in your Javascript application at the beginning of you web page, commonly in the <head> section. To ease the integration only the main JavaScript file and the CSS need to be directly included pointing to the full URL:
 
 ```js
-<script language="JavaScript" src="xml.js"></script>
-<script language="JavaScript" src="owc_atom.js"></script>
-<script language="JavaScript" src="wps_iso_guf.js"></script>
-<script language="JavaScript" src="guf_locale.js"></script>
-<script language="JavaScript" src="guf.js"></script>
+<link rel="stylesheet" href="https://raw.githubusercontent.com/joanma747/nimmbus/master/client_js/guf.css">
+<script language="JavaScript" src="https://raw.githubusercontent.com/joanma747/nimmbus/master/client_js/guf.js"></script>
 ```
 
-You can get the files from [here](../client_js) or you can simply point to the full URL in https://raw.githubusercontent.com/joanma747/nimmbus/master/client_js.
+Alternatively you get the files from [here](../client_js/) and point them with a relative URL. Be aware that more than those two files need to be downloaded, as they are indirectly included by guf.js:
+  * guf.css
+  * guf.js
+  * guf_locale.js
+  * Nmmblang.js
+  * owc_atom.js
+  * wps_iso_guf.js
+  * xml.js
+
+The inclusion of a style sheet (guf.css) id needed in order to have a special style for detailed descriptions in publications that is initially not displayed and can be shown by clicking on a text in the description. You can modify how this text is visible (e.g. different background color) if including a class .no_display.user in your style sheet. Please check the following examples to see how this styles ares used:
+   * [test_widget.htm](../client_js/test_widget.htm): default style is used for hidden text in publications (gray background). You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
+   * [test_widget_corine.htm](../client_js/test_widget_corine.htm): a different style is used for hidden text in publications (blue background in this case). You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm
 
 ### Step 2: Define a division in your HTML page
 The GUF widget will be shown in the area of the page you want. You should define a division using relative position. In case of a relative division, the size will be redimensioned automatically when it is populated and what is below the division will be moved down to avoid overlapping with the GUF widget.

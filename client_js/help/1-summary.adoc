@@ -1,10 +1,10 @@
 == Summary
 
-NiMMbus (http://www.opengis.uab.cat/nimmbus) is a solution for storing geospatial resources on the MiraMon cloud. Several resources can be stored in NiMMbus: points of interest, hyperlinks to a geospatial databases, citations of geospatial resources, publications and feedback items.
+NiMMbus (+++<a href="http://www.opengis.uab.cat/nimmbus" target="_blank">http://www.opengis.uab.cat/nimmbus</a>+++) is a solution for storing geospatial resources on the MiraMon cloud. Several resources can be stored in NiMMbus: points of interest, hyperlinks to a geospatial databases, citations of geospatial resources, publications and feedback items.
 
-For the latter, the system implements the Geospatial User Feedback standard (http://www.opengeospatial.org/standards/guf) originated in the EU FP7 GeoViQua project. It allows to provide comments, ratings, questions, etc that can be associated with geospatial assets on a catalogue using a data/metadata identifier. The contribution of the H2020 NextGEOSS project is to extend the initial implementation of NiMMbus to support GUF resources. The system allows for creating a citation of an external resource (pointing to a external catalogue or repository) and associate feedback items to it.
+For the latter, the system implements the Geospatial User Feedback standard (+++<a href="http://www.opengeospatial.org/standards/guf" target="_blank">http://www.opengeospatial.org/standards/guf</a>+++) originated in the EU FP7 GeoViQua project. It allows to provide comments, ratings, questions, etc that can be associated with geospatial assets on a catalogue using a data/metadata identifier. The contribution of the H2020 NextGEOSS project is to extend the initial implementation of NiMMbus to support GUF resources. The system allows for creating a citation of an external resource (pointing to a external catalogue or repository) and associate feedback items to it.
 
-More information on NiMMbus can be found in https://github.com/joanma747/nimmbus/[NiMMbus GitHub].
+More information on NiMMbus can be found in +++<a href="https://github.com/joanma747/nimmbus" target="_blank">NiMMbus GitHub</a>+++.
 //nimmbus mm cloud, incloent citations i guf...
 
 //origen MM i nextgeooss

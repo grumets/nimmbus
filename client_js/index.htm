@@ -97,7 +97,7 @@ function ConfirmExit()
 // Inspirat en https://www.webdesignerdepot.com/2013/03/how-to-manage-the-back-button-with-javascript/
 function GoBackOnePage()
 {
-	if (location.hash.length > 0)
+	if (location.hash.length > 0 && location.hash!="#front-page")
 		ChangePannel(location.hash.replace('#',''), false);
 	else
 		SurtDeNimmbus();
@@ -230,12 +230,12 @@ function SeleccionaRadioDesDeValor(radio, valor)
 	{
 		for (var i=0; i<radio.length; i++)
 			radio[i].checked=(radio[i].value==valor) ? true : false;
-}
+	}
 	else
 	{
 		for (var i=0; i<radio.length; i++)
 			radio[i].checked=false;
-}
+	} 
 }
 
 function DonaCadenaIdNoPotSerBuit(id)
@@ -330,6 +330,7 @@ function Ajax()
 		}
 		this.doReqAutenticated();
 	}
+	
 	this.doReqAutenticated = function()
 	{
 		var self = null;
@@ -1266,7 +1267,7 @@ var fn;
 					{
 						if (TimeOutDonaResposta)
 							clearTimeout(TimeOutDonaResposta);
-						TimeOutDonaResposta=setTimeout("EvaluateGetReturnProcess(\""+DonaIDProcessDesDeRootXML(root)+"\", \""+nom_funcio+"\");", 500);
+						TimeOutDonaResposta=setTimeout("EvaluateGetReturnProcess(\""+DonaIDProcessDesDeRootXML(root)+"\", \""+nom_funcio+"\");", 1000);
 						return;
 					}
 				}
@@ -1333,6 +1334,12 @@ var root, output, identifier;
 							{
 								ChangeLanguage(i, ResourcesPerPage);
 								ShowInfo("short", DonaCadenaJSON(Msg_Language_changed_preferences));
+								if (location.hash=="#feedback-resource" && ActionAfterSignIn==TancaFinestraNimmbus)
+								{ //he entrat directament a pàgina de valoració des de ADDFEEDBACK
+									document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_feedback);
+									document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_feedback_characteristics);
+									document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Create);									
+								}
 							}
 						}
 					}
@@ -1384,13 +1391,13 @@ function EliminaPublicOfAFeedback(del_item)
 	return;	
 }
 
-function ObreSelectorDePublicOfAFeedback(type_element, compact_element)
+function ObreSelectorDePublicOfAFeedback(make_pannel_visible)
 {
-		EnumerateResources(1, {"type_enum":"resource-selector", "make_pannel_visible":true, "resource_type": "PUBLICAT"});
+		EnumerateResources(1, {"type_enum":"resource-selector", "make_pannel_visible":make_pannel_visible, "resource_type": "PUBLICAT"});
 		return;	
 }
 
-function AfegeixPublicOfAFeedback(id_public)
+function AfegeixPublicOfAFeedback(id_public, open_data)
 {
 	if (id_public==null)
 		;
@@ -1398,12 +1405,13 @@ function AfegeixPublicOfAFeedback(id_public)
 		ShowInfo("short", DonaCadenaJSON(Msg_Publication_already_related_no_added_again));*/
 	else
 	{		
-		PublicsOfAFeedback.push(id_public);
+		PublicsOfAFeedback.push({"id_public": id_public, "open_data": open_data});
 		OmpleRecursPublicsDesDePublicsOfAFeedback();
 		PublicsOfAFeedbackHaveChanged=true;	
 	}
 
-	ChangePannel("feedback-resource", true);
+	//ChangePannel("feedback-resource", true);
+	history.back();
 	return;	
 }
 
@@ -1422,7 +1430,7 @@ function ObreSelectorDeTargetOfAFeedback(compact_element)
 		return;	
 }
 
-function AfegeixTargetOfAFeedback(id_target)
+function AfegeixTargetOfAFeedback(id_target, open_data)
 {
 	if (id_target==null)  //S'ha cancel·lat d'afegir res.
 		;
@@ -1431,18 +1439,19 @@ function AfegeixTargetOfAFeedback(id_target)
 	else
 	{
 		RecuperaCanvisARolesATargetsOfAFeedback();		
-		TargetsOfAFeedback.push({"id_target": id_target, "role": "primary"});			
+		TargetsOfAFeedback.push({"id_target": id_target, "role": "primary", "open_data": open_data});
 		OmpleRecursTargetsDesDeTargetsOfAFeedback();
 		TargetsOfAFeedbackHaveChanged=true;	
 	}
 
-	ChangePannel("feedback-resource", true);
+	//ChangePannel("feedback-resource", true);
+	history.back();
 	return;	
 }
 
 function AvaluaRespostaRetrieveResourceCompacte(doc, dades)
 { 
-var root, output, identifier, s, elem, citation, md_identifier, title, code=null, code_space=null, type, href=null, position=null;
+var root, output, identifier, s, elem, citation, md_identifier, title, code=null, code_space=null, type, href=null, position=null, open_data=false, s_table;
 
 	root=DonaRootXML(doc, document);
 	if (!root)
@@ -1467,6 +1476,15 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 			{
 				if (identifier.childNodes[0].nodeValue=="title")
 					title=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="openData")
+				{
+					open_data=TornaBooleaDesDeWPSLiteralOutput(output.item(item));
+					if (dades.is_target_public_or_none==1) //aquest item és un dels arrays de targets de FB
+						TargetsOfAFeedback[dades.del_item-1].open_data=open_data;
+					else if (dades.is_target_public_or_none==2)  //aquest item és un dels arrays de publics de FB
+						PublicsOfAFeedback[dades.del_item-1].open_data=open_data;
+					//else if (dades.is_target_public_or_none==0)												
+				}
 				else if (identifier.childNodes[0].nodeValue=="type")
 					type=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="citation" || identifier.childNodes[0].nodeValue=="publication")
@@ -1500,36 +1518,57 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 		}
 		RemoveInfo("permanent");		
 		compact_element_item=(dades.del_item ? dades.compact_element+"_"+dades.del_item : dades.compact_element);
-		document.getElementById(compact_element_item).innerHTML="<img src=\""+DonaNomImgTipusRecurs(type, true)+"\" align=\"left\"> " + title;
+		//document.getElementById(compact_element_item).innerHTML="<table width=\"80%\">"; -> si faig això posa el table i el /table :( -> ho construeixo sobre s_table i després ho assigno
+		s_table="<table width=\"100%\">";
+		s_table+="<tr><td width=\"80\" align=\"center\"><img src=\""+DonaNomImgTipusRecurs(type, true)+"\">";
+
+		if (dades.open_data && !open_data)
+			s_table+="<img src=\"ExclamationMark36.png\" id=\""+compact_element_item+"_shared\"></td>";
+		else //creo un element img també amb src="", perquè així el ID existeix sempre
+			s_table+="<img src=\"\" id=\""+compact_element_item+"_shared\"></td>"; 
+		
+		s_table+="<td>"+title;		
+		if ((type=="CITATION" || type=="PUBLICAT") && code)
+			s_table+="<br>code: " + code + ", code_space: " + (code_space ? code_space : "");
+		else if (type=="HREF" && href)
+			s_table+="<br><a href=\"" + href + "\">" + href + "</a>";			
+		else if (type=="POI" && position)
+			s_table+="<br>lat/long: " + position;			
+		s_table+="</td>"
+	
+		if (dades.role || (dades.del_item && dades.del_function))
+		{
+			if (dades.role && dades.del_item && dades.del_function) //hi haurà informació del role i també botó esborrar
+				s_table+="<td width=\"240\" align=\"right\">";
+			else //només hi ha una de les dues coses
+				s_table+="<td width=\"120\" align=\"right\">";
+				
 		if (dades.role)
 		{
 			if (dades.select_role)
 			{
 				select_role_item=(dades.del_item ? dades.select_role+"_"+dades.del_item : dades.select_role);
-				document.getElementById(compact_element_item).innerHTML+="&#8195;&#8195;&#8195;"+DonaCadenaJSON(Msg_Role)+": "+
+					s_table+=DonaCadenaJSON(Msg_Role)+": "+
 						"<select class=\"text-input\" id=\""+select_role_item+"-feedback-resource_screen_value\" name=\""+select_role_item+"\">"+
 							"<option value=\"primary\" "+((dades.role=="primary") ? " selected=\"selected\"" : "")+">"+DonaCadenaJSON(GUF_TargetRoleCode["primary"])+"</option>"+
 							"<option value=\"secondary\" "+((dades.role=="secondary") ? " selected=\"selected\"" : "")+">"+DonaCadenaJSON(GUF_TargetRoleCode["secondary"])+"</option>"+
 							"<option value=\"supplementary\" "+((dades.role=="supplementary") ? " selected=\"selected\"" : "")+">"+DonaCadenaJSON(GUF_TargetRoleCode["supplementary"])+"</option>"+
 						"</select>";
 			}
-			else
-				document.getElementById(compact_element_item).innerHTML+=" ("+DonaCadenaJSON(Msg_Role)+": "+
+				else //crec que ja no s'usa en cap cas, però igualment ho deixo per si de cas. Quedaria entre parentesis potser una mica raro pq és una cel·la de la taula, però bé
+					s_table+=" ("+DonaCadenaJSON(Msg_Role)+": "+
 						((dades.role=="primary") ? DonaCadenaJSON(GUF_TargetRoleCode["primary"]) : "")+
 						((dades.role=="secondary") ? DonaCadenaJSON(GUF_TargetRoleCode["secondary"]) : "")+	
 						((dades.role=="supplementary") ? DonaCadenaJSON(GUF_TargetRoleCode["supplementary"]) : "")+")";											
 		}
+			
 		if (dades.del_item && dades.del_function)
-			document.getElementById(compact_element_item).innerHTML+=" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Delete) +"\" onClick=\""+dades.del_function+"("+(dades.del_item-1)+")\"/>";
+				s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Delete) +"\" onClick=\""+dades.del_function+"("+(dades.del_item-1)+")\"/>";
 		
-		if ((type=="CITATION" || type=="PUBLICAT") && code)
-			document.getElementById(compact_element_item).innerHTML+="<br> code: " + code + ", code_space: " + (code_space ? code_space : "");
-		else if (type=="HREF" && href)
-			document.getElementById(compact_element_item).innerHTML+="<br> <a href=\"" + href + "\">" + href + "</a>";			
-		else if (type=="POI" && position)
-			document.getElementById(compact_element_item).innerHTML+="<br> lat/long: " + position;			
-		else // si no he afegit una segona linia amb més dades, la poso en blanc perquè si no lo de sota queda malament
-			document.getElementById(compact_element_item).innerHTML+="<br><br>";			
+			s_table+="</td>";
+		}
+		s_table+="</tr></table>";
+		document.getElementById(compact_element_item).innerHTML=s_table;
 
 		UpdateLastServer();
 	}
@@ -1598,10 +1637,6 @@ var root, output, identifier;
 		}
 		RemoveInfo("permanent");
 		IdResourceToSaveChanges=id;
-		TargetsOfAFeedback.length=0;
-		TargetsOfAFeedbackHaveChanged=false;
-		PublicsOfAFeedback.length=0;
-		PublicsOfAFeedbackHaveChanged=false;	
 		UpdateLastServer();
 	}
 	else
@@ -1687,10 +1722,6 @@ var root, output, identifier, s, georss;
 		}
 		RemoveInfo("permanent");
 		IdResourceToSaveChanges=id;
-		TargetsOfAFeedback.length=0;
-		TargetsOfAFeedbackHaveChanged=false;
-		PublicsOfAFeedback.length=0;
-		PublicsOfAFeedbackHaveChanged=false;	
 		UpdateLastServer();
 	}
 	else
@@ -1717,6 +1748,21 @@ var root, output, identifier, s, feedback_item, user_comment;
 		return;
 	}
 
+	output=GetXMLElementCollectionByName(root, "wps", "Output");
+	if (output && output.length)
+	{
+		document.feedback_resource_form.open_data.checked=false;								
+		for (var item=0; item<output.length; item++)
+		{
+			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
+			if (identifier)
+			{
+				if (identifier.childNodes[0].nodeValue=="openData")
+					document.feedback_resource_form.open_data.checked=TornaBooleaDesDeWPSLiteralOutput(output.item(item));
+	}
+		}
+	}
+
 	var guf=GetRetrieveResourceFeedbackOutputs(root);
 
 	if (!guf)
@@ -1737,7 +1783,7 @@ var root, output, identifier, s, feedback_item, user_comment;
   			for (var item2=0; item2<guf.target[item].identifier.length; item2++)
   			{
   				if (guf.target[item].identifier[item2].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
-  				{
+  				{	//Aquí encara no sé si es open data o no, però ja ho "ompliré" quan faci el retrieve de l'element
   					TargetsOfAFeedback[item]={"id_target": guf.target[item].identifier[item2].code, "role": guf.target[item].role};  					
   					break;
   				}
@@ -1763,6 +1809,8 @@ var root, output, identifier, s, feedback_item, user_comment;
 		document.feedback_resource_form.abstract.value="";
 	if (guf.contactRole)
 		SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, guf.contactRole);
+	else //--> en aquest desplegable no hi ha un indefinit perquè és obligatori, valor per defecte el posem a publicGeneral
+		SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, "generalPublic");
 	if (guf.comment)
 		document.feedback_resource_form.comment.value=guf.comment;
 	else
@@ -1770,13 +1818,13 @@ var root, output, identifier, s, feedback_item, user_comment;
 	if (guf.motivation)
 		SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, guf.motivation);
 	else //Valor per defecte és undefined, que es marca amb CadenaBuida
-		SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, "");
+		SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, "undefined");
 	//if (guf.rating) -> dins la funció ja es mira i, si no, es marca tot a indefinit! (sino veuria "la darrera" puntuació!)
 		SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, guf.rating);
-	/* Ara sempre que entrem a CREAR un nou FB, el rating està indefeinit (encara que el darrer cop hagués vist un element
+	/* Ara sempre que entrem a CREAR un nou FB, el rating està indefinit (encara que el darrer cop hagués vist un element
 	que si tenia rating. El que encara NO es pot fer es posar un altre cop a indefinit un rating d'un FB pel que si havia definit
 	un valor, però això és estrany de voler fer, per tant ho deixem així. */
-	
+
 	PublicsOfAFeedback.length=0;
 	PublicsOfAFeedbackHaveChanged=false;
 	if (guf.public)
@@ -1788,8 +1836,8 @@ var root, output, identifier, s, feedback_item, user_comment;
   			for (var item2=0; item2<guf.public[item].identifier.length; item2++)
   			{
   				if (guf.public[item].identifier[item2].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
-  				{
-  					PublicsOfAFeedback[item]=guf.public[item].identifier[item2].code;  					
+  				{ //Aquí encara no sé si es open data o no, però ja ho "ompliré" quan faci el retrieve de l'element
+  					PublicsOfAFeedback[item]={"id_public": guf.public[item].identifier[item2].code};
   					break;
   				}
   			}
@@ -1845,10 +1893,11 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 		document.citation_resource_form.series_name.value="";
 		document.citation_resource_form.series_issue.value="";
 		document.citation_resource_form.series_page.value="";		
+		document.citation_resource_form.other_cit_details.value="";
 		document.citation_resource_form.url_link.value="";
 		document.citation_resource_form.url_descrip.value="";
-		//Valor per defecte "undefined"
 		SeleccionaSelectDesDeValor(document.citation_resource_form.function_code, "undefined");
+		document.citation_resource_form.open_data.checked=false;
 						
 		for (var item=0; item<output.length; item++)
 		{
@@ -1857,6 +1906,8 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 			{
 				if (identifier.childNodes[0].nodeValue=="title")
 					document.citation_resource_form.title.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="openData")
+					document.citation_resource_form.open_data.checked=TornaBooleaDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="citation")
 				{					
 					citation=OmpleInputDesDeWPSComplexOutput(output.item(item));
@@ -1943,10 +1994,6 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 		}
 		RemoveInfo("permanent");
 		IdResourceToSaveChanges=id;
-		TargetsOfAFeedback.length=0;	
-		TargetsOfAFeedbackHaveChanged=false;
-		PublicsOfAFeedback.length=0;
-		PublicsOfAFeedbackHaveChanged=false;	
 		UpdateLastServer();
 	}
 	else
@@ -1982,13 +2029,16 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 		document.publication_resource_form.edition_date.value="";		
 		document.publication_resource_form.id_code.value="";
 		document.publication_resource_form.id_namespace.value="";
+		document.publication_resource_form.series_name.value="";
+		document.publication_resource_form.series_issue.value="";
+		document.publication_resource_form.series_page.value="";		
+		document.publication_resource_form.other_cit_details.value="";
 		document.publication_resource_form.url_link.value="";
 		document.publication_resource_form.url_descrip.value="";
-		//Valor per defecte "undefined"
 		SeleccionaSelectDesDeValor(document.publication_resource_form.function_code, "undefined");
 		document.publication_resource_form.abstract.value="";
-		//Valor per defecte "undefined"
 		SeleccionaSelectDesDeValor(document.publication_resource_form.category_code, "undefined");
+		document.publication_resource_form.open_data.checked=false;							
 						
 		for (var item=0; item<output.length; item++)
 		{
@@ -1997,6 +2047,8 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 			{
 				if (identifier.childNodes[0].nodeValue=="title")
 					document.publication_resource_form.title.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="openData")
+					document.publication_resource_form.open_data.checked=TornaBooleaDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="publication")
 				{					
 					publication=OmpleInputDesDeWPSComplexOutput(output.item(item));
@@ -2094,12 +2146,9 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 				}
 			}
 		}
+		
 		RemoveInfo("permanent");
 		IdResourceToSaveChanges=id;
-		TargetsOfAFeedback.length=0;	
-		TargetsOfAFeedbackHaveChanged=false;
-		PublicsOfAFeedback.length=0;
-		PublicsOfAFeedbackHaveChanged=false;	
 		UpdateLastServer();
 	}
 	else
@@ -2110,14 +2159,15 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 	return;
 }
 
-function PopulateCompactDescriptionResource(id, compact_element, role, select_role, del_item, del_function)
+function PopulateCompactDescriptionResource(id, compact_element, role, select_role, del_item, del_function, open_data, is_target_public_or_none)
 {
 	ajaxExecuteNB=new Ajax();
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
 				+"&RESOURCE="+id, AvaluaRespostaRetrieveResourceCompacte, "text/xml", 
-				{"compact_element": compact_element, "role": role, "select_role": select_role, "del_item": del_item, "del_function": del_function});
+				{"compact_element": compact_element, "role": role, "select_role": select_role, "del_item": del_item, "del_function": del_function, "open_data": open_data, 
+				"is_target_public_or_none": is_target_public_or_none});
         ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
 }
 
@@ -2176,7 +2226,7 @@ function DonaNomImgTipusRecurs(type, small)
 {
 	if (small==true)
 	{
-	if (type=="HREF")
+		if (type=="HREF")
 			return "link36.png";
 		if (type=="POI")
 			return "point36.png";  
@@ -2202,6 +2252,23 @@ function DonaNomImgTipusRecurs(type, small)
 
 var ResourcesPerPage=10;  //solució provisional a l'espera de que sigui configurable per usuari
 
+function BuidaLlistatResource(type_enum, resource_type)
+{
+		if (type_enum=="resources")
+			document.getElementById(type_enum+"-hits-text").innerHTML="<small>"+DonaCadenaJSON(Msg_Use_New_button_to_create_resources)+"</small>";
+		else //type_enum=="resource-selector")
+		{
+			if (resource_type=="") //he entrat a resource-selector per escollir targets de valoracions
+				document.getElementById(type_enum+"-hits-text").innerHTML="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixTargetOfAFeedback(null, false)\"/> ";	
+			else //de moment només pot valdre "" i "PUBLICAT"
+				document.getElementById(type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn_upper\" type=\"image\" alt=\"new href\" src=\"publication_add20.png\" onClick=\"MostraPublicationResource('')\"/> <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixPublicOfAFeedback(null, false)\"/ >  ";						
+
+		}
+		document.getElementById("newer-"+type_enum+"_btn").disabled=true;
+		document.getElementById("older-"+type_enum+"_btn").disabled=true;
+		document.getElementById(type_enum+"-list").innerHTML="";
+}
+
 function AvaluaRespostaEnumerateResources(doc, dades)
 {
 var root, s, type;
@@ -2217,7 +2284,7 @@ var root, s, type;
 		return;
 	var owc=ParseOWSContextAtom(root);
 
-	if (dades.make_pannel_visible)
+	if (dades.make_pannel_visible) //només es passa a true quan estem "anant endavant"
 		ChangePannel(dades.type_enum, true);
 
 	if (dades.type_enum=="resource-selector")
@@ -2235,26 +2302,22 @@ var root, s, type;
 	}//else if (type_enum=="resources") no cal fer res perquè els textos ja són posats
 	
 	if (owc.properties.totalResults==0)
-	{
-		document.getElementById(dades.type_enum+"-hits-text").innerHTML="<small>"+DonaCadenaJSON(Msg_Use_New_button_to_create_resources)+"</small>";
-		document.getElementById("newer-"+dades.type_enum+"_btn").disabled=true;
-		document.getElementById("older-"+dades.type_enum+"_btn").disabled=true;
-	}
+		BuidaLlistatResource(dades.type_enum);
 	else
 	{
 		if (dades.type_enum=="resource-selector")
 		{
 			if (dades.resource_type=="") //he entrat a resource-selector per escollir targets de valoracions
-				document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixTargetOfAFeedback(null)\"/>";	
+				document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixTargetOfAFeedback(null, false)\"/> ";	
 			else //de moment només pot valdre "" i "PUBLICAT"
-				document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixPublicOfAFeedback(null)\"/>";	
+				document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn\" type=\"image\" alt=\"new href\" src=\"publication_add20.png\" onClick=\"MostraPublicationResource('')\"/> <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixPublicOfAFeedback(null, false)\"/ >  ";						
 		}
 		else //poso en blanc per no anar acumunat 1de10 en anar passant de pàgina!
 			document.getElementById(dades.type_enum+"-hits-text").innerHTML="";
 		// Afegeixo el text	1 de X
 		document.getElementById(dades.type_enum+"-hits-text").innerHTML+="["+owc.properties.startIndex + "," +(parseInt(owc.properties.startIndex)+owc.features.length-1)+ "] "+ DonaCadenaJSON(Msg_of) + " " +  owc.properties.totalResults;
-	}
-	if (owc.properties.startIndex==1 || owc.properties.totalResults==0)
+	
+		if (owc.properties.startIndex==1)
 	{
 		document.getElementById("newer-"+dades.type_enum+"_btn").disabled=true;
 	}
@@ -2267,7 +2330,7 @@ var root, s, type;
 		document.getElementById("newer-"+dades.type_enum+"_btn").disabled=false;
 	}
 
-	if (parseInt(owc.properties.startIndex)+owc.features.length-1==owc.properties.totalResults || owc.properties.totalResults==0)
+		if (parseInt(owc.properties.startIndex)+owc.features.length-1==owc.properties.totalResults)
 	{
 		document.getElementById("older-"+dades.type_enum+"_btn").disabled=true;
 	}
@@ -2280,11 +2343,11 @@ var root, s, type;
 		document.getElementById("older-"+dades.type_enum+"_btn").disabled=false;
 	}
 	
-	s="<ol class=\"white-area-list\">";
 	if (owc.features)
 	{
+			s="<ol class=\"white-area-list\">";
 		for (var i=0; i<owc.features.length; i++)
-					{
+		{
 			type=GetNimmbusTypeOfAOWCFeature(owc.features[i]);
 
 			var object_id=owc.features[i].id.slice(owc.features[i].id.search("RESOURCE=")+9);
@@ -2292,6 +2355,9 @@ var root, s, type;
 			ja_es_target_o_public=false;
 			es_ell_mateix=false;
 
+				//if (location.host.toLowerCase()=="localhost" && owc.features[i].properties.openData && owc.features[i].properties.openData=="true")
+					//s+="<div class=\"white-area-li\" style=\"background-color:#e6ffe6\"><li class=\"white-area-li-text\"";
+				//else
 			s+="<div class=\"white-area-li\"><li class=\"white-area-li-text\"";
 			if (dades.type_enum=="resources")
 				s+=" onClick=\"EditResource(\'"+owc.features[i].id+"\', \'"+type+"\');\"";
@@ -2313,29 +2379,31 @@ var root, s, type;
 						}						
 					}
 					if (ja_es_target_o_public || es_ell_mateix)				
-						;//s+=" onClick=\"AfegeixTargetOfAFeedback(\'\');\"";  No fem res
+							;//s+=" onClick=\"AfegeixTargetOfAFeedback(\'\', false);\"";  No fem res
 					else
-						s+=" onClick=\"AfegeixTargetOfAFeedback(\'"+object_id+"\');\"";
+							s+=" onClick=\"AfegeixTargetOfAFeedback(\'"+object_id+"\', "+owc.features[i].properties.openData+");\"";
 				}
 				else //de moment només pot valdre "" i "PUBLICAT"
 				{	//comprovo si aquest target ja forma part de la valoració, i en cas que sí ho indico i no l'afegeixo onclick
 					for (var item=0; item<PublicsOfAFeedback.length; item++)
 					{
-						if (PublicsOfAFeedback[item]==object_id)
+							if (PublicsOfAFeedback[item].id_public==object_id)
 						{
 							ja_es_target_o_public=true;
 							break;
 						}
 					}
 					if (ja_es_target_o_public)				
-						;//s+=" onClick=\"AfegeixPublicOfAFeedback(\'\');\"";  No fem res
+							;//s+=" onClick=\"AfegeixPublicOfAFeedback(\'\', false);\"";  No fem res
 					else
-						s+=" onClick=\"AfegeixPublicOfAFeedback(\'"+object_id+"\');\"";
+							s+=" onClick=\"AfegeixPublicOfAFeedback(\'"+object_id+"\', "+owc.features[i].properties.openData+");\"";
 				}
 			}
 							
 			s+="><img class=\"white-area-li-img\" src=\"";
 			s+=DonaNomImgTipusRecurs(type, false);
+				if (owc.features[i].properties.openData && owc.features[i].properties.openData=="true")
+					s+="\"><img class=\"white-area-li-img-small\" src=\"OpenAccess.png";
 			s+="\"><strong>" +owc.features[i].properties.authors[0].name+"</strong> "+DonaDataISOComAText(owc.features[i].properties.updated)+"<br/>";
 			
 			if (type=="HREF")
@@ -2348,11 +2416,13 @@ var root, s, type;
       if (dades.type_enum=="resources")
       {
 				s+="<br/><span class=\"white-area-li-shadow\"> ";
-				s+="<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\', \'"+type+"\');\">"+DonaCadenaJSON(Msg_Feedback)+"</a>&nbsp;&nbsp;&nbsp; ";
+					s+="<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\');\">"+DonaCadenaJSON(Msg_Feedback)+"</a>&nbsp;&nbsp;&nbsp; ";
     	                  		
 				if (owc.features[i].properties.rights && owc.features[i].properties.rights.indexOf("S")!=-1)
 					s+="<a class=\"white-area-li-shadow-link\" id=\"share-resource-"+i+"\" onClick=\"MostraShareResource(event, \'"+owc.features[i].id+"\', \'"+type+"\');\">"+DonaCadenaJSON(Msg_Share)+"</a>&nbsp;&nbsp;&nbsp; ";
-				s+="<a class=\"white-area-li-shadow-link\" id=\"tag-resource-"+i+"\" onClick=\"MostraTagResource(event, \'"+owc.features[i].id+"\');\">"+DonaCadenaJSON(Msg_Tag)+"</a></span>";
+						
+					s+="<a class=\"white-area-li-shadow-link\" id=\"tag-resource-"+i+"\" onClick=\"MostraTagResource(event, \'"+owc.features[i].id+"\');\">"+DonaCadenaJSON(Msg_Tag)+"</a>&nbsp;&nbsp;&nbsp; ";
+					s+="<a class=\"white-area-li-shadow-link\" id=\"delete-resource-"+i+"\" onClick=\"SendResourceDelete(event, \'"+owc.features[i].id+"\', \'"+type+"\', false);\">"+DonaCadenaJSON(Msg_Delete)+"</a></span>"
 			}		
 			else if (dades.type_enum=="resource-selector")			
 			{
@@ -2368,10 +2438,10 @@ var root, s, type;
 			}			
 			s+="</li></div>";
 		}
+			s+="</ol>";
 	}
-	s+="</ol>";
-	
 	document.getElementById(dades.type_enum+"-list").innerHTML=s;
+	}
 
 	RemoveInfo("permanent");
 	UpdateLastServer();
@@ -2394,7 +2464,7 @@ function EnumerateResources(start_index, dades)
 		if (document.getElementById("resource-type_screen_value").selectedIndex>0)
 			//miro el que hi ha seleccionat a la dropdown-list resource-type. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
 			s="&TYPE="+document.getElementById("resource-type_screen_value").options[document.getElementById("resource-type_screen_value").selectedIndex].value;	
-
+		
 		if (document.getElementById("owner-type_screen_value").selectedIndex>0)
 			//miro el que hi ha seleccionat a la dropdown-list owner-type. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
 			s=s+"&OWNER="+document.getElementById("owner-type_screen_value").options[document.getElementById("owner-type_screen_value").selectedIndex].value;	
@@ -2498,16 +2568,19 @@ var i_pannel,
 		//{"id": "new-user-page", "parent": null, "title": {"cat": "Registra't al NiMMbus", "spa": "Regístrese en NiMMbus", "eng": "Sign up for NiMMbus"}},
 		{"id": "main-page", "parent": null, "title": Msg_NiMMbus},
 		{"id": "account", "parent": "main-page", "title": Msg_NiMMbus_account}, 
-		{"id": "href-resource", "parent": "main-page", "title": Msg_NiMMbus}, 
-		{"id": "poi-resource", "parent": "main-page", "title": Msg_NiMMbus}, 
+		{"id": "href-resource", "parent": "main-page", "title": Msg_NiMMbus_Href}, 
+		{"id": "poi-resource", "parent": "main-page", "title": Msg_NiMMbus_PoI}, 
 		{"id": "feedback-resource", "parent": "main-page", "title": Msg_NiMMbus_Feedback}, 
 		{"id": "citation-resource", "parent": "main-page", "title": Msg_NiMMbus_Citation}, 
 		{"id": "publication-resource", "parent": "main-page", "title": Msg_NiMMbus_Publication}, 
-		{"id": "resources", "parent": "main-page", "title": Msg_NiMMbus}, 
-		{"id": "resource-selector", "parent": "main-page", "title": Msg_NiMMbus_Resources}, 
+		{"id": "resources", "parent": "main-page", "title": Msg_NiMMbus_Resources}, 
+		{"id": "resource-selector", "parent": "main-page", "title": Msg_NiMMbus_ResourcesSelector}, 
 		{"id": "feedback", "parent": "main-page", "title": Msg_NiMMbus_Feedbacks}, 
 		{"id": "share", "parent": "main-page", "title": Msg_NiMMbus_Share}
 		/*, {"id": "tag", "parent": "main-page", "title": Msg_NiMMbus} */];
+
+	if (add_hash)
+		location.hash=id;
 	
 	for (var i in pannel)
 	{ 
@@ -2539,10 +2612,6 @@ var i_pannel,
 				document.getElementById(pannel[i_pannel].parent).style.visibility='visible';
 		}
 	}
-
-	
-	if (add_hash)
-		location.hash=id;
 	window.scrollTo(0, 0);
 }
 
@@ -2580,19 +2649,18 @@ function MostraAccount(es_nou)
 }
 
 var IdResourceToSaveChanges="";
+var IdTargetResourceToSaveChanges="";
+var IdFeedbackResourceToSaveChanges="";
 var TargetsOfAFeedback=[];
 var TargetsOfAFeedbackHaveChanged=false;
 var	PublicsOfAFeedback=[];
 var PublicsOfAFeedbackHaveChanged=false;	
+var BackNeededAfterDelete="";
 
 function MostraHRefResource(id)
 {
 	ChangePannel("href-resource", true);
 	IdResourceToSaveChanges=id;
-	TargetsOfAFeedback.length=0;
-	TargetsOfAFeedbackHaveChanged=false;
-	PublicsOfAFeedback.length=0;
-	PublicsOfAFeedbackHaveChanged=false;	
 
 	document.getElementById("href-resource-exit_btn").style.display='none';
 	if (id=="")
@@ -2615,10 +2683,6 @@ function MostraPoiResource(id)
 {
 	ChangePannel("poi-resource", true);
 	IdResourceToSaveChanges=id;
-	TargetsOfAFeedback.length=0;
-	TargetsOfAFeedbackHaveChanged=false;
-	PublicsOfAFeedback.length=0;
-	PublicsOfAFeedbackHaveChanged=false;	
 
 	//document.getElementById("long-poi-resource_alert").style.display='none';
 	//document.getElementById("lat-poi-resource_alert").style.display='none';
@@ -2641,6 +2705,9 @@ function MostraPoiResource(id)
 	}
 }
 
+//define is_none=0;
+//define is_target=1;
+//define is_public=2;
 function OmpleRecursTargetsDesDeTargetsOfAFeedback()
 {
 	document.getElementById("target_feedback-resource_compact_list").innerHTML="";		
@@ -2650,7 +2717,8 @@ function OmpleRecursTargetsDesDeTargetsOfAFeedback()
 	for (var item=0; item<TargetsOfAFeedback.length; item++)
 	{
 		document.getElementById("target_feedback-resource_compact_list").innerHTML+="<div id=\""+"target_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
-		PopulateCompactDescriptionResource(TargetsOfAFeedback[item].id_target, "target_feedback-resource_compact_list", TargetsOfAFeedback[item].role, "targetRole", (item+1), "EliminaTargetOfAFeedback");
+		PopulateCompactDescriptionResource(TargetsOfAFeedback[item].id_target, "target_feedback-resource_compact_list", TargetsOfAFeedback[item].role, "targetRole", 
+			(item+1), "EliminaTargetOfAFeedback", document.feedback_resource_form.open_data.checked, 1 /*is_target*/);
 	}
 	return;
 }
@@ -2659,14 +2727,37 @@ function OmpleRecursPublicsDesDePublicsOfAFeedback()
 {
 	document.getElementById("public_feedback-resource_compact_list").innerHTML="";		
 	if (PublicsOfAFeedback.length==0)
+	{	//buido per si hi havia alguna cosa
+		document.getElementById("public_feedback-resource_compact_list").innerHTML="";
 		return;		
+	}
 
 	for (var item=0; item<PublicsOfAFeedback.length; item++)
 	{
 		document.getElementById("public_feedback-resource_compact_list").innerHTML+="<div id=\""+"public_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
-		PopulateCompactDescriptionResource(PublicsOfAFeedback[item], "public_feedback-resource_compact_list", null, null, (item+1), "EliminaPublicOfAFeedback");
+		PopulateCompactDescriptionResource(PublicsOfAFeedback[item].id_public, "public_feedback-resource_compact_list", null, null, (item+1), "EliminaPublicOfAFeedback", 
+			document.feedback_resource_form.open_data.checked, 2 /*is_public*/);
 	}
 	return;
+}
+
+function MostraOAmagaExclamacioDeShareATargetsIPublics()
+{
+	for (var item=0; item<TargetsOfAFeedback.length; item++)
+	{
+		if (document.feedback_resource_form.open_data.checked)
+			document.getElementById("target_feedback-resource_compact_list_"+(item+1)+"_open").style.display='inline';
+		else
+			document.getElementById("target_feedback-resource_compact_list_"+(item+1)+"_open").style.display='none';		
+	}
+
+	for (var item=0; item<PublicsOfAFeedback.length; item++)
+	{
+		if (document.feedback_resource_form.open_data.checked)
+			document.getElementById("public_feedback-resource_compact_list_"+(item+1)+"_open").style.display='inline';
+		else
+			document.getElementById("public_feedback-resource_compact_list_"+(item+1)+"_open").style.display='none';		
+	}
 }
 
 function MostraFeedbackResource(id, target)
@@ -2677,9 +2768,10 @@ function MostraFeedbackResource(id, target)
 		TargetsOfAFeedback.length=0;
 		//Estic creant un FB nou, per tant he de posar el rating a indefinit perquè si no em queda el de la darrer FB que he obert, i en aquest cas no interessa (per si vull fer un comment SENSE rating!)
 		SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, "");
+		document.getElementById("open-data-feedback-resource_screen_value").checked=true; //una valoració nova la marco compartida amb anònim per defecte		
 	}
 		
-	if (id=='' && target==null)  //Marca de que estic afegit un feedback a un target seleccionat 
+	if (id=='' && target==null)  //Marca de que estic afegint un feedback a un target seleccionat 
 	{
 		TargetsOfAFeedback[0]={"id_target": IdResourceToSaveChanges, "role": "primary"};		
 		TargetsOfAFeedbackHaveChanged=true; //Si no no s'enviarà el text "TARGET_1=... en el CREATE
@@ -2696,13 +2788,16 @@ function MostraFeedbackResource(id, target)
 	ChangePannel("feedback-resource", true);
 
 	IdResourceToSaveChanges=id;
+	IdFeedbackResourceToSaveChanges=id; //perquè si des de la pàgina de FB acabo creant una publicació, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 	
 	document.getElementById("feedback-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
 		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_feedback);
 		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_feedback_characteristics);
-		document.getElementById("share-anonymous-feedback-resource_fieldset").style.display='inline'
+		//document.getElementById("open-data-feedback-resource_fieldset").style.display='inline';
+		document.getElementById("open-data-feedback-resource_screen_value").disabled=false;
+		//fet abans -> document.getElementById("open-data-feedback-resource_screen_value").checked=true; //una valoració nova la marco compartida amb anònim per defecte		
 		document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("feedback-resource-delete_btn").style.display='none';
 	}
@@ -2710,7 +2805,8 @@ function MostraFeedbackResource(id, target)
 	{
 		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Feedback);
 		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_feedback_characteristics);
-		document.getElementById("share-anonymous-feedback-resource_fieldset").style.display='none'
+		//document.getElementById("open-data-feedback-resource_fieldset").style.display='none';
+		document.getElementById("open-data-feedback-resource_screen_value").disabled=true;
 		document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("feedback-resource-delete_btn").style.display='inline';
 	}
@@ -2721,6 +2817,12 @@ function SurtDeAddFeedbackCallBack()
 	//DetermineCitationID
 	ShowInfo("short", DonaCadenaJSON(Msg_Citation_created));
 	RetrieveUserMinPreferences();
+
+	//En un context de ADDFEEDBACK:
+	document.getElementById("new-resource").style.display='none';
+	document.getElementById("settings-signout").style.display='none'; //trec la "signout" del menu de tools. Si se n'agefeixen més pensar si les vull o no en aquest context
+
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
 	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":false});
 	MostraFeedbackResource('', null);
 }
@@ -2765,6 +2867,11 @@ var target_id;
 	else
 	{
 		RetrieveUserMinPreferences();
+		
+		//En un context de ADDFEEDBACK:
+		document.getElementById("new-resource").style.display='none';
+		document.getElementById("settings-signout").style.display='none'; //trec la "signout" del menu de tools. Si se n'agefeixen més pensar si les vull o no en aquest context
+		
 		EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":false});
 		MostraFeedbackResource('', target_id);  //el recurs existeix i es pot afegir el feedback sobre ell sense esperar.
 	}
@@ -2792,16 +2899,15 @@ function MostraCitationResource(id)
 {
 	ChangePannel("citation-resource", true);
 	IdResourceToSaveChanges=id;
-	TargetsOfAFeedback.length=0;
-	TargetsOfAFeedbackHaveChanged=false;
-	PublicsOfAFeedback.length=0;
-	PublicsOfAFeedbackHaveChanged=false;
 
 	document.getElementById("citation-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
 		document.getElementById("citation-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_citation);
 		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_citation_characteristics);
+		//document.getElementById("open-data-citation-resource_fieldset").style.display='inline';
+		document.getElementById("open-data-citation-resource_screen_value").disabled=false;
+		document.getElementById("open-data-citation-resource_screen_value").checked=true; //una publicació nova la marco compartida amb anònim per defecte		
 		document.getElementById("citation-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("citation-resource-delete_btn").style.display='none';
 	}
@@ -2809,6 +2915,8 @@ function MostraCitationResource(id)
 	{
 		document.getElementById("citation-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Citation);
 		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_citation_characteristics);
+		//document.getElementById("open-data-citation-resource_fieldset").style.display='none';
+		document.getElementById("open-data-citation-resource_screen_value").disabled=true;
 		document.getElementById("citation-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("citation-resource-delete_btn").style.display='inline';
 	}
@@ -2818,16 +2926,15 @@ function MostraPublicationResource(id)
 {
 	ChangePannel("publication-resource", true);
 	IdResourceToSaveChanges=id;
-	TargetsOfAFeedback.length=0;
-	TargetsOfAFeedbackHaveChanged=false;
-	PublicsOfAFeedback.length=0;
-	PublicsOfAFeedbackHaveChanged=false;
 
 	document.getElementById("publication-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
 		document.getElementById("publication-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_publication);
 		document.getElementById("publication-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_publication_characteristics);
+		//document.getElementById("open-data-publication-resource_fieldset").style.display='inline';
+		document.getElementById("open-data-publication-resource_screen_value").disabled=false;
+		document.getElementById("open-data-publication-resource_screen_value").checked=true; //una publicació nova la marco compartida amb anònim per defecte		
 		document.getElementById("publication-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("publication-resource-delete_btn").style.display='none';
 	}
@@ -2835,21 +2942,19 @@ function MostraPublicationResource(id)
 	{
 		document.getElementById("publication-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Publication);
 		document.getElementById("publication-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_publication_characteristics);
+		//document.getElementById("open-data-publication-resource_fieldset").style.display='none';
+		document.getElementById("open-data-publication-resource_screen_value").disabled=true;
 		document.getElementById("publication-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("publication-resource-delete_btn").style.display='inline';
 	}
 }
 
 function MostraShareResource(event, query, type)
-{
+{	//Ara per ara no cal patir per els hash perque mai canvia de pàgina. si algun moment permitim entrar a llista de usuaris, p.ex, caldrà vigilar lo de ChangePannel, etc
 var id=DonaValorDeFormulari("RESOURCE", query, true);
 
 	StopPropagationClick(event);
 	IdResourceToSaveChanges=id;
-	TargetsOfAFeedback.length=0;
-	TargetsOfAFeedbackHaveChanged=false;
-	PublicsOfAFeedback.length=0;
-	PublicsOfAFeedbackHaveChanged=false;
 
 	RetrieveShareAuthorizedList(type);
 	EnumerateShareResource(id);
@@ -2858,23 +2963,24 @@ var id=DonaValorDeFormulari("RESOURCE", query, true);
 }
 
 /*This function draws the "Feedback items" form.*/
-function MostraFeedbackList(event, query, type)
+function MostraFeedbackList(event, query, id_to_use)
 {
-var id=DonaValorDeFormulari("RESOURCE", query, true);
+var id;
 
+	if (event)
 	StopPropagationClick(event);
+
+	if (id_to_use)
+		id=id_to_use;
+	else
+		id=DonaValorDeFormulari("RESOURCE", query, true);
+	
 	IdResourceToSaveChanges=id;
-	//Quan fem el botó afegir ja es posarà a 1 i amb el ID que toca
-	TargetsOfAFeedback.length=0;  
-	TargetsOfAFeedbackHaveChanged=false;
-	PublicsOfAFeedback.length=0;
-	PublicsOfAFeedbackHaveChanged=false;
+	IdTargetResourceToSaveChanges=id;
 	
 	EnumerateFeedbackResource(id);
 	document.getElementById("feedback_target_compact_descrip").innerHTML="";		
-	PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null);
-
-	ChangePannel("feedback", true);
+	PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null, false, 0 /*is_none*/);
 }
 
 function MostraTagResource(event, query)
@@ -2885,7 +2991,7 @@ var id=DonaValorDeFormulari("RESOURCE", query, true);
 
 	//IdResourceToSaveChanges=id;
 
-	alert("Sorry, not implemented yet");
+	alert(DonaCadenaJSON(Msg_Not_implemented_yet));
 	
 	//NewUserChangeTimeOut=0;
 	//RetrieveUserData();
@@ -2926,14 +3032,14 @@ var root, output, identifier, text_current_share_list, has_anonymous=false;
 				{
 					var rights=GetValueXMLElementByName(nb_user, "nb_share", "rights");
 					var user=GetValueXMLElementByName(nb_user, "nb_user", "user");
-					var name=GetValueXMLElementByName(nb_user, "nb_user", "name");
-					var email=GetValueXMLElementByName(nb_user, "nb_user", "email");
+					//La llista de share ara només mostra rights i user, però ni name ni email
+					//var name=GetValueXMLElementByName(nb_user, "nb_user", "name");
+					//var email=GetValueXMLElementByName(nb_user, "nb_user", "email");
 					if (user=="Anonymous")
 						has_anonymous=true;
+					text_current_share_list+=user;
 					if (user==document.sign_in.user.value)  //soc jo mateix.
-						text_current_share_list+=user + " (<i>"+DonaCadenaJSON(Msg_Myself)+"</i>)";
-					else
-						text_current_share_list+=user+ " <i>" +name+ "</i>" + (email=="" ? "": " &lt;" +email+"&gt;");
+						text_current_share_list+=" (<i>"+DonaCadenaJSON(Msg_Myself)+"</i>)";						
 					text_current_share_list += (rights.indexOf("R")==-1 ? "" : " " + DonaCadenaJSON(Msg_Read)+"<img src=\"check16.png\"/>") + (rights.indexOf("W")==-1 ? "" : " " + DonaCadenaJSON(Msg_Write)+"<img src=\"check16.png\"/>") + (rights.indexOf("S")==-1 ? "" : " " + DonaCadenaJSON(Msg_Share)+"<img src=\"check16.png\"/>") + (rights.indexOf("O")==-1 ? "" : " " + DonaCadenaJSON(Msg_Owner)+"<img src=\"check16.png\"/>");
 					if (identifier.childNodes[0].nodeValue=="borrower")
 						text_current_share_list+=" <a href=\'javascript:void(0);\' onclick=\'DeleteShareResource(\""+user+"\")\'><img src=\"delete16.png\" border=\"0\"/></a>"
@@ -2979,7 +3085,9 @@ var root, text_current_feedback_list;
 		return;
 	var owc=ParseOWSContextAtom(root);
 
+	if (location.hash!="#feedback") 
 	ChangePannel("feedback", true);
+	//else -> si ja hi soc no cal
 
 	document.getElementById("current_feedback_fieldset").style.display=(!owc.features || owc.features.length) ? 'inline' : 'none';
 
@@ -3081,6 +3189,7 @@ function RetrieveShareAuthorizedList(type)
 function SurtDeAddShareCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Added));
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
 	EnumerateShareResource(IdResourceToSaveChanges);
 }
 
@@ -3097,7 +3206,7 @@ function AddShareResource(tothom)
 		AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 		ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:ADD&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
-				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER=Anonymous&RIGHTS=R", AvaluaResposta, "text/xml", "SurtDeAddShareCallBack");
+				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER=Anonymous&BORROWER_TOKEN_TYPE=&RIGHTS=R", AvaluaResposta, "text/xml", "SurtDeAddShareCallBack");
 	}
 	else
 	{
@@ -3110,7 +3219,7 @@ function AddShareResource(tothom)
 		AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 		ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:ADD&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
-				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER="+document.share_form.new_share.value+"&RIGHTS=R"+(document.share_form.W.checked ? "W":"")+(document.share_form.S.checked ? "S":""), AvaluaResposta, "text/xml", 
+				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER="+document.share_form.new_share.value+"&BORROWER_TOKEN_TYPE=&RIGHTS=R"+(document.share_form.W.checked ? "W":"")+(document.share_form.S.checked ? "S":""), AvaluaResposta, "text/xml", 
 				"SurtDeAddShareCallBack");
 	}
         ShowInfo("permanent", DonaCadenaJSON(Msg_Adding_));
@@ -3121,6 +3230,7 @@ function AddShareResource(tothom)
 function SurtDeDeleteShareCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Deleted));
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
 	EnumerateShareResource(IdResourceToSaveChanges);
 }
 
@@ -3135,7 +3245,7 @@ function DeleteShareResource(user)
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:DELETE&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
-				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER="+user, AvaluaResposta, "text/xml", 
+				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER="+user+"&BORROWER_TOKEN_TYPE=", AvaluaResposta, "text/xml", 
 				"SurtDeDeleteShareCallBack");
         ShowInfo("permanent", DonaCadenaJSON(Msg_Deleting_));
 
@@ -3251,6 +3361,28 @@ function RecuperaCanvisARolesATargetsOfAFeedback()
 			}
 		}	
 		return;
+		}	
+
+function AvaluaRespostaAddShareAddicional(doc, no_usat)
+{	
+var root, id_proces, id_obj;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+	{
+		RemoveInfo("permanent");
+		return;
+}
+
+	if (AnalitzaExceptionReport(root, document))
+{	
+		RemoveInfo("permanent");
+		return;
+	}
+
+	//en aquest cas si el add_share no s'ha fet bé doncs "no passa res" pq era secundari per fer-ho polit
+	RemoveInfo("permanent");
+	return;
 }
 
 function SendFeedbackResourceChanges()
@@ -3262,10 +3394,14 @@ var s,s2;
 		return false;
 	}
 	RemoveInfo("long");
+	
+	IdResourceToSaveChanges=IdFeedbackResourceToSaveChanges; //perquè si des de la pàgina de FB acabo creant una publicació, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdFeedbackResourceToSaveChanges=""; //faig "net"
+
 	if (IdResourceToSaveChanges=="")
 	{
 		s="CREATE";
-		s2=(document.feedback_resource_form.share_1.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
+		s2=(document.feedback_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
 	        ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 	}
 	else
@@ -3293,7 +3429,7 @@ var s,s2;
 		if (PublicsOfAFeedback.length)
 		{
 			for (var item=0; item<PublicsOfAFeedback.length; item++)
-					s2+="&PUB_"+(item+1)+"="+PublicsOfAFeedback[item];
+					s2+="&PUB_"+(item+1)+"="+PublicsOfAFeedback[item].id_public;
 		}
 		else //abans n'hi havia i ara no, escriure PUB_1 immplica que si hi havia publicacions d'aquesta valoració, s'esborraràn
 			s2+="&PUB_1=";
@@ -3317,6 +3453,37 @@ alert(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOUR
 				"&MOTIVATION="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.motivation)+"&RATING="+DonaCadenaCodelistDeRadio(document.feedback_resource_form.rating)+s2, AvaluaResposta, "text/xml", 
 				"SurtDeFeedbackResourceChangesCallBack");*/
 				
+	if (document.feedback_resource_form.open_data.checked)
+	{	//Si aquest FB item es compartit anònimament, m'asseguro que els elements relacionats amb ell també ho són
+		if (TargetsOfAFeedback.length) // && TargetsOfAFeedbackHaveChanged -> cal sempre perquè ara pot passar que existeixi algun cas que no està resolt i l'he de solucionar encara que no hi hagi canvis en els targets
+		{
+			for (var item=0; item<TargetsOfAFeedback.length; item++)
+			{
+				if (!TargetsOfAFeedback[item].open_data) //si encara no és un recurs públic ho demano
+				{
+					ajaxExecuteNB=new Ajax();
+					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+					ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:ADD&LANGUAGE="+LanguagesNB[ActiveLanguage]
+						//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
+						+"&RESOURCE="+TargetsOfAFeedback[item].id_target+"&BORROWER=Anonymous&BORROWER_TOKEN_TYPE=&RIGHTS=R", AvaluaRespostaAddShareAddicional, "text/xml", null);
+				}
+			}
+		}
+		if (PublicsOfAFeedback.length) //&& PublicsOfAFeedbackHaveChanged -> cal sempre perquè ara pot passar que existeixi algun cas que no està resolt i l'he de solucionar encara que no hi hagi canvis en les publics
+		{
+			for (var item=0; item<PublicsOfAFeedback.length; item++)
+			{	
+				if (!PublicsOfAFeedback[item].open_data) //si encara no és un recurs públic ho demano
+				{
+					ajaxExecuteNB=new Ajax();
+					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+					ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:ADD&LANGUAGE="+LanguagesNB[ActiveLanguage]
+						//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
+						+"&RESOURCE="+PublicsOfAFeedback[item].id_public+"&BORROWER=Anonymous&BORROWER_TOKEN_TYPE=&RIGHTS=R", AvaluaRespostaAddShareAddicional, "text/xml", null);					
+				}
+			}
+		}
+	}
 	return false;
 }
 
@@ -3329,10 +3496,11 @@ var s,s2;
 		return false;
 	}
 	RemoveInfo("long");
+	
 	if (IdResourceToSaveChanges=="")
 	{
 		s="CREATE";
-		s2="";
+		s2=(document.citation_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
 	        ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 	}
 	else
@@ -3365,10 +3533,11 @@ var s,s2;
 		return false;
 	}
 	RemoveInfo("long");
+	
 	if (IdResourceToSaveChanges=="")
 	{
 		s="CREATE";
-		s2="";
+		s2=(document.publication_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
 	        ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 	}
 	else
@@ -3377,6 +3546,7 @@ var s,s2;
 		s2="&RESOURCE="+IdResourceToSaveChanges;
 	        ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
 	}
+	
 	ajaxExecuteNB=new Ajax();
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]
@@ -3393,9 +3563,24 @@ var s,s2;
 	return false;
 }
 
-function SendResourceDelete(type)
+function SendResourceDelete(event, query, type, cal_history_back)
 {
 var SurtDeResourceDeleteCallBack, s;
+
+	if (event)
+		StopPropagationClick(event);
+		
+	if (query)
+	{
+		var id=DonaValorDeFormulari("RESOURCE", query, true);
+		IdResourceToSaveChanges=id;
+	}
+	//else -> estic a dins la pàgina d'un recurs i IdResourceToSaveChanges ja conté el que cal
+
+	if (cal_history_back)
+		BackNeededAfterDelete=true;
+	else
+		BackNeededAfterDelete=false;
 
 	s=DonaCadenaJSON(Msg_Sure_completely_delete_);
 
@@ -3450,21 +3635,25 @@ function SurtDeHRefResourceChanges(avis)
 		if (false==confirm(DonaCadenaJSON(Msg_Exit_without_saving_changes)))
 			return false;
 	}
-	ChangePannel("resources", true);
+	//ChangePannel("resources", true);
+	history.back();
 }
 
 function SurtDeHRefResourceChangesCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
 	SurtDeHRefResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function SurtDeHRefResourceDeleteCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Hyperlink_deleted));
+	if (BackNeededAfterDelete)
 	SurtDeHRefResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function SurtDePoiResourceChanges(avis)
@@ -3474,21 +3663,25 @@ function SurtDePoiResourceChanges(avis)
 		if (false==confirm(DonaCadenaJSON(Msg_Exit_without_saving_changes)))
 			return false;
 	}
-	ChangePannel("resources", true);
+	//ChangePannel("resources", true);
+	history.back();
 }
 
 function SurtDePoiResourceChangesCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
 	SurtDePoiResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function SurtDePoiResourceDeleteCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_PoI_deleted));
+	if (BackNeededAfterDelete)
 	SurtDePoiResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function GetPoiFromDeviceCallBack(position) 
@@ -3572,21 +3765,42 @@ function SurtDeFeedbackResourceChanges(avis)
 	if (ActionAfterSignIn==TancaFinestraNimmbus)
 		ActionAfterSignIn(ParamActionAfterSignIn);
 	else
-		ChangePannel("resources", true);
+	{
+		history.back();
+		//ChangePannel("resources", true);
+	}
+}
+
+function SurtDeFeedbackResourceChangesIRecarregaResources(avis)
+{	// Encara que surti de la pàgina de FB sense desar (tancar/descartar) he de demanar que es repinti la pàgina de recursos, perquè potser des de la pàgina del FB he creat una publicació nova
+	SurtDeFeedbackResourceChanges(avis);
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	EnumerateResources(1, {"type_enum":"resources"});
+}
+
+function OmpleRecursosQueTocaSortintDeValoracio()
+{
+	if (location.hash=="#resources")
+		EnumerateResources(1, {"type_enum":"resources"});
+	else //estic tornant des de la pàgina de creació d'un nou FB, a la pàgina de llista de FB sobre un recurs
+		MostraFeedbackList(null, null, IdTargetResourceToSaveChanges);	
 }
 
 function SurtDeFeedbackResourceChangesCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
 	SurtDeFeedbackResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//em cal fer un Timeout perquè si no el back encara no "s'ha fet"
+	setTimeout("OmpleRecursosQueTocaSortintDeValoracio();",100);
 }
 
 function SurtDeFeedbackResourceDeleteCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Feedback_deleted));
+	if (BackNeededAfterDelete)
 	SurtDeFeedbackResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function SurtDeCitationResourceChanges(avis)
@@ -3596,21 +3810,25 @@ function SurtDeCitationResourceChanges(avis)
 		if (false==confirm(DonaCadenaJSON(Msg_Exit_without_saving_changes)))
 			return false;
 	}
-	ChangePannel("resources", true);
+	history.back();
+	//ChangePannel("resources", true);
 }
 
 function SurtDeCitationResourceChangesCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
 	SurtDeCitationResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function SurtDeCitationResourceDeleteCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Citation_deteled));
+	if (BackNeededAfterDelete)
 	SurtDeCitationResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function SurtDePublicationResourceChanges(avis)
@@ -3620,21 +3838,33 @@ function SurtDePublicationResourceChanges(avis)
 		if (false==confirm(DonaCadenaJSON(Msg_Exit_without_saving_changes)))
 			return false;
 	}
-	ChangePannel("resources", true);
+	history.back();
+	//ChangePannel("resources", true);
+	}
+
+function OmpleRecursosQueTocaSortintDePublicacio()
+{	
+	if (location.hash=="#resources")
+		EnumerateResources(1, {"type_enum":"resources"});
+	else
+		ObreSelectorDePublicOfAFeedback(false);
 }
 
 function SurtDePublicationResourceChangesCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
 	SurtDePublicationResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//em cal fer un Timeout perquè si no el back encara no "s'ha fet"
+	setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);	
 }
 
 function SurtDePublicationResourceDeleteCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Publication_deteled));
+	if (BackNeededAfterDelete)
 	SurtDePublicationResourceChanges(false);
-	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100); -> a resource selector hi entro només per crear, no per modificar, i per tant no hi ha botó de delete (hi será si algun dia deixem modificar els recursos des del resource-selector)
+	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function EntraAAccountCallBack()
@@ -3704,8 +3934,9 @@ function EntraANimmbus(es_nou)
 	//document.getElementById("front-page").style.visibility="hidden";
 	//document.getElementById("main-page").style.visibility="visible";
 	//ChangePannel("main-page", true);
-	if (es_nou)
-		document.getElementById("new-resource").style.display="none";
+	
+	document.getElementById("new-resource").style.display= es_nou ? "none" : "inline";
+	document.getElementById("dropdown-settings").style.display= es_nou ? "none" : "inline";
 	document.getElementById("main-left-pannel-title-text").innerHTML=document.sign_in.user.value;  //This is going to be replaced by the name and surname latter.
 	document.getElementById("main-left-pannel-subtitle-text").innerHTML=document.sign_in.user.value;
 }
@@ -3747,6 +3978,7 @@ function EntraAExecuteToken()
 	if (document.getElementById("execute-token-subtitle-text").innerHTML!="")
 	        document.title = document.getElementById("execute-token-subtitle-text").innerHTML;
 	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_TOKEN:EXECUTE&LANGUAGE="+LanguagesNB[ActiveLanguage]+
 				"&TOKEN="+PendingToken+"&USER="+document.sign_in.user.value, AvaluaResposta, "text/xml", 
 				"SurtDeExecuteTokenCallBack");
@@ -3778,21 +4010,20 @@ function SurtDeNewPasswordCallBack()
 
 function SurtDeNimmbus()
 {
-	SurtDeAccount();
+	SignOutNB();
 	//document.getElementById("main-page").style.visibility="hidden";
 	//document.getElementById("resources").style.visibility="hidden";
 	EntraAIdentificioNimmbus();
 	//window.scrollTo(0, 0);
 }
 
-function SurtDeAccount()
+function SignOutNB()
 {
 	ChangePannel("resources", false);
 	document.getElementById("new_user_alert").style.display="none";
 	document.getElementById("current_pass_alert").style.display="none";
 	document.getElementById("new_pass_alert").style.display="none";
 	document.getElementById("new_pass_valid_alert").style.display="none";
-	document.getElementById("new-resource").style.display="inline";
 	AccessToken="";
 	AccessTokenType="";
 }
@@ -3803,10 +4034,20 @@ function SurtDeAccount()
 	return false;
 }*/
 
-function SurtIRetornaAResources()
+function SurtITornaEndarrera(recarrega_pagina_recursos)
 {
-	ChangePannel("resources", true);
+	history.back();
+	//ChangePannel("resources", true);
+	if (recarrega_pagina_recursos)
+	//he de recarregar la pagina de recursos perquè potser s'ha afegit un element nou, o s'ha modificat un dels existents
+		EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":false});	
 	return false;
+}
+
+function SurtDeAccount()
+{
+	history.back();
+	//ChangePannel("resources", true);
 }
 
 function SurtDeAccountCallBack()
@@ -3819,11 +4060,24 @@ function SurtDeAccountCallBack()
 
 	ChangeLanguage(ActiveLanguage=document.account_form.language.selectedIndex, ResourcesPerPage);
 	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
-	SurtDeAccount();
+	
+	if (document.getElementById("current_pass_fieldset").style.display=='none') //new user, resources list needs to be blanked
+	{
+			BuidaLlistatResource("resources");
+			document.getElementById("new-resource").style.display="inline";	
+			document.getElementById("dropdown-settings").style.display="inline";				
+	}
+	
+	//SignOutNB();
 	if (ActionAfterSignIn)
 		ActionAfterSignIn(ParamActionAfterSignIn);
 	else
+	{
+		if (document.getElementById("current_pass_fieldset").style.display=='none') //new user, resources list needs to be blanked
 		ChangePannel("resources", true);
+		else
+			history.back();		
+	}
 }
 
 function SendAccountChanges()
@@ -4254,41 +4508,25 @@ Sign out</a>
 
 <!-- *** MAIN PAGE LEFT PANNEL *** -->
 
-<div id="main-left-pannel" class="white-area" style="left: 3%; top: 45px; width: 18%; height: 150px;">
+<div id="main-left-pannel" class="white-area" style="left: 3%; top: 45px; width: 18%; height: 200px;">
 
 <h2 id="main-left-pannel-title-text" class="white-area-title">User</h2>
 <p id="main-left-pannel-subtitle-text" class="packet_paragraph">
 <p class="packet_paragraph"><span id="main-left-pannel-since-text"></span>: <span id="main-left-pannel-date-text"></span></p>
 
-<div id="new-resource" style="position:absolute; bottom: 20px: left: 20px;">
+<div id="new-resource">
 <form id="main-left-pannel_form" name="main_left_pannel_form" method="get" onSubmit="return false">
 
-<p></p>
+<br><span id="main-left-pannel-create-resources-text"></span>:<br>
+<input id="new-resource-href" class="add_resource_btn" type="image" alt="new href" src="link_add20.png" onClick="MostraHRefResource('')"/>
+<input id="new-resource-poi" class="add_resource_btn" type="image" alt="new href" src="point_add20.png" onClick="MostraPoiResource('')"/>
+<input id="new-resource-citation" class="add_resource_btn" type="image" alt="new href" src="citation_add20.png" onClick="MostraCitationResource('')"/>
+<input id="new-resource-publication" class="add_resource_btn" type="image" alt="new href" src="publication_add20.png" onClick="MostraPublicationResource('')"/>
 
-<input id="new-resource_btn" class="submit_btn" type="button" value="New" onClick="SwitchDropDownList('dropdown-new-resource', 'new-resource-list');" onMouseOver="document.getElementById('new-resource-tooltip').style.opacity='1';" onMouseOut="document.getElementById('new-resource-tooltip').style.opacity='0';"/>
-
-
-<span id="new-resource-tooltip" class="tooltip" style="left: -17px; top:45px;">
-<b class="tooltip-caret"></b><br>
-<span id="new-resource-tooltip-text" class="tooltip-text">New resource</span>
-</span>
-
-<div id="new-resource-list" class="dropdown-list" style="left: -37px; top: 53px; width: 110px; height: 100px;">
-<div class="dropdown-caret">
-<span class="caret-outer"></span>
-<span class="caret-inner"></span>
-</div>
-<a id="new-resource-href" class="dropdown-list_active" onClick="SwitchDropDownList('dropdown-new-resource', 'new-resource-list'); MostraHRefResource('');"></a>
-<a id="new-resource-poi" class="dropdown-list_active" onClick="SwitchDropDownList('dropdown-new-resource', 'new-resource-list'); MostraPoiResource('');"></a>
-<a id="new-resource-citation" class="dropdown-list_active" onClick="SwitchDropDownList('dropdown-new-resource', 'new-resource-list'); MostraCitationResource('');"></a>
-<a id="new-resource-feedback" class="dropdown-list_active" onClick="SwitchDropDownList('dropdown-new-resource', 'new-resource-list'); MostraFeedbackResource('','');"></a>
-<a id="new-resource-publication" class="dropdown-list_active" onClick="SwitchDropDownList('dropdown-new-resource', 'new-resource-list'); MostraPublicationResource('');"></a>
-</div>  <!--End of id="new-resource-list" -->
 </form>
 </div>  <!--End of id="new-resource" -->
+
 <br> 
-<br>
-<br>
 <!--div id="conditions-left-pannel" style="display: inline;"-->
 <table class="front-conditions-text-left-pannel" style="width: 100%;"><tr><td style="text-align: left; width: 50%"><a id="left-pannel-terms_of_use" target="_blank" href="TermsOfUse.htm" style="color: #CCCCCC">Terms_of_use</a>
 	<br><a id="left-pannel-privacy_statement" target="_blank" href="PrivacyStatement.htm" style="color: #CCCCCC">Privacy_Statement</a></td>
@@ -4323,10 +4561,10 @@ Sign out</a>
 	</select>
 </td>
 <td align="right"><span id="resources-hits-text">1-100 of 123</span> 
-
+<span style="white-space: nowrap;">
 <input id="newer-resources_btn" class="submit_btn" type="button" value="<" onMouseOver="document.getElementById('newer-resources-tooltip').style.opacity='1';" onMouseOut="document.getElementById('newer-resources-tooltip').style.opacity='0';">
 <input id="older-resources_btn" class="submit_btn" type="button" value=">" onMouseOver="document.getElementById('older-resources-tooltip').style.opacity='1';" onMouseOut="document.getElementById('older-resources-tooltip').style.opacity='0';">
-
+</span>
 <span id="newer-resources-tooltip" class="tooltip" style="right: 40px; top:86px;">
 <b class="tooltip-caret"></b><br>
 <span id="newer-resources-tooltip-text" class="tooltip-text">Newer</span>
@@ -4421,7 +4659,7 @@ Sign out</a>
 
 <div class="form-actions">
 <input id="href-resource_btn" class="submit_btn" type="submit" value="Save changes" />
-<input id="href-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete('HREF');" />
+<input id="href-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'HREF', true);" />
 <input id="href-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeHRefResourceChanges(true);" />
 <input id="href-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeHRefResourceChanges(false);" />
 </div>
@@ -4493,7 +4731,7 @@ Sign out</a>
 
 <div class="form-actions">
 <input id="poi-resource_btn" class="submit_btn" type="submit" value="Save changes" />
-<input id="poi-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete('POI');" />
+<input id="poi-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'POI', true);" />
 <input id="poi-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePoiResourceChanges(true);" />
 <input id="poi-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePoiResourceChanges(false);" />
 </div>
@@ -4513,8 +4751,8 @@ Sign out</a>
 <fieldset class="control-fielset-group">
 <legend id="target-feedback-publication-resource"></legend>
 	<p id="target_feedback-resource_compact_list" class="compact_descrip_in_FB"></p>
-<input id="target_feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
-	onClick="ObreSelectorDeTargetOfAFeedback('target_feedback-resource_compact_list');"/>
+	<input id="target_feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
+		onClick="ObreSelectorDeTargetOfAFeedback('target_feedback-resource_compact_list');"/>
 	<p id="target_feedback-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
 </fieldset> <!--End of id="target-feedback-publication-resource" -->
 
@@ -4563,32 +4801,32 @@ Sign out</a>
 <fieldset class="control-fielset-group">
 <legend id="user-comment-publication-resource"></legend>
 
-<div id="comment-feedback-resource_fieldset" class="control-group">
-<label class="control-label" id="comment-feedback-resource_screen" for="comment-feedback-resource_screen_value"></label>
-<div class="controls">
-<p id="comment-feedback-resource_alert" style="display: none;"></p>
+	<div id="comment-feedback-resource_fieldset" class="control-group">
+	<label class="control-label" id="comment-feedback-resource_screen" for="comment-feedback-resource_screen_value"></label>
+	<div class="controls">
+	<p id="comment-feedback-resource_alert" style="display: none;"></p>
 	<textarea class="text-input" id="comment-feedback-resource_screen_value" name="comment" maxlength="1999" style="width: 100%; height: 60px;"></textarea>
 	<p id="comment-feedback-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="comment-feedback-resource_fieldset" -->
-
-<div id="comment-motiv-feedback-resource_fieldset" class="control-group">
-<label class="control-label" id="comment-motiv-feedback-resource_screen" for="comment-motiv-feedback-resource_screen_value"></label>
-<div class="controls">
-<select class="text-input" id="comment-motiv-feedback-resource_screen_value" name="motivation">
-<option value="" id="undefined-motivation-feedback-resource_value" selected="selected"></option>
-<option value="comment" id="comment-motivation-feedback-resource_value"></option>
-<option value="question" id="question-motivation-feedback-resource_value"></option>
-<option value="answer" id="answer-motivation-feedback-resource_value"></option>
-<option value="acceptedAnswer" id="acceptedAnswer-motivation-feedback-resource_value"></option>
-<option value="response" id="response-motivation-feedback-resource_value"></option>		
-<option value="justification" id="justification-motivation-feedback-resource_value"></option>
-<option value="resolution" id="resolution-motivation-feedback-resource_value"></option>
-<option value="moderation" id="moderation-motivation-feedback-resource_value"></option>
-</select>	
+	</div>
+	</div>  <!--End of id="comment-feedback-resource_fieldset" -->
+	
+	<div id="comment-motiv-feedback-resource_fieldset" class="control-group">
+	<label class="control-label" id="comment-motiv-feedback-resource_screen" for="comment-motiv-feedback-resource_screen_value"></label>
+	<div class="controls">
+	<select class="text-input" id="comment-motiv-feedback-resource_screen_value" name="motivation">
+	<option value="undefined" id="undefined-motivation-feedback-resource_value" selected="selected"></option>
+	<option value="comment" id="comment-motivation-feedback-resource_value"></option>
+	<option value="question" id="question-motivation-feedback-resource_value"></option>
+	<option value="answer" id="answer-motivation-feedback-resource_value"></option>
+	<option value="acceptedAnswer" id="acceptedAnswer-motivation-feedback-resource_value"></option>
+	<option value="response" id="response-motivation-feedback-resource_value"></option>		
+	<option value="justification" id="justification-motivation-feedback-resource_value"></option>
+	<option value="resolution" id="resolution-motivation-feedback-resource_value"></option>
+	<option value="moderation" id="moderation-motivation-feedback-resource_value"></option>
+	</select>	
 	<p id="comment-motiv-feedback-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="comment-motiv-feedback-resource_fieldset" -->
+	</div>
+	</div>  <!--End of id="comment-motiv-feedback-resource_fieldset" -->
 
 </fieldset> <!-- End of id="user-comment-publication-resource" -->
 
@@ -4625,19 +4863,10 @@ Sign out</a>
 <fieldset class="control-fielset-group">
 <legend id="public-feedback-publication-resource"></legend>
 	<p id="public_feedback-resource_compact_list" class="compact_descrip_in_FB"></p>
-<input id="public_feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
-	onClick="ObreSelectorDePublicOfAFeedback('public_feedback-resource_compact_list');"/>
+	<input id="public_feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
+		onClick="ObreSelectorDePublicOfAFeedback(true);"/>
 	<p id="public_feedback-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
 </fieldset> <!--End of id="public-feedback-publication-resource" -->
-
-<div id="share-anonymous-feedback-resource_fieldset" class="control-group">
-<label class="control-label" id="share-anonymous-feedback-resource_screen" for="share-anonymous-feedback-resource_screen_value"></label>
-<div class="controls">
-<p id="share-anonymous-feedback-resource_alert" style="display: none;"></p>
-<input type="checkbox" id="share-anonymous-feedback-resource_screen_value" name="share_1" checked="checked"/>
-<p id="share-anonymous-feedback-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="share-anonymous-feedback-resource_fieldset" -->
 
 <div class="control-group">
 <label class="control-label" id="pub_feedback-resource_compact_screen" for="feedback-resource_pub_compact_value"></label>
@@ -4646,11 +4875,20 @@ Sign out</a>
 </div>
 </div>  <!--End of id="pub_feedback-resource_compact_descrip" -->
 
+<div id="open-data-feedback-resource_fieldset" class="control-group">
+<label class="control-label" id="open-data-feedback-resource_screen" for="open-data-feedback-resource_screen_value"></label>
+<div class="controls">
+<p id="open-data-feedback-resource_alert" style="display: none;"></p>
+<input type="checkbox" id="open-data-feedback-resource_screen_value" name="open_data" checked="checked" onclick="MostraOAmagaExclamacioDeShareATargetsIPublics()"/>
+<p id="open-data-feedback-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="open-data-feedback-resource_fieldset" -->
+
 <div class="form-actions">
 <input id="feedback-resource_btn" class="submit_btn" type="submit" value="Save changes" />
-<input id="feedback-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete('FEEDBACK');" />
-<input id="feedback-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeFeedbackResourceChanges(true);" />
-<input id="feedback-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeFeedbackResourceChanges(false);" />
+<input id="feedback-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'FEEDBACK', true);" />
+<input id="feedback-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeFeedbackResourceChangesIRecarregaResources(true);" />
+<input id="feedback-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeFeedbackResourceChangesIRecarregaResources(false);" />
 </div>
 
 </form>
@@ -4695,23 +4933,23 @@ Sign out</a>
 <fieldset class="control-fielset-group">
 <legend id="identifier-citation-resource"></legend>
 
-<div id="id-code-citation-resource_fieldset" class="control-group">
-<label class="control-label" id="id-code-citation-resource_screen" for="id-code-citation-resource_screen_value"></label>
-<div class="controls">
-<p id="id-code-citation-resource_alert" style="display: none;"></p>
+	<div id="id-code-citation-resource_fieldset" class="control-group">
+	<label class="control-label" id="id-code-citation-resource_screen" for="id-code-citation-resource_screen_value"></label>
+	<div class="controls">
+	<p id="id-code-citation-resource_alert" style="display: none;"></p>
 	<input type="text" class="text-input" id="id-code-citation-resource_screen_value" name="id_code" maxlength="254" style="width: 100%;"/>
 	<p id="id-code-citation-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="id-code-citation-resource_fieldset" -->
-
-<div id="id-namespace-citation-resource_fieldset" class="control-group">
-<label class="control-label" id="id-namespace-citation-resource_screen" for="id-namespace-citation-resource_screen_value"></label>
-<div class="controls">
-<p id="id-namespace-citation-resource_alert" style="display: none;"></p>
+	</div>
+	</div>  <!--End of id="id-code-citation-resource_fieldset" -->
+	
+	<div id="id-namespace-citation-resource_fieldset" class="control-group">
+	<label class="control-label" id="id-namespace-citation-resource_screen" for="id-namespace-citation-resource_screen_value"></label>
+	<div class="controls">
+	<p id="id-namespace-citation-resource_alert" style="display: none;"></p>
 	<input type="text" class="text-input" id="id-namespace-citation-resource_screen_value" name="id_namespace" maxlength="254" style="width: 100%;"/>
 	<p id="id-namespace-citation-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="id-namespace-citation-resource_fieldset" -->
+	</div>
+	</div>  <!--End of id="id-namespace-citation-resource_fieldset" -->
 </fieldset> <!--End of id="identifier-citation-resource" -->	
 
 <fieldset class="control-fielset-group">
@@ -4759,50 +4997,59 @@ Sign out</a>
 <fieldset class="control-fielset-group">
 	<legend id="url-citation-resource"></legend>
 	
-<div id="url-link-citation-resource_fieldset" class="control-group">
-<label class="control-label" id="url-link-citation-resource_screen" for="url-link-citation-resource_screen_value"></label>
-<div class="controls">
-<p id="url-link-citation-resource_alert" style="display: none;"></p>
+	<div id="url-link-citation-resource_fieldset" class="control-group">
+	<label class="control-label" id="url-link-citation-resource_screen" for="url-link-citation-resource_screen_value"></label>
+	<div class="controls">
+	<p id="url-link-citation-resource_alert" style="display: none;"></p>
 	<input type="text" class="text-input" id="url-link-citation-resource_screen_value" name="url_link" maxlength="149" style="width: 100%;"/>
 	<p id="url-link-citation-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="url-link-citation-resource_fieldset" -->
-
-<div id="url-descrip-citation-resource_fieldset" class="control-group">
-<label class="control-label" id="url-descrip-citation-resource_screen" for="url-descrip-citation-resource_screen_value"></label>
-<div class="controls">
-<p id="url-descrip-citation-resource_alert" style="display: none;"></p>
+	</div>
+	</div>  <!--End of id="url-link-citation-resource_fieldset" -->
+	
+	<div id="url-descrip-citation-resource_fieldset" class="control-group">
+	<label class="control-label" id="url-descrip-citation-resource_screen" for="url-descrip-citation-resource_screen_value"></label>
+	<div class="controls">
+	<p id="url-descrip-citation-resource_alert" style="display: none;"></p>
 	<input type="text" class="text-input" id="url-descrip-citation-resource_screen_value" name="url_descrip" maxlength="254" style="width: 100%;"/>
 	<p id="url-descrip-citation-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="url-descrip-citation-resource_fieldset" -->
-
-<div id="url-function-citation-resource_fieldset" class="control-group">
-<label class="control-label" id="url-function-citation-resource_screen" for="url-function-citation-resource_screen_value"></label>
-<div class="controls">
-<select class="text-input" id="url-function-citation-resource_screen_value" name="function_code">	
-<option value="undefined" id="undefined-url-function-citation-resource_value"></option>
-<option value="download" id="download-url-function-citation-resource_value"></option>
-<option value="information" id="information-url-function-citation-resource_value"></option>
-<option value="offlineAccess" id="offlineAccess-url-function-citation-resource_value"></option>
-<option value="order" id="order-url-function-citation-resource_value"></option>
-<option value="search" id="search-url-function-citation-resource_value"></option>
-<option value="completeMetadata" id="completeMetadata-url-function-citation-resource_value"></option>
-<option value="browseGraphic" id="browseGraphic-url-function-citation-resource_value"></option>
-<option value="upload" id="upload-url-function-citation-resource_value"></option>
-<option value="emailService" id="emailService-url-function-citation-resource_value"></option>
-<option value="browsing" id="browsing-url-function-citation-resource_value"></option>
-<option value="fileAccess" id="fileAccess-url-function-citation-resource_value"></option>
-</select>
+	</div>
+	</div>  <!--End of id="url-descrip-citation-resource_fieldset" -->
+	
+	<div id="url-function-citation-resource_fieldset" class="control-group">
+	<label class="control-label" id="url-function-citation-resource_screen" for="url-function-citation-resource_screen_value"></label>
+	<div class="controls">
+	<select class="text-input" id="url-function-citation-resource_screen_value" name="function_code">	
+	<option value="undefined" id="undefined-url-function-citation-resource_value"></option>
+	<option value="download" id="download-url-function-citation-resource_value"></option>
+	<option value="information" id="information-url-function-citation-resource_value"></option>
+	<option value="offlineAccess" id="offlineAccess-url-function-citation-resource_value"></option>
+	<option value="order" id="order-url-function-citation-resource_value"></option>
+	<option value="search" id="search-url-function-citation-resource_value"></option>
+	<option value="completeMetadata" id="completeMetadata-url-function-citation-resource_value"></option>
+	<option value="browseGraphic" id="browseGraphic-url-function-citation-resource_value"></option>
+	<option value="upload" id="upload-url-function-citation-resource_value"></option>
+	<option value="emailService" id="emailService-url-function-citation-resource_value"></option>
+	<option value="browsing" id="browsing-url-function-citation-resource_value"></option>
+	<option value="fileAccess" id="fileAccess-url-function-citation-resource_value"></option>
+	</select>
 	<p id="url-function-citation-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="url-function-citation-resource_fieldset" -->
+	</div>
+	</div>  <!--End of id="url-function-citation-resource_fieldset" -->
 
 </fieldset>  <!--End of id="url-citation-resource" -->	
 
+<div id="open-data-citation-resource_fieldset" class="control-group">
+<label class="control-label" id="open-data-citation-resource_screen" for="open-data-citation-resource_screen_value"></label>
+<div class="controls">
+<p id="open-data-citation-resource_alert" style="display: none;"></p>
+<input type="checkbox" id="open-data-citation-resource_screen_value" name="open_data" checked="checked"/>
+<p id="open-data-citation-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="open-data-citation-resource_fieldset" -->
+
 <div class="form-actions">
 <input id="citation-resource_btn" class="submit_btn" type="submit" value="Save changes" />
-<input id="citation-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete('CITATION');" />
+<input id="citation-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'CITATION', true);" />
 <input id="citation-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeCitationResourceChanges(true);" />
 <input id="citation-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeCitationResourceChanges(false);" />
 </div>
@@ -4814,6 +5061,7 @@ Sign out</a>
 
 
 <!-- *** PUBLICAT RESOURCE DLG *** -->
+
 <div id="publication-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="publication-resource-title-text" class="white-area-title"></h2>
 <p id="publication-resource-subtitle-text"></p>
@@ -4852,23 +5100,23 @@ Sign out</a>
 <fieldset class="control-fielset-group">
 <legend id="identifier-publication-resource"></legend>
 
-<div id="id-code-publication-resource_fieldset" class="control-group">
-<label class="control-label" id="id-code-publication-resource_screen" for="id-code-publication-resource_screen_value"></label>
-<div class="controls">
-<p id="id-code-publication-resource_alert" style="display: none;"></p>
+	<div id="id-code-publication-resource_fieldset" class="control-group">
+	<label class="control-label" id="id-code-publication-resource_screen" for="id-code-publication-resource_screen_value"></label>
+	<div class="controls">
+	<p id="id-code-publication-resource_alert" style="display: none;"></p>
 	<input type="text" class="text-input" id="id-code-publication-resource_screen_value" name="id_code" maxlength="254" style="width: 100%;"/>
 	<p id="id-code-publication-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="id-code-publication-resource_fieldset" -->
-
-<div id="id-namespace-publication-resource_fieldset" class="control-group">
-<label class="control-label" id="id-namespace-publication-resource_screen" for="id-namespace-publication-resource_screen_value"></label>
-<div class="controls">
-<p id="id-namespace-publication-resource_alert" style="display: none;"></p>
+	</div>
+	</div>  <!--End of id="id-code-publication-resource_fieldset" -->
+	
+	<div id="id-namespace-publication-resource_fieldset" class="control-group">
+	<label class="control-label" id="id-namespace-publication-resource_screen" for="id-namespace-publication-resource_screen_value"></label>
+	<div class="controls">
+	<p id="id-namespace-publication-resource_alert" style="display: none;"></p>
 	<input type="text" class="text-input" id="id-namespace-publication-resource_screen_value" name="id_namespace" maxlength="254" style="width: 100%;"/>
 	<p id="id-namespace-publication-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="id-namespace-publication-resource_fieldset" -->
+	</div>
+	</div>  <!--End of id="id-namespace-publication-resource_fieldset" -->
 
 </fieldset>  <!--End of id="identifier-publication-resource" -->	
 
@@ -4917,44 +5165,44 @@ Sign out</a>
 <fieldset class="control-fielset-group">
 <legend id="url-publication-resource"></legend>
 
-<div id="url-link-publication-resource_fieldset" class="control-group">
-<label class="control-label" id="url-link-publication-resource_screen" for="url-link-publication-resource_screen_value"></label>
-<div class="controls">
-<p id="url-link-publication-resource_alert" style="display: none;"></p>
+	<div id="url-link-publication-resource_fieldset" class="control-group">
+	<label class="control-label" id="url-link-publication-resource_screen" for="url-link-publication-resource_screen_value"></label>
+	<div class="controls">
+	<p id="url-link-publication-resource_alert" style="display: none;"></p>
 	<input type="text" class="text-input" id="url-link-publication-resource_screen_value" name="url_link" maxlength="149" style="width: 100%;"/>
 	<p id="url-link-publication-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="url-link-publication-resource_fieldset" -->
-
-<div id="url-descrip-publication-resource_fieldset" class="control-group">
-<label class="control-label" id="url-descrip-publication-resource_screen" for="url-descrip-publication-resource_screen_value"></label>
-<div class="controls">
-<p id="url-descrip-publication-resource_alert" style="display: none;"></p>
+	</div>
+	</div>  <!--End of id="url-link-publication-resource_fieldset" -->
+	
+	<div id="url-descrip-publication-resource_fieldset" class="control-group">
+	<label class="control-label" id="url-descrip-publication-resource_screen" for="url-descrip-publication-resource_screen_value"></label>
+	<div class="controls">
+	<p id="url-descrip-publication-resource_alert" style="display: none;"></p>
 	<input type="text" class="text-input" id="url-descrip-publication-resource_screen_value" name="url_descrip" maxlength="254" style="width: 100%;"/>
 	<p id="url-descrip-publication-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="url-descrip-publication-resource_fieldset" -->
-
-<div id="url-function-publication-resource_fieldset" class="control-group">
-<label class="control-label" id="url-function-publication-resource_screen" for="url-function-publication-resource_screen_value"></label>
-<div class="controls">
-<select class="text-input" id="url-function-publication-resource_screen_value" name="function_code">	
-<option value="undefined" id="undefined-url-function-publication-resource_value"></option>
-<option value="download" id="download-url-function-publication-resource_value"></option>
-<option value="information" id="information-url-function-publication-resource_value"></option>
-<option value="offlineAccess" id="offlineAccess-url-function-publication-resource_value"></option>
-<option value="order" id="order-url-function-publication-resource_value"></option>
-<option value="search" id="search-url-function-publication-resource_value"></option>
-<option value="completeMetadata" id="completeMetadata-url-function-publication-resource_value"></option>
-<option value="browseGraphic" id="browseGraphic-url-function-publication-resource_value"></option>
-<option value="upload" id="upload-url-function-publication-resource_value"></option>
-<option value="emailService" id="emailService-url-function-publication-resource_value"></option>
-<option value="browsing" id="browsing-url-function-publication-resource_value"></option>
-<option value="fileAccess" id="fileAccess-url-function-publication-resource_value"></option>
-</select>
+	</div>
+	</div>  <!--End of id="url-descrip-publication-resource_fieldset" -->
+	
+	<div id="url-function-publication-resource_fieldset" class="control-group">
+	<label class="control-label" id="url-function-publication-resource_screen" for="url-function-publication-resource_screen_value"></label>
+	<div class="controls">
+	<select class="text-input" id="url-function-publication-resource_screen_value" name="function_code">	
+	<option value="undefined" id="undefined-url-function-publication-resource_value"></option>
+	<option value="download" id="download-url-function-publication-resource_value"></option>
+	<option value="information" id="information-url-function-publication-resource_value"></option>
+	<option value="offlineAccess" id="offlineAccess-url-function-publication-resource_value"></option>
+	<option value="order" id="order-url-function-publication-resource_value"></option>
+	<option value="search" id="search-url-function-publication-resource_value"></option>
+	<option value="completeMetadata" id="completeMetadata-url-function-publication-resource_value"></option>
+	<option value="browseGraphic" id="browseGraphic-url-function-publication-resource_value"></option>
+	<option value="upload" id="upload-url-function-publication-resource_value"></option>
+	<option value="emailService" id="emailService-url-function-publication-resource_value"></option>
+	<option value="browsing" id="browsing-url-function-publication-resource_value"></option>
+	<option value="fileAccess" id="fileAccess-url-function-publication-resource_value"></option>
+	</select>
 	<p id="url-function-publication-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="url-function-publication-resource_fieldset" -->
+	</div>
+	</div>  <!--End of id="url-function-publication-resource_fieldset" -->
 
 </fieldset>  <!--End of id="url-publication-resource" -->	
 
@@ -4992,9 +5240,18 @@ Sign out</a>
 </div>
 </div>  <!--End of id="category-publication-resource_fieldset" -->
 
+<div id="open-data-publication-resource_fieldset" class="control-group">
+<label class="control-label" id="open-data-publication-resource_screen" for="open-data-publication-resource_screen_value"></label>
+<div class="controls">
+<p id="open-data-publication-resource_alert" style="display: none;"></p>
+<input type="checkbox" id="open-data-publication-resource_screen_value" name="open_data" checked="checked"/>
+<p id="open-data-publication-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="open-data-publication-resource_fieldset" -->
+
 <div class="form-actions">
 <input id="publication-resource_btn" class="submit_btn" type="submit" value="Save changes" />
-<input id="publication-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete('PUBLICAT');" />
+<input id="publication-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'PUBLICAT', true);" />
 <input id="publication-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePublicationResourceChanges(true);" />
 <input id="publication-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePublicationResourceChanges(false);" />
 </div>
@@ -5099,7 +5356,7 @@ Sign out</a>
 <h2 id="share-title-text" class="white-area-title"></h2>
 <p id="share-subtitle-text"></p>
 
-<form id="share_form" name="share_form" method="get" autocomplete="off" onSubmit="return SurtIRetornaAResources();">
+<form id="share_form" name="share_form" method="get" autocomplete="off" onSubmit="return SurtITornaEndarrera(false);">
 
 <div class="control-group">
 <label class="control-label" id="new_share_screen" for="new_share_screen_value"></label>
@@ -5144,7 +5401,7 @@ Sign out</a>
 <h2 id="feedback-title-text" class="white-area-title"></h2>
 <p id="feedback-subtitle-text"></p>
 
-<form id="feedback_form" name="feedback_form" method="get" autocomplete="off" onSubmit="return SurtIRetornaAResources();">
+<form id="feedback_form" name="feedback_form" method="get" autocomplete="off" onSubmit="return SurtITornaEndarrera(true);">
 
 <div class="control-group">
 <label class="control-label" id="feedback_target_compact_screen" for="feedback_target_compact_value"></label>

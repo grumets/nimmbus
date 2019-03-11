@@ -10,6 +10,25 @@
 var ServerGUF="https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi";
 var ClientGUF="https://www.opengis.uab.cat/nimmbus/index.htm";
 
+function IncludeScript(url, late)   //https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file
+{
+	var script = document.createElement("script");  // create a script DOM node
+
+	if (late)
+	{
+	script.setAttributeNode(document.createAttribute("async"));
+	script.setAttributeNode(document.createAttribute("defer"));
+	}
+	script.src = url;  // set its src to the provided URL
+	document.head.appendChild(script);  // add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead). Ja ho he fet.
+}
+
+IncludeScript("Nmmblang.js");
+IncludeScript("xml.js");
+IncludeScript("owc_atom.js");
+IncludeScript("wps_iso_guf.js");
+IncludeScript("guf_locale.js");
+	
 function GUFShowFeedbackInHTMLDiv(elem, seed_div_id, rsc_type, title, code, codespace, lang)
 {
 	elem.innerHTML = GUFDonaCadenaFinestraFeedbackResource(seed_div_id, rsc_type, title, code, codespace, lang);
@@ -40,7 +59,7 @@ function GUFDonaCadenaLang(cadena_lang, lang)
 				return cadena_lang.fre;
 		}
 	}
-	return "";
+	return cadena_lang.eng;
 }
 
 //Duplicated from the MiraMon Map Browser
@@ -138,6 +157,39 @@ var cdns=[];
 	}
 }
 
+function ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(identifier, lang, es_id_fb_item)
+{
+	link_html="";
+	
+	if (identifier)
+	{
+		if (identifier.codeSpace)
+		{
+			if (identifier.codeSpace.endsWith("/"))
+				text_html=identifier.codeSpace;
+			else
+				text_html=identifier.codeSpace+"/";
+		}
+		
+		if (identifier.code)
+			text_html=text_html+identifier.code;
+			
+		//text_html=text_html+". ";
+			
+		if (text_html.indexOf("www.doi.org") >= 0)
+			link_html="<u>DOI</u>: <a href=\""+text_html+"\" target=\"_blank\">"+identifier.code+"</a>. <br/>";
+		else if (text_html.indexOf("nimmbus/resourceId") >= 0) //si codeSpace és http://www.opengis.uab.cat/nimmbus/resourceId és que és un recurs NiMMbus, i per tant puc fer la consulta de retrieve
+		{
+			if (es_id_fb_item)
+				link_html="<b>NiMMbus Id.</b>: <a href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+lang+"&RESOURCE="+identifier.code+"\" target=\"_blank\">"+identifier.code+"</a><br/>";
+			else
+				link_html="<u>NiMMbus Id.</u>: <a href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+lang+"&RESOURCE="+identifier.code+"\" target=\"_blank\">"+identifier.code+"</a><br/>";
+		}
+		else			
+			link_html="<u>"+GUFDonaCadenaLang({"cat":"Identificador", "spa":"Identificador", "eng":"Identifier", "fre":"Identifiant"}, lang)+"</u>: "+text_html+"<br/>";	
+	}
+	return link_html;
+}
 
 function CarregaFeedbackAnterior(doc, extra_param)
 {
@@ -160,7 +212,10 @@ var cdns=[];
 		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no és un xml guf", "spa":"El retorno no es xml guf", "eng":"Return is not xml guf", "fre":"Le retour n'est pas xml guf"}, extra_param.lang)); 
 		return;
 	}
-
+	
+	if (guf.identifier)
+		cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.identifier, extra_param.lang, true));
+	
 	if (guf.abstract)
 		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Abstrait"}, extra_param.lang), ":</b> ", guf.abstract, "<br/>");
 
@@ -170,6 +225,17 @@ var cdns=[];
 	if (guf.contactRole && GUF_UserRoleCode[guf.contactRole])
 		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Rol del contacte", "spa":"Rol del contacto", "eng":"Contact role", "fre":"Rôle de contact"}, extra_param.lang), ":</b> ", GUFDonaCadenaLang(GUF_UserRoleCode[guf.contactRole], extra_param.lang), "<br/>");
 
+	if (guf.dateInfo)
+	{
+		for (var i_date=0; i_date<guf.dateInfo.length; i_date++)
+		{
+			if (guf.dateInfo[i_date].dateType)
+				cdns.push("<b>", GUFDonaCadenaLang({"cat":"Data", "spa":"Fecha", "eng":"Date", "fre":"Date"},extra_param.lang)+" ("+GUFDonaCadenaLang(CI_DateTypeCode[guf.dateInfo[i_date].dateType],extra_param.lang)+"):</b> "+guf.dateInfo[i_date].date+"<br/>");
+			else
+				cdns.push("<b>", GUFDonaCadenaLang({"cat":"Data", "spa":"Fecha", "eng":"Date", "fre":"Date"},extra_param.lang)+":</b> "+guf.dateInfo[i_date].date+"<br/>");
+		}
+	}	
+	
 	if (guf.comment)
 		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Comentari", "spa":"Comentario", "eng":"Comment", "fre":"Commentaire"}, extra_param.lang), ":</b> ", guf.comment, "<br/>");
 
@@ -180,27 +246,114 @@ var cdns=[];
 		cdns.push("<b>", GUFDonaCadenaLang({"cat":"Puntuació", "spa":"Puntuación", "eng":"Rating", "fre":"Évaluation"}, extra_param.lang), ":</b> ", guf.rating, "/5<br/>");
 
 	if (guf.public)
-	{	
+	{			
 		for (var i_publi=0; i_publi<guf.public.length; i_publi++)
 		{	
 			if (i_publi>0)
-				cdns.push("<br><b>", GUFDonaCadenaLang({"cat":"Publicació", "spa":"Publicación", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</b> ");
+			{
+				if (guf.public[i_publi].category)
+					cdns.push("<b>", GUFDonaCadenaLang(QCM_PublicationCategoryCode[guf.public[i_publi].category],extra_param.lang),":</b> ");
+				else
+					cdns.push("<b>", GUFDonaCadenaLang({"cat":"Publicació", "spa":"Publicación", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</b> ");
+			}
 			else
-				cdns.push("<b>", GUFDonaCadenaLang({"cat":"Publicació", "spa":"Publicación", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</b> ");
-			
-			if (guf.public[i_publi].title)
-				cdns.push(guf.public[i_publi].title, "; ");
+			{
+				if (guf.public[i_publi].category)
+					cdns.push("<b>", GUFDonaCadenaLang(QCM_PublicationCategoryCode[guf.public[i_publi].category],extra_param.lang),":</b> ");
+				else
+					cdns.push("<b>", GUFDonaCadenaLang({"cat":"Publicació", "spa":"Publicación", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</b> ");
+			}
+	
+			cdns.push("<input type=\"checkbox\" id=\""+extra_param.div_id+"_"+i_publi+"\" style=\"display:none;\">");
 
+			if (guf.public[i_publi].title)
+				cdns.push(guf.public[i_publi].title);
+							
+			cdns.push(" <div class=\"no_display user\">");
+				
+			if (guf.public[i_publi].edition)
+			{
+				cdns.push(" (", guf.public[i_publi].edition);
+				if (guf.public[i_publi].editionDate)
+					cdns.push(", ", guf.public[i_publi].editionDate);
+				cdns.push(") ");				
+			}
+			else
+			{
+				if (guf.public[i_publi].editionDate)
+					cdns.push(" (", guf.public[i_publi].editionDate, ") ");
+			}		
+			
+			if (guf.public[i_publi].series && guf.public[i_publi].series.name)
+			{
+					cdns.push(", <i>", guf.public[i_publi].series.name, "</i>");
+					if (guf.public[i_publi].series.issueIdentification)
+					{
+						cdns.push(", ", guf.public[i_publi].series.issueIdentification);
+						if (guf.public[i_publi].series.page)
+							cdns.push(", pp.", guf.public[i_publi].series.page);
+				}
+			}
+			
+			if (guf.public[i_publi].otherCitationDetails)
+				cdns.push(", ", guf.public[i_publi].otherCitationDetails);			
+			
+			cdns.push(".<br/>");
+				
+			if (guf.public[i_publi].onlineResource && guf.public[i_publi].onlineResource.linkage)
+			{				
+				text_html="<u>"+GUFDonaCadenaLang({"cat":"Recurs online", "spa":"Recurso online", "eng":"Online resource", "fre":"Ressource en ligne"},extra_param.lang)+"</u>: <a href=\""+guf.public[i_publi].onlineResource.linkage+"\" target=\"_blank\">";
+				if (guf.public[i_publi].onlineResource.description)
+					text_html=text_html+guf.public[i_publi].onlineResource.description;
+				else
+					text_html=text_html+guf.public[i_publi].onlineResource.linkage;
+				text_html=text_html+"</a>";
+				
+				if (guf.public[i_publi].onlineResource.function)
+					text_html=text_html+" ("+guf.public[i_publi].onlineResource.function+")";
+				text_html=text_html+".<br/>";	
+  			cdns.push(text_html);					
+			}			
+			
 			if (guf.public[i_publi].identifier)
 			{
 	  			for (var i_id=0; i_id<guf.public[i_publi].identifier.length; i_id++)
-  				{
-	  				if (i_id==(guf.public[i_publi].identifier.length-1))
-	  					cdns.push(guf.public[i_publi].identifier[i_id].code, ", ", guf.public[i_publi].identifier[i_id].codeSpace);
-	  				else
-	  					cdns.push(guf.public[i_publi].identifier[i_id].code, ", ", guf.public[i_publi].identifier[i_id].codeSpace, "; ");
-					}
-			} 			
+	  				cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.public[i_publi].identifier[i_id], extra_param.lang, false));
+			}
+
+			if (guf.public[i_publi].abstract)
+				cdns.push("<u>"+GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Résumé"},extra_param.lang)+"</u>: ", guf.public[i_publi].abstract,"<br/>");				
+				
+			cdns.push("</div><label for=\""+extra_param.div_id+"_"+i_publi+"\"><i>"+GUFDonaCadenaLang({"cat":"Feu clic per mostrar/amagar més informació", "spa":"Haga clic para mostrar/ocultar más información", "eng":"Click to show/hide more information", "fre":"Cliquez pour afficher/masquer plus d'informations"},extra_param.lang)+"</i></label></input><br/>");
+		}
+	}
+	
+	if (guf.target)
+	{				
+		for (var i_target=0; i_target<guf.target.length; i_target++)
+		{	
+			//if (i_target>0)
+				cdns.push("<b>", GUFDonaCadenaLang({"cat":"Recurs valorat", "spa":"Recurso valorado", "eng":"Target resource", "fre":"Ressource valorisée"}, extra_param.lang));
+			//else
+			//	cdns.push("<b>", GUFDonaCadenaLang({"cat":"Recurs valorat", "spa":"Recurso valorado", "eng":"Target resource", "fre":"Ressource valorisée"}, extra_param.lang));
+		
+			if (guf.target[i_target].role)
+				cdns.push(" (", GUFDonaCadenaLang(GUF_TargetRoleCode[guf.target[i_target].role],extra_param.lang),"):</b> ");
+			else
+				cdns.push(":</b>");
+			//cdns.push("<input type=\"checkbox\" id=\""+extra_param.div_id+"_"+i_target+"\" style=\"display:none;\">");
+
+			if (guf.target[i_target].title)
+				cdns.push(guf.target[i_target].title, "<br/>");
+			//cdns.push(" <div class=\"no_display user\">");
+			
+			if (guf.target[i_target].identifier)
+			{
+	  			for (var i_id=0; i_id<guf.target[i_target].identifier.length; i_id++)
+	  				cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.target[i_target].identifier[i_id], extra_param.lang, false));
+			}
+			//cdns.push("</div><label for=\""+extra_param.div_id+"_"+i_target+"\"><i>Click to show/hide more information</i></label></input>");
+			//cdns.push("<br/>");
 		}
 	}
 	document.getElementById(extra_param.div_id).innerHTML=cdns.join("");

@@ -1,0 +1,9 @@
+
+.no_display {
+  display: none;
+  background: #EEEEEE;
+}
+
+:checked + .no_display {
+  display: block;
+}

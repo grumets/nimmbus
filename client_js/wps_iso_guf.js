@@ -52,7 +52,7 @@ function DonaTextDesDeCodeList(item, namespace, code_list)
 function DonaDataDesDeGcoDateTime(item)
 {
 	var s;
-
+	
 	var elem=GetValueXMLElementByName(item, "gco", "DateTime");
 	if (elem)
 	{
@@ -64,6 +64,17 @@ function DonaDataDesDeGcoDateTime(item)
 	}
 	else
 		return "";
+}
+
+function TornaBooleaDesDeWPSLiteralOutput(item) //si diu "true" torno true, si no torno false en qualsevol cas
+{
+	var literal_data=GetXMLElementByName(item, "wps", "LiteralData");
+	if (literal_data && literal_data.childNodes[0] && literal_data.childNodes[0].nodeValue)
+	{
+		if (literal_data.childNodes[0].nodeValue=="true") //·$· JM i si es TRUE, o si és "1"... ??? Ara ho uso per mirar el meu anonymous_shared per tant sempre diu "true" o "false"
+			return true;
+	}
+	return false;
 }
 
 function OmpleInputDesDeWPSLiteralOutput(item)
@@ -103,14 +114,33 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 					feedback_item=OmpleInputDesDeWPSComplexOutput(output.item(item));
 					if (feedback_item)
 					{
-						elem=GetXMLElementByName(feedback_item, "guf", "abstract");
+						item_identifier=GetXMLElementByName(feedback_item, "guf", "itemIdentifier");
+						if (item_identifier)
+						{
+							guf.identifier={}
+							
+							//code
+							elem=GetXMLElementByName(item_identifier, "mcc", "code")
+							if (elem)
+					{
+								//code								
+								guf.identifier.code=DonaTextDesDeGcoCharacterString(elem);
+						
+								//code_space: pot ser un CharacterString o un anchor, miro les dues coses
+								elem=GetXMLElementByName(item_identifier, "mcc", "codeSpace");
 						if (elem)
-							guf.abstract=DonaTextDesDeGcoCharacterString(elem);
+									guf.identifier.codeSpace=DonaTextDesDeGcoCharacterStringOGcxAnchor(elem);
+								else
+									guf.identifier.codeSpace="";
+							}
+						}
+							
+						//guf.purpose -> l'he tret de wps:Output/reason. Ja està a GUF!
 						
 						elem=GetXMLElementByName(feedback_item, "guf", "contactRole");
 						if (elem)
 							guf.contactRole=DonaTextDesDeCodeList(elem, "guf", "GUF_UserRoleCode");
-	
+							
 						guf.public = [];						
 						output2=GetXMLElementCollectionByName(feedback_item, "guf", "publication");
 						if (output2 && output2.length)
@@ -135,6 +165,20 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 										guf.public[guf.public.length-1].title=DonaTextDesDeGcoCharacterString(elem);										
 									else
 										guf.public[guf.public.length-1].title="";
+
+									//edition
+									elem=GetXMLElementByName(public_item, "cit", "edition");
+									if (elem)
+										guf.public[guf.public.length-1].edition=DonaTextDesDeGcoCharacterString(elem);										
+									else
+										guf.public[guf.public.length-1].edition="";
+										
+									//editionDate
+									elem=GetXMLElementByName(public_item, "cit", "editionDate");
+									if (elem)
+										guf.public[guf.public.length-1].editionDate=DonaDataDesDeGcoDateTime(elem);										
+									else
+										guf.public[guf.public.length-1].editionDate="";
 										
 									//identifier(s)
 									guf.public[guf.public.length-1].identifier = [];																														
@@ -166,7 +210,120 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 											}
 										}
 									}
-									// hi podrien haver més coses com online resources ·$·
+					
+									//series
+									series=GetXMLElementByName(public_item, "cit", "series");
+									if (series)
+									{
+										guf.public[guf.public.length-1].series={};
+										
+										i_elem_series=0;
+										elem=GetXMLElementByName(series, "cit", "name");
+										if (elem)
+										{
+											i_elem_series++;
+											guf.public[guf.public.length-1].series.name=DonaTextDesDeGcoCharacterString(elem);
+										}
+										else
+											guf.public[guf.public.length-1].series.name="";
+											
+										elem=GetXMLElementByName(series, "cit", "issueIdentification");
+										if (elem)
+										{
+											i_elem_series++;
+											guf.public[guf.public.length-1].series.issueIdentification=DonaTextDesDeGcoCharacterString(elem);
+										}
+										else
+											guf.public[guf.public.length-1].series.issueIdentification="";
+
+										elem=GetXMLElementByName(series, "cit", "page");
+										if (elem)
+										{
+											i_elem_series++;
+											guf.public[guf.public.length-1].series.page=DonaTextDesDeGcoCharacterString(elem);
+										}
+										else
+											guf.public[guf.public.length-1].series.page="";
+	
+										if (i_elem_series==0)
+											guf.public[guf.public.length-1].series="";											
+									}
+									else
+										guf.public[guf.public.length-1].series="";								
+																		
+									//otherCitationDetails
+									elem=GetXMLElementByName(public_item, "cit", "otherCitationDetails");
+									if (elem)
+										guf.public[guf.public.length-1].otherCitationDetails=DonaTextDesDeGcoCharacterString(elem);										
+									else
+										guf.public[guf.public.length-1].otherCitationDetails="";
+
+									//onlineResource (a NiMMbus només un)
+									onlineResource=GetXMLElementByName(public_item, "cit", "onlineResource");
+									if (onlineResource)
+									{
+										guf.public[guf.public.length-1].onlineResource={};
+										
+										i_elem_onlineResource=0;
+										elem=GetXMLElementByName(onlineResource, "cit", "linkage");
+										if (elem)
+										{
+											i_elem_onlineResource++;
+											guf.public[guf.public.length-1].onlineResource.linkage=DonaTextDesDeGcoCharacterString(elem);
+										}
+										else
+											guf.public[guf.public.length-1].onlineResource.linkage="";
+											
+										elem=GetXMLElementByName(onlineResource, "cit", "description");
+										if (elem)
+										{
+											i_elem_onlineResource++;
+											guf.public[guf.public.length-1].onlineResource.description=DonaTextDesDeGcoCharacterString(elem);
+										}
+										else
+											guf.public[guf.public.length-1].onlineResource.description="";
+
+										elem=GetXMLElementByName(onlineResource, "cit", "function");
+										guf.public[guf.public.length-1].function=DonaTextDesDeCodeList(elem, "cit", "CI_OnLineFunctionCode");										
+	
+										if (i_elem_onlineResource==0)
+											guf.public[guf.public.length-1].onlineResource="";											
+									}
+									else
+										guf.public[guf.public.length-1].onlineResource="";								
+																	
+									//abstract																		
+									elem=GetXMLElementByName(public_item, "qcm", "abstract");
+									if (elem)
+										guf.public[guf.public.length-1].abstract=DonaTextDesDeGcoCharacterString(elem);										
+									else
+										guf.public[guf.public.length-1].abstract="";
+												}
+											}
+										}
+	
+						guf.dateInfo = [];						
+						output2=GetXMLElementCollectionByName(feedback_item, "guf", "dateInfo");
+						if (output2 && output2.length)
+						{								
+							for (var item2=0; item2<output2.length; item2++)
+							{				
+								elem=GetXMLElementByName(output2.item(item2), "cit", "CI_Date");															
+								if (elem)
+								{								
+									date=GetXMLElementByName(elem, "cit", "date");									
+								
+									if (date)
+									{
+										guf.dateInfo.push({});
+										guf.dateInfo[guf.dateInfo.length-1].date=DonaDataDesDeGcoDateTime(date);
+																		
+										date_type=GetXMLElementByName(elem, "cit", "dateType");
+										if (date_type)
+											guf.dateInfo[guf.dateInfo.length-1].dateType=DonaTextDesDeCodeList(date_type, "cit", "cit:CI_DateTypeCode");
+										else
+											guf.dateInfo[guf.dateInfo.length-1].dateType="";									
+									}
 								}
 							}
 						}
@@ -214,7 +371,7 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 										// més endavant potser mirarem coses que només estan a QCM_Publication
 										//title
 										elem=GetXMLElementByName(resource_ref, "cit", "title");
-						if (elem)
+										if (elem)
 											guf.target[guf.target.length-1].title=DonaTextDesDeGcoCharacterString(elem);										
 										else
 											guf.target[guf.target.length-1].title="";
@@ -245,8 +402,8 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 															guf.target[guf.target.length-1].identifier[guf.target[guf.target.length-1].identifier.length-1].codeSpace=DonaTextDesDeGcoCharacterStringOGcxAnchor(elem);
 														else
 															guf.target[guf.target.length-1].identifier[guf.target[guf.target.length-1].identifier.length-1].codeSpace="";
-					}
-				}	
+													}
+												}
 											}
 										}
 									}

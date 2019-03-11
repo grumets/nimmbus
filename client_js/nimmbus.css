@@ -45,6 +45,13 @@
   background-color: #3B88C3;
 }
 
+.add_resource_btn {
+	vertical-align: bottom;
+  border-radius: 4px;
+  border: 1px solid #55ACEE;
+  padding: 4px 4px;
+}
+
 .packet_paragraph {
   margin: 0 0 0 0;
 }
@@ -285,6 +292,16 @@
   border-radius: 5px;
   height: 48px;
   width: 48px;
+  border: 0 none;
+}
+
+.white-area-li-img-small {
+  float: left;
+  margin-left: -18px;
+  margin-top: 40px;
+  -moz-force-broken-image-icon: 1;
+  border-radius: 5px;
+  height: 20px;  
   border: 0 none;
 }
 
