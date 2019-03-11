@@ -41,7 +41,7 @@ Alternatively you get the files from [here](../client_js/) and point them with a
   * wps_iso_guf.js
   * xml.js
 
-The inclusion of a style sheet (guf.css) is needed in order to have a special style for the detailed description in publications. This detailed description is initially not displayed, and can be shown by clicking on a *"Click to show/hide more information"* text in the description. You can modify how this extended description is displayed (e.g. different background color) if including a class ".no_display.user" in your style sheet. Please check the following examples to see how these styles are used:
+The inclusion of a style sheet (guf.css) is needed in order to have a special style for the detailed description in publications. This detailed description is initially not displayed, and can be shown by clicking on a *"Click to show/hide more information"* text in the description. You can modify how this extended description is displayed (e.g. different background color) if including a class ".no_display.user" in your style sheet. Please check the following examples to see how these styles are used (both test pages are showing feedback items for the same resource):
    * [test_widget.htm](../client_js/test_widget.htm): default style (gray background) is used for extended description in publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
    * [test_widget_corine.htm](../client_js/test_widget_corine.htm): a different style (blue background) is used for extended description in publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm
 
