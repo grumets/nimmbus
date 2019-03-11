@@ -41,9 +41,9 @@ Alternatively you get the files from [here](../client_js/) and point them with a
   * wps_iso_guf.js
   * xml.js
 
-The inclusion of a style sheet (guf.css) id needed in order to have a special style for detailed descriptions in publications that is initially not displayed and can be shown by clicking on a text in the description. You can modify how this text is visible (e.g. different background color) if including a class .no_display.user in your style sheet. Please check the following examples to see how this styles ares used:
-   * [test_widget.htm](../client_js/test_widget.htm): default style is used for hidden text in publications (gray background). You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
-   * [test_widget_corine.htm](../client_js/test_widget_corine.htm): a different style is used for hidden text in publications (blue background in this case). You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm
+The inclusion of a style sheet (guf.css) is needed in order to have a special style for the detailed description in publications. This detailed description is initially not displayed, and can be shown by clicking on a *"Click to show/hide more information"* text in the description. You can modify how this extended description is displayed (e.g. different background color) if including a class ".no_display.user" in your style sheet. Please check the following examples to see how these styles are used:
+   * [test_widget.htm](../client_js/test_widget.htm): default style (gray background) is used for extended description in publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
+   * [test_widget_corine.htm](../client_js/test_widget_corine.htm): a different style (blue background) is used for extended description in publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm
 
 ### Step 2: Define a division in your HTML page
 The GUF widget will be shown in the area of the page you want. You should define a division using relative position. In case of a relative division, the size will be redimensioned automatically when it is populated and what is below the division will be moved down to avoid overlapping with the GUF widget.
