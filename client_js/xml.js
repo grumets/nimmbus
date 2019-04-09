@@ -157,6 +157,8 @@ var xhr = new XMLHttpRequest();
 		}
 	};
 	xhr.open("GET", path, true);
+	if(mimetype && mimetype!="")
+		xhr.setRequestHeader('Accept', mimetype);
 	//xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=ISO-8859-1');
 	//xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 	xhr.send();

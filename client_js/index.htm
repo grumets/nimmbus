@@ -865,7 +865,7 @@ var ajaxExecuteNB;
 
 var TimeOutDonaResposta=0;
 
-function AvaluaResposta(doc, nom_funcio)
+function AvaluaResposta(doc, nom_funcio_i_params)
 {
 var root, id_proces, id_obj;
 
@@ -900,7 +900,7 @@ var root, id_proces, id_obj;
 		//ShowInfo("long", "Process id:"+id_proces);
 		if (TimeOutDonaResposta)
 			clearTimeout(TimeOutDonaResposta);
-		TimeOutDonaResposta=setTimeout("EvaluateGetReturnProcess(\""+id_proces+"\", \""+nom_funcio+"\")", 1300);
+		TimeOutDonaResposta=setTimeout("EvaluateGetReturnProcess(\""+id_proces+"\", "+nom_funcio_i_params+")", 1300);
 		return;
 	}
 
@@ -1226,7 +1226,7 @@ function SignInNB()
 	return false;
 }
 
-function AvaluaRespostaGetReturn(doc, nom_funcio)
+function AvaluaRespostaGetReturn(doc, nom_funcio_i_params)
 {
 var root, output, identifier;
 var fn;
@@ -1256,18 +1256,18 @@ var fn;
 						ShowInfo("short", DonaCadenaJSON(Msg_Ok));
 						UpdateLastServer();
 						//uso el truco següent: http://www.sitepoint.com/call-javascript-function-string-without-using-eval
-						fn=window[nom_funcio];
+						fn=window[nom_funcio_i_params.nom_funcio]
 						if (typeof fn === "function")
-							fn(); 
+							fn(nom_funcio_i_params.params);
 						else 
-							alert("AvaluaRespostaGetReturn(doc, nom_funcio) error in parameter \"nom_funcio\": "+ nom_funcio +" is not a function.");
+							alert("AvaluaRespostaGetReturn(doc, nom_funcio_i_params) error in parameter \"nom_funcio_i_params.nom_funcio\": "+ nom_funcio_i_params.nom_funcio +" is not a function.");
 						return;
 					}
 					if (codi=="7")
 					{
 						if (TimeOutDonaResposta)
 							clearTimeout(TimeOutDonaResposta);
-						TimeOutDonaResposta=setTimeout("EvaluateGetReturnProcess(\""+DonaIDProcessDesDeRootXML(root)+"\", \""+nom_funcio+"\");", 1000);
+						TimeOutDonaResposta=setTimeout("EvaluateGetReturnProcess(\""+DonaIDProcessDesDeRootXML(root)+"\", "+JSON.stringify(nom_funcio_i_params)+");", 1000);
 						return;
 					}
 				}
@@ -1291,11 +1291,11 @@ var fn;
 	return;
 }
 
-function EvaluateGetReturnProcess(id, nom_funcio)
+function EvaluateGetReturnProcess(id, nom_funcio_i_params)
 {
 	ajaxExecuteNB=new Ajax();
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SYNC:GETRETURN&LANGUAGE="+LanguagesNB[ActiveLanguage]+"&SYNC_ID="+id, AvaluaRespostaGetReturn, "text/xml", 
-				nom_funcio);
+				nom_funcio_i_params);
 }
 
 function AvaluaRespostaRetrieveUserMinPreferences(doc)
@@ -1386,14 +1386,14 @@ function RetrieveUserMinPreferences()
 function EliminaPublicOfAFeedback(del_item)
 {
 	PublicsOfAFeedback.splice(del_item, 1);	
-	OmpleRecursPublicsDesDePublicsOfAFeedback();
+	OmpleRecursPublicsDesDePublicsOfAFeedback(true);
 	PublicsOfAFeedbackHaveChanged=true;	
 	return;	
 }
 
-function ObreSelectorDePublicOfAFeedback(make_pannel_visible)
+function ObreSelectorGeneral(make_pannel_visible, resource_type, resource_origin)
 {
-		EnumerateResources(1, {"type_enum":"resource-selector", "make_pannel_visible":make_pannel_visible, "resource_type": "PUBLICAT"});
+		EnumerateResources(1, {"type_enum":"resource-selector", "make_pannel_visible":make_pannel_visible, "resource_type": resource_type, "resource_origin": resource_origin});
 		return;	
 }
 
@@ -1406,7 +1406,7 @@ function AfegeixPublicOfAFeedback(id_public, open_data)
 	else
 	{		
 		PublicsOfAFeedback.push({"id_public": id_public, "open_data": open_data});
-		OmpleRecursPublicsDesDePublicsOfAFeedback();
+ 		OmpleRecursPublicsDesDePublicsOfAFeedback(true);
 		PublicsOfAFeedbackHaveChanged=true;	
 	}
 
@@ -1419,15 +1419,9 @@ function EliminaTargetOfAFeedback(del_item)
 {
 	RecuperaCanvisARolesATargetsOfAFeedback();		
 	TargetsOfAFeedback.splice(del_item, 1);	
-	OmpleRecursTargetsDesDeTargetsOfAFeedback();
+	OmpleRecursTargetsDesDeTargetsOfAFeedback(true);
 	TargetsOfAFeedbackHaveChanged=true;	
 	return;	
-}
-
-function ObreSelectorDeTargetOfAFeedback(compact_element)
-{
-		EnumerateResources(1, {"type_enum":"resource-selector", "make_pannel_visible":true, "resource_type": ""});
-		return;	
 }
 
 function AfegeixTargetOfAFeedback(id_target, open_data)
@@ -1440,11 +1434,67 @@ function AfegeixTargetOfAFeedback(id_target, open_data)
 	{
 		RecuperaCanvisARolesATargetsOfAFeedback();		
 		TargetsOfAFeedback.push({"id_target": id_target, "role": "primary", "open_data": open_data});
-		OmpleRecursTargetsDesDeTargetsOfAFeedback();
+		OmpleRecursTargetsDesDeTargetsOfAFeedback(true);
 		TargetsOfAFeedbackHaveChanged=true;	
 	}
 
 	//ChangePannel("feedback-resource", true);
+	history.back();
+	return;	
+}
+
+function EliminaResponsibleOfACitation(del_item)
+{
+	RecuperaCanvisARolesAResponsiblesOfACitation();		
+	ResponsiblesOfACitation.splice(del_item, 1);	
+	OmpleRecursResponsiblesDesDeResponsiblesOfACitation(true);
+	ResponsiblesOfACitationHaveChanged=true;	
+	return;	
+}
+
+function AfegeixResponsibleOfACitation(id_responsible, open_data)
+{
+	if (id_responsible==null)  //S'ha cancel·lat d'afegir res.
+		;
+	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no té sentit que se seleccioni.
+		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again $$$ ));*/
+	else
+	{
+		RecuperaCanvisARolesAResponsiblesOfACitation();		
+		ResponsiblesOfACitation.push({"id_responsible": id_responsible, "role": "undefined", "open_data": open_data});
+		OmpleRecursResponsiblesDesDeResponsiblesOfACitation(true);
+		ResponsiblesOfACitationHaveChanged=true;	
+	}
+
+	//ChangePannel("citation-resource", true);
+	history.back();
+	return;	
+}
+
+function EliminaResponsibleOfAPublication(del_item)
+{
+	RecuperaCanvisARolesAResponsiblesOfAPublication();		
+	ResponsiblesOfAPublication.splice(del_item, 1);	
+	OmpleRecursResponsiblesDesDeResponsiblesOfAPublication(true);
+	ResponsiblesOfAPublicationHaveChanged=true;	
+	return;	
+}
+
+function AfegeixResponsibleOfAPublication(id_responsible, open_data)
+{
+	if (id_responsible==null)  //S'ha cancel·lat d'afegir res.
+		;
+	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no té sentit que se seleccioni.
+		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again $$$ ));*/
+	else
+	{
+		RecuperaCanvisARolesAResponsiblesOfAPublication();		
+		ResponsiblesOfAPublication.push({"id_responsible": id_responsible, "role": "undefined", "open_data": open_data});
+		OmpleRecursResponsiblesDesDeResponsiblesOfAPublication(true);
+		ResponsiblesOfAPublicationHaveChanged=true;	
+	}
+
+	//ChangePannel("publication-resource", true);
 	history.back();
 	return;	
 }
@@ -1483,6 +1533,10 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 						TargetsOfAFeedback[dades.del_item-1].open_data=open_data;
 					else if (dades.is_target_public_or_none==2)  //aquest item és un dels arrays de publics de FB
 						PublicsOfAFeedback[dades.del_item-1].open_data=open_data;
+					else if (dades.is_target_public_or_none==3)  //aquest item és un dels arrays de responsibles de Citation
+						ResponsiblesOfACitation[dades.del_item-1].open_data=open_data;
+					else if (dades.is_target_public_or_none==4)  //aquest item és un dels arrays de responsibles de Publication
+						ResponsiblesOfAPublication[dades.del_item-1].open_data=open_data;
 					//else if (dades.is_target_public_or_none==0)												
 				}
 				else if (identifier.childNodes[0].nodeValue=="type")
@@ -1505,6 +1559,14 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 								code_space=DonaTextDesDeGcoCharacterString(elem);
 						}
 					}
+						}
+				else if (identifier.childNodes[0].nodeValue=="individu") 
+				{
+					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme $$
+					}
+				else if (identifier.childNodes[0].nodeValue=="organism") 
+				{
+					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme $$
 				}
 				else if (identifier.childNodes[0].nodeValue=="href")
 					href=OmpleInputDesDeWPSLiteralOutput(output.item(item));
@@ -1534,18 +1596,25 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 			s_table+="<br><a href=\"" + href + "\">" + href + "</a>";			
 		else if (type=="POI" && position)
 			s_table+="<br>lat/long: " + position;			
+		//else if	(type=="INDIVIDU" && (email || organisme)) $$
+		//else if	(type=="ORGANISM" && (adreça)) $$
 		s_table+="</td>"
 	
 		if (dades.role || (dades.del_item && dades.del_function))
 		{
 			if (dades.role && dades.del_item && dades.del_function) //hi haurà informació del role i també botó esborrar
+			{
+				if (dades.select_role=="targetRole")
 				s_table+="<td width=\"240\" align=\"right\">";
+				else //responsibleRole cal més espai
+					s_table+="<td width=\"280\" align=\"right\">";
+			}
 			else //només hi ha una de les dues coses
 				s_table+="<td width=\"120\" align=\"right\">";
 				
 		if (dades.role)
 		{
-			if (dades.select_role)
+				if (dades.select_role=="targetRole")
 			{
 				select_role_item=(dades.del_item ? dades.select_role+"_"+dades.del_item : dades.select_role);
 					s_table+=DonaCadenaJSON(Msg_Role)+": "+
@@ -1554,12 +1623,34 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 							"<option value=\"secondary\" "+((dades.role=="secondary") ? " selected=\"selected\"" : "")+">"+DonaCadenaJSON(GUF_TargetRoleCode["secondary"])+"</option>"+
 							"<option value=\"supplementary\" "+((dades.role=="supplementary") ? " selected=\"selected\"" : "")+">"+DonaCadenaJSON(GUF_TargetRoleCode["supplementary"])+"</option>"+
 						"</select>";
+				}
+				else if (dades.select_role=="responsibleRole")
+				{
+					select_role_item=(dades.del_item ? dades.select_role+"_"+dades.del_item : dades.select_role);
+					s_table+=DonaCadenaJSON(Msg_Role)+": "+
+							"<select class=\"text-input\" id=\""+select_role_item+"-resource_screen_value\" name=\""+select_role_item+"\">";
+							
+					for (i in CI_RoleCode)
+					{
+						if (dades.role==i)
+							s_table+="<option value=\""+i+"\" "+" selected=\"selected\""+">"+DonaCadenaJSON(CI_RoleCode[i])+"</option>";
+						else
+							s_table+="<option value=\""+i+"\">"+DonaCadenaJSON(CI_RoleCode[i])+"</option>";
+					}								
+					s_table+="</select>";							
+				}
+				else //tinc un valor de "role" però no tinc un select_role a crear, perquè estic en un context de només lectura -> ho poso com un text
+				{
+					if (typeof CI_RoleCode[dades.role] === "undefined")
+					{
+						if (typeof GUF_TargetRoleCode[dades.role] === "undefined")
+							s_table+=DonaCadenaJSON(Msg_Role)+": "+dades.role;
+						else								
+							s_table+=DonaCadenaJSON(Msg_Role)+": "+DonaCadenaJSON(GUF_TargetRoleCode[dades.role]);						
+					}
+					else
+						s_table+=DonaCadenaJSON(Msg_Role)+": "+DonaCadenaJSON(CI_RoleCode[dades.role]);						
 			}
-				else //crec que ja no s'usa en cap cas, però igualment ho deixo per si de cas. Quedaria entre parentesis potser una mica raro pq és una cel·la de la taula, però bé
-					s_table+=" ("+DonaCadenaJSON(Msg_Role)+": "+
-						((dades.role=="primary") ? DonaCadenaJSON(GUF_TargetRoleCode["primary"]) : "")+
-						((dades.role=="secondary") ? DonaCadenaJSON(GUF_TargetRoleCode["secondary"]) : "")+	
-						((dades.role=="supplementary") ? DonaCadenaJSON(GUF_TargetRoleCode["supplementary"]) : "")+")";											
 		}
 			
 		if (dades.del_item && dades.del_function)
@@ -1626,12 +1717,17 @@ var root, output, identifier;
 				else if (identifier.childNodes[0].nodeValue=="rights")
 				{
 					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-					document.getElementById("href-resource_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("href-resource-exit_btn").style.display=(rights.indexOf("W")==-1) ? 'inline' : 'none';
-					document.getElementById("href-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("href-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+					var puc_modificar=true;
+					
 					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
 						document.getElementById("href-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Hyperlink_detailed_description_no_modification);
+					}			
+					document.getElementById("href-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("href-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
+					document.getElementById("href-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("href-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';					
 				}
 			}
 		}
@@ -1711,12 +1807,18 @@ var root, output, identifier, s, georss;
 				else if (identifier.childNodes[0].nodeValue=="rights")
 				{
 					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-					document.getElementById("poi-resource_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("poi-resource-exit_btn").style.display=(rights.indexOf("W")==-1) ? 'inline' : 'none';
-					document.getElementById("poi-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("poi-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+					var puc_modificar=true;
+					
 					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
 						document.getElementById("poi-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_PoI_detailed_description_no_modification);
+					}			
+					document.getElementById("poi-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("poi-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
+					document.getElementById("poi-gps-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("poi-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("poi-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
 				}
 			}
 		}
@@ -1793,7 +1895,7 @@ var root, output, identifier, s, feedback_item, user_comment;
  				ShowInfo("long", DonaCadenaJSON(Msg_Target_without_NiMMbus_id));
 		}
 	}
-	OmpleRecursTargetsDesDeTargetsOfAFeedback();
+	OmpleRecursTargetsDesDeTargetsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
 	
 	if (guf.title)
 		document.feedback_resource_form.title.value=guf.title;
@@ -1846,17 +1948,26 @@ var root, output, identifier, s, feedback_item, user_comment;
  				ShowInfo("long", DonaCadenaJSON(Msg_Public_without_NiMMbus_id));
 		}
 	}
-	OmpleRecursPublicsDesDePublicsOfAFeedback();
+	OmpleRecursPublicsDesDePublicsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
 
 	if (guf.rights)
 	{
 		var rights=guf.rights;
-		document.getElementById("feedback-resource_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-		document.getElementById("feedback-resource-exit_btn").style.display=(rights.indexOf("W")==-1) ? 'inline' : 'none';
-		document.getElementById("feedback-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-		document.getElementById("feedback-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+		var puc_modificar=true;
+
 		if (rights.indexOf("W")==-1)
+		{
+			puc_modificar=false;
 			document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_FB_item_detailed_description_no_modification);
+		}			
+		document.getElementById("feedback-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+		document.getElementById("feedback-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
+		document.getElementById("target_feedback-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';
+		document.getElementById("target_feedback-resource_compact_add_descrip").style.display=puc_modificar ? 'inline' : 'none';
+		document.getElementById("public_feedback-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';
+		document.getElementById("public_feedback-resource_compact_add_descrip").style.display=puc_modificar ? 'inline' : 'none';
+		document.getElementById("feedback-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
+		document.getElementById("feedback-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';		
 	}
 	RemoveInfo("permanent");
 	IdResourceToSaveChanges=id;	
@@ -1885,6 +1996,10 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 
 	if (output && output.length)
 	{
+		ResponsiblesOfACitation.length=0;	
+		ResponsiblesOfACitationHaveChanged=false;
+		puc_modificar=false;
+
 		document.citation_resource_form.title.value="";
 		document.citation_resource_form.edition.value="";
 		document.citation_resource_form.edition_date.value="";		
@@ -1937,6 +2052,64 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 								document.citation_resource_form.id_namespace.value=DonaTextDesDeGcoCharacterString(elem);
 						}
 						
+						//citedResponsibleParty
+						{		
+							output_2=GetXMLElementCollectionByName(citation, "cit", "citedResponsibleParty");
+							//puc tenir diversos citedResponsibleParty, cada un amb un rol								
+							if (output_2 && output_2.length)							
+							{	
+								i_resp=0; //aniré anotant quants vaig carregant
+								for (var item_2=0; item_2<output_2.length; item_2++)
+								{
+									//role									
+									elem=GetXMLElementByName(output_2.item(item_2), "cit", "role");
+									if (elem)
+										role=DonaTextDesDeCodeList(elem, "cit", "CI_RoleCode");														
+									else
+										role="";
+									
+									output_3=GetXMLElementCollectionByName(output_2.item(item_2), "cit", "party");
+									//puc tenir diversos party a dins del mateix citedResponsibleParty, que són diversos individus o organitzacions amb igual rol
+									if (output_3 && output_3.length)							
+									{			
+										//per cada party, tant si és de tipus Individual o de tipus Organisation puc tenir un o més partyIdentifier, un dels quals és el IdNiMMbus 										
+										for (var item_3=0; item_3<output_3.length; item_3++)
+										{
+											output_4=GetXMLElementCollectionByName(output_3.item(item_3), "cit", "partyIdentifier");
+											if (output_4 && output_4.length)	
+											{
+												for (var item_4=0; item_4<output_4.length; item_4++)
+												{	//Intento deduir si tinc IdNimmbus (que sempre l'hauria de trobar)													
+													p_id=GetXMLElementByName(output_4.item(item_4), "mcc", "MD_Identifier");
+													if (p_id)
+													{
+														//CODE						
+														p_code=GetXMLElementByName(p_id, "mcc", "code");
+
+														//NAMESPACE
+														p_codeSpace=GetXMLElementByName(p_id, "mcc", "codeSpace");
+														if (p_codeSpace)
+															code_space=DonaTextDesDeGcoCharacterString(p_codeSpace);
+														else
+															code_space="";
+														
+														if (p_code && p_codeSpace && code_space=="http://www.opengis.uab.cat/nimmbus/resourceId")
+														{ //aquest és el IdNiMMbus d'aquesta party
+															ResponsiblesOfACitation[i_resp]={"id_responsible": DonaTextDesDeGcoCharacterString(p_code), "role": role};
+															i_resp++;															
+															break
+														}															
+													}
+												}
+										 		if (item_4==output_4.length) 	//cas molt estrany que no he trobat id NiMMbus
+										 			ShowInfo("long", DonaCadenaJSON(Msg_Responsible_without_NiMMbus_id));																							  	
+											} 			
+										}
+									}
+								}
+							}
+						}
+						
 						//series
 						series=GetXMLElementByName(citation, "cit", "series");
 						if (series)
@@ -1983,18 +2156,27 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 				else if (identifier.childNodes[0].nodeValue=="rights")
 				{
 					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-					document.getElementById("citation-resource_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("citation-resource-exit_btn").style.display=(rights.indexOf("W")==-1) ? 'inline' : 'none';
-					document.getElementById("citation-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("citation-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+										
 					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
 						document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Citation_detailed_description_no_modification);
+					}					
+					else
+						puc_modificar=true;
+					document.getElementById("citation-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("citation-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
+					document.getElementById("citation-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("responsible-citation-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("responsible-citation-resource_compact_add_descrip").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("citation-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';					
 				}
 			}
 		}
 		RemoveInfo("permanent");
 		IdResourceToSaveChanges=id;
 		UpdateLastServer();
+		OmpleRecursResponsiblesDesDeResponsiblesOfACitation(puc_modificar);
 	}
 	else
 	{	
@@ -2024,6 +2206,11 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 
 	if (output && output.length)
 	{
+		var puc_modificar=false;
+		
+		ResponsiblesOfAPublication.length=0;	
+		ResponsiblesOfAPublicationHaveChanged=false;
+
 		document.publication_resource_form.title.value="";
 		document.publication_resource_form.edition.value="";
 		document.publication_resource_form.edition_date.value="";		
@@ -2076,6 +2263,64 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 							elem=GetXMLElementByName(md_identifier, "mcc", "codeSpace");
 							if (elem)
 								document.publication_resource_form.id_namespace.value=DonaTextDesDeGcoCharacterString(elem);
+						}
+						
+						//citedResponsibleParty
+						{		
+							output_2=GetXMLElementCollectionByName(publication, "cit", "citedResponsibleParty");
+							//puc tenir diversos citedResponsibleParty, cada un amb un rol								
+							if (output_2 && output_2.length)							
+							{	
+								i_resp=0; //aniré anotant quants vaig carregant
+								for (var item_2=0; item_2<output_2.length; item_2++)
+								{
+									//role									
+									elem=GetXMLElementByName(output_2.item(item_2), "cit", "role");
+									if (elem)
+										role=DonaTextDesDeCodeList(elem, "cit", "CI_RoleCode");														
+									else
+										role="";
+									
+									output_3=GetXMLElementCollectionByName(output_2.item(item_2), "cit", "party");
+									//puc tenir diversos party a dins del mateix citedResponsibleParty, que són diversos individus o organitzacions amb igual rol
+									if (output_3 && output_3.length)							
+									{			
+										//per cada party, tant si és de tipus Individual o de tipus Organisation puc tenir un o més partyIdentifier, un dels quals és el IdNiMMbus 										
+										for (var item_3=0; item_3<output_3.length; item_3++)
+										{
+											output_4=GetXMLElementCollectionByName(output_3.item(item_3), "cit", "partyIdentifier");
+											if (output_4 && output_4.length)	
+											{
+												for (var item_4=0; item_4<output_4.length; item_4++)
+												{	//Intento deduir si tinc IdNimmbus (que sempre l'hauria de trobar)													
+													p_id=GetXMLElementByName(output_4.item(item_4), "mcc", "MD_Identifier");
+													if (p_id)
+													{
+														//CODE						
+														p_code=GetXMLElementByName(p_id, "mcc", "code");
+
+														//NAMESPACE
+														p_codeSpace=GetXMLElementByName(p_id, "mcc", "codeSpace");
+														if (p_codeSpace)
+															code_space=DonaTextDesDeGcoCharacterString(p_codeSpace);
+														else
+															code_space="";
+														
+														if (p_code && p_codeSpace && code_space=="http://www.opengis.uab.cat/nimmbus/resourceId")
+														{ //aquest és el IdNiMMbus d'aquesta party
+															ResponsiblesOfAPublication[i_resp]={"id_responsible": DonaTextDesDeGcoCharacterString(p_code), "role": role};
+															i_resp++;															
+															break
+														}															
+													}
+												}
+										 		if (item_4==output_4.length) 	//cas molt estrany que no he trobat id NiMMbus
+										 			ShowInfo("long", DonaCadenaJSON(Msg_Responsible_without_NiMMbus_id));																							  	
+											} 			
+										}
+									}
+								}
+							}
 						}
 						
 						//series
@@ -2137,12 +2382,265 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 				else if (identifier.childNodes[0].nodeValue=="rights")
 				{
 					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-					document.getElementById("publication-resource_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("publication-resource-exit_btn").style.display=(rights.indexOf("W")==-1) ? 'inline' : 'none';
-					document.getElementById("publication-resource-close_btn").style.display=(rights.indexOf("W")==-1) ? 'none' : 'inline';
-					document.getElementById("publication-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+									
 					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
 						document.getElementById("publication-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Publication_detailed_description_no_modification);
+					}					
+					else
+						puc_modificar=true;
+						
+					document.getElementById("publication-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("publication-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
+					document.getElementById("publication-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("responsible-publication-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("responsible-publication-resource_compact_add_descrip").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("publication-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+				}
+			}
+		}
+		
+		RemoveInfo("permanent");
+		IdResourceToSaveChanges=id;
+		UpdateLastServer();
+		OmpleRecursResponsiblesDesDeResponsiblesOfAPublication(puc_modificar);
+	}
+	else
+	{	
+		RemoveInfo("permanent");
+		TiraAPantallaRespostaSiNoEntenc(root, document);
+	}
+	return;
+}
+
+function AvaluaRespostaRetrieveResourceIndividual(doc, id)
+{
+var root, output, identifier, s, elem, individual, contact, partyIdentifier, md_identifier;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+	if (AnalitzaExceptionReport(root, document))
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+
+	output=GetXMLElementCollectionByName(root, "wps", "Output");
+
+	if (output && output.length)
+	{
+		document.individual_resource_form.title.value="";
+		document.individual_resource_form.email.value="";
+		document.individual_resource_form.url_link.value="";		
+		document.individual_resource_form.id_code_1.value="";
+		document.individual_resource_form.id_namespace_1.value="";
+		document.individual_resource_form.id_code_2.value="";
+		document.individual_resource_form.id_namespace_2.value="";
+		document.individual_resource_form.open_data.checked=false;							
+								
+		for (var item=0; item<output.length; item++)
+		{
+			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
+			if (identifier)
+			{
+				if (identifier.childNodes[0].nodeValue=="title")
+					document.individual_resource_form.title.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="openData")
+					document.individual_resource_form.open_data.checked=TornaBooleaDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="individual")
+				{					
+					individual=OmpleInputDesDeWPSComplexOutput(output.item(item));
+					if (individual)
+					{ 
+						//EMAIL i URL de 	<cit:contactInfo>
+						contact=GetXMLElementByName(individual, "cit", "contactInfo");
+						if (contact)
+						{
+							//email, demano un i si n'hi ha més em quedo el primer
+							elem=GetXMLElementByName(contact, "cit", "electronicMailAddress");
+							if (elem)							
+								document.individual_resource_form.email.value=DonaTextDesDeGcoCharacterString(elem);
+							
+							//online_resource, demano directament el cit_linkage i s'hi ha més... també el primer
+							elem=GetXMLElementByName(contact, "cit", "linkage");
+							if (elem)
+								document.individual_resource_form.url_link.value=DonaTextDesDeGcoCharacterString(elem);
+						}				
+				
+						//identifier, hi pot haver diversos partyIdentifier
+						partyIdentifier=GetXMLElementCollectionByName(individual, "cit", "partyIdentifier");
+						if (partyIdentifier && partyIdentifier.length)
+						{
+							for (var item_2=item_ple=0; item_2<partyIdentifier.length; item_2++)
+							{
+								if (item_ple==2) //només tinc lloc al form per mostrar el 0 i el 1
+									break;
+								
+								//item_ple el pujo si l'acabo enviant. el id intern de nimmbus no el mostro 	
+								md_identifier=GetXMLElementByName(partyIdentifier.item(item_2), "mcc", "MD_Identifier");								
+								if (md_identifier)
+								{								
+									//CODE						
+									elem=GetXMLElementByName(md_identifier, "mcc", "code");
+									if (elem)
+									{
+										//NAMESPACE
+										elem2=GetXMLElementByName(md_identifier, "mcc", "codeSpace");
+										if (elem2)
+										{
+											var namespace=DonaTextDesDeGcoCharacterString(elem2);
+											var n=namespace.includes("nimmbus/resourceId");
+											if (n) //aquest no el mostro
+												continue;
+											
+											item_ple++;											
+											if (item_ple==1)
+											{
+												document.individual_resource_form.id_code_1.value=DonaTextDesDeGcoCharacterString(elem);
+												document.individual_resource_form.id_namespace_1.value=namespace;
+											}
+											else
+											{
+												document.individual_resource_form.id_code_2.value=DonaTextDesDeGcoCharacterString(elem);
+												document.individual_resource_form.id_namespace_2.value=namespace;
+											}
+										}
+										else //puc tenir code sense codespace
+										{
+											item_ple++;											
+											if (item_ple==1)
+												document.individual_resource_form.id_code_1.value=DonaTextDesDeGcoCharacterString(elem);
+											else
+												document.individual_resource_form.id_code_2.value=DonaTextDesDeGcoCharacterString(elem);
+										}
+									}
+								}
+							}
+						}					
+					}
+				}	
+				else if (identifier.childNodes[0].nodeValue=="rights")
+				{
+					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+					var puc_modificar=true;
+					
+					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
+						document.getElementById("individual-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Individual_detailed_description_no_modification);
+					}
+					document.getElementById("individual-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("individual-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
+					document.getElementById("individual-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("individual-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+				}
+			}
+		}
+		
+		RemoveInfo("permanent");
+		IdResourceToSaveChanges=id;
+		UpdateLastServer();
+	}
+	else
+	{	
+		RemoveInfo("permanent");
+		TiraAPantallaRespostaSiNoEntenc(root, document);
+	}
+	return;
+}
+
+function AvaluaRespostaRetrieveResourceOrganism(doc, id)
+{
+	var root, output, identifier, s, elem, organism;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+	if (AnalitzaExceptionReport(root, document))
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+
+	output=GetXMLElementCollectionByName(root, "wps", "Output");
+
+	if (output && output.length)
+	{
+		document.organism_resource_form.title.value="";
+		document.organism_resource_form.delivery_point.value="";
+		document.organism_resource_form.city.value="";		
+		document.organism_resource_form.administrative_area.value="";
+		document.organism_resource_form.postal_code.value="";
+		document.organism_resource_form.country.value="";
+		document.organism_resource_form.open_data.checked=false;							
+								
+		for (var item=0; item<output.length; item++)
+		{
+			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
+			if (identifier)
+			{
+				if (identifier.childNodes[0].nodeValue=="title")
+					document.organism_resource_form.title.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="openData")
+					document.organism_resource_form.open_data.checked=TornaBooleaDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="organism")
+				{					
+					organism=OmpleInputDesDeWPSComplexOutput(output.item(item));
+					if (organism)
+					{
+						//Adreça <cit:contactInfo>
+						contact=GetXMLElementByName(organism, "cit", "contactInfo");
+						if (contact)
+						{
+							//delivery_point
+							elem=GetXMLElementByName(contact, "cit", "deliveryPoint");
+							if (elem)							
+								document.organism_resource_form.delivery_point.value=DonaTextDesDeGcoCharacterString(elem);
+							
+							//city
+							elem=GetXMLElementByName(contact, "cit", "city");
+							if (elem)
+								document.organism_resource_form.city.value=DonaTextDesDeGcoCharacterString(elem);
+								
+							//administrative_area
+							elem=GetXMLElementByName(contact, "cit", "administrativeArea");
+							if (elem)
+								document.organism_resource_form.administrative_area.value=DonaTextDesDeGcoCharacterString(elem);
+								
+							//postal_code
+							elem=GetXMLElementByName(contact, "cit", "postalCode");
+							if (elem)
+								document.organism_resource_form.postal_code.value=DonaTextDesDeGcoCharacterString(elem);
+
+							//country
+							elem=GetXMLElementByName(contact, "cit", "country");
+							if (elem)
+								document.organism_resource_form.country.value=DonaTextDesDeGcoCharacterString(elem);
+						}											
+					}
+				}	
+				else if (identifier.childNodes[0].nodeValue=="rights")
+				{
+					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+					var puc_modificar=true;
+					
+					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
+						document.getElementById("organism-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Organism_detailed_description_no_modification);
+					}
+					document.getElementById("organism-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("organism-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
+					document.getElementById("organism-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("organism-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
 				}
 			}
 		}
@@ -2207,6 +2705,16 @@ var AvaluaRespostaRetrieveResource;
 		AvaluaRespostaRetrieveResource=AvaluaRespostaRetrieveResourcePublication;
 		MostraPublicationResource(id);
 	}
+	else if (type=="INDIVIDU")
+	{
+		AvaluaRespostaRetrieveResource=AvaluaRespostaRetrieveResourceIndividual;
+		MostraIndividualResource(id);
+	}
+	else if (type=="ORGANISM")
+	{
+		AvaluaRespostaRetrieveResource=AvaluaRespostaRetrieveResourceOrganism;
+		MostraOrganismResource(id);
+	}
 	else
 	{
 		ShowInfo("long", DonaCadenaJSON(Msg_Unsupported_resource_type)+": "+type);
@@ -2236,6 +2744,11 @@ function DonaNomImgTipusRecurs(type, small)
 			return "citation36.png";			
 		if (type=="PUBLICAT")
 			return "publication36.png";
+		if (type=="INDIVIDU")
+			return "indv36.png";
+		if (type=="ORGANISM")
+			return "org36.png";
+		return "";
 	}
 	if (type=="HREF")
 		return "link48.png";
@@ -2247,22 +2760,40 @@ function DonaNomImgTipusRecurs(type, small)
 		return "citation48.png";
 	if (type=="PUBLICAT")
 		return "publication48.png";
+	if (type=="INDIVIDU")
+			return "indv48.png";
+	if (type=="ORGANISM")
+			return "org48.png";
 	return "";
 }
 
 var ResourcesPerPage=10;  //solució provisional a l'espera de que sigui configurable per usuari
 
-function BuidaLlistatResource(type_enum, resource_type)
+function BuidaLlistatResource(type_enum, resource_type, resource_origin)
 {
 		if (type_enum=="resources")
 			document.getElementById(type_enum+"-hits-text").innerHTML="<small>"+DonaCadenaJSON(Msg_Use_New_button_to_create_resources)+"</small>";
 		else //type_enum=="resource-selector")
 		{
+			document.resource_selector_form.resource_type.value=resource_type; 
+			document.resource_selector_form.origin_page.value=resource_origin;
+			
 			if (resource_type=="") //he entrat a resource-selector per escollir targets de valoracions
 				document.getElementById(type_enum+"-hits-text").innerHTML="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixTargetOfAFeedback(null, false)\"/> ";	
-			else //de moment només pot valdre "" i "PUBLICAT"
-				document.getElementById(type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn_upper\" type=\"image\" alt=\"new href\" src=\"publication_add20.png\" onClick=\"MostraPublicationResource('')\"/> <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixPublicOfAFeedback(null, false)\"/ >  ";						
-
+			else if (resource_type=="PARTY")
+			{
+				if (resource_origin=="CITATION")	
+					document.getElementById(type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn_upper\" type=\"image\" alt=\"new href\" src=\"indv_add20.png\" onClick=\"MostraIndividualResource('')\"/>"+
+						" <input class=\"add_resource_btn_upper\" type=\"image\" alt=\"new href\" src=\"org_add20.png\" onClick=\"MostraOrganismResource('')\"/>"+
+						" <input class=\"submit_btn\" type=\"button\" value=\""+DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixResponsibleOfACitation(null, false)\"/ >  ";
+				else //PUBLICAT
+					document.getElementById(type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn_upper\" type=\"image\" alt=\"new href\" src=\"indv_add20.png\" onClick=\"MostraIndividualResource('')\"/>"+
+						" <input class=\"add_resource_btn_upper\" type=\"image\" alt=\"new href\" src=\"org_add20.png\" onClick=\"MostraOrganismResource('')\"/>"+
+						" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixResponsibleOfAPublication(null, false)\"/ >  ";
+			}
+			else //només queda "PUBLICAT" //o per escollir publics de FBitems
+				document.getElementById(type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn_upper\" type=\"image\" alt=\"new href\" src=\"publication_add20.png\" onClick=\"MostraPublicationResource('')\"/>"+
+					" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixPublicOfAFeedback(null, false)\"/ >  ";						
 		}
 		document.getElementById("newer-"+type_enum+"_btn").disabled=true;
 		document.getElementById("older-"+type_enum+"_btn").disabled=true;
@@ -2294,7 +2825,12 @@ var root, s, type;
 			document.getElementById(dades.type_enum+"-title-text").innerHTML=DonaCadenaJSON(Msg_Targeted_resources);
 			document.getElementById(dades.type_enum+"-subtitle-text").innerHTML=DonaCadenaJSON(Msg_List_available_resources_as_targets);
 		}
-		else //de moment només pot valdre "" i "PUBLICAT"
+		else if (dades.resource_type=="PARTY")
+		{
+			document.getElementById(dades.type_enum+"-title-text").innerHTML=DonaCadenaJSON(Msg_Related_responsibles);
+			document.getElementById(dades.type_enum+"-subtitle-text").innerHTML=DonaCadenaJSON(Msg_List_available_responsibles);
+		}
+		else //queda el "PUBLICAT"
 		{
 			document.getElementById(dades.type_enum+"-title-text").innerHTML=DonaCadenaJSON(Msg_Related_publications);
 			document.getElementById(dades.type_enum+"-subtitle-text").innerHTML=DonaCadenaJSON(Msg_List_available_publications_for_feedback);
@@ -2302,18 +2838,50 @@ var root, s, type;
 	}//else if (type_enum=="resources") no cal fer res perquè els textos ja són posats
 	
 	if (owc.properties.totalResults==0)
-		BuidaLlistatResource(dades.type_enum);
+		BuidaLlistatResource(dades.type_enum, dades.resource_type, dades.resource_origin);
 	else
 	{
 		if (dades.type_enum=="resource-selector")
 		{
+			document.resource_selector_form.resource_type.value=dades.resource_type; 
+			document.resource_selector_form.origin_page.value=dades.resource_origin;		
 			if (dades.resource_type=="") //he entrat a resource-selector per escollir targets de valoracions
+			{
 				document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixTargetOfAFeedback(null, false)\"/> ";	
-			else //de moment només pot valdre "" i "PUBLICAT"
-				document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn\" type=\"image\" alt=\"new href\" src=\"publication_add20.png\" onClick=\"MostraPublicationResource('')\"/> <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixPublicOfAFeedback(null, false)\"/ >  ";						
+				document.individual_resource_form.origin_page.value="";
+				document.organism_resource_form.origin_page.value="";
+			}
+			else if (dades.resource_type=="PARTY")
+			{	//El llistat de individus el puc haver demanat des de dos orígens: "resource_origin": "CITATION" o "resource_origin": "PUBLICAT"
+				if (dades.resource_origin=="CITATION")	
+				{
+					document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn\" type=\"image\" alt=\"new href\" src=\"indv_add20.png\" onClick=\"MostraIndividualResource('')\"/>"+
+						" <input class=\"add_resource_btn\" type=\"image\" alt=\"new href\" src=\"org_add20.png\" onClick=\"MostraOrganismResource('')\"/>"+
+						" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixResponsibleOfACitation(null, false)\"/ >  ";				
+				}
+				else //PUBLICAT
+				{
+					document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn\" type=\"image\" alt=\"new href\" src=\"indv_add20.png\" onClick=\"MostraIndividualResource('')\"/>"+
+						" <input class=\"add_resource_btn\" type=\"image\" alt=\"new href\" src=\"org_add20.png\" onClick=\"MostraOrganismResource('')\"/>"+
+						" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixResponsibleOfAPublication(null, false)\"/ >  ";
+				}
+				document.individual_resource_form.origin_page.value=dades.resource_origin;
+				document.organism_resource_form.origin_page.value=dades.resource_origin;
+			}
+			else //queda el "PUBLICAT"
+			{			
+				document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn\" type=\"image\" alt=\"new href\" src=\"publication_add20.png\" onClick=\"MostraPublicationResource('')\"/>"
+					+" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixPublicOfAFeedback(null, false)\"/ >  ";
+				document.individual_resource_form.origin_page.value="";
+				document.organism_resource_form.origin_page.value="";
+			}
 		}
 		else //poso en blanc per no anar acumunat 1de10 en anar passant de pàgina!
+		{
 			document.getElementById(dades.type_enum+"-hits-text").innerHTML="";
+			document.individual_resource_form.origin_page.value="";
+			document.organism_resource_form.origin_page.value="";
+		}
 		// Afegeixo el text	1 de X
 		document.getElementById(dades.type_enum+"-hits-text").innerHTML+="["+owc.properties.startIndex + "," +(parseInt(owc.properties.startIndex)+owc.features.length-1)+ "] "+ DonaCadenaJSON(Msg_of) + " " +  owc.properties.totalResults;
 	
@@ -2354,11 +2922,16 @@ var root, s, type;
 			object_id.slice(0,object_id.search("&")); // si darrera de RESOURCE hi ha algun paràmetre més, que comença sempre amb "&", ho elimino. Si no ho ha trobat search torna -1 i slice no fa res.
 			ja_es_target_o_public=false;
 			es_ell_mateix=false;
+	
+				//Color de fons segons si són meus, compartits directament amb mi o "només" publics?
+				if (owc.features[i].properties.rights.indexOf("O")!=-1) //en sóc el propietari -> fons blanc
+					p_color="";								
+				else if (owc.features[i].properties.rights.indexOf("W")!=-1 || owc.features[i].properties.rights.indexOf("S")!=-1) //si el puc escriure o compartir és que me l'ahn compartit directament -> fons blau cel
+					p_color="#e6f7ff";								
+				else //si només puc R escric que és openData, perquè NO PUC diferenciar si me l'han compartit a mi com a només lectura, o si el veig "només" perquè és openData -> gris clar
+					p_color="#f2f2f2";
 
-				//if (location.host.toLowerCase()=="localhost" && owc.features[i].properties.openData && owc.features[i].properties.openData=="true")
-					//s+="<div class=\"white-area-li\" style=\"background-color:#e6ffe6\"><li class=\"white-area-li-text\"";
-				//else
-			s+="<div class=\"white-area-li\"><li class=\"white-area-li-text\"";
+					s+="<div class=\"white-area-li\" style=\"background-color:"+p_color+"\"><li class=\"white-area-li-text\"";
 			if (dades.type_enum=="resources")
 				s+=" onClick=\"EditResource(\'"+owc.features[i].id+"\', \'"+type+"\');\"";
 			else if (dades.type_enum=="resource-selector")
@@ -2372,8 +2945,8 @@ var root, s, type;
 							ja_es_target_o_public=true;
 							break;
 						}
-						if (IdResourceToSaveChanges==object_id)
-						{
+							if (IdFeedbackResourceToSaveChanges==object_id) //abans estava IdResourceToSaveChanges i ara és equivalent perquè en aquest context no deixem crear recursos, peren principi es podria fer des de 
+							{	//però per si de cas obrir aquest porta algun dia, comparant amb IdFeedbackResourceToSaveChanges sempre anirà bé, tot i que IdResourceToSaveChanges pugui haver canviat si hem creat un nou recurs
 							es_ell_mateix=true;
 							break;
 						}						
@@ -2382,9 +2955,43 @@ var root, s, type;
 							;//s+=" onClick=\"AfegeixTargetOfAFeedback(\'\', false);\"";  No fem res
 					else
 							s+=" onClick=\"AfegeixTargetOfAFeedback(\'"+object_id+"\', "+owc.features[i].properties.openData+");\"";
+					}
+					else if (dades.resource_type=="PARTY")
+					{	//comprovo si aquest individu/organisme ja forma està relacionat amb la citació/publicació, i en cas que sí ho indico i no l'afegeixo onclick
+						
+						if (dades.resource_origin=="CITATION")	
+						{
+							for (var item=0; item<ResponsiblesOfACitation.length; item++)
+							{
+								if (ResponsiblesOfACitation[item].id_responsible==object_id)
+								{
+									ja_es_target_o_public=true;
+									break;
+								}
+							}
+							if (ja_es_target_o_public)				
+								;//s+=" onClick=\"AfegeixResponsibleOfACitation(\'\', false);\"";  No fem res
+							else
+								s+=" onClick=\"AfegeixResponsibleOfACitation(\'"+object_id+"\', "+owc.features[i].properties.openData+");\"";
+						}
+						else //PUBLICAT
+						{
+							for (var item=0; item<ResponsiblesOfAPublication.length; item++)
+							{
+								if (ResponsiblesOfAPublication[item].id_responsible==object_id)
+								{
+									ja_es_target_o_public=true;
+									break;
+								}
+							}
+							if (ja_es_target_o_public)				
+								;//s+=" onClick=\"AfegeixResponsibleOfAPublication(\'\', false);\"";  No fem res
+							else
+								s+=" onClick=\"AfegeixResponsibleOfAPublication(\'"+object_id+"\', "+owc.features[i].properties.openData+");\"";							
+						}						
 				}
-				else //de moment només pot valdre "" i "PUBLICAT"
-				{	//comprovo si aquest target ja forma part de la valoració, i en cas que sí ho indico i no l'afegeixo onclick
+					else //queda el "PUBLICAT"
+					{	//comprovo si aquesta public ja forma part de la valoració, i en cas que sí ho indico i no l'afegeixo onclick
 					for (var item=0; item<PublicsOfAFeedback.length; item++)
 					{
 							if (PublicsOfAFeedback[item].id_public==object_id)
@@ -2410,8 +3017,8 @@ var root, s, type;
 				s+=" <a class=\"white-area-li-text-link\" href=\""+owc.features[i].properties.links.enclosures[0].href+"\" target=\"_blank\" onClick=\"StopPropagationClick(event);return true;\">"+owc.features[i].properties.title+"</a>";
 			else if (type=="POI")
 				s+=owc.features[i].properties.title+" (lat/long: "+ owc.features[i].geometry.coordinates[1]+","+owc.features[i].geometry.coordinates[0]+")";
-			else if (type=="FEEDBACK" || type=="CITATION" || type=="PUBLICAT")
-				s+=owc.features[i].properties.title;
+			else if (type=="FEEDBACK" || type=="CITATION" || type=="PUBLICAT" || type=="INDIVIDU" || type=="ORGANISM")
+					s+=owc.features[i].properties.title;
       
       if (dades.type_enum=="resources")
       {
@@ -2430,10 +3037,12 @@ var root, s, type;
 				{
 					if (dades.resource_type=="") //he entrat a resource-selector per escollir targets de valoracions
 						s+="<br/><i>"+DonaCadenaJSON(Msg_Resource_already_targeted)+"</i>";
-					else //de moment només pot valdre "" i "PUBLICAT"
+						else if (dades.resource_type=="PARTY")
+							s+="<br/><i>"+DonaCadenaJSON(Msg_Responsible_already_related)+"</i>";					
+						else //queda "PUBLICAT"
 						s+="<br/><i>"+DonaCadenaJSON(Msg_Publication_already_related)+"</i>";					
 				}
-				else if (es_ell_mateix) //només pot passar als targets que no es trii a ell, per les publics d'un target el enumerate només mostra publlics i per tant mai és ell mateix (que és un target)
+					else if (es_ell_mateix) //només pot passar als targets que no es trii a ell, per les publics d'un target o pels responsibles de citations/publics el enumerate només mostra publics/indv/org i per tant mai és ell mateix
 					s+="<br/><i>"+DonaCadenaJSON(Msg_Feedback_item_selecting_targets_for)+"</i>";
 			}			
 			s+="</li></div>";
@@ -2448,6 +3057,15 @@ var root, s, type;
 	return;
 }
 
+function EnumeraResourcesQueTocaASelector()
+{	
+	//Quan crido a aquesta funció ja entrat ni que sigui una vegada a EnumerateResources de Resources-Selector, així que tinc el type i el origin apuntat	
+	EnumerateResources(1, {"type_enum":"resource-selector", "make_pannel_visible":false, 
+		"resource_type": document.resource_selector_form.resource_type.value, 
+		"resource_origin": document.resource_selector_form.origin_page.value});
+	return;
+}
+
 var ajaxExecuteNBResource;
 
 function EnumerateResources(start_index, dades)
@@ -2457,20 +3075,25 @@ function EnumerateResources(start_index, dades)
 	RemoveInfo("long");		
 
 	s="";
-	if (dades.type_enum=="resource-selector" && dades.resource_type!="")
+	if (dades.type_enum=="resource-selector")
+	{ 
+		if (dades.resource_type!="")
 		s="&TYPE="+dades.resource_type;		
-	else if (dades.type_enum=="resources")
+		
+		if (document.getElementById("selector-owner-type_screen_value").selectedIndex>0)
+		//miro el que hi ha seleccionat a la dropdown-list owner-type de la pàgina de resource-selector. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
+			s=s+"&OWNER="+document.getElementById("selector-owner-type_screen_value").options[document.getElementById("selector-owner-type_screen_value").selectedIndex].value;	
+	}
+	else //if (dades.type_enum=="resources")
 	{ 
 		if (document.getElementById("resource-type_screen_value").selectedIndex>0)
 			//miro el que hi ha seleccionat a la dropdown-list resource-type. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
 			s="&TYPE="+document.getElementById("resource-type_screen_value").options[document.getElementById("resource-type_screen_value").selectedIndex].value;	
 		
 		if (document.getElementById("owner-type_screen_value").selectedIndex>0)
-			//miro el que hi ha seleccionat a la dropdown-list owner-type. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
+		//miro el que hi ha seleccionat a la dropdown-list owner-type de la pàgina de resources. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
 			s=s+"&OWNER="+document.getElementById("owner-type_screen_value").options[document.getElementById("owner-type_screen_value").selectedIndex].value;	
 	}
-	/*else
-		s="";*/
 
 	ajaxExecuteNBResource=new Ajax();
 	AfegeixCredencialsUsuari(ajaxExecuteNBResource, null, null);
@@ -2573,6 +3196,8 @@ var i_pannel,
 		{"id": "feedback-resource", "parent": "main-page", "title": Msg_NiMMbus_Feedback}, 
 		{"id": "citation-resource", "parent": "main-page", "title": Msg_NiMMbus_Citation}, 
 		{"id": "publication-resource", "parent": "main-page", "title": Msg_NiMMbus_Publication}, 
+		{"id": "individual-resource", "parent": "main-page", "title": Msg_NiMMbus_Individual}, 
+		{"id": "organism-resource", "parent": "main-page", "title": Msg_NiMMbus_Organism}, 
 		{"id": "resources", "parent": "main-page", "title": Msg_NiMMbus_Resources}, 
 		{"id": "resource-selector", "parent": "main-page", "title": Msg_NiMMbus_ResourcesSelector}, 
 		{"id": "feedback", "parent": "main-page", "title": Msg_NiMMbus_Feedbacks}, 
@@ -2655,6 +3280,12 @@ var TargetsOfAFeedback=[];
 var TargetsOfAFeedbackHaveChanged=false;
 var	PublicsOfAFeedback=[];
 var PublicsOfAFeedbackHaveChanged=false;	
+var IdCitationResourceToSaveChanges="";	
+var ResponsiblesOfACitation=[];
+var ResponsiblesOfACitationHaveChanged=false;
+var IdPublicationResourceToSaveChanges="";	
+var ResponsiblesOfAPublication=[];
+var ResponsiblesOfAPublicationHaveChanged=false;
 var BackNeededAfterDelete="";
 
 function MostraHRefResource(id)
@@ -2708,7 +3339,9 @@ function MostraPoiResource(id)
 //define is_none=0;
 //define is_target=1;
 //define is_public=2;
-function OmpleRecursTargetsDesDeTargetsOfAFeedback()
+//define is_party_a_citation=3;
+//define is_party_a_publication=4;
+function OmpleRecursTargetsDesDeTargetsOfAFeedback(puc_editar)
 {
 	document.getElementById("target_feedback-resource_compact_list").innerHTML="";		
 	if (TargetsOfAFeedback.length==0)
@@ -2717,13 +3350,13 @@ function OmpleRecursTargetsDesDeTargetsOfAFeedback()
 	for (var item=0; item<TargetsOfAFeedback.length; item++)
 	{
 		document.getElementById("target_feedback-resource_compact_list").innerHTML+="<div id=\""+"target_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
-		PopulateCompactDescriptionResource(TargetsOfAFeedback[item].id_target, "target_feedback-resource_compact_list", TargetsOfAFeedback[item].role, "targetRole", 
-			(item+1), "EliminaTargetOfAFeedback", document.feedback_resource_form.open_data.checked, 1 /*is_target*/);
+		PopulateCompactDescriptionResource(TargetsOfAFeedback[item].id_target, "target_feedback-resource_compact_list", TargetsOfAFeedback[item].role,  puc_editar ? "targetRole" : "", 
+			(item+1), puc_editar ? "EliminaTargetOfAFeedback" : "", document.feedback_resource_form.open_data.checked, 1 /*is_target*/);
 	}
 	return;
 }
 
-function OmpleRecursPublicsDesDePublicsOfAFeedback()
+function OmpleRecursPublicsDesDePublicsOfAFeedback(puc_editar)
 {
 	document.getElementById("public_feedback-resource_compact_list").innerHTML="";		
 	if (PublicsOfAFeedback.length==0)
@@ -2735,7 +3368,7 @@ function OmpleRecursPublicsDesDePublicsOfAFeedback()
 	for (var item=0; item<PublicsOfAFeedback.length; item++)
 	{
 		document.getElementById("public_feedback-resource_compact_list").innerHTML+="<div id=\""+"public_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
-		PopulateCompactDescriptionResource(PublicsOfAFeedback[item].id_public, "public_feedback-resource_compact_list", null, null, (item+1), "EliminaPublicOfAFeedback", 
+		PopulateCompactDescriptionResource(PublicsOfAFeedback[item].id_public, "public_feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaPublicOfAFeedback" : "", 
 			document.feedback_resource_form.open_data.checked, 2 /*is_public*/);
 	}
 	return;
@@ -2784,7 +3417,7 @@ function MostraFeedbackResource(id, target)
 			TargetsOfAFeedbackHaveChanged=true; //Si no no s'enviarà el text "TARGET_1=... en el CREATE
 		}
 	}
-	OmpleRecursTargetsDesDeTargetsOfAFeedback();
+	OmpleRecursTargetsDesDeTargetsOfAFeedback(true);
 	ChangePannel("feedback-resource", true);
 
 	IdResourceToSaveChanges=id;
@@ -2822,7 +3455,7 @@ function SurtDeAddFeedbackCallBack()
 	document.getElementById("new-resource").style.display='none';
 	document.getElementById("settings-signout").style.display='none'; //trec la "signout" del menu de tools. Si se n'agefeixen més pensar si les vull o no en aquest context
 
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":false});
 	MostraFeedbackResource('', null);
 }
@@ -2895,13 +3528,55 @@ function EntraAAddFeedback(target)
 	return false;
 }
 
+function OmpleRecursResponsiblesDesDeResponsiblesOfACitation(puc_editar)
+{
+	document.getElementById("responsible-citation-resource_compact_list").innerHTML="";		
+	if (ResponsiblesOfACitation.length==0)
+		return;		
+
+	for (var item=0; item<ResponsiblesOfACitation.length; item++)
+	{
+		document.getElementById("responsible-citation-resource_compact_list").innerHTML+="<div id=\""+"responsible-citation-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		PopulateCompactDescriptionResource(ResponsiblesOfACitation[item].id_responsible, "responsible-citation-resource_compact_list", ResponsiblesOfACitation[item].role, puc_editar ? "responsibleRole" : "", 
+			(item+1), puc_editar ? "EliminaResponsibleOfACitation" : "", document.citation_resource_form.open_data.checked, 3 /*is_party_a_citation*/);
+	}
+	return;
+}
+
+function OmpleRecursResponsiblesDesDeResponsiblesOfAPublication(puc_editar)
+{
+	document.getElementById("responsible-publication-resource_compact_list").innerHTML="";		
+	if (ResponsiblesOfAPublication.length==0)
+		return;		
+
+	for (var item=0; item<ResponsiblesOfAPublication.length; item++)
+	{
+		document.getElementById("responsible-publication-resource_compact_list").innerHTML+="<div id=\""+"responsible-publication-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		PopulateCompactDescriptionResource(ResponsiblesOfAPublication[item].id_responsible, "responsible-publication-resource_compact_list", ResponsiblesOfAPublication[item].role, puc_editar ? "responsibleRole" : "", 
+			(item+1), puc_editar ? "EliminaResponsibleOfAPublication" : "", document.citation_resource_form.open_data.checked, 4 /*is_party_a_publication*/);
+	}
+	return;
+}
+
+function MostraOAmagaExclamacioDeShareAResponsiblesOfACitation()
+{
+	for (var item=0; item<ResponsiblesOfACitation.length; item++)
+	{
+		if (document.citation_resource_form.open_data.checked)
+			document.getElementById("responsible-citation-resource_compact_list_"+(item+1)+"_open").style.display='inline';
+		else
+			document.getElementById("responsible-citation-resource_compact_list_"+(item+1)+"_open").style.display='none';		
+	}
+}
+
 function MostraCitationResource(id)
 {
 	ChangePannel("citation-resource", true);
 	IdResourceToSaveChanges=id;
+	IdCitationResourceToSaveChanges=id; //perquè si des de la pàgina de cita acabo creant un nou individual, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 
 	document.getElementById("citation-resource-exit_btn").style.display='none';
-	if (id=="")
+	if (id=="") //estic creant una cita nova
 	{
 		document.getElementById("citation-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_citation);
 		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_citation_characteristics);
@@ -2922,10 +3597,22 @@ function MostraCitationResource(id)
 	}
 }
 
+function MostraOAmagaExclamacioDeShareAResponsiblesOfAPublication()
+{
+	for (var item=0; item<ResponsiblesOfAPublication.length; item++)
+	{
+		if (document.citation_resource_form.open_data.checked)
+			document.getElementById("responsible-publication-resource_compact_list_"+(item+1)+"_open").style.display='inline';
+		else
+			document.getElementById("responsible-publication-resource_compact_list_"+(item+1)+"_open").style.display='none';		
+	}
+}
+
 function MostraPublicationResource(id)
 {
 	ChangePannel("publication-resource", true);
 	IdResourceToSaveChanges=id;
+	IdPublicationResourceToSaveChanges=id; //perquè si des de la pàgina de publicació acabo creant un nou individual, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 
 	document.getElementById("publication-resource-exit_btn").style.display='none';
 	if (id=="")
@@ -2946,6 +3633,61 @@ function MostraPublicationResource(id)
 		document.getElementById("open-data-publication-resource_screen_value").disabled=true;
 		document.getElementById("publication-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("publication-resource-delete_btn").style.display='inline';
+	}
+}
+
+function MostraIndividualResource(id)
+{
+	ChangePannel("individual-resource", true);
+	IdResourceToSaveChanges=id;
+
+	document.getElementById("individual-resource-exit_btn").style.display='none';
+	if (id=="")
+	{
+		document.getElementById("individual-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_individual);
+		document.getElementById("individual-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_individual_characteristics);
+		//document.getElementById("open-data-individual-resource_fieldset").style.display='inline';
+		document.getElementById("open-data-individual-resource_screen_value").disabled=false;
+		document.getElementById("open-data-individual-resource_screen_value").checked=true; //un individu nou el marco compartit amb anònim per defecte		
+		document.getElementById("individual-resource_btn").value=DonaCadenaJSON(Msg_Create);
+		document.getElementById("individual-resource-delete_btn").style.display='none';
+	}
+	else
+	{
+		document.getElementById("individual-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Individual);
+		document.getElementById("individual-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_individual_characteristics);
+		//document.getElementById("open-data-individual-resource_fieldset").style.display='none';
+		document.getElementById("open-data-individual-resource_screen_value").disabled=true;
+		document.getElementById("individual-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
+		document.getElementById("individual-resource-delete_btn").style.display='inline';
+	}
+}
+
+
+function MostraOrganismResource(id)
+{
+	ChangePannel("organism-resource", true);
+	IdResourceToSaveChanges=id;
+
+	document.getElementById("organism-resource-exit_btn").style.display='none';
+	if (id=="")
+	{
+		document.getElementById("organism-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_organism);
+		document.getElementById("organism-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_organism_characteristics);
+		//document.getElementById("open-data-organism-resource_fieldset").style.display='inline';
+		document.getElementById("open-data-organism-resource_screen_value").disabled=false;
+		document.getElementById("open-data-organism-resource_screen_value").checked=true; //un organisme nou el marco compartit amb anònim per defecte		
+		document.getElementById("organism-resource_btn").value=DonaCadenaJSON(Msg_Create);
+		document.getElementById("organism-resource-delete_btn").style.display='none';
+	}
+	else
+	{
+		document.getElementById("organism-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Organism);
+		document.getElementById("organism-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_organism_characteristics);
+		//document.getElementById("open-data-organism-resource_fieldset").style.display='none';
+		document.getElementById("open-data-organism-resource_screen_value").disabled=true;
+		document.getElementById("organism-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
+		document.getElementById("organism-resource-delete_btn").style.display='inline';
 	}
 }
 
@@ -3036,10 +3778,15 @@ var root, output, identifier, text_current_share_list, has_anonymous=false;
 					//var name=GetValueXMLElementByName(nb_user, "nb_user", "name");
 					//var email=GetValueXMLElementByName(nb_user, "nb_user", "email");
 					if (user=="Anonymous")
+					{
 						has_anonymous=true;
+						text_current_share_list+=DonaCadenaJSON({cat: "Compartit amb tothom", spa: "Compartir con todos", eng: "Share with everybody"});						
+					}
+					else
 					text_current_share_list+=user;
 					if (user==document.sign_in.user.value)  //soc jo mateix.
 						text_current_share_list+=" (<i>"+DonaCadenaJSON(Msg_Myself)+"</i>)";						
+					text_current_share_list+=": ";
 					text_current_share_list += (rights.indexOf("R")==-1 ? "" : " " + DonaCadenaJSON(Msg_Read)+"<img src=\"check16.png\"/>") + (rights.indexOf("W")==-1 ? "" : " " + DonaCadenaJSON(Msg_Write)+"<img src=\"check16.png\"/>") + (rights.indexOf("S")==-1 ? "" : " " + DonaCadenaJSON(Msg_Share)+"<img src=\"check16.png\"/>") + (rights.indexOf("O")==-1 ? "" : " " + DonaCadenaJSON(Msg_Owner)+"<img src=\"check16.png\"/>");
 					if (identifier.childNodes[0].nodeValue=="borrower")
 						text_current_share_list+=" <a href=\'javascript:void(0);\' onclick=\'DeleteShareResource(\""+user+"\")\'><img src=\"delete16.png\" border=\"0\"/></a>"
@@ -3189,7 +3936,7 @@ function RetrieveShareAuthorizedList(type)
 function SurtDeAddShareCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Added));
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateShareResource(IdResourceToSaveChanges);
 }
 
@@ -3206,7 +3953,8 @@ function AddShareResource(tothom)
 		AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 		ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:ADD&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
-				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER=Anonymous&BORROWER_TOKEN_TYPE=&RIGHTS=R", AvaluaResposta, "text/xml", "SurtDeAddShareCallBack");
+				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER=Anonymous&BORROWER_TOKEN_TYPE=&RIGHTS=R", AvaluaResposta, "text/xml",
+				"{nom_funcio: \"SurtDeAddShareCallBack\", params: null}"); 
 	}
 	else
 	{
@@ -3219,8 +3967,8 @@ function AddShareResource(tothom)
 		AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 		ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:ADD&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
-				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER="+document.share_form.new_share.value+"&BORROWER_TOKEN_TYPE=&RIGHTS=R"+(document.share_form.W.checked ? "W":"")+(document.share_form.S.checked ? "S":""), AvaluaResposta, "text/xml", 
-				"SurtDeAddShareCallBack");
+				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER="+document.share_form.new_share.value+"&BORROWER_TOKEN_TYPE=&RIGHTS=R"+(document.share_form.W.checked ? "W":"")+(document.share_form.S.checked ? "S":""),
+				AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeAddShareCallBack\", params: null}");
 	}
         ShowInfo("permanent", DonaCadenaJSON(Msg_Adding_));
 
@@ -3230,7 +3978,7 @@ function AddShareResource(tothom)
 function SurtDeDeleteShareCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Deleted));
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateShareResource(IdResourceToSaveChanges);
 }
 
@@ -3246,12 +3994,10 @@ function DeleteShareResource(user)
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:DELETE&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
 				+"&RESOURCE="+IdResourceToSaveChanges+"&BORROWER="+user+"&BORROWER_TOKEN_TYPE=", AvaluaResposta, "text/xml", 
-				"SurtDeDeleteShareCallBack");
+				"{nom_funcio: \"SurtDeDeleteShareCallBack\", params: null}");
         ShowInfo("permanent", DonaCadenaJSON(Msg_Deleting_));
-
 	return false;
 }
-
 
 function ShowShareAuthorizedList()
 {
@@ -3302,7 +4048,7 @@ var s,s2;
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
 				+"&TYPE=HREF"+"&HREF="+DonaCadenaPerValorDeFormulari(document.href_resource_form.href.value)+"&MIMETYPE="+document.href_resource_form.mimetype.value+"&TITLE="+DonaCadenaPerValorDeFormulari(document.href_resource_form.title.value)+
 				"&REASON="+DonaCadenaPerValorDeFormulari(document.href_resource_form.reason.value)+s2, AvaluaResposta, "text/xml", 
-				"SurtDeHRefResourceChangesCallBack");
+				"{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"HREF\"}");
 	return false;
 }
 
@@ -3343,7 +4089,7 @@ var s,s2;
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
 				+"&TYPE=POI"+"&POSITION=<gml:Point><gml:pos>" + document.poi_resource_form.lat.value+ " " +document.poi_resource_form.long.value+ "</gml:pos></gml:Point>" + (document.poi_resource_form.elevation.value=="" ? "" : "&ELEVATION="+document.poi_resource_form.elevation.value) + "&TITLE="+DonaCadenaPerValorDeFormulari(document.poi_resource_form.title.value)+
 				"&REASON="+DonaCadenaPerValorDeFormulari(document.poi_resource_form.reason.value)+"&POS_ACCURACY="+DonaCadenaPerValorDeFormulari(document.poi_resource_form.pos_accur.value)+s2, AvaluaResposta, "text/xml", 
-				"SurtDePoiResourceChangesCallBack");
+				"{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"POI\"}");
 	return false;
 }
 
@@ -3358,6 +4104,38 @@ function RecuperaCanvisARolesATargetsOfAFeedback()
 			{
 				TargetsOfAFeedback[item].role=role_temp;
 				TargetsOfAFeedbackHaveChanged=true;
+			}
+		}	
+		return;
+}
+
+function RecuperaCanvisARolesAResponsiblesOfACitation()
+{
+		for (var item=0; item<ResponsiblesOfACitation.length; item++)
+		{
+			var role_temp;
+			role_temp=DonaCadenaCodelistDeSelect(eval("document.citation_resource_form.responsibleRole_"+(item+1)));
+			
+			if (ResponsiblesOfACitation[item].role!=role_temp)
+			{
+				ResponsiblesOfACitation[item].role=role_temp;
+				ResponsiblesOfACitationHaveChanged=true;
+			}
+		}	
+		return;
+}
+
+function RecuperaCanvisARolesAResponsiblesOfAPublication()
+{
+		for (var item=0; item<ResponsiblesOfAPublication.length; item++)
+		{
+			var role_temp;
+			role_temp=DonaCadenaCodelistDeSelect(eval("document.publication_resource_form.responsibleRole_"+(item+1)));
+			
+			if (ResponsiblesOfAPublication[item].role!=role_temp)
+			{
+				ResponsiblesOfAPublication[item].role=role_temp;
+				ResponsiblesOfAPublicationHaveChanged=true;
 			}
 		}	
 		return;
@@ -3395,7 +4173,7 @@ var s,s2;
 	}
 	RemoveInfo("long");
 	
-	IdResourceToSaveChanges=IdFeedbackResourceToSaveChanges; //perquè si des de la pàgina de FB acabo creant una publicació, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdResourceToSaveChanges=IdFeedbackResourceToSaveChanges; //perquè si des de la pàgina de FB acabo creant una nova public, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 	IdFeedbackResourceToSaveChanges=""; //faig "net"
 
 	if (IdResourceToSaveChanges=="")
@@ -3420,7 +4198,7 @@ var s,s2;
 			for (var item=0; item<TargetsOfAFeedback.length; item++)
 					s2+="&TARGET_"+(item+1)+"="+TargetsOfAFeedback[item].id_target+"&TARGET_ROLE_"+(item+1)+"="+TargetsOfAFeedback[item].role;
 		}
-		else //abans n'hi havia i ara no, escriure TARGET_1 immplica que si hi havia targets d'aquesta valoració, s'esborraran
+		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoració, s'esborraran
 			s2+="&TARGET_1=";
 	}
 
@@ -3431,7 +4209,7 @@ var s,s2;
 			for (var item=0; item<PublicsOfAFeedback.length; item++)
 					s2+="&PUB_"+(item+1)+"="+PublicsOfAFeedback[item].id_public;
 		}
-		else //abans n'hi havia i ara no, escriure PUB_1 immplica que si hi havia publicacions d'aquesta valoració, s'esborraràn
+		else //abans n'hi havia i ara no, escriure PUB_1 implica que si hi havia publicacions d'aquesta valoració, s'esborraràn
 			s2+="&PUB_1=";
 	}
 
@@ -3443,16 +4221,8 @@ var s,s2;
 				"&REASON="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.reason.value)+"&ABSTRACT="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.abstract.value)+
 				"&CONTACT_ROLE="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.contactRole)+"&COMMENT="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.comment.value)+
 				"&MOTIVATION="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.motivation)+"&RATING="+DonaCadenaCodelistDeRadio(document.feedback_resource_form.rating)+s2, AvaluaResposta, "text/xml", 
-				"SurtDeFeedbackResourceChangesCallBack");
+				"{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"FEEDBACK\"}");
 			
-/*
-alert(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
-"&TYPE=FEEDBACK"+"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.title.value)+
-			"&REASON="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.reason.value)+"&ABSTRACT="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.abstract.value)+
-				"&CONTACT_ROLE="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.contactRole)+"&COMMENT="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.comment.value)+
-				"&MOTIVATION="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.motivation)+"&RATING="+DonaCadenaCodelistDeRadio(document.feedback_resource_form.rating)+s2, AvaluaResposta, "text/xml", 
-				"SurtDeFeedbackResourceChangesCallBack");*/
-				
 	if (document.feedback_resource_form.open_data.checked)
 	{	//Si aquest FB item es compartit anònimament, m'asseguro que els elements relacionats amb ell també ho són
 		if (TargetsOfAFeedback.length) // && TargetsOfAFeedbackHaveChanged -> cal sempre perquè ara pot passar que existeixi algun cas que no està resolt i l'he de solucionar encara que no hi hagi canvis en els targets
@@ -3497,6 +4267,9 @@ var s,s2;
 	}
 	RemoveInfo("long");
 	
+	IdResourceToSaveChanges=IdCitationResourceToSaveChanges; //perquè si des de la pàgina de Cita acabo creant un nou responsible, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdCitationResourceToSaveChanges=""; //faig "net"
+	
 	if (IdResourceToSaveChanges=="")
 	{
 		s="CREATE";
@@ -3509,6 +4282,20 @@ var s,s2;
 		s2="&RESOURCE="+IdResourceToSaveChanges;
 	        ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
 	}
+	
+	//Miro si hi han hagut canvis en els rols dels quals jo no m'he enterat (si hi ha canvis ja es posa a true)
+	RecuperaCanvisARolesAResponsiblesOfACitation();
+	if (ResponsiblesOfACitationHaveChanged)
+	{
+		if (ResponsiblesOfACitation.length)
+		{
+			for (var item=0; item<ResponsiblesOfACitation.length; item++)
+					s2+="&RESPONSIBLE_"+(item+1)+"="+ResponsiblesOfACitation[item].id_responsible+"&RESPONSIBLE_ROLE_"+(item+1)+"="+ResponsiblesOfACitation[item].role;
+		}
+		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoració, s'esborraran
+			s2+="&RESPONSIBLE_1=";
+	}
+	
 	ajaxExecuteNB=new Ajax();
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]
@@ -3520,7 +4307,25 @@ var s,s2;
 				"&SERIES_PAGE="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.series_page.value)+"&OTHER_CIT_DETAILS="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.other_cit_details.value)+
 				"&URL_LINK="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.url_link.value)+"&URL_DESCRIP="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.url_descrip.value)+
 				"&URL_FUNCTION="+DonaCadenaCodelistDeSelect(document.citation_resource_form.function_code)+s2, AvaluaResposta, "text/xml", 
-				"SurtDeCitationResourceChangesCallBack");
+				"{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"CITATION\"}");
+				
+	if (document.citation_resource_form.open_data.checked)
+	{	//Si aquesta cita està compartida anònimament, m'asseguro que els elements relacionats amb ella també ho són
+		if (ResponsiblesOfACitation.length) // && ResponsiblesOfACitationHaveChanged -> cal sempre perquè ara pot passar que existeixi algun cas que no està resolt i l'he de solucionar encara que no hi hagi canvis en els responsables
+		{
+			for (var item=0; item<ResponsiblesOfACitation.length; item++)
+			{
+				if (!ResponsiblesOfACitation[item].open_data) //si encara no és un recurs públic ho demano
+				{
+					ajaxExecuteNB=new Ajax();
+					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+					ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:ADD&LANGUAGE="+LanguagesNB[ActiveLanguage]
+						//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
+						+"&RESOURCE="+ResponsiblesOfACitation[item].id_responsible+"&BORROWER=Anonymous&BORROWER_TOKEN_TYPE=&RIGHTS=R", AvaluaRespostaAddShareAddicional, "text/xml", null);
+				}
+			}
+		}
+	}
 	return false;
 }
 
@@ -3534,6 +4339,9 @@ var s,s2;
 	}
 	RemoveInfo("long");
 	
+	IdResourceToSaveChanges=IdPublicationResourceToSaveChanges; //perquè si des de la pàgina de Cita acabo creant un nou responsible, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdPublicationResourceToSaveChanges=""; //faig "net"	
+
 	if (IdResourceToSaveChanges=="")
 	{
 		s="CREATE";
@@ -3545,6 +4353,19 @@ var s,s2;
 		s="MODIFY";
 		s2="&RESOURCE="+IdResourceToSaveChanges;
 	        ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
+	}
+	
+	//Miro si hi han hagut canvis en els rols dels quals jo no m'he enterat (si hi ha canvis ja es posa a true)
+	RecuperaCanvisARolesAResponsiblesOfAPublication();
+	if (ResponsiblesOfAPublicationHaveChanged)
+	{
+		if (ResponsiblesOfAPublication.length)
+		{
+			for (var item=0; item<ResponsiblesOfAPublication.length; item++)
+					s2+="&RESPONSIBLE_"+(item+1)+"="+ResponsiblesOfAPublication[item].id_responsible+"&RESPONSIBLE_ROLE_"+(item+1)+"="+ResponsiblesOfAPublication[item].role;
+		}
+		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoració, s'esborraran
+			s2+="&RESPONSIBLE_1=";
 	}
 	
 	ajaxExecuteNB=new Ajax();
@@ -3559,14 +4380,102 @@ var s,s2;
 				"&URL_LINK="+DonaCadenaPerValorDeFormulari(document.publication_resource_form.url_link.value)+"&URL_DESCRIP="+DonaCadenaPerValorDeFormulari(document.publication_resource_form.url_descrip.value)+
 				"&URL_FUNCTION="+DonaCadenaCodelistDeSelect(document.publication_resource_form.function_code)+"&CATEGORY="+DonaCadenaCodelistDeSelect(document.publication_resource_form.category_code)+
 				"&ABSTRACT="+DonaCadenaPerValorDeFormulari(document.publication_resource_form.abstract.value)+s2, AvaluaResposta, "text/xml", 
-				"SurtDePublicationResourceChangesCallBack");
+				"{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"PUBLICAT\"}");
+							
+	if (document.publication_resource_form.open_data.checked)
+	{	//Si aquesta publicació està compartida anònimament, m'asseguro que els elements relacionats amb ella també ho són
+		if (ResponsiblesOfAPublication.length) // && ResponsiblesOfAPublicationHaveChanged -> cal sempre perquè ara pot passar que existeixi algun cas que no està resolt i l'he de solucionar encara que no hi hagi canvis en els responsables
+		{
+			for (var item=0; item<ResponsiblesOfAPublication.length; item++)
+			{
+				if (!ResponsiblesOfAPublication[item].open_data) //si encara no és un recurs públic ho demano
+				{
+					ajaxExecuteNB=new Ajax();
+					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+					ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SHARE:ADD&LANGUAGE="+LanguagesNB[ActiveLanguage]
+						//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
+						+"&RESOURCE="+ResponsiblesOfAPublication[item].id_responsible+"&BORROWER=Anonymous&BORROWER_TOKEN_TYPE=&RIGHTS=R", AvaluaRespostaAddShareAddicional, "text/xml", null);
+				}
+			}
+		}
+	}				
+	return false;
+}
+
+function SendIndividualResourceChanges()
+{
+var s,s2;
+	if (document.individual_resource_form.title.value=="")
+	{
+		ShowInfo("long", DonaCadenaIdNoPotSerBuit("title-individual-resource_screen"));
+		return false;
+	}
+	RemoveInfo("long");
+	
+	if (IdResourceToSaveChanges=="")
+	{
+		s="CREATE";
+		s2=(document.individual_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
+	  ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
+	}
+	else
+	{
+		s="MODIFY";
+		s2="&RESOURCE="+IdResourceToSaveChanges;
+	  ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
+	}
+	
+	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]
+				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
+				+"&TYPE=INDIVIDU"+"&TITLE="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.title.value)+
+				"&EMAIL="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.email.value)+"&URL_LINK="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.url_link.value)+
+				"&ID_CODE_1="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.id_code_1.value)+"&ID_NAMESPACE_1="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.id_namespace_1.value)+
+				"&ID_CODE_2="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.id_code_2.value)+"&ID_NAMESPACE_2="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.id_namespace_2.value)+s2,
+				AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"PARTY\"}");
+				
+	return false;
+}
+
+
+function SendOrganismResourceChanges()
+{
+var s,s2;
+	if (document.organism_resource_form.title.value=="")
+	{
+		ShowInfo("long", DonaCadenaIdNoPotSerBuit("title-organism-resource_screen"));
+		return false;
+	}
+	RemoveInfo("long");
+	
+	if (IdResourceToSaveChanges=="")
+	{
+		s="CREATE";
+		s2=(document.organism_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
+	  ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
+	}
+	else
+	{
+		s="MODIFY";
+		s2="&RESOURCE="+IdResourceToSaveChanges;
+	  ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
+	}
+
+	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]
+				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
+				+"&TYPE=ORGANISM"+"&TITLE="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.title.value)+
+				"&DELIVERY_POINT="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.delivery_point.value)+"&CITY="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.city.value)+
+				"&ADM_AREA="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.administrative_area.value)+"&POSTAL_CODE="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.postal_code.value)+
+				"&COUNTRY="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.country.value)+s2,
+				AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"PARTY\"}");
 	return false;
 }
 
 function SendResourceDelete(event, query, type, cal_history_back)
 {
-var SurtDeResourceDeleteCallBack, s;
-
 	if (event)
 		StopPropagationClick(event);
 		
@@ -3594,6 +4503,10 @@ var SurtDeResourceDeleteCallBack, s;
 		s+=DonaCadenaJSON(Msg_this_citation);
 	else if (type=="PUBLICAT")
 		s+=DonaCadenaJSON(Msg_this_publication);
+	else if (type=="INDIVIDU")
+		s+=DonaCadenaJSON(Msg_this_individual);
+	else if (type=="ORGANISM")
+		s+=DonaCadenaJSON(Msg_this_organism);
 	else
 	{
 	        ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_resource_type));
@@ -3604,31 +4517,18 @@ var SurtDeResourceDeleteCallBack, s;
 	if (false==confirm(s))
 		return false;
 
-	if (type=="HREF")
-		SurtDeResourceDeleteCallBack="SurtDeHRefResourceDeleteCallBack"
-	else if (type=="POI")
-		SurtDeResourceDeleteCallBack="SurtDePoiResourceDeleteCallBack"
-	else if (type=="FEEDBACK")
-		SurtDeResourceDeleteCallBack="SurtDeFeedbackResourceDeleteCallBack"
-	else if (type=="CITATION")
-		SurtDeResourceDeleteCallBack="SurtDeCitationResourceDeleteCallBack"
-	else if (type=="PUBLICAT")
-		SurtDeResourceDeleteCallBack="SurtDePublicationResourceDeleteCallBack"
-	else
-		return false;
-
 	RemoveInfo("long");
 	ajaxExecuteNB=new Ajax();
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:DELETE&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
 				+"&RESOURCE="+IdResourceToSaveChanges,
-				 AvaluaResposta, "text/xml", SurtDeResourceDeleteCallBack);
+				AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceDeleteCallBack\", params: \""+type+"\"}");				 
         ShowInfo("permanent", DonaCadenaJSON(Msg_Request_sent));
 	return false;
 }
 
-function SurtDeHRefResourceChanges(avis)
+function SurtDeQualsevolResourceChanges(avis)
 {
 	if (avis)
 	{
@@ -3639,48 +4539,55 @@ function SurtDeHRefResourceChanges(avis)
 	history.back();
 }
 
-function SurtDeHRefResourceChangesCallBack()
+function SurtDeQualsevolResourceChangesCallBack(type)
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
-	SurtDeHRefResourceChanges(false);
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
-	EnumerateResources(1, {"type_enum":"resources"});
+
+	if (type=="FEEDBACK")
+		SurtDeFeedbackResourceChanges(false);
+	else if (type=="CITATION")
+		SurtDeCitationResourceChanges(false);
+	else if (type=="PUBLICAT")
+		SurtDePublicationResourceChanges(false);
+	else
+		SurtDeQualsevolResourceChanges(false);
+
+	setTimeout("OmpleRecursosQueTocaSortintDeQualsevolResource(\""+type+"\");",100);
 }
 
-function SurtDeHRefResourceDeleteCallBack()
+function SurtDeQualsevolResourceDeleteCallBack(type)
 {
-	ShowInfo("short", DonaCadenaJSON(Msg_Hyperlink_deleted));
+var s;
+
+	if (type=="HREF")
+		s=DonaCadenaJSON(Msg_Hyperlink_deleted);
+	else if (type=="POI")
+		s=DonaCadenaJSON(Msg_this_PoI);
+	else if (type=="FEEDBACK")
+		s=DonaCadenaJSON(Msg_this_feedback_item);
+	else if (type=="CITATION")
+		s=DonaCadenaJSON(Msg_this_citation);
+	else if (type=="PUBLICAT")
+		s=DonaCadenaJSON(Msg_this_publication);
+	else if (type=="INDIVIDU")
+		s=DonaCadenaJSON(Msg_this_individual);
+	else if (type=="ORGANISM")
+		s=DonaCadenaJSON(Msg_this_organism);
+	else
+		  return;
+
 	if (BackNeededAfterDelete)
-	SurtDeHRefResourceChanges(false);
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
-	EnumerateResources(1, {"type_enum":"resources"});
-}
-
-function SurtDePoiResourceChanges(avis)
 {
-	if (avis)
-	{
-		if (false==confirm(DonaCadenaJSON(Msg_Exit_without_saving_changes)))
-			return false;
-	}
-	//ChangePannel("resources", true);
-	history.back();
+		if (type=="FEEDBACK")
+			SurtDeFeedbackResourceChanges(false);
+		else if (type=="CITATION")
+			SurtDeCitationResourceChanges(false);
+		else if (type=="PUBLICAT")
+			SurtDePublicationResourceChanges(false);
+		else //per la resta
+			SurtDeQualsevolResourceChanges(false);	
 }
-
-function SurtDePoiResourceChangesCallBack()
-{
-	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
-	SurtDePoiResourceChanges(false);
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
-	EnumerateResources(1, {"type_enum":"resources"});
-}
-
-function SurtDePoiResourceDeleteCallBack()
-{
-	ShowInfo("short", DonaCadenaJSON(Msg_PoI_deleted));
-	if (BackNeededAfterDelete)
-	SurtDePoiResourceChanges(false);
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100); 
 	EnumerateResources(1, {"type_enum":"resources"});
 }
 
@@ -3758,7 +4665,7 @@ function SurtDeFeedbackResourceChanges(avis)
 		if (false==confirm(DonaCadenaJSON(Msg_Exit_without_saving_changes)))
 			return false;
 	}
-	//Si cal ja he enviat els canvis en els targets
+	//Si cal ja he enviat els canvis en els targets i publics
 	TargetsOfAFeedbackHaveChanged=false;
 	PublicsOfAFeedbackHaveChanged=false;
 	
@@ -3774,32 +4681,7 @@ function SurtDeFeedbackResourceChanges(avis)
 function SurtDeFeedbackResourceChangesIRecarregaResources(avis)
 {	// Encara que surti de la pàgina de FB sense desar (tancar/descartar) he de demanar que es repinti la pàgina de recursos, perquè potser des de la pàgina del FB he creat una publicació nova
 	SurtDeFeedbackResourceChanges(avis);
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
-	EnumerateResources(1, {"type_enum":"resources"});
-}
-
-function OmpleRecursosQueTocaSortintDeValoracio()
-{
-	if (location.hash=="#resources")
-		EnumerateResources(1, {"type_enum":"resources"});
-	else //estic tornant des de la pàgina de creació d'un nou FB, a la pàgina de llista de FB sobre un recurs
-		MostraFeedbackList(null, null, IdTargetResourceToSaveChanges);	
-}
-
-function SurtDeFeedbackResourceChangesCallBack()
-{
-	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
-	SurtDeFeedbackResourceChanges(false);
-	//em cal fer un Timeout perquè si no el back encara no "s'ha fet"
-	setTimeout("OmpleRecursosQueTocaSortintDeValoracio();",100);
-}
-
-function SurtDeFeedbackResourceDeleteCallBack()
-{
-	ShowInfo("short", DonaCadenaJSON(Msg_Feedback_deleted));
-	if (BackNeededAfterDelete)
-	SurtDeFeedbackResourceChanges(false);
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources"});
 }
 
@@ -3810,24 +4692,17 @@ function SurtDeCitationResourceChanges(avis)
 		if (false==confirm(DonaCadenaJSON(Msg_Exit_without_saving_changes)))
 			return false;
 	}
+	//Si cal ja he enviat els canvis en els responsables
+	ResponsiblesOfACitationHaveChanged=false;
+
 	history.back();
 	//ChangePannel("resources", true);
 }
 
-function SurtDeCitationResourceChangesCallBack()
-{
-	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
-	SurtDeCitationResourceChanges(false);
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
-	EnumerateResources(1, {"type_enum":"resources"});
-}
-
-function SurtDeCitationResourceDeleteCallBack()
-{
-	ShowInfo("short", DonaCadenaJSON(Msg_Citation_deteled));
-	if (BackNeededAfterDelete)
-	SurtDeCitationResourceChanges(false);
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);
+function SurtDeCitationResourceChangesIRecarregaResources(avis)
+{	// Encara que surti de la pàgina de citation sense desar (tancar/descartar) he de demanar que es repinti la pàgina de recursos, perquè potser des de la pàgina de la citació he creat un responsible nou
+	SurtDeCitationResourceChanges(avis);
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources"});
 }
 
@@ -3838,33 +4713,40 @@ function SurtDePublicationResourceChanges(avis)
 		if (false==confirm(DonaCadenaJSON(Msg_Exit_without_saving_changes)))
 			return false;
 	}
+	//Si cal ja he enviat els canvis en els responsables
+	ResponsiblesOfAPublicationHaveChanged=false;
+
 	history.back();
 	//ChangePannel("resources", true);
+}
+
+function SurtDePublicationResourceChangesIRecarregaResources(avis)
+{	// Encara que surti de la pàgina de publication sense desar (tancar/descartar) he de demanar que es repinti la pàgina de recursos, perquè potser des de la pàgina de la publicació he creat un responsible nou
+	SurtDePublicationResourceChanges(avis);
+	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
+	EnumerateResources(1, {"type_enum":"resources"});
 	}
 
-function OmpleRecursosQueTocaSortintDePublicacio()
+function OmpleRecursosQueTocaSortintDeQualsevolResource(type)
 {	
+	//En alguns casos sortint d'un recurs no he de tornar a la pàgina general de recursos, 
+	//si no a una altra pàgina
 	if (location.hash=="#resources")
 		EnumerateResources(1, {"type_enum":"resources"});
 	else
-		ObreSelectorDePublicOfAFeedback(false);
+	{	
+		if (type=="FEEDBACK") //Torno des de la pàgina de creació d'un nou FB, a la pàgina de llista de FB sobre un recurs
+			MostraFeedbackList(null, null, IdTargetResourceToSaveChanges);
+		else if (type=="PUBLICAT")
+			ObreSelectorGeneral(false, type, "FEEDBACK");
+		else if (type=="PARTY")
+		{	//aquí potser venia de citation o de publication!	
+			if (document.organism_resource_form.origin_page.value=="CITATION")
+				ObreSelectorGeneral(false, type, "CITATION");
+			else //PUBLICAT
+				ObreSelectorGeneral(false, type, "PUBLICAT");
 }
-
-function SurtDePublicationResourceChangesCallBack()
-{
-	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
-	SurtDePublicationResourceChanges(false);
-	//em cal fer un Timeout perquè si no el back encara no "s'ha fet"
-	setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100);	
 }
-
-function SurtDePublicationResourceDeleteCallBack()
-{
-	ShowInfo("short", DonaCadenaJSON(Msg_Publication_deteled));
-	if (BackNeededAfterDelete)
-	SurtDePublicationResourceChanges(false);
-	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDePublicacio();",100); -> a resource selector hi entro només per crear, no per modificar, i per tant no hi ha botó de delete (hi será si algun dia deixem modificar els recursos des del resource-selector)
-	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function EntraAAccountCallBack()
@@ -3886,7 +4768,7 @@ function SignUpNB(name_fn_callback)
 	AfegeixCredencialsUsuari(ajaxExecuteNB, document.sign_up.user, document.sign_up.pass);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_USER:CREATE&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_up.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_up.pass.value)
-				, AvaluaResposta, "text/xml", name_fn_callback);
+				, AvaluaResposta, "text/xml", "{nom_funcio: name_fn_callback, params: null}");
         ShowInfo("permanent", DonaCadenaJSON(Msg_Message_sent));
 	return false;
 }
@@ -3918,7 +4800,7 @@ var s;
 	AfegeixCredencialsUsuari(ajaxExecuteNB, document.new_user_form.new_user, document.new_user_form.new_pass);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_USER:CREATE&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.new_user_form.new_user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.new_user_form.new_pass.value)
-				+"&EMAIL="+DonaCadenaPerValorDeFormulari(document.new_user_form.email.value)+s, AvaluaResposta, "text/xml", "EntraANewAccountCallBack");
+				+"&EMAIL="+DonaCadenaPerValorDeFormulari(document.new_user_form.email.value)+s, AvaluaResposta, "text/xml", "{nom_funcio: \"EntraANewAccountCallBack\", params: null}");
         ShowInfo("permanent", DonaCadenaJSON(Msg_Message_sent));
 	return false;
 }
@@ -3981,7 +4863,7 @@ function EntraAExecuteToken()
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_TOKEN:EXECUTE&LANGUAGE="+LanguagesNB[ActiveLanguage]+
 				"&TOKEN="+PendingToken+"&USER="+document.sign_in.user.value, AvaluaResposta, "text/xml", 
-				"SurtDeExecuteTokenCallBack");
+				"{nom_funcio: \"SurtDeExecuteTokenCallBack\", params: null}");
         ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting));
 }
 
@@ -4101,7 +4983,7 @@ function SendAccountChanges()
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
 				+"&NEW_USER="+((document.account_form.new_user.value==document.sign_in.user.value) ? "" : DonaCadenaPerValorDeFormulari(document.account_form.new_user.value))+"&NEW_PASSWORD="+DonaCadenaPerValorDeFormulari(document.account_form.new_pass.value)+
 				"&EMAIL="+DonaCadenaPerValorDeFormulari(document.account_form.email.value)+"&NAME="+DonaCadenaPerValorDeFormulari(document.account_form.name.value)+"&BIO="+DonaCadenaPerValorDeFormulari(document.account_form.bio.value), AvaluaResposta, "text/xml", 
-				"SurtDeAccountCallBack");
+				"{nom_funcio: \"SurtDeAccountCallBack\", params: null}");
         ShowInfo("permanent", DonaCadenaJSON(Msg_Message_sent));
 	return false;
 }
@@ -4111,7 +4993,7 @@ function SendPasswordReset()
 	ajaxExecuteNB=new Ajax();
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_USER:RESETPASSWORD&LANGUAGE="+LanguagesNB[ActiveLanguage]+
 				"&USER="+DonaCadenaPerValorDeFormulari(document.reset_pass_form.user.value), AvaluaResposta, "text/xml", 
-				"SurtDeResetPasswordCallBack");
+				"{nom_funcio: \"SurtDeResetPasswordCallBack\", params: null}");
         ShowInfo("permanent", DonaCadenaJSON(Msg_Searching_));
 	return false;
 }
@@ -4121,7 +5003,7 @@ function SendNewPasswordToken()
 	ajaxExecuteNB=new Ajax();
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_TOKEN:EXECUTE&LANGUAGE="+LanguagesNB[ActiveLanguage]+
 				"&TOKEN="+PendingToken+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.new_pass_form.new_pass.value), AvaluaResposta, "text/xml", 
-				"SurtDeNewPasswordCallBack");
+				"{nom_funcio: \"SurtDeNewPasswordCallBack\", params: null}");
         ShowInfo("permanent", DonaCadenaJSON(Msg_Changing_));
 	return false;
 }
@@ -4522,7 +5404,8 @@ Sign out</a>
 <input id="new-resource-poi" class="add_resource_btn" type="image" alt="new href" src="point_add20.png" onClick="MostraPoiResource('')"/>
 <input id="new-resource-citation" class="add_resource_btn" type="image" alt="new href" src="citation_add20.png" onClick="MostraCitationResource('')"/>
 <input id="new-resource-publication" class="add_resource_btn" type="image" alt="new href" src="publication_add20.png" onClick="MostraPublicationResource('')"/>
-
+<input id="new-resource-individual" class="add_resource_btn" type="image" alt="new href" src="indv_add20.png" onClick="MostraIndividualResource('')"/>
+<input id="new-resource-organism" class="add_resource_btn" type="image" alt="new href" src="org_add20.png" onClick="MostraOrganismResource('')"/>
 </form>
 </div>  <!--End of id="new-resource" -->
 
@@ -4548,6 +5431,8 @@ Sign out</a>
 	<option value="FEEDBACK" id="feedback-resource-type-value"></option>
 	<option value="CITATION" id="citation-resource-type-value"></option>
 	<option value="PUBLICAT" id="publicat-resource-type-value"></option>
+	<option value="INDIVIDU" id="individual-resource-type-value"></option>
+	<option value="ORGANISM" id="organism-resource-type-value"></option>
 	<option value="HREF" id="href-resource-type-value"></option>
 	<option value="POI" id="poi-resource-type-value"></option>
 	</select>
@@ -4558,6 +5443,7 @@ Sign out</a>
 	<option value="ALL" id="all-owner-type-value"></option>
 	<option value="ME" id="me-owner-type-value"></option>
 	<option value="OTHERS" id="others-owner-type-value"></option>
+	<option value="OPEN" id="open-owner-type-value"></option>
 	</select>
 </td>
 <td align="right"><span id="resources-hits-text">1-100 of 123</span> 
@@ -4588,6 +5474,17 @@ Sign out</a>
 <form id="resource_selector_form" name="resource_selector_form" method="get" onSubmit="return false">
 
 <table style="width: 100%;"><tr><td id="resource-selector-subtitle-text">List of resources to be selected</td>
+<input type="text" class="text-input" id="type_selector_screen_value" name="resource_type" maxlength="10" style="display: none;"/>
+<input type="text" class="text-input" id="origen_selector_screen_value" name="origin_page" maxlength="10" style="display: none;"/>
+<td align="left">
+	<label class="control-label" id="selector-owner-type_screen" for="owner-type_screen_value"></label>
+	<select class="text-input" id="selector-owner-type_screen_value" name="owner-type" onchange="EnumeraResourcesQueTocaASelector()">
+	<option value="ALL" id="all-selector-owner-type-value"></option>
+	<option value="ME" id="me-selector-owner-type-value"></option>
+	<option value="OTHERS" id="others-selector-owner-type-value"></option>
+	<option value="OPEN" id="open-selector-owner-type-value"></option>
+	</select>
+</td-->	
 <td align="right"><span id="resource-selector-hits-text">1-10 of 12</span> 
 
 <input id="newer-resource-selector_btn" class="submit_btn" type="button" value="<" onMouseOver="document.getElementById('newer-resource-selector-tooltip').style.opacity='1';" onMouseOut="document.getElementById('newer-resource-selector-tooltip').style.opacity='0';">
@@ -4660,8 +5557,8 @@ Sign out</a>
 <div class="form-actions">
 <input id="href-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="href-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'HREF', true);" />
-<input id="href-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeHRefResourceChanges(true);" />
-<input id="href-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeHRefResourceChanges(false);" />
+<input id="href-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(true);" />
+<input id="href-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(false);" />
 </div>
 
 </form>
@@ -4732,8 +5629,8 @@ Sign out</a>
 <div class="form-actions">
 <input id="poi-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="poi-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'POI', true);" />
-<input id="poi-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePoiResourceChanges(true);" />
-<input id="poi-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePoiResourceChanges(false);" />
+<input id="poi-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(true);" />
+<input id="poi-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(false);" />
 </div>
 
 </form>
@@ -4749,12 +5646,12 @@ Sign out</a>
 <form id="feedback-resource_form" name="feedback_resource_form" method="get" autocomplete="off" onSubmit="return SendFeedbackResourceChanges();">
 
 <fieldset class="control-fielset-group">
-<legend id="target-feedback-publication-resource"></legend>
+<legend id="target-feedback-resource"></legend>
 	<p id="target_feedback-resource_compact_list" class="compact_descrip_in_FB"></p>
 	<input id="target_feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
-		onClick="ObreSelectorDeTargetOfAFeedback('target_feedback-resource_compact_list');"/>
+		onClick="ObreSelectorGeneral(true, '', 'FEEDBACK');"/>
 	<p id="target_feedback-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
-</fieldset> <!--End of id="target-feedback-publication-resource" -->
+</fieldset> <!--End of id="target-feedback-resource" -->
 
 <br>
 <div id="title-feedback-resource_fieldset" class="control-group">
@@ -4861,12 +5758,12 @@ Sign out</a>
 </div>  <!--End of id="rating-feedback-resource_fieldset" -->
 
 <fieldset class="control-fielset-group">
-<legend id="public-feedback-publication-resource"></legend>
+<legend id="public-feedback-resource"></legend>
 	<p id="public_feedback-resource_compact_list" class="compact_descrip_in_FB"></p>
 	<input id="public_feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
-		onClick="ObreSelectorDePublicOfAFeedback(true);"/>
+		onClick="ObreSelectorGeneral(true, 'PUBLICAT', 'FEEDBACK');"/>
 	<p id="public_feedback-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
-</fieldset> <!--End of id="public-feedback-publication-resource" -->
+</fieldset> <!--End of id="public-feedback-resource" -->
 
 <div class="control-group">
 <label class="control-label" id="pub_feedback-resource_compact_screen" for="feedback-resource_pub_compact_value"></label>
@@ -4951,6 +5848,14 @@ Sign out</a>
 	</div>
 	</div>  <!--End of id="id-namespace-citation-resource_fieldset" -->
 </fieldset> <!--End of id="identifier-citation-resource" -->	
+
+<fieldset class="control-fielset-group">
+<legend id="responsible-citation-resource"></legend>
+	<p id="responsible-citation-resource_compact_list" class="compact_descrip_in_FB"></p>
+	<input id="responsible-citation-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
+		onClick="ObreSelectorGeneral(true, 'PARTY', 'CITATION');"/>
+	<p id="responsible-citation-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
+</fieldset> <!--End of id="responsible-citation-resource" -->
 
 <fieldset class="control-fielset-group">
 <legend id="series-citation-resource"></legend>
@@ -5042,7 +5947,7 @@ Sign out</a>
 <label class="control-label" id="open-data-citation-resource_screen" for="open-data-citation-resource_screen_value"></label>
 <div class="controls">
 <p id="open-data-citation-resource_alert" style="display: none;"></p>
-<input type="checkbox" id="open-data-citation-resource_screen_value" name="open_data" checked="checked"/>
+<input type="checkbox" id="open-data-citation-resource_screen_value" name="open_data" checked="checked" onclick="MostraOAmagaExclamacioDeShareAResponsiblesOfACitation()"/>
 <p id="open-data-citation-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 </div>
 </div>  <!--End of id="open-data-citation-resource_fieldset" -->
@@ -5050,8 +5955,8 @@ Sign out</a>
 <div class="form-actions">
 <input id="citation-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="citation-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'CITATION', true);" />
-<input id="citation-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeCitationResourceChanges(true);" />
-<input id="citation-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeCitationResourceChanges(false);" />
+<input id="citation-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeCitationResourceChangesIRecarregaResources(true);" />
+<input id="citation-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeCitationResourceChangesIRecarregaResources(false);" />
 </div>
 
 </form>
@@ -5117,8 +6022,15 @@ Sign out</a>
 	<p id="id-namespace-publication-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 	</div>
 	</div>  <!--End of id="id-namespace-publication-resource_fieldset" -->
-
 </fieldset>  <!--End of id="identifier-publication-resource" -->	
+
+<fieldset class="control-fielset-group">
+<legend id="responsible-publication-resource"></legend>
+	<p id="responsible-publication-resource_compact_list" class="compact_descrip_in_FB"></p>
+	<input id="responsible-publication-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
+		onClick="ObreSelectorGeneral(true, 'PARTY', 'PUBLICAT');"/>
+	<p id="responsible-publication-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
+</fieldset> <!--End of id="responsible-publication-resource" -->
 
 <fieldset class="control-fielset-group">
 <legend id="series-publication-resource"></legend>
@@ -5244,7 +6156,7 @@ Sign out</a>
 <label class="control-label" id="open-data-publication-resource_screen" for="open-data-publication-resource_screen_value"></label>
 <div class="controls">
 <p id="open-data-publication-resource_alert" style="display: none;"></p>
-<input type="checkbox" id="open-data-publication-resource_screen_value" name="open_data" checked="checked"/>
+<input type="checkbox" id="open-data-publication-resource_screen_value" name="open_data" checked="checked" onclick="MostraOAmagaExclamacioDeShareAResponsiblesOfAPublication()"/>
 <p id="open-data-publication-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 </div>
 </div>  <!--End of id="open-data-publication-resource_fieldset" -->
@@ -5252,13 +6164,197 @@ Sign out</a>
 <div class="form-actions">
 <input id="publication-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="publication-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'PUBLICAT', true);" />
-<input id="publication-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePublicationResourceChanges(true);" />
-<input id="publication-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePublicationResourceChanges(false);" />
+<!--input id="publication-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePublicationResourceChanges(true);" />
+<input id="publication-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePublicationResourceChanges(false);" /-->
+<input id="publication-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePublicationResourceChangesIRecarregaResources(true);" />
+<input id="publication-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDePublicationResourceChangesIRecarregaResources(false);" />
 </div>
 
 </form>
 
 </div>  <!--End of id="publication-resource" -->
+
+
+<!-- *** INDIVIDUAL RESOURCE DLG *** -->
+<div id="individual-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<h2 id="individual-resource-title-text" class="white-area-title"></h2>
+<p id="individual-resource-subtitle-text"></p>
+
+<form id="individual-resource_form" name="individual_resource_form" method="get" autocomplete="off" onSubmit="return SendIndividualResourceChanges();">
+
+<div id="title-individual-resource_fieldset" class="control-group">
+<label class="control-label" id="title-individual-resource_screen" for="title-individual-resource_screen_value"></label>
+<div class="controls">
+<input type="text" class="text-input" value="" id="title-individual-resource_screen_value" name="title" style="width: 80%;" maxlength="254"/>
+<p id="title-individual-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="title-individual-resource_fieldset" -->
+
+<div id="email-individual-resource_fieldset" class="control-group">
+<label class="control-label" id="email-individual-resource_screen" for="email-individual-resource_screen_value"></label>
+<div class="controls">
+<input type="text" class="text-input" value="" id="email-individual-resource_screen_value" name="email" style="width: 80%;" maxlength="254"/>
+<p id="email-individual-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="email-individual-resource_fieldset" -->
+
+<div id="url-link-individual-resource_fieldset" class="control-group">
+<label class="control-label" id="url-link-individual-resource_screen" for="url-link-individual-resource_screen_value"></label>
+<div class="controls">
+<p id="url-link-individual-resource_alert" style="display: none;"></p>
+<input type="text" class="text-input" id="url-link-individual-resource_screen_value" name="url_link" maxlength="149" style="width: 80%;"/>
+<p id="url-link-individual-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="url-link-individual-resource_fieldset" -->
+
+<fieldset class="control-fielset-group">
+<legend id="identifier-1-individual-resource"></legend>
+
+	<div id="id-code-1-individual-resource_fieldset" class="control-group">
+	<label class="control-label" id="id-code-1-individual-resource_screen" for="id-code-1-individual-resource_screen_value"></label>
+	<div class="controls">
+	<p id="id-code-1-individual-resource_alert" style="display: none;"></p>
+	<input type="text" class="text-input" id="id-code-1-individual-resource_screen_value" name="id_code_1" maxlength="254" style="width: 100%;"/>
+	<p id="id-code-1-individual-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!--End of id="id-code-1-individual-resource_fieldset" -->
+	
+	<div id="id-namespace-1-individual-resource_fieldset" class="control-group">
+	<label class="control-label" id="id-namespace-1-individual-resource_screen" for="id-namespace-1-individual-resource_screen_value"></label>
+	<div class="controls">
+	<p id="id-namespace-1-individual-resource_alert" style="display: none;"></p>
+	<input type="text" class="text-input" id="id-namespace-1-individual-resource_screen_value" name="id_namespace_1" maxlength="254" style="width: 100%;"/>
+	<p id="id-namespace-1-individual-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!--End of id="id-namespace-1-individual-resource_fieldset" -->
+</fieldset> <!--End of id="identifier-1-individual-resource" -->	
+
+<fieldset class="control-fielset-group">
+<legend id="identifier-2-individual-resource"></legend>
+
+	<div id="id-code-2-individual-resource_fieldset" class="control-group">
+	<label class="control-label" id="id-code-2-individual-resource_screen" for="id-code-2-individual-resource_screen_value"></label>
+	<div class="controls">
+	<p id="id-code-2-individual-resource_alert" style="display: none;"></p>
+	<input type="text" class="text-input" id="id-code-2-individual-resource_screen_value" name="id_code_2" maxlength="254" style="width: 100%;"/>
+	<p id="id-code-2-individual-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!--End of id="id-code-2-individual-resource_fieldset" -->
+	
+	<div id="id-namespace-2-individual-resource_fieldset" class="control-group">
+	<label class="control-label" id="id-namespace-2-individual-resource_screen" for="id-namespace-2-individual-resource_screen_value"></label>
+	<div class="controls">
+	<p id="id-namespace-1-individual-resource_alert" style="display: none;"></p>
+	<input type="text" class="text-input" id="id-namespace-2-individual-resource_screen_value" name="id_namespace_2" maxlength="254" style="width: 100%;"/>
+	<p id="id-namespace-2-individual-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!--End of id="id-namespace-2-individual-resource_fieldset" -->
+</fieldset> <!--End of id="identifier-2-individual-resource" -->	
+
+<div id="open-data-individual-resource_fieldset" class="control-group">
+<label class="control-label" id="open-data-individual-resource_screen" for="open-data-individual-resource_screen_value"></label>
+<div class="controls">
+<p id="open-data-individual-resource_alert" style="display: none;"></p>
+<input type="checkbox" id="open-data-individual-resource_screen_value" name="open_data" checked="checked"/>
+<p id="open-data-individual-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="open-data-individual-resource_fieldset" -->
+
+<div class="form-actions">
+<input id="individual-resource_btn" class="submit_btn" type="submit" value="Save changes" />
+<input id="individual-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'INDIVIDU', true);" />
+<input id="individual-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(true);" />
+<input id="individual-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(false);" />
+</div>
+<input type="text" class="text-input" id="origin_page-individual-resource_screen_value" name="origin_page" maxlength="10" style="display: none;"/>
+</form>
+
+</div>  <!--End of id="individual-resource" -->
+
+
+<!-- *** ORGANISM RESOURCE DLG *** -->
+<div id="organism-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<h2 id="organism-resource-title-text" class="white-area-title"></h2>
+<p id="organism-resource-subtitle-text"></p>
+
+<form id="organism-resource_form" name="organism_resource_form" method="get" autocomplete="off" onSubmit="return SendOrganismResourceChanges();">
+
+<div id="title-organism-resource_fieldset" class="control-group">
+<label class="control-label" id="title-organism-resource_screen" for="title-organism-resource_screen_value"></label>
+<div class="controls">
+<input type="text" class="text-input" value="" id="title-organism-resource_screen_value" name="title" style="width: 80%;" maxlength="254"/>
+<p id="title-organism-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="title-organism-resource_fieldset" -->
+
+<fieldset class="control-fielset-group">
+<legend id="address-organism-resource"></legend>
+
+	<div id="delivery-point-organism-resource_fieldset" class="control-group">
+	<label class="control-label" id="delivery-point-organism-resource_screen" for="delivery-point-organism-resource_screen_value"></label>
+	<div class="controls">
+	<input type="text" class="text-input" value="" id="delivery-point-organism-resource_screen_value" name="delivery_point" style="width: 80%;" maxlength="254"/>
+	<p id="delivery-point-organism-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!--End of id="delivery-point-organism-resource_fieldset" -->
+	
+	<div id="city-organism-resource_fieldset" class="control-group">
+	<label class="control-label" id="city-organism-resource_screen" for="city-organism-resource_screen_value"></label>
+	<div class="controls">
+	<p id="city-organism-resource_alert" style="display: none;"></p>
+	<input type="text" class="text-input" id="city-organism-resource_screen_value" name="city" maxlength="149" style="width: 80%;"/>
+	<p id="city-organism-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!--End of id="city-organism-resource_fieldset" -->
+
+	<div id="administrative-area-organism-resource_fieldset" class="control-group">
+	<label class="control-label" id="administrative-area-organism-resource_screen" for="administrative-area-organism-resource_screen_value"></label>
+	<div class="controls">
+	<p id="administrative-area-organism-resource_alert" style="display: none;"></p>
+	<input type="text" class="text-input" id="administrative-area-organism-resource_screen_value" name="administrative_area" maxlength="254" style="width: 100%;"/>
+	<p id="administrative-area-organism-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!--End of id="administrative-area-organism-resource_fieldset" -->
+	
+	<div id="postal-code-organism-resource_fieldset" class="control-group">
+	<label class="control-label" id="postal-code-organism-resource_screen" for="postal-code-organism-resource_screen_value"></label>
+	<div class="controls">
+	<p id="postal-code-organism-resource_alert" style="display: none;"></p>
+	<input type="text" class="text-input" id="postal-code-organism-resource_screen_value" name="postal_code" maxlength="254" style="width: 100%;"/>
+	<p id="postal-code-organism-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!--End of id="postal-code-organism-resource_fieldset" -->
+	
+	<div id="country-organism-resource_fieldset" class="control-group">
+	<label class="control-label" id="country-organism-resource_screen" for="country-organism-resource_screen_value"></label>
+	<div class="controls">
+	<p id="country-organism-resource_alert" style="display: none;"></p>
+	<input type="text" class="text-input" id="country-organism-resource_screen_value" name="country" maxlength="254" style="width: 100%;"/>
+	<p id="country-organism-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!--End of id="country-organism-resource_fieldset" -->
+	
+</fieldset> <!--End of id="address-organism-resource" -->	
+
+<div id="open-data-organism-resource_fieldset" class="control-group">
+<label class="control-label" id="open-data-organism-resource_screen" for="open-data-organism-resource_screen_value"></label>
+<div class="controls">
+<p id="open-data-organism-resource_alert" style="display: none;"></p>
+<input type="checkbox" id="open-data-organism-resource_screen_value" name="open_data" checked="checked"/>
+<p id="open-data-organism-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="open-data-organism-resource_fieldset" -->
+
+<div class="form-actions">
+<input id="organism-resource_btn" class="submit_btn" type="submit" value="Save changes" />
+<input id="organism-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'INDIVIDU', true);" />
+<input id="organism-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(true);" />
+<input id="organism-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(false);" />
+</div>
+<input type="text" class="text-input" id="origin_page-organism-resource_screen_value" name="origin_page" maxlength="10" style="display: none;"/>
+</form>
+
+</div>  <!--End of id="organism-resource" -->
 
 
 <!-- *** ACCOUNT DLG *** -->

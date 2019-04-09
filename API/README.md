@@ -1,15 +1,15 @@
 # NiMMbus API
 The Nimmbus API is based on the CRUD (create, retrieve, update, and delete) 4 basic functions for persistent storage/management of objects (https://en.wikipedia.org/wiki/Create,_read,_update_and_delete). The API defines a set of object classes and provide mainly the 4 CRUD operations plus some additions when considered necessary. In this way, it mimics some of the RESTful design principles too.
 The Nimmbus API uses the OGC WPS 1.0 standard but with 2 significant modifications:
-* The the WPS execute request uses the WPS 1.0 abstract model but is implemted as GET requests (not present in the WPS 1.0 standard. 
-* The CREATE, MODIFY (update) and DELETE operations are implicitelly assyncronous and repond a syncronization ID (more or less equivament to the job id introduced in WPS 2.0 standard). An extra operation allows for requesting NB_SYNC:GETRETURN the status of the assyncronous process or the actual result if the process has ended.
+* The WPS execute request uses the WPS 1.0 abstract model but is implemented as GET requests (not present in the WPS 1.0 standard.
+* The CREATE, MODIFY (update) and DELETE operations are implicitly asynchronous and respond a synchronization ID (more or less equivalent to the job id introduced in WPS 2.0 standard). An extra operation allows for requesting NB_SYNC:GETRETURN the status of the asynchronous process or the actual result if the process has ended.
 
 ## General request parameters
 * All request are in KVP and have these 3 parameters:
   * SERVICE=WPS
   * REQUEST=EXECUTE
   * IDENTIFIER=NB_{class_type}:{operation}
-* In the folling descriptions a parameter ending by _# means that the paramters can be used n times substuting the # by sequential numbers starting by 1.
+* In the following descriptions a parameter ending by _# means that the parameters can be used n times substituting the # by sequential numbers starting by 1.
 
 ## General response
 All responses follow the WPS 1.0 specified XML syntax except the NB_RESOURCE:RETRIEVE request that follows ATOM syntax.
@@ -48,7 +48,7 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * LANGUAGE=cat,spa,eng
   * USER=
   * NEW_USER=
-  
+
 * User good password
   * IDENTIFIER=NB_USER:GOODPASSWORD
   * LANGUAGE=cat,spa,eng
@@ -79,28 +79,28 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * SHARE_BORROWER_#= (optional, user_name, user email or "Anonymous")
   * SHARE_RIGHTS_#= (optional, a combination of the following letters R: Read, W: Write, S: Share. if Borrower is Anonymous this parameter does not apply and R is assumed)
 
-* Resource HREF creation particulatities
+* Resource HREF creation particularities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=HREF
   * HREF=
   * MIMETYPE=
 
-* Resource PoI creation particulatities
+* Resource PoI creation particularities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=POI
   * POSITION=  (template: <georss:where><gml:Point><gml:pos>lat long</gml:pos></gml:Point></georss:where>)
   * ELEVATION=  (template: <georss:elev>elevation</georss:elev>)
 
-* Resource Feedback creation particulatities
+* Resource Feedback creation particularities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=FEEDBACK
   * ABSTRACT=
   * CONTACT_ROLE=
   * COMMENT=
   * MOTIVATION=
-  * RATING= 
+  * RATING=
   * TARGET_#=
   * TARGET_ROLE_#=
   * PUB_#=
 
-* Resource Citation creation particulatities
+* Resource Citation creation particularities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=CITATION
   * ID_CODE=
   * ID_NAMESPACE=
@@ -113,8 +113,10 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * SERIES_ISSUE_ID=
   * SERIES_PAGE=
   * OTHER_CIT_DETAILS=
+  * RESPONSIBLE_#=
+  * RESPONSIBLE_ROLE_#=
 
-* Resource Publication creation particulatities
+* Resource Publication creation particularities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=PUBLICAT
   * ID_CODE=
   * ID_NAMESPACE=
@@ -127,8 +129,28 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * SERIES_ISSUE_ID=
   * SERIES_PAGE=
   * OTHER_CIT_DETAILS=
+  * RESPONSIBLE_#=
+  * RESPONSIBLE_ROLE_#=
   * CATEGORY=
   * ABSTRACT=
+
+* Resource INDIVIDU creation particularities
+  * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=INDIVIDU
+  * EMAIL=
+  * URL_LINK=
+  * ID_CODE_1=
+  * ID_NAMESPACE_1=
+  * ID_CODE_2=
+  * ID_NAMESPACE_2=
+
+* Resource ORGANISM creation particularities
+  * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=ORGANISM
+  * TITLE=
+  * DELIVERY_POINT=
+  * CITY=
+  * ADM_AREA=
+  * POSTAL_CODE=
+  * COUNTRY=
 
 * Resource enumeration
   * IDENTIFIER=NB_RESOURCE:ENUMERATE
@@ -142,8 +164,10 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * CONTENT= (Optional, default is empty. If CONTENT=full the content element (of each entry) contains the complex content for TYPE=FEEDBACK, TYPE=CITATION and TYPE=PUBLICAT)
   * XSL= (full url or "mm32". Optional)
   * CRS=  (for the moment only for application/x-mmzx output and for TYPE=POINT)
-  * OWNER= (Optional, default is empty or ALL. If OWNER=ME, only resources owned by USER are listed. If OWNER=OTHERS, only resources directly shared with USER are listed. 
-	Default value means that resources owned by USER as well as resources directly shared with him/her are shown. ALL is assumed if any other no-predefined option is used)
+  * OWNER= (Optional, default is empty or ALL that means "ME,OTHERS"). If OWNER=ME, only resources owned by USER are listed. If OWNER=OTHERS, only resources directly shared with USER are listed.
+	Default value (empty or ALL) means that resources owned by USER as well as resources directly shared with him/her are shown. If OWNER=OPEN, only publicly available resources (also the ones by
+	the indicated user) are shown.
+	ALL is assumed if any other no-predefined option is used)
   * TARGET= (resource_id. Optional filter applicable if TYPE=FEEDBACK)
   * TRG_TYPE_#= (Optional filter applicable if TYPE=FEEDBACK. Currently can only be CITATION)
   * TRG_FLD_#= (Optional filter applicable if TYPE=FEEDBACK. Currently can only be CODE or NAMESPACE)
@@ -172,38 +196,38 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * TITLE=
   * REASON=
   * TYPE=
-If a paremeter is not indicated the value is not modified. If the paremeter is indicated but is blank the value is erased.
+If a parameter is not indicated the value is not modified. If the parameter is indicated but is blank the value is erased.
 
-* Resource HREF modification particulatities
+* Resource HREF modification particularities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=HREF
   * HREF=
   * MIMETYPE=
 
-* Resource PoI modification particulatities
+* Resource PoI modification particularities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=POI
   * POSITION=  (example: <georss:where><gml:Point><gml:pos>lat long</gml:pos></gml:Point></georss:where>)
   * ELEVATION=  (example: <georss:elev>elevation</georss:elev>)
 
-* Resource Feedback modification particulatities
+* Resource Feedback modification particularities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=FEEDBACK
   * ABSTRACT=
   * CONTACT_ROLE=
   * COMMENT=
   * MOTIVATION=
-  * RATING= 
+  * RATING=
   * TARGET_#=
   * TARGET_ROLE_#=
-To manage targets of a feedback, there are three strategies are available at the moment:
- 1. Neither TARGET_# nor TARGET_ROLE_# are described on the NB_RESOURCE:MODIFY, then the targets of this feedback are not changed
- 2. If one or more TARGET_# and TARGET_ROLE_# couples are defined, then ALL the previous targets of this feedback are deleted and the new list is described
- 3. There is also the possiblity of giving only one TARGET_1= empty, and this mean that the current targets are deleted on no one is added (so the feedback has no targets afther this modification (that should not happen, in fact)
+	To manage targets of a feedback, there are three strategies available at the moment:
+	 1. Neither TARGET_# nor TARGET_ROLE_# are described on the NB_RESOURCE:MODIFY, then the targets of this feedback are not changed
+	 2. If one or more TARGET_# and TARGET_ROLE_# couples are defined, then ALL the previous targets of this feedback are deleted and the new list is described
+	 3. There is also the possibility of giving only one TARGET_1= empty, and this mean that the current targets are deleted on no one is added (so the feedback has no targets after this modification (that should not happen, in fact))
   * PUB_#=
-To manage publications within a feedback item, there are three strategies are available at the moment:
- 1. PUB_# is not described on the NB_RESOURCE:MODIFY, then the publications of this feedback are not changed
- 2. If one or more PUB_# are defined, then ALL the previous publications of this feedback are deleted and the new list is described 
- 3. There is also the possiblity of giving only one PUB_1= empty, and this mean that the current publications are deleted on no one is added
+	To manage publications within a feedback item, there are three strategies available at the moment:
+	 1. PUB_# is not described on the NB_RESOURCE:MODIFY, then the publications of this feedback are not changed
+	 2. If one or more PUB_# are defined, then ALL the previous publications of this feedback are deleted and the new list is described
+	 3. There is also the possibility of giving only one PUB_1= empty, and this mean that the current publications are deleted on no one is added
 
-* Resource Citation modification particulatities
+* Resource Citation modification particularities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=CITATION
   * ID_CODE=
   * ID_NAMESPACE=
@@ -216,8 +240,14 @@ To manage publications within a feedback item, there are three strategies are av
   * SERIES_ISSUE_ID=
   * SERIES_PAGE=
   * OTHER_CIT_DETAILS=
+  * RESPONSIBLE_#=
+  * RESPONSIBLE_ROLE_#=
+	To manage responsible parties of a citation, there are three strategies available at the moment:
+	 1. Neither RESPONSIBLE_# nor RESPONSIBLE_ROLE_# are described on the NB_RESOURCE:MODIFY, then the responsible parties of this citation are not changed
+	 2. If one or more RESPONSIBLE_# and RESPONSIBLE_ROLE_# couples are defined, then ALL the previous responsible parties of this citation are deleted and the new list is described
+	 3. There is also the possibility of giving only one RESPONSIBLE_1= empty, and this mean that the current responsible parties are deleted on no one is added (so the citation has no responsible parties after this modification)
 
-* Resource Publication modification particulatities
+* Resource Publication modification particularities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=PUBLICAT
   * ID_CODE=
   * ID_NAMESPACE=
@@ -230,8 +260,32 @@ To manage publications within a feedback item, there are three strategies are av
   * SERIES_ISSUE_ID=
   * SERIES_PAGE=
   * OTHER_CIT_DETAILS=
+  * RESPONSIBLE_#=
+  * RESPONSIBLE_ROLE_#=
+	To manage responsible parties of a publication, there are three strategies available at the moment:
+	 1. Neither RESPONSIBLE_# nor RESPONSIBLE_ROLE_# are described on the NB_RESOURCE:MODIFY, then the responsible parties of this publication are not changed
+	 2. If one or more RESPONSIBLE_# and RESPONSIBLE_ROLE_# couples are defined, then ALL the previous responsible parties of this publication are deleted and the new list is described
+	 3. There is also the possibility of giving only one RESPONSIBLE_1= empty, and this mean that the current responsible parties are deleted on no one is added (so the publication has no responsible parties after this modification)
   * CATEGORY=
   * ABSTRACT=
+
+* Resource INDIVIDU modification particularities
+  * IDENTIFIER=NB_RESOURCE:MODIFICATION&TYPE=INDIVIDU
+  * EMAIL=
+  * URL_LINK=
+  * ID_CODE_1=
+  * ID_NAMESPACE_1=
+  * ID_CODE_2=
+  * ID_NAMESPACE_2=
+
+* Resource ORGANISM modification particularities
+  * IDENTIFIER=NB_RESOURCE:MODIFICATION&TYPE=ORGANISM
+  * TITLE=
+  * DELIVERY_POINT=
+  * CITY=
+  * ADM_AREA=
+  * POSTAL_CODE=
+  * COUNTRY=
 
 * Resource deletion
   * IDENTIFIER=NB_RESOURCE:DELETE
@@ -265,14 +319,14 @@ To manage publications within a feedback item, there are three strategies are av
   * PASSWORD=
   * RESOURCE=
 
-* Share deny. A borrewer denies a user to share resources (for all types) to a borrower.
+* Share deny. A borrower denies a user to share resources (for all types) to a borrower.
   * IDENTIFIER=NB_SHARE:DENY
   * LANGUAGE=cat,spa,eng
   * USER=
-  * PASSWORD= 
+  * PASSWORD=
   * SHARER=  (user SHARER= or BORROWER= but not both. If SHARER= is used, the USER= is the borrower and do not want to accept shares from SHARER=)
   * SHARER_TYPE= (optional. Needed if SHARER= is provided and should be validated y external user system)
-  * BORROWER= (if the USER= is the sharer and want to auto-deny sharing with the borrower. Used internaly with tokens)
+  * BORROWER= (if the USER= is the sharer and want to auto-deny sharing with the borrower. Used internally with tokens)
   * BORROWER_TYPE= (optional. Needed if BORROWER= is provided and should be validated y external user system)
 
 * Share authorized (Enumerates users (borrowers) that have authorized to have access to a resource type from this user)
@@ -291,7 +345,7 @@ To manage publications within a feedback item, there are three strategies are av
 
 ## NB_TOKEN class request operations
 
-* Token execution. 
+* Token execution.
   * IDENTIFIER=NB_TOKEN:EXECUTE
   * LANGUAGE=cat,spa,eng
   * TOKEN=

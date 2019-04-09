@@ -5,6 +5,7 @@
      License: Attribution 4.0 International (CC BY 4.0) http://creativecommons.org/licenses/by/4.0/
 */
 
+"use strict"
 
 function DonaTextDesDeGcoCharacterString(item)
 {
@@ -20,7 +21,7 @@ function DonaTextDesDeGcoCharacterStringOGcxAnchor(item)
 	var elem=DonaTextDesDeGcoCharacterString(item);
 	if (elem)
 		return elem;
-	
+
 	elem=GetXMLElementByName(item, "gcx", "Anchor");
 	if (elem)
 	{
@@ -28,7 +29,7 @@ function DonaTextDesDeGcoCharacterStringOGcxAnchor(item)
 		if (code_list_value && code_list_value.value)
 			return code_list_value.value;
 		else
-			return "";		
+			return "";
 	}
 	else
 		return "";
@@ -52,7 +53,7 @@ function DonaTextDesDeCodeList(item, namespace, code_list)
 function DonaDataDesDeGcoDateTime(item)
 {
 	var s;
-	
+
 	var elem=GetValueXMLElementByName(item, "gco", "DateTime");
 	if (elem)
 	{
@@ -93,7 +94,7 @@ function OmpleInputDesDeWPSComplexOutput(item)
 
 function GetRetrieveResourceFeedbackOutputs(root)
 {
-var output, identifier, feedback_item, user_comment, output2, target_item, resource_ref, output3, identifier_item;
+var output, identifier, feedback_item, item_identifier, elem, user_comment, output2, target_item, resource_ref, output3, identifier_item, output4;
 
 	output=GetXMLElementCollectionByName(root, "wps", "Output");
 
@@ -110,7 +111,7 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 				else if (identifier.childNodes[0].nodeValue=="reason")
 					guf.purpose=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="feedback")
-				{					
+				{
 					feedback_item=OmpleInputDesDeWPSComplexOutput(output.item(item));
 					if (feedback_item)
 					{
@@ -122,47 +123,52 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 							//code
 							elem=GetXMLElementByName(item_identifier, "mcc", "code")
 							if (elem)
-					{
+							{
 								//code								
 								guf.identifier.code=DonaTextDesDeGcoCharacterString(elem);
-						
+
 								//code_space: pot ser un CharacterString o un anchor, miro les dues coses
 								elem=GetXMLElementByName(item_identifier, "mcc", "codeSpace");
-						if (elem)
+								if (elem)
 									guf.identifier.codeSpace=DonaTextDesDeGcoCharacterStringOGcxAnchor(elem);
 								else
 									guf.identifier.codeSpace="";
 							}
 						}
 							
+						//guf.abstract
+						elem=GetXMLElementByName(feedback_item, "guf", "abstract");
+						if (elem)
+							guf.abstract=DonaTextDesDeGcoCharacterString(elem);
+							
 						//guf.purpose -> l'he tret de wps:Output/reason. Ja està a GUF!
 						
 						elem=GetXMLElementByName(feedback_item, "guf", "contactRole");
 						if (elem)
 							guf.contactRole=DonaTextDesDeCodeList(elem, "guf", "GUF_UserRoleCode");
-							
-						guf.public = [];						
+
+						guf.public = [];
 						output2=GetXMLElementCollectionByName(feedback_item, "guf", "publication");
 						if (output2 && output2.length)
-						{								
+						{
 							for (var item2=0; item2<output2.length; item2++)
-							{				
+							{
 								//suposem qcm:QCM_Publication tot. podria ser cit:CI_Citation però per nimmbus no
-								public_item=GetXMLElementByName(output2.item(item2), "qcm", "QCM_Publication");															
+								var public_item=GetXMLElementByName(output2.item(item2), "qcm", "QCM_Publication");
 								if (public_item)
 								{
-									guf.public.push({});										
+									guf.public.push({});
 									//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
-										
+
 									//category
 									var category;
 									category=GetXMLElementByName(public_item, "qcm", "category");
 									guf.public[guf.public.length-1].category=DonaTextDesDeCodeList(category, "qcm", "QCM_PublicationCategoryCode");
-									
+
 									//title
 									elem=GetXMLElementByName(public_item, "cit", "title");
 									if (elem)
-										guf.public[guf.public.length-1].title=DonaTextDesDeGcoCharacterString(elem);										
+										guf.public[guf.public.length-1].title=DonaTextDesDeGcoCharacterString(elem);
 									else
 										guf.public[guf.public.length-1].title="";
 
@@ -181,15 +187,15 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 										guf.public[guf.public.length-1].editionDate="";
 										
 									//identifier(s)
-									guf.public[guf.public.length-1].identifier = [];																														
-									output3=GetXMLElementCollectionByName(public_item , "cit", "identifier");								
+									guf.public[guf.public.length-1].identifier = [];
+									output3=GetXMLElementCollectionByName(public_item , "cit", "identifier");
 									if (output3 && output3.length)
 									{
 										for (var item3=0; item3<output3.length; item3++)
 										{
 											identifier_item=output3.item(item3);
 											if (identifier_item)
-											{											
+											{
 												//code
 												elem=GetXMLElementByName(identifier_item, "mcc", "code")
 												if (elem)
@@ -199,7 +205,7 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 
 													//code
 													guf.public[guf.public.length-1].identifier[guf.public[guf.public.length-1].identifier.length-1].code=DonaTextDesDeGcoCharacterString(elem);
-											
+
 													//code_space: pot ser un CharacterString o un anchor, miro les dues coses
 													elem=GetXMLElementByName(identifier_item, "mcc", "codeSpace");
 													if (elem)
@@ -211,13 +217,63 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 										}
 									}
 					
+									//Responsible party(ies)
+									guf.public[guf.public.length-1].resp_party = [];																														
+									output3=GetXMLElementCollectionByName(public_item , "cit", "citedResponsibleParty");								
+									if (output3 && output3.length)
+									{
+										for (var item3=0; item3<output3.length; item3++)
+										{
+											var responsibility=output3.item(item3);											
+											if (responsibility)
+											{											
+												//role
+												elem=GetXMLElementByName(responsibility, "cit", "role")
+												if (elem)
+												{																							
+													var role=DonaTextDesDeCodeList(elem, "cit", "CI_RoleCode");
+													if (role && role!="")
+													{	//si el codi de rol no és buit
+														guf.public[guf.public.length-1].resp_party.push({});
+														//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
+														guf.public[guf.public.length-1].resp_party[guf.public[guf.public.length-1].resp_party.length-1].role=role;													
+														guf.public[guf.public.length-1].resp_party[guf.public[guf.public.length-1].resp_party.length-1].party_name = [];																														
+															
+														//de moment només recupero tots els "name" de dintre, que podrien ser individuals o organizations, però ara per ara com no recupero res més amb això ja m'apanyo
+														output4=GetXMLElementCollectionByName(responsibility , "cit", "name");								
+														if (output4 && output4.length)
+														{
+															for (var item4=0; item4<output4.length; item4++)
+															{
+																var party_name=output4.item(item4);																
+																if (party_name)
+																{
+																	var text_party=DonaTextDesDeGcoCharacterString(party_name);
+																	if (text_party && text_party!="")
+																	{
+																		guf.public[guf.public.length-1].resp_party[guf.public[guf.public.length-1].resp_party.length-1].party_name.push({});
+																		guf.public[guf.public.length-1].resp_party[guf.public[guf.public.length-1].resp_party.length-1].party_name[guf.public[guf.public.length-1].resp_party[guf.public[guf.public.length-1].resp_party.length-1].party_name.length-1].name=text_party;
+																	}
+																}
+															}															
+														}
+														
+														//Comprovo si no he recuperat cap name -> esborro aquesta resp_party
+														if (guf.public[guf.public.length-1].resp_party[guf.public[guf.public.length-1].resp_party.length-1].party_name.length==0)
+															guf.public[guf.public.length-1].resp_party.pop();
+													}
+												}
+											}
+										}
+									}
+					
 									//series
-									series=GetXMLElementByName(public_item, "cit", "series");
+									var series=GetXMLElementByName(public_item, "cit", "series");
 									if (series)
 									{
 										guf.public[guf.public.length-1].series={};
 										
-										i_elem_series=0;
+										var i_elem_series=0;
 										elem=GetXMLElementByName(series, "cit", "name");
 										if (elem)
 										{
@@ -244,7 +300,7 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 										}
 										else
 											guf.public[guf.public.length-1].series.page="";
-	
+
 										if (i_elem_series==0)
 											guf.public[guf.public.length-1].series="";											
 									}
@@ -259,12 +315,12 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 										guf.public[guf.public.length-1].otherCitationDetails="";
 
 									//onlineResource (a NiMMbus només un)
-									onlineResource=GetXMLElementByName(public_item, "cit", "onlineResource");
+									var onlineResource=GetXMLElementByName(public_item, "cit", "onlineResource");
 									if (onlineResource)
 									{
 										guf.public[guf.public.length-1].onlineResource={};
 										
-										i_elem_onlineResource=0;
+										var i_elem_onlineResource=0;
 										elem=GetXMLElementByName(onlineResource, "cit", "linkage");
 										if (elem)
 										{
@@ -284,7 +340,7 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 											guf.public[guf.public.length-1].onlineResource.description="";
 
 										elem=GetXMLElementByName(onlineResource, "cit", "function");
-										guf.public[guf.public.length-1].function=DonaTextDesDeCodeList(elem, "cit", "CI_OnLineFunctionCode");										
+										guf.public[guf.public.length-1].onlineResource.function=DonaTextDesDeCodeList(elem, "cit", "CI_OnLineFunctionCode");										
 	
 										if (i_elem_onlineResource==0)
 											guf.public[guf.public.length-1].onlineResource="";											
@@ -298,9 +354,9 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 										guf.public[guf.public.length-1].abstract=DonaTextDesDeGcoCharacterString(elem);										
 									else
 										guf.public[guf.public.length-1].abstract="";
-												}
-											}
-										}
+								}
+							}
+						}
 	
 						guf.dateInfo = [];						
 						output2=GetXMLElementCollectionByName(feedback_item, "guf", "dateInfo");
@@ -311,14 +367,14 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 								elem=GetXMLElementByName(output2.item(item2), "cit", "CI_Date");															
 								if (elem)
 								{								
-									date=GetXMLElementByName(elem, "cit", "date");									
+									var date=GetXMLElementByName(elem, "cit", "date");									
 								
 									if (date)
 									{
 										guf.dateInfo.push({});
 										guf.dateInfo[guf.dateInfo.length-1].date=DonaDataDesDeGcoDateTime(date);
 																		
-										date_type=GetXMLElementByName(elem, "cit", "dateType");
+										var date_type=GetXMLElementByName(elem, "cit", "dateType");
 										if (date_type)
 											guf.dateInfo[guf.dateInfo.length-1].dateType=DonaTextDesDeCodeList(date_type, "cit", "cit:CI_DateTypeCode");
 										else
@@ -333,7 +389,7 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 							guf.rating=DonaTextDesDeCodeList(elem, "guf", "GUF_RatingCode");
 						else
 							guf.rating="";
-				
+
 						user_comment=GetXMLElementByName(feedback_item, "guf", "userComment");
 						if (user_comment)
 						{
@@ -344,48 +400,48 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 								guf.motivation=DonaTextDesDeCodeList(elem, "guf", "GUF_MotivationCode");
 						}
 
-						guf.target = [];						
+						guf.target = [];
 						output2=GetXMLElementCollectionByName(feedback_item, "guf", "target");
 						if (output2 && output2.length)
-						{								
+						{
 							for (var item2=0; item2<output2.length; item2++)
-							{				
-								target_item=GetXMLElementByName(output2.item(item2), "guf", "GUF_FeedbackTarget");															
+							{
+								target_item=GetXMLElementByName(output2.item(item2), "guf", "GUF_FeedbackTarget");
 								if (target_item)
 								{
 									var role;
-									
+
 									role=GetXMLElementByName(target_item, "guf", "role");
 									//resourceRef poden ser diversos, em quedo amb el primer, de moment ·$·
 									resource_ref=GetXMLElementByName(target_item, "guf", "resourceRef");
 
 									if (role && resource_ref)
 									{
-										guf.target.push({});										
+										guf.target.push({});
 										//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
-										
+
 										//role
 										guf.target[guf.target.length-1].role=DonaTextDesDeCodeList(role, "guf", "GUF_TargetRoleCode");
-									
+
 										// resource_ref és de tipus CI_Citation o QCM_Publication, però de moment miro les part comunnes dels dos
 										// més endavant potser mirarem coses que només estan a QCM_Publication
 										//title
 										elem=GetXMLElementByName(resource_ref, "cit", "title");
 										if (elem)
-											guf.target[guf.target.length-1].title=DonaTextDesDeGcoCharacterString(elem);										
+											guf.target[guf.target.length-1].title=DonaTextDesDeGcoCharacterString(elem);
 										else
 											guf.target[guf.target.length-1].title="";
-										
+
 										//identifier(s)
-										guf.target[guf.target.length-1].identifier = [];																														
-										output3=GetXMLElementCollectionByName(resource_ref , "cit", "identifier");								
+										guf.target[guf.target.length-1].identifier = [];
+										output3=GetXMLElementCollectionByName(resource_ref , "cit", "identifier");
 										if (output3 && output3.length)
 										{
 											for (var item3=0; item3<output3.length; item3++)
 											{
 												identifier_item=output3.item(item3);
 												if (identifier_item)
-												{											
+												{
 													//code
 													elem=GetXMLElementByName(identifier_item, "mcc", "code")
 													if (elem)
@@ -395,7 +451,7 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 
 														//code
 														guf.target[guf.target.length-1].identifier[guf.target[guf.target.length-1].identifier.length-1].code=DonaTextDesDeGcoCharacterString(elem);
-												
+
 														//code_space: pot ser un CharacterString o un anchor, miro les dues coses
 														elem=GetXMLElementByName(identifier_item, "mcc", "codeSpace");
 														if (elem)
@@ -411,7 +467,7 @@ var output, identifier, feedback_item, user_comment, output2, target_item, resou
 							}
 						}
 					}
-				}	
+				}
 				else if (identifier.childNodes[0].nodeValue=="rights")
 					guf.rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 			}
@@ -448,7 +504,7 @@ function GetNimmbusTypeOfAOWCFeature(feature)
 			categories[j].term)
 		{
 			if (categories[j].term=="POI")
-				return "POI"; 
+				return "POI";
 			else if (categories[j].term=="HREF")
 				return "HREF";
 			else if (categories[j].term=="FEEDBACK")
@@ -457,7 +513,11 @@ function GetNimmbusTypeOfAOWCFeature(feature)
 				return "CITATION";
 			else if (categories[j].term=="PUBLICAT")
 				return "PUBLICAT";
+			else if (categories[j].term=="INDIVIDU")
+				return "INDIVIDU";
+			else if (categories[j].term=="ORGANISM")
+				return "ORGANISM";
 		}
-	}		
-	return "";		
+	}
+	return "";
 }
