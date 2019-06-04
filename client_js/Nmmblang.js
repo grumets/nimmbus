@@ -108,24 +108,55 @@ var Msg_FB_item_detailed_description_no_modification={cat: "Descripció detallada
 var Msg_Targeted_resources={cat: "Recursos valorats", spa: "Recursos valorados", eng: "Targeted resources"};
 var Msg_List_available_resources_as_targets={cat: "Llista de recursos disponibles com a objecte de la valoració", spa: "Lista de recursos disponibles como objeto de la valoración", eng: "List of available resources as feedback target"};
 var Msg_Resource_already_targeted={cat: "Recurs actualment ja valorat en aquesta valoració.", spa: "Recurso actualmente ya valorado en esta valoración.", eng: "Resource already targeted in this feedback item."};
-//var Msg_Resource_already_targeted_no_added_again={cat: "Recurs actualment ja valorat o que és la pròpia valoració, no s'afegirà de nou.", spa: "Recurso actualmente ya valorado o que es la valoración en sí misma, no se añadirá de nuevo.", eng: "Resource already targeted or that is the feedback item itself, it will not be added again."};
+var Msg_Resource_is_a_target={cat: "Recurs valorat en aquesta valoració.", spa: "Recurso valorado en esta valoración.", eng: "Resource targeted in this feedback item."};
+var Msg_Cant_be_selected={cat: "No pot ser seleccionat", spa: "No puede ser seleccionado", eng: "Cannot be selected"};
 var Msg_Feedback_item_selecting_targets_for={cat: "Aquesta és la pròpia valoració per la que estàs escollint recursos a valorar.", spa: "Esta es la propia valoración para la que estás escogiendo recursos a valorar.", eng: "This is the feedback item you are selecting targets for."};
-var Msg_Target_without_NiMMbus_id={cat: "Un dels recursos valorats no té identificador de recurs de NiMMbus.", spa: "Uno de los recursos valorador no tiene identificador de recurso de NiMMbus.", eng: "One of target resources in this feedback does not have NiMMbus resource identifier."};
-var Msg_Related_publications={cat: "Publicacions relacionades", spa: "Publicaciones relacionadas", eng: "Related publications"};
-var Msg_List_available_publications_for_feedback={cat: "Llista de publicacions disponibles per la valoració", spa: "Lista de publicacions disponibles per la valoración", eng: "List of available publications for the feedback item"};
+
+var Msg_List_available_publications={cat: "Llista de publicacions disponibles", spa: "Lista de publicacions disponibles", eng: "List of available publications"};
 var Msg_Publication_already_related={cat: "Publicació actualment ja relacionada amb aquesta valoració.", spa: "Publicación actualmente ya relacionada con esta valoración.", eng: "Publication already related with this feedback item."};
-//var Msg_Publication_already_related_no_added_again={cat: "Publicació actualment ja relacionada amb aquesta valoració, no s'afegirà de nou.", spa: "Publicación actualmente ya relacionada con esta valoración, no se añadirá de nuevo.", eng: "Publication already related with this feedback item, it will not be added again."};
-var Msg_Public_without_NiMMbus_id={cat: "Una de les publicacions no té identificador de recurs de NiMMbus.", spa: "Una de las publicaciones no tiene identificador de recurso de NiMMbus.", eng: "One of the publications in this feedback does not have NiMMbus resource identifier."};
+var Msg_Related_Publications={cat: "Publicació(ns) relacionades amb el recurs valorat", spa: "Publicación(es) relacionadas con el recurso valorado", eng: "Publication(s) related to the evaluated resource"};
+var Msg_Reference_documents={cat: "Document(s) de referencia que exposa el problema", spa: "Documento(s) de referencia que expone el problema", eng: "Reference document(s) that exposes the issue"};
+
+var Msg_List_available_citations={cat: "Llista de citacions disponibles", spa: "Lista de citations disponibles", eng: "List of available citations"};
+var Msg_Citation_already_related={cat: "Citació actualment ja relacionada amb aquesta valoració.", spa: "Citación actualmente ya relacionada con esta valoración.", eng: "Citation already related with this feedback item."};
+var Msg_Fixed_Resource={cat: "Nova versió del recurs(os) valorat(s) amb el problema descobert solucionat", spa: "Nueva versión del recurso(s) valorado(s) con el problema descubierto solucionado", eng: "New version of the target resource(s) with the known problem fixed"};
+var Msg_Alternative_Resource={cat: "Recurs(os) alternatiu(s) que es poden usar enlloc del recurs(os) valorat(s) i que no presenten el problema descobert", spa: "Recurso(s) alternativos que se pueden usar en lugar del recurso(s) valorado(s) y que no presentan el problema descubierto", eng: "Alternative resource(s) thath can be used instead of the target resource(s) and does not present the known problem"};
+var Msg_Additional_documentation={cat: "Documentació addicional que descriu l'ús del(s) recurs(os) valorats", spa: "Documentación adicional que describe el uso del recurso(s) valorado(s)", eng: "Additional documentation describing the usage of the target resource(s)"};
+
+var Msg_Target_without_NiMMbus_id={cat: "Un dels recursos valorats no té identificador de recurs de NiMMbus.", spa: "Uno de los recursos valorador no tiene identificador de recurso de NiMMbus.", eng: "One of target resources in this feedback does not have NiMMbus resource identifier."};
+var Msg_Public_without_NiMMbus_id={cat: "Una de les publicacions no té identificador de recurs de NiMMbus.", spa: "Una de las publicaciones no tiene identificador de recurso de NiMMbus.", eng: "One of the publications does not have NiMMbus resource identifier."};
+var Msg_RefDoc_without_NiMMbus_id={cat: "Un del documents de referència no té identificador de recurs de NiMMbus.", spa: "Uno de los documentos de referencia no tiene identificador de recurso de NiMMbus.", eng: "One of the reference documents does not have NiMMbus resource identifier."};
+var Msg_AddDoc_without_NiMMbus_id={cat: "Un del documents addicionals no té identificador de recurs de NiMMbus.", spa: "Uno de los documentos addicionales no tiene identificador de recurso de NiMMbus.", eng: "One of the additional documents does not have NiMMbus resource identifier."};
+var Msg_FixRsrc_without_NiMMbus_id={cat: "Un del recursos solucionats no té identificador de recurs de NiMMbus.", spa: "Uno de los recursos solucionados no tiene identificador de recurso de NiMMbus.", eng: "One of the fixed resources does not have NiMMbus resource identifier."};
+var Msg_AltRsrc_without_NiMMbus_id={cat: "Un del recursos alternatius no té identificador de recurs de NiMMbus.", spa: "Uno de los recursos alternativos no tiene identificador de recurso de NiMMbus.", eng: "One of the alternative resources does not have NiMMbus resource identifier."};
+
+var Msg_report_aspect_info={cat: "Depenent de quin siguin els <b>aspectes reportats</b>, caldrà documentar uns o altres elements a sota:."+
+	"<br><u>Ús</u>: Descripció de l'ús del recurs objectiu de la valoració. Com a mínim cal definir algun element de la 'Descripció de l'ús'."+
+	"<br><u>Adequació a un propòsit</u>: Descripció de l'ús del recurs objectiu de la valoració que era apropiat per a un propòsit previst. Com a mínim cal definir algun element de la 'Descripció de l'ús'."+
+	"<br><u>Limitació</u>: Descripció d'una limitació del recurs objectiu de la valoració. Com a mínim cal definir alguna 'Limitacions determinades per l'usuari' dins la 'Descripció de l'ús'."+
+	"<br><u>Alternativa</u>: Ruta alternativa que ajuda a evitar un problema o una limitació. Com a mínim cal definir una 'Solució' o un 'Recurs alternatiu' dins el 'Problema descobert'."+
+	"<br><u>Problema</u>: Informe d'un problema. Com a mínim cal definir algun element del 'Problema descobert'.",
+	spa: "Dependiendo de cuales sean los <b>aspectos reportados</b>, se deberán documentar unos u otros elementos debajo:"+
+	"<br><u>Uso</u>: Descripción del uso del recurso objetivo de la valoración. Como mínimo se debe definir algún elemento de la 'Descripción del uso'."+
+	"<br><u>Adecuación a un propósito</u>: Descripción del uso del recurso objetivo de la valoración que es apropiado para un propósito previsto. Como mínimo se debe definir algún elemento de la 'Descripción del uso'."+
+	"<br><u>Limitación</u>: Descripción de una limitación del recurso objetivo de la valoración. Como mínimo se debe definir alguna 'Limitaciones determinadas por el usuario' dentro de la 'Descripción del uso'."+
+	"<br><u>Alternativa</u>: Ruta alternativa que ayuda a evitar un problema o una limitación. Como mínimo se debe definir una 'Solución' o un 'Recurso alternativo' dentro del 'Problema descubierto'." +
+	"<br><u>Problema</u>: Informe de un problema. Como mínimo se debe definir algún elemento del 'Problema descubierto'.",
+	eng: "Depending on which <b>report aspects</b> have been selected, some elements below or others should be described:"+	
+	"<br><u>Usage</u>: Description of a usage of the target resource. At least one element on 'Usage description' should be defined."+
+	"<br><u>Fitness for purpose</u>: Description of a usage of the target resource that was appropriated for the intended purpose. At least one element on 'Usage description' should be defined."+
+	"<br><u>Limitation</u>: Description of a limitation of the target resource. At least one 'User determined limitations' in 'Usage description' should be defined."+
+	"<br><u>Alternative</u>: Alternative route that helps to avoid a problem or a limitation. At least one 'Work around' or one 'Alternative resource' should be defined."+
+	"<br><u>Problem</u>: A report of a problem or an issue. At least one 'Discovered issue' should be described."};
 
 var Msg_Citation={cat: "Citació", spa: "Citación", eng: "Citation"};
 var Msg_Modify_citation_characteristics={cat: "Modifica les característiques d'aquesta citació", spa: "Modifica las características de esta citación", eng: "Modify the characteristics of this citation"};
 var Msg_New_citation={cat: "Nova citació", spa: "Nueva citación", eng: "New citation"};
 var Msg_Define_citation_characteristics={cat: "Introdueix les característiques d'aquesta citació", spa: "Introduce las características de esta citación", eng: "Define the characteristics of this citation"};
-var Msg_Related_responsibles={cat: "Responsables relacionats", spa: "Responsables relacionados", eng: "Related responsibles"};
-var Msg_List_available_responsibles={cat: "Llista de responsables disponibles", spa: "Lista de reponsables disponibles", eng: "List of available responsibles"};
-var Msg_Responsible_already_related={cat: "Responsable actualment ja seleccionat.", spa: "Responsable actualmente ya seleccionado.", eng: "Responsible already selected."};
-//var $$$ Msg_Publication_already_related_no_added_again={cat: "Publicació actualment ja relacionada amb aquesta valoració, no s'afegirà de nou.", spa: "Publicación actualmente ya relacionada con esta valoración, no se añadirá de nuevo.", eng: "Publication already related with this feedback item, it will not be added again."};
-var Msg_Responsible_without_NiMMbus_id={cat: "Un del responsables no té identificador de recurs de NiMMbus.", spa: "Uno de los responsables no tiene identificador de recurso de NiMMbus.", eng: "One of the responsibles does not have NiMMbus resource identifier."};
+var Msg_Related_responsibles={cat: "Responsables relacionats", spa: "Responsables relacionados", eng: "Related responsible parties"};
+var Msg_List_available_responsibles={cat: "Llista de responsables disponibles", spa: "Lista de reponsables disponibles", eng: "List of available responsible parties"};
+var Msg_Responsible_already_related={cat: "Responsable actualment ja seleccionat.", spa: "Responsable actualmente ya seleccionado.", eng: "Responsible party already selected."};
+var Msg_Responsible_without_NiMMbus_id={cat: "Un del responsables no té identificador de recurs de NiMMbus.", spa: "Uno de los responsables no tiene identificador de recurso de NiMMbus.", eng: "One of the responsible parties does not have NiMMbus resource identifier."};
 
 var Msg_Citation_sent={cat: "Citació enviada", spa: "Citación enviada", eng: "Citation sent"};
 var Msg_Citation_created={cat: "Citació creada", spa: "Citación creada", eng: "Citation created"};
@@ -235,7 +266,7 @@ var l_msg_New_to_NiMMbus_SignUp={cat: "Nou al NiMMbus? Registra't", spa: "Nuevo 
 var l_msg_Username={cat: "Usuari", spa: "Usuario", eng: "Username"};
 var l_msg_For_Email_Notificactions={cat: "Per a validacions i notificacions per email", spa: "Para validaciones y notificaciones por email", eng: "For email notifications and verifications"};
 var l_msg_SignUp_for_NiMMbus={cat: "Registrar-se al NiMMbus", spa: "Registrarse en NiMMBus", eng: "Sign up for NiMMbus"};
-var l_msg_Close_Sortir={cat: "Sortir", spa: "Salir", eng: "Close"}; //·$·
+var l_msg_Close_Sortir={cat: "Sortir", spa: "Salir", eng: "Close"};
 var l_msg_Close_Tancar={cat: "Tancar", spa: "Cerrar", eng: "Close"};
 var l_msg_Close_SignOut={cat: "Sortir", spa: "Salir", eng: "Sign out"};
 var l_msg_All={cat: "Tots", spa: "Todos", eng: "All"};
@@ -267,9 +298,9 @@ var l_msg_Code={cat: "Codi", spa: "Código", eng: "Code"};
 var l_msg_resource_id_eg={cat: "Identificador del recurs. P. ex.:", spa: "Identificador del recurso. P. ej.:", eng: "Resource identifier. E.g.:"};
 var l_msg_Namespace_where_id_unique_eg_={cat: "Espai de noms on l'identificador és únic. P. ex.:", spa: "Espacio de nombres donde el identificador es único. P. ej.:", eng: "Namespace where the identifier is unique. E.g.:"};
 var l_msg_Series_which_resource_is_part_of={cat: "Sèrie de la que el recurs forma part", spa: "Serie de la cual el recurso forma parte", eng: "Series which the resource is part of"};
-var l_msg_Responsible={cat: "Responsable(s)", spa: "Responsable(s)", eng: "Responsible(s)"};
-var l_msg_Select_responsible={cat: "Prem [Seleccionar] per a escollir un nou responsable.", spa: "Presione [Seleccionar] para escoger un nuevo responsable.", eng: "Press [Select] to choose a responsible."};
-var l_msg_responsible_not_open_data={cat: "indica que el responsable no està compartit amb tothom.", spa: "indica que el responsable no está compartido con todos.", eng: "indicates that the responsible is not shared to everyone."};
+var l_msg_Responsible={cat: "Responsable(s)", spa: "Responsable(s)", eng: "Responsible party(s)"};
+var l_msg_Select_responsible={cat: "Prem [Seleccionar] per a escollir un nou responsable.", spa: "Presione [Seleccionar] para escoger un nuevo responsable.", eng: "Press [Select] to choose a responsible party."};
+var l_msg_responsible_not_open_data={cat: "indica que el responsable no està compartit amb tothom.", spa: "indica que el responsable no está compartido con todos.", eng: "indicates that the responsible party is not shared to everyone."};
 var l_msg_Series_name={cat: "Nom de la sèrie", spa: "Nombre de la serie", eng: "Series name"};
 var l_msg_Series_name_of_which_this_resource={cat: "Nom de la sèrie o del recurs agregat del qual aquest recurs forma part", spa: "Nombre de la serie o del recurso agregado del cual este recurso forma parte.", eng: "Name of the series, or aggregate resource, of which the resource is a part"};
 var l_msg_Series_issue_id={cat: "Identificador de l'element de la sèrie", spa: "Identificador del elemento de la serie", eng: "Series issue identification"};
@@ -287,11 +318,17 @@ var l_msg_Detailed_description_onlineresource_eg_={cat: "Descripció detallada de
 var l_msg_URL_function={cat: "Funció URL", spa: "Función URL", eng: "URL Function"};  
 var l_msg_URL_function_eg_={cat: "Funció del recurs en línia. P. ex.:", spa: "Función del recurso en línea. P. ex.:", eng: "Function of the link. E.g.:"};
 
+var l_msg_Press_select_choose_citation={cat: "Prem [Seleccionar] per a escollir una nova cita.", spa: "Presione [Seleccionar] para escoger una nueva cita.", eng: "Press [Select] to choose a new citation."};
+var l_msg_indicates_citation_not_shared={cat: "indica que la cita no està compartida amb tothom.", spa: "indica que la cita no está compartida con todos.", eng: "indicates that the citation is not shared to everyone."};
+var l_msg_Press_select_choose_publication={cat: "Prem [Seleccionar] per a escollir una nova publicació.", spa: "Presione [Seleccionar] para escoger una nueva publicació.", eng: "Press [Select] to choose a new publication."};
+var l_msg_indicates_publication_not_shared={cat: "indica que la publicació no està compartida amb tothom.", spa: "indica que la publicació no está compartida con todos.", eng: "indicates that the publication is not shared to everyone."};
+
 var l_msg_Verify_pwd={cat: "Validació de contrasenya", spa: "Validación de contraseña", eng: "Verify password"};
 var l_msg_Repeat_password={cat: "Cal que tornis a escriure la teva contrasenya nova.", spa: "Debes repetir la nueva contraseña.", eng: "You need to repeat your new password."};
 var l_msg_New_Pwd={cat: "Contrasenya nova", spa: "Contraseña nueva", eng: "New password"};
 var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Email"};
 	
+		
 	ActiveLanguage=lang;
 
 	document.getElementById("head_title").innerHTML=DonaCadenaJSON(Msg_NiMMbus_login);
@@ -419,7 +456,16 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("generalPublic-contactRole-feedback-resource_value").innerHTML=     DonaCadenaJSON(GUF_UserRoleCode["generalPublic"]);
 	document.getElementById("contactRole-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Rol de l'usuari en el context d'aquesta valoració", spa: "Rol del usuario en el contexto de esta valoración", eng: "User's role in the context of this feedback item"});
 
-	document.getElementById("user-comment-publication-resource").innerHTML=DonaCadenaJSON({cat: "Comentari de l'usuari", spa: "Comentario del usuario", eng: "User comment"});
+	document.getElementById("rating-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Puntuació", spa: "Puntuación", eng: "Rating"});
+	/*document.getElementById("undefined-rating-feedback-resource_value").innerHTML=DonaCadenaJSON(Msg_Indefinit);
+	document.getElementById("oneStar-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "1 estrella: Molt dolent", spa: "1 estrella: Muy malo", eng: "1 star: very bad"});
+	document.getElementById("twoStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "2 estrelles: Dolent", spa: "2 estrellas: Malo", eng: "2 stars: Bad"});
+	document.getElementById("threeStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "3 estrelles: Regular", spa: "3 estrellas: Regular", eng: "3 stars: Regular"});
+	document.getElementById("fourStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "4 estrelles: Bo", spa: "4 estrellas: Bueno", eng: "4 stars: Good"});
+	document.getElementById("fiveStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "5 estrelles: Excel·lent", spa: "5 estrellas: Excelente", eng: "5 stars: Excellent"});*/
+	document.getElementById("rating-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Nombre d'estrelles que puntua subjectivament el recurs", spa: "Número de estrellas que puntúa subjetivamente el recurso", eng: "Number of stars that qualifies subjectively the resource"});
+
+	document.getElementById("user-comment-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Comentari de l'usuari", spa: "Comentario del usuario", eng: "User comment"});
 	document.getElementById("comment-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Comentari", spa: "Comentario", eng: "Comment"});
 	document.getElementById("comment-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Comentari de l'usuari sobre el recurs", spa: "Comentario del usuario sobre el recurso", eng: "User's comment about the resource"});
 	document.getElementById("comment-motiv-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Motivació del comentari", spa: "Motivación del comentario", eng: "Comment motivation"});
@@ -434,20 +480,52 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("moderation-motivation-feedback-resource_value").innerHTML=    DonaCadenaJSON(GUF_MotivationCode["moderation"]);
 	document.getElementById("comment-motiv-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Motivació del comentari de l'usuari sobre el recurs", spa: "Motivación del comentario del usuario sobre el recurso", eng: "Motivation of user's comment about the resource"});
 
-	document.getElementById("rating-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Puntuació", spa: "Puntuación", eng: "Rating"});
-	/*document.getElementById("undefined-rating-feedback-resource_value").innerHTML=DonaCadenaJSON(Msg_Indefinit);
-	document.getElementById("oneStar-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "1 estrella: Molt dolent", spa: "1 estrella: Muy malo", eng: "1 star: very bad"});
-	document.getElementById("twoStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "2 estrelles: Dolent", spa: "2 estrellas: Malo", eng: "2 stars: Bad"});
-	document.getElementById("threeStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "3 estrelles: Regular", spa: "3 estrellas: Regular", eng: "3 stars: Regular"});
-	document.getElementById("fourStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "4 estrelles: Bo", spa: "4 estrellas: Bueno", eng: "4 stars: Good"});
-	document.getElementById("fiveStars-rating-feedback-resource_value").innerHTML=DonaCadenaJSON({cat: "5 estrelles: Excel·lent", spa: "5 estrellas: Excelente", eng: "5 stars: Excellent"});*/
-	document.getElementById("rating-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Nombre d'estrelles que puntua subjectivament el recurs", spa: "Número de estrellas que puntúa subjetivamente el recurso", eng: "Number of stars that qualifies subjectively the resource"});
+	document.getElementById("usage-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Ús", spa: "Uso", eng: "Usage"});	
+	document.getElementById("reportAspect-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Aspecte reportat", spa: "Aspecto reportado", eng: "Aspect reported"});
+  document.getElementById("reportAspect-feedback-usage-label").innerHTML=DonaCadenaJSON(GUF_ReportAspectCode["usage"]);	
+  document.getElementById("reportAspect-feedback-fitness-for-purpose-label").innerHTML=DonaCadenaJSON(GUF_ReportAspectCode["fitnessForPurpose"]);	
+  document.getElementById("reportAspect-feedback-limitation-label").innerHTML=DonaCadenaJSON(GUF_ReportAspectCode["limitation"]);	
+  document.getElementById("reportAspect-feedback-alternative-label").innerHTML=DonaCadenaJSON(GUF_ReportAspectCode["alternative"]);	
+  document.getElementById("reportAspect-feedback-problem-label").innerHTML=DonaCadenaJSON(GUF_ReportAspectCode["problem"]);	
+	document.getElementById("reportAspect-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Aspecte reportat sobre del recurs(os) objectiu de la valoració", spa: "Aspecto reportado sobre el recuso(s) objetivo de la valoración", eng: "Reported aspect about the target of the feedback item"});	
+	
+	document.getElementById("usage-description-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Descripció de l'ús", spa: "Descripción del uso", eng: "Usage description"});	
+	document.getElementById("specific-usage-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Ús específic", spa: "Uso específico", eng: "Specific usage"});	
+	document.getElementById("specific-usage-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Breu descripció de l'ús del recurs(os) objectiu de la valoració", spa: "Breve descripción del uso del recurso(s) objetivo de la valoración", eng: "Brief description of the target usage"});	
+	document.getElementById("usage-date-time-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Data i  hora de l'ús", spa: "Fecha y hora del uso", eng: "Usage date and time"});	
+	document.getElementById("usage-date-time-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Data i hora de l'ús descrit en aquesta valoració", spa: "Fecha i hora del uso descrito en esta valoración", eng: "Date and time of the usage described in this feedback item"});	
+	document.getElementById("user-determined-limitations-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Limitacions determinades per l'usuari", spa: "Limitaciones determinadas por el usuario", eng: "User determined limitations"});	
+	document.getElementById("user-determined-limitations-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Aplicacions, determinades per l'usuari, per les quals el recurs(os) objectiu de la valoració no és adequat", spa: "Aplicaciones, determinadas por el usuario, para las que el recurso(s) objetivo de la valoración no es adecuado", eng: "Applications, determined by the user, for which the target is not suitable"});	
+	document.getElementById("response-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Resposta", spa: "Respuesta", eng: "Response"});	
+	document.getElementById("response-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Resposta a les limitacions determinades per l'usuari", spa: "Respuesta a las limitaciones determinadas por el usuario", eng: "Responseto the user-determined limitations"});	
+	document.getElementById("add-doc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Additional_documentation);
+	document.getElementById("add-doc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
+	document.getElementById("add-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_citation_not_shared);
 
-	document.getElementById("public-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Publicació(ns) relacionades amb el recurs valorat", spa: "Publicación(es) relacionadas con el recurso valorado", eng: "Publication(s) related to the evaluated resource"});
+	document.getElementById("discovered-issue-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Problema descobert", spa: "Problema descubierto", eng: "Discovered issue"});	
+	document.getElementById("known-problem-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Problema conegut", spa: "Problema conocido", eng: "Known problem"});	
+	document.getElementById("known-problem-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Problema conegut amb el recurs", spa: "Problema conocido con el recurso", eng: "Known problem wih the resource"});	
+	document.getElementById("problem-date-time-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Data i hora del problema conegut", spa: "Fecha y hora del problema conocido", eng: "Known problem date and time"});	
+	document.getElementById("problem-date-time-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Data i hora del problema conegut descrit en aquesta valoració", spa: "Fecha y hora del problema conocidodescrito en esta valoración", eng: "Date and time of the known problem described in this feedback item"});	
+	document.getElementById("work-around-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Solució", spa: "Solución", eng: "Work around"});	
+	document.getElementById("work-around-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Possible manera de solucionar el problema", spa: "Posible manera de solucionar el problema", eng: "Possible way to work around the problem"});
+	document.getElementById("ref-doc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Reference_documents);
+	document.getElementById("ref-doc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
+	document.getElementById("ref-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_publication)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_publication_not_shared);	
+	document.getElementById("expected-fix-date-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Data esperada de solució", spa: "Fecha esperada de solución", eng: "Expected fix date"});	
+	document.getElementById("expected-fix-date-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Data prevista per la distribució d'una solució pel part del proveïdor del recurs", 
+			spa: "Fecha prevista para la distribución de una solución por parte del proveedor del recurso", eng: "Expected date for a solution to be released by the resource provider"});	
+	document.getElementById("fix-rsrc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Fixed_Resource);
+	document.getElementById("fix-rsrc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
+	document.getElementById("fix-rsrc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_citation_not_shared);
+	document.getElementById("alt-rsrc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Alternative_Resource);
+	document.getElementById("alt-rsrc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
+	document.getElementById("alt-rsrc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_citation_not_shared);
+
+	document.getElementById("public-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Related_Publications);
 	//document.getElementById("public_feedback-resource_compact_screen").innerHTML=DonaCadenaJSON({cat: "Publicació(ns)", spa: "Publicación(es)", eng: "Publication(s)"});
 	document.getElementById("public_feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
-	document.getElementById("public_feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Seleccionar] per a escollir una nova publicació.", spa: "Presione [Seleccionar] para escoger una nueva publicación.", 
-		eng: "Press [Select] to choose a new publication."})+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON({cat: "indica que la publicació no està compartida amb tothom.", spa: "indica que la publicación no está compartida con todos.", eng: "indicates that the publication is not shared to everyone."});
+	document.getElementById("public_feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_publication)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_publication_not_shared);
 
 	document.getElementById("open-data-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
  	document.getElementById("open-data-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquesta valoració (i els recursos associats) amb tothom", spa: "Compartir esta valoración (y los recursos asociados) con todos", eng: "If check this feedback (and related resources) will be visible to everyone"});
@@ -748,17 +826,38 @@ function ChangeLanguageTestNewFeedback(lang)
 }
 
 
-// Test Widget Page
+// Test Widget Page & Test Widget Custom Page
 
-function ChangeLanguageTestWidget(lang)
+function ChangeLanguageTestWidget(lang, is_custom)
 {
 	ActiveLanguage=lang;
 	
-	document.getElementById("head_title").innerHTML=DonaCadenaJSON({cat: "Test del NiMMbus Widget", spa: "Test del NiMMbus Widget", eng: "NiMMbus Test Widget"});
 	document.getElementById("front-welcome-text-title").innerHTML=DonaCadenaJSON(Msg_NiMMbus_Test_Pages);
-	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON({cat: "Test per a mostrar l'ús de l'API JavaScript i el Widget de NiMMbus per crear i mostrar valoracions",
+	if (is_custom)
+	{
+		document.getElementById("head_title").innerHTML=DonaCadenaJSON({cat: "Test del NiMMbus Widget Personalitzat", spa: "Test del NiMMbus Widget Personalizado", eng: "NiMMbus Test Custom Widget"});
+		document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON({cat: "Test per a mostrar l'ús de l'API JavaScript i el Widget de NiMMbus per crear i mostrar valoracions. Personalització de l'estil del Widget.",
+				spa: "Test para mostrar el uso del API JavaScript y el Widget de NiMMbus per crear y mostrar valoraciones. Personalización del estilo del Widget.", 
+				eng: "Test to show JavaScrip API and NiMMbus widget use to create and recover feedbacks. Using custom styles in the widget."});
+		document.getElementById("sign_explanation_css_1").innerHTML=DonaCadenaJSON({cat: "En aquesta pàgina, unes poques <b>classes han estat definides</b> a la secció &ltstyle&gt per a canviar: <ul><li>tipus i color de lletra i alçada de línea de <i>guf_report</i><li>color de lletra de <i>guf_key</i>"+
+				"<li>color de fons de <i>guf_folded</i><li>color dels vincles i de les línies horitzontals</ul>Això es pot usar també per decidir quins elements de les valoracions es mostren, modificant la seva propietat \"display\".</p>",
+				spa: "En esta página, unas pocas <b>clases se han definido</b> en la sección &ltstyle&gt para cambiar: <ul><li>tipo y color de letra y altura de línea de <i>guf_report</i><li>color de letra de <i>guf_key</i>"+
+				"<li>color de fondo de <i>guf_folded</i><li>color de los vínculos y de las lineas horizontales</ul>Esto se puede usar también para decidir que elementos de las valoraciones se muestran, modificando su propiedad \"display\".</p>",
+				eng: "In this test page, a few <b>classes have been defined</b> in the &ltstyle&gt section to change:	<ul><li>font family and color and line height of the <i>guf_report</i><li>font color for the <i>guf_key</i>"+
+				"<li>background color of the <i>guf_folded</i><li>color of the links and horizontal lines</ul>This can be also used to decide which elements in the feedback item are shown, by changing their \"display\" property.</p>"});
+		document.getElementById("sign_explanation_css_2").innerHTML=DonaCadenaJSON({cat: "La <b>referència</b> dels noms de classe del full d'estil guf.css que es poden modificar es poden consultar a la pàgina de GitHub ",
+				spa: "La <b>referencia</b> de los nombres de clase de la hoja de estilo guf.css que se pueden modificar se pueden consultar en la página de GitHub ",
+				eng: "The <b>reference</b> of the class names in the guf.css style sheets than can be modified can be read in the "})+
+					"<a href=\"https://github.com/joanma747/nimmbus/tree/master/GUF_integration\" target=\"_blank\">GUF Integration</a>"+
+				DonaCadenaJSON({cat: ".", spa: ".", eng: " GitHub page."})+"</p>";				
+	}
+	else
+	{
+		document.getElementById("head_title").innerHTML=DonaCadenaJSON({cat: "Test del NiMMbus Widget", spa: "Test del NiMMbus Widget", eng: "NiMMbus Test Widget"});
+		document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON({cat: "Test per a mostrar l'ús de l'API JavaScript i el Widget de NiMMbus per crear i mostrar valoracions",
 				spa: "Test para mostrar el uso del API JavaScript y el Widget de NiMMbus per crear y mostrar valoraciones", 
 				eng: "Test to show JavaScrip API and NiMMbus widget use to create and recover feedbacks"});
+	}	
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
 	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
@@ -768,7 +867,7 @@ function ChangeLanguageTestWidget(lang)
 	document.getElementById("sign_in_code").innerHTML=DonaCadenaJSON(Msg_Identifier)+':';
 	document.getElementById("sign_in_codespace").innerHTML=DonaCadenaJSON(Msg_Namespace)+':';
 	document.getElementById("sign_in_btn").value=DonaCadenaJSON({cat: "Afegir/Revisar valoracions prèvies", spa: "Añadir/Revisar valoraciones previas", eng: "Add/Review previous feedback items"});
-	document.getElementById("clear_btn").value=DonaCadenaJSON({cat: "Buidar", spa: "Vaciar", eng: "Clear"});
+	document.getElementById("clear_btn").value=DonaCadenaJSON({cat: "Buidar", spa: "Vaciar", eng: "Clear"});	
 }
 
 // Test Widget Corine Example Page

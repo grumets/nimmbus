@@ -2,12 +2,69 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title id="head_title">NiMMbus Test Widget</title>
+<title id="head_title">NiMMbus Test Custom Widget</title>
 
 <link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
 
 <link rel="stylesheet" href="guf.css">
 <link rel="stylesheet" href="nimmbus.css">
+
+<style>
+	
+div.guf_folded.user {  
+  background: bisque;
+}
+
+span.guf_key.user {
+   color: saddlebrown;
+}
+
+span.guf_key_2.user {
+ 	color: saddlebrown;
+}
+
+hr.guf_dashed.user {	
+	border-top: 1px dashed rosybrown;
+}
+
+hr.guf_solid.user {	
+	border-top: 1px solid rosybrown;
+}
+
+a.guf_link.user:link {
+	color: goldenrod;
+}
+
+a.guf_link.user:hover {
+	color: coral;
+}
+
+a.guf_link.user:visited {
+	color: brown;
+}
+
+div.guf_widget.user {
+	line-height: 1.5;
+	color: peru;
+	font-family: Garamond;
+}
+
+fieldset.guf_fieldset.user
+{
+	border-color: rosybrown;
+}
+
+input.guf_button.user {
+	background-color: bisque;
+  border-color: rosybrown;
+ 	font-family: Garamond;
+}
+
+legend.guf_legend.user {
+	color: DarkOrange;	
+}
+
+</style>
 
 <script language="JavaScript" src="guf.js"></script>
 
@@ -40,7 +97,7 @@ document.onkeydown = function (event)
 
 function InitFrontPage()
 {
-	ChangeLanguageTestWidget(ActiveLanguage, false);
+	ChangeLanguageTestWidget(ActiveLanguage, true);
 }
 
 var TimeOutBoxCloser=0;
@@ -92,7 +149,7 @@ var previous_feedback_loaded=false;
 
 function ChangeLanguageReloadPreviousFeedbackIfNeeded(language)
 {
-	ChangeLanguageTestWidget(language);
+	ChangeLanguageTestWidget(language, true);
 	if (previous_feedback_loaded)
 		LoadPreviousFeedback();
 }
@@ -172,7 +229,7 @@ Español</a>
 English</a>
 </div>
 
-<div class="white-area" style="left: 50%; top: 130px; width: 300px; height: 80px;">
+<div class="white-area" style="left: 50%; top: 25px; width: 300px; height: 80px;">
 <form name="form_guf" onSubmit="return LoadPreviousFeedback();">
 <p class="packet_paragraph" id="sign_in_resource_type"></p>
 <input name="rsc_type" value="resource" size=50></input>
@@ -181,13 +238,15 @@ English</a>
 <p class="packet_paragraph" id="sign_in_code"></p>
 <input name="code" value="clc-2012" size=50></input>
 <p class="packet_paragraph" id="sign_in_codespace"></p>
-<input name="codespace" value="https://land.copernicus.eu" size=50></input><br>
-<br>
+<input name="codespace" value="https://land.copernicus.eu" size=50></input>
+<br><br>
+<p class="packet_paragraph" id="sign_explanation_css_1"></p>
+<p class="packet_paragraph" id="sign_explanation_css_2"></p>
 <input id="sign_in_btn" class="submit_btn" type="submit"><input id="clear_btn" class="submit_btn" type="button" onClick="ClearGUFDiv()")>
-<form>
+</form>
 </div>
 
-<div id="div_guf" class="white-area" style="left: 10%; top: 550px; width: 60%;"></div>
+<div id="div_guf" class="white-area" style="left: 10%; top: 620px; width: 60%;"></div>
 </div>  <!--End of id="front-page" -->
 
 </body>

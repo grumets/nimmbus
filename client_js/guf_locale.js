@@ -83,14 +83,14 @@ var GUF_MotivationCode={"undefined": Msg_Indefinit,
 		"moderation": {cat: "Moderació", spa: "Moderación", eng: "Moderation", fre: "Modération"}};
 
 // GUF Table 13 — GUF_UsageReport data type
-
+			
 // GUF Table 14 — GUF_ReportAspectCode code list
-/*var GUF_ReportAspectCode={"undefined": Msg_Indefinit,
-		"usage":
-		"fitnessForPurpose":
-		"limitation":
-		"alternative":
-		"problem": };*/
+var GUF_ReportAspectCode={
+		"usage": {cat: "Ús", spa: "Uso", eng: "Usage", fre: "Usage"},
+		"fitnessForPurpose": {cat: "Adequació a un propòsit", spa: "Adecuación a un propósito", eng: "Fitness for purpose", fre: "Aptitude à l'emploi"},
+		"limitation": {cat: "Limitació", spa: "Limitación", eng: "Limitation", fre: "Limitation"},
+		"alternative": {cat: "Alternativa", spa: "Alternativa", eng: "Alternative", fre: "Alternative"}, 
+		"problem": {cat: "Problema", spa: "Problema", eng: "Problem", fre: "Problème"}};
 
 // GUF Table 15 — GUF_Rating data type
 // GUF Table 16 — GUF_SignificantEvent data type

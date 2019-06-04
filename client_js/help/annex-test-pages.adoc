@@ -9,6 +9,7 @@ To show NiMMbus GUF integration options, several test pages have been created. M
 A couple of test pages have been created to show the use of the widget to integrate NiMMbus GUF in any community portal:
 
    * General example: +++<a href="../test_widget.htm" target="_blank">test_widget.htm</a>+++
+   * General example with custom styles: +++<a href="../test_widget_custom.htm" target="_blank">test_widget_custom.htm</a>+++
    * Corine Land Cover 2012 example: +++<a href="../test_widget_corine.htm" target="_blank">test_widget_corine.htm</a>+++
 
 === Option 2: JavaScript for the Web API

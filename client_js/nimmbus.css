@@ -446,6 +446,10 @@
 		width: 80%;
 }
 
+.control-fielset-group-level-2 {
+		border: 1px solid #56B4EF;
+		width: 95%;
+}
 .control-label {
     border-bottom: 0 none;
     float: left;
