@@ -241,16 +241,16 @@ var elem, output, item, output2, item2;
 
 function DonaTextDesDeCodeList(item, namespace, code_list)
 {
+	if (item)
+	{
 	var elem=GetXMLElementByName(item, namespace, code_list);
 	if (elem)
 	{
 		var code_list_value=GetXMLAttributeByName(elem, null, "codeListValue");
 		if (code_list_value && code_list_value.value)
 			return code_list_value.value;
-		else
-			return "";
+		}
 	}
-	else
 		return "";
 }
 
