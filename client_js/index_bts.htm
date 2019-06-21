@@ -2441,18 +2441,35 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 						if (elem)
 							document.citation_resource_form.edition_date.value=DonaDataDesDeGcoDateTime(elem);
 						
-						//identifier
-						md_identifier=GetXMLElementByName(citation, "mcc", "MD_Identifier");
-						if (md_identifier)
+						//identifier -> n'hi pot haver més d'un, de fet sempre hi ha el de NiMMbus i potser altres. En teoria pot ser n, nosaltres mostrem 1 (a banda del de NiMbus que no es veu)
+						output_2=GetXMLElementCollectionByName(citation, "mcc", "MD_Identifier");
+						if (output_2 && output_2.length)							
+						{	
+							for (var item_2=0; item_2<output_2.length; item_2++)
 						{
+									var code="", namespace="";
+									
 							//CODE						
-							elem=GetXMLElementByName(md_identifier, "mcc", "code");
+									elem=GetXMLElementByName(output_2.item(item_2), "mcc", "code");
 							if (elem)
-								document.citation_resource_form.id_code.value=DonaTextDesDeGcoCharacterString(elem);
+										code=DonaTextDesDeGcoCharacterString(elem);
 							//NAMESPACE
-							elem=GetXMLElementByName(md_identifier, "mcc", "codeSpace");
+									elem=GetXMLElementByName(output_2.item(item_2), "mcc", "codeSpace");
 							if (elem)
-								document.citation_resource_form.id_namespace.value=DonaTextDesDeGcoCharacterString(elem);
+										namespace=DonaTextDesDeGcoCharacterStringOGcxAnchor(elem);
+									
+									if (code)
+									{
+										if (namespace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+										//aquest és el IdNiMMbus, no el vull mostrar!
+											continue;
+										
+										//si arribo aquí és que tinc un codi amb un namespace que NO és el de NiMMbus (p.ex. és blanc) --> per tant el mostro i plego pq només en mostro un.										
+										document.citation_resource_form.id_namespace.value=namespace;									
+										document.citation_resource_form.id_code.value=code;
+										break;										
+								}									
+							}
 						}
 						
 						//citedResponsibleParty
@@ -2654,22 +2671,38 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 						if (elem)
 							document.publication_resource_form.edition_date.value=DonaDataDesDeGcoDateTime(elem);
 						
-						//identifier
-						md_identifier=GetXMLElementByName(publication, "mcc", "MD_Identifier");
-						if (md_identifier)
+						//identifier -> n'hi pot haver més d'un, de fet sempre hi ha el de NiMMbus i potser altres. En teoria pot ser n, nosaltres mostrem 1 (a banda del de NiMbus que no es veu)
+						output_2=GetXMLElementCollectionByName(publication, "mcc", "MD_Identifier");
+						if (output_2 && output_2.length)							
+						{	
+							for (var item_2=0; item_2<output_2.length; item_2++)
 						{
+									var code="", namespace="";
+									
 							//CODE						
-							elem=GetXMLElementByName(md_identifier, "mcc", "code");
+									elem=GetXMLElementByName(output_2.item(item_2), "mcc", "code");
 							if (elem)
-								document.publication_resource_form.id_code.value=DonaTextDesDeGcoCharacterString(elem);
+										code=DonaTextDesDeGcoCharacterString(elem);
 							//NAMESPACE
-							elem=GetXMLElementByName(md_identifier, "mcc", "codeSpace");
+									elem=GetXMLElementByName(output_2.item(item_2), "mcc", "codeSpace");
 							if (elem)
-								document.publication_resource_form.id_namespace.value=DonaTextDesDeGcoCharacterString(elem);
+										namespace=DonaTextDesDeGcoCharacterStringOGcxAnchor(elem);
+									
+									if (code)
+									{
+										if (namespace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+										//aquest és el IdNiMMbus, no el vull mostrar!
+											continue;
+										
+										//si arribo aquí és que tinc un codi amb un namespace que NO és el de NiMMbus (p.ex. és blanc) --> per tant el mostro i plego pq només en mostro un.										
+										document.publication_resource_form.id_namespace.value=namespace;									
+										document.publication_resource_form.id_code.value=code;
+										break;										
+								}									
+							}
 						}
 						
 						//citedResponsibleParty
-						{		
 							output_2=GetXMLElementCollectionByName(publication, "cit", "citedResponsibleParty");
 							//puc tenir diversos citedResponsibleParty, cada un amb un rol								
 							if (output_2 && output_2.length)							
@@ -2724,7 +2757,6 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 									}
 								}
 							}
-						}
 						
 						//series
 						series=GetXMLElementByName(publication, "cit", "series");

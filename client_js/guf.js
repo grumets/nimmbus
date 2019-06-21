@@ -7,10 +7,10 @@
 
 "use strict"
 
-var ServerGUF="http://localhost/cgi-bin/server1/nimmbus.cgi";
-var ClientGUF="http://localhost/nimmbus/index.htm";
-//var ServerGUF="https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi";
-//var ClientGUF="https://www.opengis.uab.cat/nimmbus/index.htm";
+//var ServerGUF="http://localhost/cgi-bin/server1/nimmbus.cgi";
+//var ClientGUF="http://localhost/nimmbus/index.htm";
+var ServerGUF="https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi";
+var ClientGUF="https://www.opengis.uab.cat/nimmbus/index.htm";
 
 function GUFIncludeScript(url, late)   //https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file
 {
