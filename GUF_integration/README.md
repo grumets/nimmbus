@@ -75,9 +75,9 @@ For example, a call to this function could be:
 	GUFShowFeedbackInHTMLDiv(document.getElementById("div_guf"),
 			"div_guf_internal",
 			"resource",
-			"CORINE map",
-			"1234-5678-901234567",
-			"http://www.bob.com/resources",
+			"Corine Land Cover 2012",
+			"clc-2012",
+			"https://land.copernicus.eu",
 			"eng");
 ```
 
@@ -85,7 +85,7 @@ You can call the function directly or you can provide a button or link to "activ
 
 ```html
 <a href="javascript:void();" onClick='GUFShowFeedbackInHTMLDiv(document.getElementById("div_guf"), "div_guf_internal", "resource",
-"CORINE map", "1234-5678-901234567", "http://www.bob.com/resources", "eng";'>Add user feedback or review previous feedback</a>"
+"CORINE map", "clc-2012", "https://land.copernicus.eu", "eng";)'>Add user feedback or review previous feedback</a>
 ```
 
 You can see all elements together in a general example (using a button) [here](../client_js/test_widget.htm) or applied to the Corine Land Cover 2012 metadata page (using a link) [here](../client_js/test_widget_corine.htm).
