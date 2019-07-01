@@ -25,14 +25,14 @@ You can see this procedure in action in the following working examples:
 The integration is extremely simple.
 
 ### Step 1: Include the JavaScript library in your HTML page
-The modular library is composed of several JavaScript files and a style sheet that should be included in your Javascript application at the beginning of you web page, commonly in the <head> section. To ease the integration only the main JavaScript file and the CSS need to be directly included pointing to the full URL:
+The modular library is composed of several JavaScript files and a style sheet that should be included in your Javascript application at the beginning of you web page, commonly in the <head> section. To ease the integration only the main JavaScript file and the CSS need to be directly included pointing to the full URL. Currently, to avoid CORS error, we recommend to get the files from [here](../client_js/) and point them with a relative URL:
 
 ```js
-<link rel="stylesheet" href="https://raw.githubusercontent.com/joanma747/nimmbus/master/client_js/guf.css">
-<script language="JavaScript" src="https://raw.githubusercontent.com/joanma747/nimmbus/master/client_js/guf.js"></script>
+<link rel="stylesheet" href="guf.css">
+<script language="JavaScript" src="guf.js"></script>
 ```
 
-Alternatively you get the files from [here](../client_js/) and point them with a relative URL. Be aware that more than those two files need to be downloaded, as they are indirectly included by guf.js. You can get them all downloading this [ZIP file](../client_js/widget_files.zip):
+Be aware that more than those two files need to be downloaded, as they are indirectly included by guf.js. The list of complete files follow below and you can get them all downloading this [ZIP file](../client_js/widget_files.zip):
   * guf.css
   * guf.js
   * guf_locale.js
