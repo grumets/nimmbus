@@ -32,7 +32,7 @@ The modular library is composed of several JavaScript files and a style sheet th
 <script language="JavaScript" src="guf.js"></script>
 ```
 
-Be aware that more than those two files need to be downloaded, as they are indirectly included by guf.js. The list of complete files follow below and you can get them all downloading this [ZIP file](../client_js/widget_files.zip):
+Be aware that more than those two files need to be downloaded, as they are indirectly included by guf.js. The list of complete files follow below and you can get them all downloading this [ZIP file](https://raw.githubusercontent.com/joanma747/nimmbus/master/client_js/widget_files.zip):
   * guf.css
   * guf.js
   * guf_locale.js
