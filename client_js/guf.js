@@ -364,7 +364,7 @@ var cdns=[];
 	//if (guf.contact)
 	
 	if (guf.contactRole && GUF_UserRoleCode[guf.contactRole])
-		cdns.push("<div class=\"guf_contact_role user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Rol del contacte", "spa":"Rol del contacto", "eng":"Contact role", "fre":"Rôle de contact"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_UserRoleCode[guf.contactRole], extra_param.lang), "</div>");
+		cdns.push("<div class=\"guf_contact_role user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Rol de l'usuari", "spa":"Rol del usuario", "eng":"User role", "fre":"Rôle de user"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_UserRoleCode[guf.contactRole], extra_param.lang), "</div>");
 
 	if (guf.dateInfo)
 	{
