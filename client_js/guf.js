@@ -163,8 +163,8 @@ var cdns=[];
  		  
 			cdns.push("<fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">", owc.features[i].properties.authors[0].name, ", ", DonaDataISOComAText(owc.features[i].properties.updated), 
 				"</legend>", 							
-				"<div class=\"guf_fb_id\"><span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+extra_param.lang+"&RESOURCE="+str+"\" target=\"_blank\">"+str+"</a></div>",				
-				"<div class=\"guf_title\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Títol", "spa":"Título", "eng":"Title", "fre":"Titre"}, extra_param.lang), "</span>: ", owc.features[i].properties.title,
+				"<div class=\"guf_fb_id user\"><span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+extra_param.lang+"&RESOURCE="+str+"\" target=\"_blank\">"+str+"</a></div>",				
+				"<div class=\"guf_title user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Títol", "spa":"Título", "eng":"Title", "fre":"Titre"}, extra_param.lang), "</span>: ", owc.features[i].properties.title,
 				"</div><div id=\"", extra_param.div_id, "_",i , "\"></div>",
 				"</fieldset>");
 		}
