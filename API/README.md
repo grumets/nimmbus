@@ -91,7 +91,6 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
 
 * Resource Feedback creation particularities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=FEEDBACK
-  * ABSTRACT=
   * CONTACT_ROLE=
   * COMMENT=
   * MOTIVATION=
@@ -99,6 +98,19 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * TARGET_#=
   * TARGET_ROLE_#=
   * PUB_#=
+  * REPORT_ASPECT=	//comma-separated selected values among: usage, fitnessForPurpose, limitation, alternative and problem. E.g. "usage,limitation"
+  * SPECIFIC_USAGE=
+  * USAGE_DATE_TIME=	//Format YYYY-MM-DDTHH:MM:SSZ is required
+  * USER_DETERMINED_LIMITATIONS=
+  * RESPONSE=
+  * ADD_DOC_#=
+  * KNOWN_PROBLEM=
+  * PROBLEM_DATE_TIME=	//Format YYYY-MM-DDTHH:MM:SSZ is required
+  * WORK_AROUND=
+  * REF_DOC_#=
+  * EXPECTED_FIX_DATE=	//Format YYYY-MM-DD is required 
+  * ALT_RSRC_#=
+  * FIX_RSRC_#=
 
 * Resource Citation creation particularities
   * IDENTIFIER=NB_RESOURCE:CREATE&TYPE=CITATION
@@ -210,7 +222,6 @@ If a parameter is not indicated the value is not modified. If the parameter is i
 
 * Resource Feedback modification particularities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=FEEDBACK
-  * ABSTRACT=
   * CONTACT_ROLE=
   * COMMENT=
   * MOTIVATION=
@@ -226,6 +237,19 @@ If a parameter is not indicated the value is not modified. If the parameter is i
 	 1. PUB_# is not described on the NB_RESOURCE:MODIFY, then the publications of this feedback are not changed
 	 2. If one or more PUB_# are defined, then ALL the previous publications of this feedback are deleted and the new list is described
 	 3. There is also the possibility of giving only one PUB_1= empty, and this mean that the current publications are deleted on no one is added
+  * REPORT_ASPECT=	//comma-separated selected values among: usage, fitnessForPurpose, limitation, alternative and problem. E.g. "usage,limitation"
+  * SPECIFIC_USAGE=
+  * USAGE_DATE_TIME=	//Format YYYY-MM-DDTHH:MM:SSZ is required
+  * USER_DETERMINED_LIMITATIONS=
+  * RESPONSE=
+  * ADD_DOC_#=	//Same strategy than for PUB_#= (above in this section) is applied
+  * KNOWN_PROBLEM=
+  * PROBLEM_DATE_TIME=	//Format YYYY-MM-DDTHH:MM:SSZ is required
+  * WORK_AROUND=
+  * REF_DOC_#=	//Same strategy than for PUB_#= (above in this section) is applied
+  * EXPECTED_FIX_DATE=	//Format YYYY-MM-DD is required 
+  * ALT_RSRC_#=	//Same strategy than for PUB_#= (above in this section) is applied
+  * FIX_RSRC_#=	//Same strategy than for PUB_#= (above in this section) is applied
 
 * Resource Citation modification particularities
   * IDENTIFIER=NB_RESOURCE:MODIFY&TYPE=CITATION
