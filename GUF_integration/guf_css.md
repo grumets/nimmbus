@@ -26,7 +26,7 @@ The next table shows the original (in guf.css) and custom (in test_widget_custom
 
 
 ### span.guf_key
-This class is used to describe the style for the names (titles) of the feedback item elements at first level such as "Title", "Abstract", "Purpose", etc and applies to all of them at the same time.
+This class is used to describe the style for the names (titles) of the feedback item elements at first level such as "Abstract", "Purpose", etc and applies to all of them at the same time.
 
 By default is defined as "font-weight: bold".
 
@@ -93,7 +93,6 @@ The list of classes, hierarchically orderer to understand relations (i.e. which 
 * <u>div.guf_add_fb</u>: division for the first fieldset that includes the button to Add new feedback items.
 * <u>div.guf_report</u>: division for the second fieldset that includes the Previous user feedback items, as well as the button to Edit your own.
  * <u>div.guf_fb_id</u>: division for the NiMMbus Id. of the feedback item
- * <u>div.guf_title</u>: division for the Title of the feedback item
  * <u>div.guf_abstract</u>: division for the Abstract of the feedback item
  * <u>div.guf_purpose</u>: division for the Purpose of the feedback item
  * <u>div.guf_contact_role</u>: division for the role of the contact of the feedback item
@@ -141,14 +140,14 @@ A first example of use is to <u>hide a certain class</u>, for example the class 
 | Custom | div.guf_date <br>{<br>	display: none;<br>} | <img src="img/guf_hidden_key.png"/>
 
 
-A second typical example is to change the <u>format of a certain class</u>, for example to change the font of the title to display it in bold and in another color.
+A second typical example is to change the <u>format of a certain class</u>, for example to change the font of the abstract to display it in bold and in another color.
 
 The next table shows the original (in guf.css) and custom class definition, as well as an example of a how the result is displayed, including not only the changes described in this table (i.e. font color change for names of the feedback elements) but also the ones described in the previous sections.
 
 | Style                                   | Code                                                                                                     | Example        |
 |------------------------------------|----------------------------------------------------------------------------------------------------------|----------------|
-| Original              | div.guf_title{}| <img src="img/guf_report_original.png"/> |
-| Custom | div.guf_title.user<br>{<br>color: GoldenRod;<br>font-weight: bold;<br>} | <img src="img/guf_hidden_key_and_title_format.png"/>
+| Original              | div.guf_abstract{}| <img src="img/guf_report_original.png"/> |
+| Custom | div.guf_abstract.user<br>{<br>color: GoldenRod;<br>font-weight: bold;<br>} | <img src="img/guf_hidden_key_and_abstract_format.png"/>
 
 Last example is a general one using <u>many of the options together</u>, modifying the style for all the classes in the general section and some of classes related to specific content section. In fact this example compares the  [test_widget.htm](../client_js/test_widget.htm) and the [test_widget_custom.htm](../client_js/test_widget_custom.htm) examples. Next table shows the same content with the two widget test pages:
 
