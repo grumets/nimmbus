@@ -375,9 +375,9 @@ var usage, usage_descr, discov_issue;
 			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
 			if (identifier)
 			{
-				if (identifier.childNodes[0].nodeValue=="title")
-					guf.title=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-				else if (identifier.childNodes[0].nodeValue=="reason")
+				/*if (identifier.childNodes[0].nodeValue=="title")
+					guf.title=OmpleInputDesDeWPSLiteralOutput(output.item(item));*/
+				if (identifier.childNodes[0].nodeValue=="reason")
 					guf.purpose=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="feedback")
 				{					
@@ -465,8 +465,9 @@ var usage, usage_descr, discov_issue;
 						elem=GetXMLElementByName(feedback_item, "guf", "rating");
 						if (elem)
 							guf.rating=DonaTextDesDeCodeList(elem, "guf", "GUF_RatingCode");
-						else
-							guf.rating="";
+				
+						//·$· guf:contact -> l'he tret de wps:Output/owner_user, però quan el fem més complert (contacte) caldrà llegir aquí. NO queden a guf!
+						//quan ho pensem caldrà mirar si es individual o no, els application domain, etc... son moltes coses i de moment ho deixo
 
 						user_comment=GetXMLElementByName(feedback_item, "guf", "userComment");
 						if (user_comment)

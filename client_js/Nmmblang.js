@@ -441,10 +441,12 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("target_feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Seleccionar] per a escollir un nou recurs valorat.", spa: "Presione [Seleccionar] para escoger un nuevo recurso valorado.", 
 		eng: "Press [Select] to choose a new target item."})+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON({cat: "indica que el recurs no està compartit amb tothom.", spa: "indica que el recurso no está compartido con todos.", eng: "indicates that the resource is not shared to everyone."});
 
-	document.getElementById("title-feedback-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
-	document.getElementById("title-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Bon servidor de mapes", spa: "Buen servidor de mapas", eng: "Good map server"});
+	//document.getElementById("title-feedback-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+	//document.getElementById("title-feedback-resource_screen").innerHTML="Descriptor";//DonaCadenaJSON({cat: "Descriptor", spa: "Descriptor", eng: "Descriptor"}););
+	//document.getElementById("title-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Bon servidor de mapes", spa: "Buen servidor de mapas", eng: "Good map server"});
 	document.getElementById("abstract-feedback-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Abstract);
 	document.getElementById("abstract-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Descripció textual curta de la valoració", spa: "Descripción textual corta de la valoración", eng: "Brief narrative description of the feedback item"});
+	document.getElementById("reason-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Propòsit", spa: "Propósito", eng: "Purpose"});
 	document.getElementById("reason-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Propòsit", spa: "Propósito", eng: "Purpose"});
 	document.getElementById("reason-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Raó o intenció per la qual explico la meva experiència i dono la meva valoració", spa: "Razón o intención por la cual explico mi experiencia y proporciono mi valoración", eng: "Reason or intention with which I explain my experience and provide this feedback"});
 	document.getElementById("contactRole-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Rol de l'usuari", spa: "Rol del usuario", eng: "User role"});
@@ -497,7 +499,7 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("user-determined-limitations-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Limitacions determinades per l'usuari", spa: "Limitaciones determinadas por el usuario", eng: "User determined limitations"});	
 	document.getElementById("user-determined-limitations-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Aplicacions, determinades per l'usuari, per les quals el recurs(os) objectiu de la valoració no és adequat", spa: "Aplicaciones, determinadas por el usuario, para las que el recurso(s) objetivo de la valoración no es adecuado", eng: "Applications, determined by the user, for which the target is not suitable"});	
 	document.getElementById("response-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Resposta", spa: "Respuesta", eng: "Response"});	
-	document.getElementById("response-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Resposta a les limitacions determinades per l'usuari", spa: "Respuesta a las limitaciones determinadas por el usuario", eng: "Responseto the user-determined limitations"});	
+	document.getElementById("response-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Resposta a les limitacions determinades per l'usuari", spa: "Respuesta a las limitaciones determinadas por el usuario", eng: "Response to the user-determined limitations"});	
 	document.getElementById("add-doc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Additional_documentation);
 	document.getElementById("add-doc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
 	document.getElementById("add-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_citation_not_shared);

@@ -251,7 +251,7 @@ Example of a successful feedback retrieval:
       <ows:Identifier>title</ows:Identifier>
       <ows:Title>Resource title</ows:Title>
       <wps:Data>
-            <wps:LiteralData>Good map server</wps:LiteralData>
+            <wps:LiteralData>Good map server. Corine is difficult to compare with my product</wps:LiteralData>
       </wps:Data>
     </wps:Output>
     <wps:Output>
@@ -275,13 +275,10 @@ Example of a successful feedback retrieval:
 						<mcc:codeSpace>
 							<gcx:Anchor xlink:href="http://www.opengis.uab.cat/nimmbus/resourceId">ResourceID</gcx:Anchor>
 						</mcc:codeSpace>
-						<mcc:description>
-							<gco:CharacterString>Good map server</gco:CharacterString>
-						</mcc:description>
 					</mcc:MD_Identifier>
 				</guf:itemIdentifier>
 				<guf:abstract>
-					<gco:CharacterString>Corine is difficult to compare with my product</gco:CharacterString>
+					<gco:CharacterString>Good map server. Corine is difficult to compare with my product</gco:CharacterString>
 				</guf:abstract>
 				<guf:contactRole>
 					<guf:GUF_UserRoleCode codeListValue="researchEndUser" codeList="http://www.opengis.net/guf/1.0/resources/codeList.xml#GUF_UserRoleCode"/>
@@ -410,10 +407,8 @@ Example of a successful feedback retrieval:
 ```
 
 Normally the application will extract the needed values to show to the user. This are the xPath of the most common values to extract.
-title:
-wps:ExecuteResponse/wps:ProcessOutputs/wps:Output[ows:Identifier="feedback"]/wps:Data/wps:ComplexData/guf:GUF_FeedbackItem/guf:itemIdentifier/mcc:MD_Identifier/mcc:description/gco:CharacterString
 
-abstract:
+Abstract:
 wps:ExecuteResponse/wps:ProcessOutputs/wps:Output[ows:Identifier="feedback"]/wps:Data/wps:ComplexData/guf:GUF_FeedbackItem/guf:abstract/gco:CharacterString
 
 Rating:

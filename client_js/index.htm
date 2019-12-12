@@ -22,6 +22,38 @@
 <script language="JavaScript" src="nextgeoss.js"></script>
 
 <script>
+
+function CollapseFieldset(elem, state)
+/* "state" can be:
+- undefined -> the current state of the property is changed
+- none/block -> this state is applied */
+{
+var div=elem.nextElementSibling;
+	if (div)
+	{
+		if (state)
+		{
+			if (state=="none")
+				div.style.display="block";
+			else if (state=="block")
+				div.style.display="none";
+			//if I do not understand what "state" is, it is not used
+		}
+		
+		if (div.style.display=="none")
+		{
+			div.style.display="block";
+			elem.classList.remove("collapsed");
+		}	
+		else
+		{
+			div.style.display="none";
+			elem.classList.add("collapsed");
+		}
+	}
+}
+
+	
 <!--
 
 //var ServersNB=["http://localhost/cgi-bin/server1/nimmbus.cgi","http://localhost/cgi-bin/server2/nimmbus.cgi"];
@@ -2049,18 +2081,24 @@ var root, output, identifier, s, feedback_item, user_comment;
 	}
 	OmpleRecursTargetsDesDeTargetsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
 	
-	if (guf.title)
+	/*if (guf.title)
 		document.feedback_resource_form.title.value=guf.title;
 	else
-		document.feedback_resource_form.title.value="";
-	if (guf.purpose)
-		document.feedback_resource_form.reason.value=guf.purpose;
-	else
-		document.feedback_resource_form.reason.value="";		
+		document.feedback_resource_form.title.value="";*/
 	if (guf.abstract)
 		document.feedback_resource_form.abstract.value=guf.abstract;
 	else
 		document.feedback_resource_form.abstract.value="";
+	if (guf.purpose)
+	{
+		document.feedback_resource_form.reason.value=guf.purpose;
+		CollapseFieldset(document.getElementById("reason-feedback-resource"), "block"); //not collapsed if it has content
+	}
+	else
+	{
+		document.feedback_resource_form.reason.value="";		
+		CollapseFieldset(document.getElementById("reason-feedback-resource"), "none"); //default is collapsed
+	}
 	if (guf.contactRole)
 		SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, guf.contactRole);
 	else //--> en aquest desplegable no hi ha un indefinit perquè és obligatori, valor per defecte el posem a publicGeneral
@@ -2082,6 +2120,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 		document.feedback_resource_form.comment.value="";
 		SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, "undefined");
 	}
+	CollapseFieldset(document.getElementById("user-comment-feedback-resource"), "block"); //default is not collapsed so shown even if empty
 		
 	//if (guf.rating) -> dins la funció ja es mira i, si no, es marca tot a indefinit! (sino veuria "la darrera" puntuació!)
 		SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, guf.rating);
@@ -2097,6 +2136,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 	document.getElementById("reportAspect-feedback-problem").checked = false;
 	if (guf.usage)
 	{
+		CollapseFieldset(document.getElementById("usage-feedback-resource"), "block"); //not collapsed if it has content
 		if (guf.usage.reportAspect && guf.usage.reportAspect.length>0)
 		{
 			for (var item=0; item<guf.usage.reportAspect.length; item++)
@@ -2116,6 +2156,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 		
 		if (guf.usage.usage_descr)
 		{
+			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "block"); //not collapsed if it has content
 			if (guf.usage.usage_descr.specific_usage)
 				document.feedback_resource_form.specific_usage.value=guf.usage.usage_descr.specific_usage;
 			else
@@ -2168,7 +2209,13 @@ var root, output, identifier, s, feedback_item, user_comment;
 		 			if (AddDocsOfAFeedback.length!=item+1) 	//cas molt estrany que no he trobat id NiMMbus
 		 				ShowInfo("long", DonaCadenaJSON(Msg_AddDoc_without_NiMMbus_id));
 				}
+				if (guf.usage.usage_descr.add_doc.length>0)
+					CollapseFieldset(document.getElementById("add-doc-feedback-resource"), "block"); //not collapsed if it has content
+				else				
+					CollapseFieldset(document.getElementById("add-doc-feedback-resource"), "none"); //default is collapsed	
 			}
+			else				
+				CollapseFieldset(document.getElementById("add-doc-feedback-resource"), "none"); //default is collapsed	
 			OmpleRecursAddDocsDesDeAddDocsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
 		}
 		else
@@ -2181,10 +2228,13 @@ var root, output, identifier, s, feedback_item, user_comment;
 			AddDocsOfAFeedback.length=0;
 			AddDocsOfAFeedbackHaveChanged=false;
 			OmpleRecursAddDocsDesDeAddDocsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
+			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "none"); //default is collapsed
+			CollapseFieldset(document.getElementById("add-doc-feedback-resource"), "none"); //default is collapsed
 		}
 		
 		if (guf.usage.discov_issue)
 		{
+			CollapseFieldset(document.getElementById("discovered-issue-feedback-resource"), "block"); //not collapsed if it has content
 			if (guf.usage.discov_issue.known_problem)
 				document.feedback_resource_form.known_problem.value=guf.usage.discov_issue.known_problem;
 			else
@@ -2232,7 +2282,13 @@ var root, output, identifier, s, feedback_item, user_comment;
 		 			if (RefDocsOfAFeedback.length!=item+1) 	//cas molt estrany que no he trobat id NiMMbus
 		 				ShowInfo("long", DonaCadenaJSON(Msg_RefDoc_without_NiMMbus_id));
 				}
+				if (guf.usage.discov_issue.ref_doc.length>0)
+					CollapseFieldset(document.getElementById("ref-doc-feedback-resource"), "block"); //not collapsed if it has content
+				else				
+					CollapseFieldset(document.getElementById("ref-doc-feedback-resource"), "none"); //default is collapsed	
 			}
+			else				
+				CollapseFieldset(document.getElementById("ref-doc-feedback-resource"), "none"); //default is collapsed	
 			OmpleRecursRefDocsDesDeRefDocsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
 			
 			if (guf.usage.discov_issue.exp_fix_date)
@@ -2260,7 +2316,13 @@ var root, output, identifier, s, feedback_item, user_comment;
 		 			if (FixRsrcsOfAFeedback.length!=item+1) 	//cas molt estrany que no he trobat id NiMMbus
 		 				ShowInfo("long", DonaCadenaJSON(Msg_FixRsrc_without_NiMMbus_id));
 				}
+				if (guf.usage.discov_issue.fix_rsrc.length>0)
+					CollapseFieldset(document.getElementById("fix-rsrc-feedback-resource"), "block"); //not collapsed if it has content
+				else				
+					CollapseFieldset(document.getElementById("fix-rsrc-feedback-resource"), "none"); //default is collapsed	
 			}
+			else				
+				CollapseFieldset(document.getElementById("fix-rsrc-feedback-resource"), "none"); //default is collapsed	
 			OmpleRecursFixRsrcsDesDeFixRsrcsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
 
 			AltRsrcsOfAFeedback.length=0;
@@ -2283,7 +2345,13 @@ var root, output, identifier, s, feedback_item, user_comment;
 		 			if (AltRsrcsOfAFeedback.length!=item+1) 	//cas molt estrany que no he trobat id NiMMbus
 		 				ShowInfo("long", DonaCadenaJSON(Msg_AltRsrc_without_NiMMbus_id));
 				}
+				if (guf.usage.discov_issue.alt_rsrc.length>0)
+					CollapseFieldset(document.getElementById("alt-rsrc-feedback-resource"), "block"); //not collapsed if it has content
+				else				
+					CollapseFieldset(document.getElementById("alt-rsrc-feedback-resource"), "none"); //default is collapsed	
 			}
+			else				
+				CollapseFieldset(document.getElementById("alt-rsrc-feedback-resource"), "none"); //default is collapsed	
 			OmpleRecursAltRsrcsDesDeAltRsrcsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
 		}
 		else
@@ -2302,6 +2370,10 @@ var root, output, identifier, s, feedback_item, user_comment;
 			AltRsrcsOfAFeedback.length=0;
 			AltRsrcsOfAFeedbackHaveChanged=false;
 			OmpleRecursAltRsrcsDesDeAltRsrcsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
+			CollapseFieldset(document.getElementById("discovered-issue-feedback-resource"), "none"); //default is collapsed
+			CollapseFieldset(document.getElementById("ref-doc-feedback-resource"), "none"); //default is collapsed
+			CollapseFieldset(document.getElementById("fix-rsrc-feedback-resource"), "none"); //default is collapsed
+			CollapseFieldset(document.getElementById("alt-rsrc-feedback-resource"), "none"); //default is collapsed		
 		}
 	}
 	else //tot en blanc
@@ -2328,6 +2400,13 @@ var root, output, identifier, s, feedback_item, user_comment;
 		AltRsrcsOfAFeedback.length=0;
 		AltRsrcsOfAFeedbackHaveChanged=false;
 		OmpleRecursAltRsrcsDesDeAltRsrcsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);	
+		CollapseFieldset(document.getElementById("usage-feedback-resource"), "none"); //default is collapsed
+		CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "none"); //default is collapsed
+		CollapseFieldset(document.getElementById("add-doc-feedback-resource"), "none"); //default is collapsed
+		CollapseFieldset(document.getElementById("discovered-issue-feedback-resource"), "none"); //default is collapsed
+		CollapseFieldset(document.getElementById("ref-doc-feedback-resource"), "none"); //default is collapsed
+		CollapseFieldset(document.getElementById("fix-rsrc-feedback-resource"), "none"); //default is collapsed
+		CollapseFieldset(document.getElementById("alt-rsrc-feedback-resource"), "none"); //default is collapsed		
 	}
 
 	PublicsOfAFeedback.length=0;
@@ -2350,7 +2429,13 @@ var root, output, identifier, s, feedback_item, user_comment;
  			if (PublicsOfAFeedback.length!=item+1) 	//cas molt estrany que no he trobat id NiMMbus
  				ShowInfo("long", DonaCadenaJSON(Msg_Public_without_NiMMbus_id));
 		}
+		if (guf.public.length>0)
+			CollapseFieldset(document.getElementById("public-feedback-resource"), "block"); //not collapsed if it has content	
+		else
+			CollapseFieldset(document.getElementById("public-feedback-resource"), "none"); //default is collapsed			
 	}
+	else
+		CollapseFieldset(document.getElementById("public-feedback-resource"), "none"); //default is collapsed			
 	OmpleRecursPublicsDesDePublicsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
 
 	if (guf.rights)
@@ -4126,6 +4211,68 @@ function MostraOAmagaExclamacioDeShareAElementsDeFeedback()
 		else
 			document.getElementById("public_feedback-resource_compact_list_"+(item+1)+"_open").style.display='none';		
 	}
+	}
+
+function BuidaPlegaFeedbackElements()
+{
+	//Es fa des de fora pq és un tema que es gestiona sempre a banda
+	
+	//TargetsOfAFeedback.length=0;
+	//TargetsOfAFeedbackHaveChanged=false;
+	//OmpleRecursTargetsDesDeTargetsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
+	//També he de marcar-me que els recursos de selecció "han canviat", si no si no els toco, quan envii dirà que no han canviat i no s'enviarà encara que jo ho estava veient!!!
+	document.feedback_resource_form.abstract.value="";
+	document.feedback_resource_form.reason.value="";		
+	CollapseFieldset(document.getElementById("reason-feedback-resource"), "none"); //default is collapsed
+	
+	SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, "generalPublic");
+	
+	document.feedback_resource_form.comment.value="";
+	SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, "undefined");
+	CollapseFieldset(document.getElementById("user-comment-feedback-resource"), "block"); //default is not collapsed so shown even if empty
+	
+	SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, "");
+
+	document.getElementById("reportAspect-feedback-usage").checked = false;
+	document.getElementById("reportAspect-feedback-fitness-for-purpose").checked = false;
+	document.getElementById("reportAspect-feedback-limitation").checked = false;
+	document.getElementById("reportAspect-feedback-alternative").checked = false;
+	document.getElementById("reportAspect-feedback-problem").checked = false;
+
+	document.feedback_resource_form.specific_usage.value="";
+	document.feedback_resource_form.usage_date.value="";	
+	document.feedback_resource_form.usage_time.value="";	
+	document.feedback_resource_form.user_determined_limitations.value="";
+	document.feedback_resource_form.response.value="";			
+	AddDocsOfAFeedback.length=0;
+	AddDocsOfAFeedbackHaveChanged=false;
+	OmpleRecursAddDocsDesDeAddDocsOfAFeedback(true);
+	document.feedback_resource_form.known_problem.value="";
+	document.feedback_resource_form.problem_date.value="";	
+	document.feedback_resource_form.problem_time.value="";
+	document.feedback_resource_form.work_around.value="";		
+	RefDocsOfAFeedback.length=0;
+	RefDocsOfAFeedbackHaveChanged=false;
+	OmpleRecursRefDocsDesDeRefDocsOfAFeedback(true);
+	document.feedback_resource_form.expected_fix_date.value="";	
+	FixRsrcsOfAFeedback.length=0;
+	FixRsrcsOfAFeedbackHaveChanged=false;
+	OmpleRecursFixRsrcsDesDeFixRsrcsOfAFeedback(true);
+	AltRsrcsOfAFeedback.length=0;
+	AltRsrcsOfAFeedbackHaveChanged=false;
+	OmpleRecursAltRsrcsDesDeAltRsrcsOfAFeedback(true);	
+	CollapseFieldset(document.getElementById("usage-feedback-resource"), "none"); //default is collapsed
+	CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "none"); //default is collapsed
+	CollapseFieldset(document.getElementById("add-doc-feedback-resource"), "none"); //default is collapsed
+	CollapseFieldset(document.getElementById("discovered-issue-feedback-resource"), "none"); //default is collapsed
+	CollapseFieldset(document.getElementById("ref-doc-feedback-resource"), "none"); //default is collapsed
+	CollapseFieldset(document.getElementById("fix-rsrc-feedback-resource"), "none"); //default is collapsed
+	CollapseFieldset(document.getElementById("alt-rsrc-feedback-resource"), "none"); //default is collapsed		
+
+	PublicsOfAFeedback.length=0;
+	PublicsOfAFeedbackHaveChanged=false;
+	CollapseFieldset(document.getElementById("public-feedback-resource"), "none"); //default is collapsed			
+	OmpleRecursPublicsDesDePublicsOfAFeedback(true);	
 }
 
 function MostraFeedbackResource(id, target)
@@ -4134,14 +4281,9 @@ function MostraFeedbackResource(id, target)
 	if (id=='')
 	{
 		TargetsOfAFeedback.length=0;
-		//Estic creant un FB nou, per tant he de posar el rating a indefinit perquè si no em queda el de la darrer FB que he obert, i en aquest cas no interessa (per si vull fer un comment SENSE rating!)
-		SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, "");
-		//També he de marcar-me que els  recursos de selecció "han canviat", si no si no els toco, quan envii dirà que no han canviat i no s'enviarà encara que jo ho estava veient!!!
-		AddDocsOfAFeedbackHaveChanged=true;
-		RefDocsOfAFeedbackHaveChanged=true;
-		AltRsrcsOfAFeedbackHaveChanged=true;
-		FixRsrcsOfAFeedbackHaveChanged=true;
-		PublicsOfAFeedbackHaveChanged=true;		
+		//Estic creant un FB nou, per tant he de posar tot en blanc (també el rating a indefinit perquè si no em queda
+			//el rating de la darrer FB que he obert, i en aquest cas no interessa (per si vull fer un comment SENSE rating!))
+		BuidaPlegaFeedbackElements();		
 		document.getElementById("open-data-feedback-resource_screen_value").checked=true; //una valoració nova la marco compartida amb anònim per defecte		
 	}
 		
@@ -4959,9 +5101,9 @@ function SendFeedbackResourceChanges()
 {
 var s,s2;
 
-	if (document.feedback_resource_form.title.value=="")
+	if (document.feedback_resource_form.abstract.value=="")
 	{
-		ShowInfo("long", DonaCadenaIdNoPotSerBuit("title-feedback-resource_screen"));
+		ShowInfo("long", DonaCadenaIdNoPotSerBuit("abstract-feedback-resource_screen"));
 		return false;
 	}
 	RemoveInfo("long");
@@ -5054,8 +5196,9 @@ var s,s2;
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
-			"&TYPE=FEEDBACK"+"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.title.value)+
-			"&ABSTRACT="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.abstract.value)+
+			"&TYPE=FEEDBACK"+//"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.title.value)+ 
+			//-> eliminem abstract (per redundant) i l'antic abstract serà el títol. Pre compatibilitat i coherència amb altres recursos, en la sintaxi de resource CREATE/MODIFY es diu TITLE
+			"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.abstract.value)+
 			"&REASON="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.reason.value)+
 			"&CONTACT_ROLE="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.contactRole)+
 			"&RATING="+DonaCadenaCodelistDeRadio(document.feedback_resource_form.rating)+
@@ -6621,14 +6764,6 @@ Sign out</a>
 </fieldset> <!--End of id="target-feedback-resource" -->
 
 <br>
-<div id="title-feedback-resource_fieldset" class="control-group">
-<label class="control-label" id="title-feedback-resource_screen" for="title-feedback-resource_screen_value"></label>
-<div class="controls">
-<input type="text" class="text-input" value="" id="title-feedback-resource_screen_value" name="title" style="width: 80%;" maxlength="254"/>
-<p id="title-feedback-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="title-feedback-resource_fieldset" -->
-
 <div id="abstract-feedback-resource_fieldset" class="control-group">
 <label class="control-label" id="abstract-feedback-resource_screen" for="abstract-feedback-resource_screen_value"></label>
 <div class="controls">
@@ -6638,14 +6773,27 @@ Sign out</a>
 </div>
 </div>  <!--End of id="abstract-feedback-resource_fieldset" -->
 
+<fieldset class="control-fielset-group">
+<legend id="reason-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'>PROVES</legend>
+<div style="display: none;"> <!-- for collapsible -->
+	<!-- div id="title-feedback-resource_fieldset">
+	<label class="control-label" id="title-feedback-resource_screen" for="title-feedback-resource_screen_value"></label>
+	<div class="controls">
+	<input type="text" class="text-input" value="" id="title-feedback-resource_screen_value" name="title" style="width: 80%;" maxlength="254"/>
+	<p id="title-feedback-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+	</div>  <!- - End of id="title-feedback-resource_fieldset" -->
 <div id="reason-feedback-resource_fieldset" class="control-group">
 <label class="control-label" id="reason-feedback-resource_screen" for="reason-feedback-resource_screen_value"></label>
 <div class="controls">
 <p id="reason-feedback-resource_alert" style="display: none;"></p>
-<textarea class="text-input" id="reason-feedback-resource_screen_value" name="reason" maxlength="1999" style="width: 80%; height: 60px;"></textarea>
+	<textarea class="text-input" id="reason-feedback-resource_screen_value" name="reason" maxlength="1999" style="width: 100%; height: 60px;"></textarea>
 <p id="reason-feedback-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 </div>
 </div>  <!--End of id="reason-feedback-resource_fieldset" -->
+</div> <!-- End of this collapsible -->
+</fieldset> <!--End of id="reason-feedback-resource" -->
+<br>
 
 <div id="contactRole-feedback-resource_fieldset" class="control-group">
 <label class="control-label" id="contactRole-feedback-resource_screen" for="contactRole-feedback-resource_screen_value"></label>
@@ -6693,8 +6841,8 @@ Sign out</a>
 </div>  <!--End of id="rating-feedback-resource_fieldset" -->
 
 <fieldset class="control-fielset-group">
-<legend id="user-comment-feedback-resource"></legend>
-
+<legend id="user-comment-feedback-resource" class="collapsible" onClick='CollapseFieldset(this);'></legend>
+<div> <!-- for collapsible -->
 	<div id="comment-feedback-resource_fieldset" class="control-group">
 	<label class="control-label" id="comment-feedback-resource_screen" for="comment-feedback-resource_screen_value"></label>
 	<div class="controls">
@@ -6721,12 +6869,12 @@ Sign out</a>
 	<p id="comment-motiv-feedback-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 	</div>
 	</div>  <!--End of id="comment-motiv-feedback-resource_fieldset" -->
-
+</div> <!-- End of this collapsible -->	
 </fieldset> <!-- End of id="user-comment-feedback-resource" -->
 
 <fieldset class="control-fielset-group">
-<legend id="usage-feedback-resource"></legend>
-
+<legend id="usage-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>
+<div style="display: none;">
 	<div id="reportAspect-feedback-resource_fieldset" class="control-group">
 	<label class="control-label" id="reportAspect-feedback-resource_screen" for="reportAspect-feedback-resource_screen_value"></label>
 	<div class="controls">
@@ -6735,20 +6883,15 @@ Sign out</a>
   	<input type="checkbox" id="reportAspect-feedback-limitation" value="limitation"><label id="reportAspect-feedback-limitation-label" class="compact_descrip_in_FB"></label>
   	<input type="checkbox" id="reportAspect-feedback-alternative" value="alternative"><label id="reportAspect-feedback-alternative-label" class="compact_descrip_in_FB"></label>
   	<input type="checkbox" id="reportAspect-feedback-problem" value="problem"><label id="reportAspect-feedback-problem-label" class="compact_descrip_in_FB"></label>
-  	<!-- Primera opció, escrivint una "i" i sense imatge -> JM diu de posar imatge
-  	input id="reportAspect-feedback-info_btn" class="add_resource_btn" type="button" value="i" onClick="ShowInfo('reportAspect', DonaCadenaJSON(Msg_report_aspect_info));"/-->
-  	<!-- Segon opció, si poso type=image aleshores em provoca un SBMIT i noho vull! sembla que launica manera de que no sigui submit es dient type=button perp aleshores no em mostra la imatge!
-  	input id="reportAspect-feedback-info_btn" class="add_resource_btn" type="image" src="info20.png" onClick="ShowInfo('reportAspect', DonaCadenaJSON(Msg_report_aspect_info));"/-->
   	<input id="reportAspect-feedback-info_btn" class="add_resource_btn" type="image" src="info20.png" onClick="ShowInfo('reportAspect', DonaCadenaJSON(Msg_report_aspect_info));return false;"/>
 	<p id="reportAspect-feedback-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 	</div>
-	<!--div class="reportAspect-note-outer"-->
 	<div id="reportAspect-note" class="note-inner"></div>
-	<!--/div-->				
 	</div>  <!--End of id="reportAspect-feedback-resource_fieldset" -->
 	
-	<fieldset class="control-fielset-group-level-2">
-		<legend id="usage-description-feedback-resource"></legend>
+	<fieldset id="f-usage-description-feedback-resource" class="control-fielset-group-level-2">
+		<legend id="usage-description-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>
+		<div style="display: none;"> <!-- usageDesc -->
 		
 		<div id="specific-usage-feedback-resource_fieldset" class="control-group">
 			<label class="control-label" id="specific-usage-feedback-resource_screen" for="specific-usage-feedback-resource_screen_value"></label>
@@ -6788,23 +6931,25 @@ Sign out</a>
 			</div>
 		</div>  <!--End of id="response-limitations-feedback-resource_fieldset" -->
 
-		<fieldset class="control-fielset-group-level-2">
-			<legend id="add-doc-feedback-resource"></legend>
+		<fieldset id="f-add-doc-feedback-resource" class="control-fielset-group-level-2">			
+			<legend id="add-doc-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>
+			<div style="display: none;"> <!-- for collapsible -->
 			<p id="add-doc-feedback-resource_compact_list" class="compact_descrip_in_FB"></p>
 			<input id="add-doc-feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
 				onClick="ObreSelectorGeneral(true, 'CITATION', 'FEEDBACK', 'ADD_DOC');"/> 
 			<p id="add-doc-feedback-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
+			</div> <!-- for collapsible -->
 		</fieldset> <!--End of id="add-doc-feedback-resource" -->
 	
 		<!-- identified-issues -> no ho posem a propòsit perquè a dins GUF ha de ser discovered issues! -->
-
+ 	</div> <!-- End of usageDesc collapsible -->
 	</fieldset> <!-- End of id="usage-description-feedback-resource" -->
 	
-	<fieldset class="control-fielset-group-level-2">
-		<legend id="discovered-issue-feedback-resource"></legend>
+	<fieldset id="f-discovered-issue-feedback-resource" class="control-fielset-group-level-2">
+		<legend id="discovered-issue-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>	
+		<div style="display: none;"> <!-- for discvIssue collapsible -->
 		
 		<!-- aqui falta el target, que en aquest cas és el mateix de fb item i no el posem -->
-		
 		<div id="known-problem-feedback-resource_fieldset" class="control-group">
 			<label class="control-label" id="known-problem-feedback-resource_screen" for="known-problem-feedback-resource_screen_value"></label>
 			<div class="controls">
@@ -6832,12 +6977,14 @@ Sign out</a>
 			</div>
 		</div>  <!--End of id="work-around-feedback-resource_fieldset" -->
 
-		<fieldset class="control-fielset-group-level-2">
-			<legend id="ref-doc-feedback-resource"></legend>
+		<fieldset id="f-ref-doc-feedback-resource" class="control-fielset-group-level-2">
+			<legend id="ref-doc-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>
+			<div style="display: none;"> <!-- for collapsible -->
 			<p id="ref-doc-feedback-resource_compact_list" class="compact_descrip_in_FB"></p>
 			<input id="ref-doc-feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
 				onClick="ObreSelectorGeneral(true, 'PUBLICAT', 'FEEDBACK', 'REF_DOC');"/> 
 			<p id="ref-doc-feedback-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
+			</div> <!-- End of this collapsible -->
 		</fieldset> <!--End of id="ref-doc-feedback-resource" -->
 
 <br>
@@ -6849,33 +6996,40 @@ Sign out</a>
 </div>
 		</div>  <!--End of id="expected-fix-date-feedback-resource_fieldset" -->
 		
-		<fieldset class="control-fielset-group-level-2">
-			<legend id="fix-rsrc-feedback-resource"></legend>
+		<fieldset id="f-fix-rsrc-feedback-resource" class="control-fielset-group-level-2">
+			<legend id="fix-rsrc-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>
+			<div style="display: none;"> <!-- for collapsible -->
 			<p id="fix-rsrc-feedback-resource_compact_list" class="compact_descrip_in_FB"></p>
 			<input id="fix-rsrc-feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
 				onClick="ObreSelectorGeneral(true, 'CITATION', 'FEEDBACK', 'FIX_RSRC');"/> 
 			<p id="fix-rsrc-feedback-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
+			</div> <!-- End of this collapsible -->	
 		</fieldset> <!--End of id="fix-rsrc-feedback-resource" -->
 	
 		<br>
-		<fieldset class="control-fielset-group-level-2">
-			<legend id="alt-rsrc-feedback-resource"></legend>
+		<fieldset id="f-alt-rsrc-feedback-resource" class="control-fielset-group-level-2">
+			<legend id="alt-rsrc-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this)';></legend>
+			<div style="display: none;"> <!-- for collapsible -->
 			<p id="alt-rsrc-feedback-resource_compact_list" class="compact_descrip_in_FB"></p>
 			<input id="alt-rsrc-feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
 				onClick="ObreSelectorGeneral(true, 'CITATION', 'FEEDBACK', 'ALT_RSRC');"/> 
 			<p id="alt-rsrc-feedback-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
+			</div> <!-- End of this collapsible -->	
 		</fieldset> <!--End of id="alt-rsrc-feedback-resource" -->
 
+	</div> <!-- End of discvIssue collapsible -->	
 	</fieldset> <!-- End of id="discovered-issue-feedback-resource" -->
-
+</div> <!-- End of usage collapsible -->	
 </fieldset> <!-- End of id="usage-feedback-resource" -->
 
-<fieldset class="control-fielset-group">
-<legend id="public-feedback-resource"></legend>
+<fieldset id="f-public-feedback-resource" class="control-fielset-group">
+<legend id="public-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>
+	<div style="display: none;"> <!-- for collapsible -->
 	<p id="public_feedback-resource_compact_list" class="compact_descrip_in_FB"></p>
 	<input id="public_feedback-resource_compact_add_btn" class="submit_btn" type="button" value="Add" 
 		onClick="ObreSelectorGeneral(true, 'PUBLICAT', 'FEEDBACK', 'PUBLICAT');"/>
 	<p id="public_feedback-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
+	</div>
 </fieldset> <!--End of id="public-feedback-resource" -->
 
 <br>
