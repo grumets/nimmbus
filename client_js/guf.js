@@ -164,7 +164,7 @@ var cdns=[];
 			cdns.push("<fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">", owc.features[i].properties.authors[0].name, ", ", DonaDataISOComAText(owc.features[i].properties.updated), 
 				"</legend>", 							
 				"<div class=\"guf_fb_id user\"><span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+extra_param.lang+"&RESOURCE="+str+"\" target=\"_blank\">"+str+"</a></div>",				
-				"<div class=\"guf_title user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Títol", "spa":"Título", "eng":"Title", "fre":"Titre"}, extra_param.lang), "</span>: ", owc.features[i].properties.title,
+				"<div class=\"guf_abstract user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Résumé"}, extra_param.lang), "</span>: ", owc.features[i].properties.title,
 				"</div><div id=\"", extra_param.div_id, "_",i , "\"></div>",
 				"</fieldset>");
 		}
@@ -355,8 +355,8 @@ var cdns=[];
 	if (guf.identifier)
 		cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.identifier, extra_param.lang, true));*/
 	
-	if (guf.abstract)
-		cdns.push("<div class=\"guf_abstract user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Abstrait"}, extra_param.lang), ":</span> ", guf.abstract, "</div>");
+	/*if (guf.abstract) ja no existeix pq és el feature.title que JA he posat)
+		cdns.push("<div class=\"guf_abstract user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Abstrait"}, extra_param.lang), ":</span> ", guf.abstract, "</div>");*/
 
 	if (guf.purpose)
 		cdns.push("<div class=\"guf_purpose user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Propòsit", "spa":"Propósito", "eng":"Purpose", "fre":"Raison"}, extra_param.lang), ":</span> ", guf.purpose, "</div>");
