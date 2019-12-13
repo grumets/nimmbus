@@ -466,9 +466,6 @@ var usage, usage_descr, discov_issue;
 						if (elem)
 							guf.rating=DonaTextDesDeCodeList(elem, "guf", "GUF_RatingCode");
 				
-						//·$· guf:contact -> l'he tret de wps:Output/owner_user, però quan el fem més complert (contacte) caldrà llegir aquí. NO queden a guf!
-						//quan ho pensem caldrà mirar si es individual o no, els application domain, etc... son moltes coses i de moment ho deixo
-
 						user_comment=GetXMLElementByName(feedback_item, "guf", "userComment");
 						if (user_comment)
 						{
