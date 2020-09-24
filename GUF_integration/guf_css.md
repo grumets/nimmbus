@@ -107,6 +107,7 @@ The list of classes, hierarchically orderer to understand relations (i.e. which 
      * <u>div.guf_user_deter_limits</u>: division for the user determined limitations
      * <u>div.guf_response</u>: division for the response to the user determined limitations
      * <u>div.guf_add_doc</u>: division for citations containing additional documentation
+     * <u>div.guf_reprodUsage</u>: division for reproducible usage description
    * <u>div.guf_discovered_issue</u>: division for the discovered issue description, it includes several elements:
      * <u>div.guf_known_problem</u>: division for the known problem description
      * <u>div.guf_known_problem_dt</u>: division for the date and time when the known  problem was detected

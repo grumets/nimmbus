@@ -30,18 +30,116 @@ GUFIncludeScript("xml.js");
 GUFIncludeScript("owc_atom.js");
 GUFIncludeScript("wps_iso_guf.js");
 GUFIncludeScript("guf_locale.js");
-	
-function GUFShowFeedbackInHTMLDiv(elem, seed_div_id, rsc_type, title, code, codespace, lang)
+
+/* Example of use:
+	GUFCreateFeedbackWithReproducibleUsage(
+			[{title: "Mediterranean and Macaronesian coastal dune grassland (grey dune)", code: "B1_4b", codespace: "https://www.synbiosys.alterra.nl/nextgeoss", role: "primary"},
+			 {title: "NextGEOSS suitability map modeller", code: "F76A1A39-5BD1-4892-952C-D5B6B78DB28B", codespace: "https://www.synbiosys.alterra.nl/nextgeoss", role: "secondary"}], 
+			{abstract: "Habitat modelling for Mediterranean and Macaronesian coastal dune grassland (grey dune) (B1_4b), 
+			specific_usage: "Run MaxEnt model"},
+			ru_code: JSON.stringify(----),
+			ru_code_media_type: "----", 
+			ru_platform: "https://www.synbiosys.alterra.nl/nextgeoss",
+			ru_version: "----",
+			ru_schema: -----},
+			"eng", "NextGEOSS");*/
+function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, access_token_type)
 {
-	elem.innerHTML = GUFDonaCadenaFinestraFeedbackResource(seed_div_id, rsc_type, title, code, codespace, lang);
-	//demano el fitxer atom de feedbacks previs
-	GUFShowPreviousFeedbackInHTMLDiv(seed_div_id+"Previ", rsc_type, code, codespace, lang);
+	for (var i=0; i<targets.length; i++)
+	{	
+		if (target[i].title)
+			target[i].title = DonaCadenaPerValorDeFormulari(target[i].title);
+		if (target[i].code)
+			target[i].code = DonaCadenaPerValorDeFormulari(target[i].code);
+		if (target[i].codespace) 
+			target[i].codespace = DonaCadenaPerValorDeFormulari(target[i].codespace);
+	}
+	reprod_usage.abstract = DonaCadenaPerValorDeFormulari(reprod_usage.abstract);
+	reprod_usage.ru_code = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code);
+	reprod_usage.ru_code_media_type = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code_media_type);
+	reprod_usage.ru_platform = encodeURI(reprod_usage.ru_platform);
+	reprod_usage.ru_schema = DonaCadenaPerValorDeFormulari(reprod_usage.ru_schema);
+	return GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type, reprod_usage);
 }
 
-function GUFShowPreviousFeedbackInHTMLDiv(div_id, rsc_type, code, codespace, lang)
+/* Example of use: it is similar to GUFShowFeedbackInHTMLDiv (as documented in GitHub(but with the additional parameters:
+	reprod_usage -> 							{ru_platform: "ecop.nav", ru_version: "6.0", ru_schema: "estil"});
+		It is a parameter to describe the "type" of reproducible usage that will be retrieved and needs the platfom, version and schema
+		(tipically as in the related creation function GUFCreateFeedbackWithReproducibleUsage()
+	callback_function (string!) -> 	"AdoptaEstil" 
+		It is a function from the portal including the widget, that will be called when pressing the "Apply" button in the feedback items lists
+		that will be created by this function. The function will be be called using the params_function (next parameters) aswell as the GUF 
+		structure (see wps_iso_guf.js if needed), so internally should be defined for example as:
+			function AdoptaEstil(params_function, guf)
+	params_function (JSON) -> 			{i_capa: i_capa}
+		This is a JSON structure definining the internal (of the portal using the widget) parametres that will be passed to the 
+		callaback_funtion as first parameter (see below). The widget does not modify this element and will be passed as is.
+  No need of several targets as only primary is needed*/
+function GUFShowPreviousFeedbackWithReproducicleUsageInHTMLDiv(elem, seed_div_id, code, codespace, reprod_usage, lang, access_token_type, callback_function, params_function)
+{	
+	var cdns=[];
+	
+	cdns.push("<form name=\"FeedbackWithReproducicleUsageResourceForm\" onSubmit=\"return false;\">");
+	cdns.push("<div id=\"",seed_div_id,"\" style=\"width:98%\">", "</div></fieldset></div>", "</div></form>");
+	elem.innerHTML = cdns.join("")
+	
+	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + codespace + "&TRG_OPR_2=EQ" +
+	 				"&RSC_FLD_1=RU_PLATFORM&RSC_VL_1=" + reprod_usage.ru_platform + "&RSC_OPR_1=EQ&RSC_NXS_1=AND&RSC_FLD_2=RU_VERSION&RSC_VL_2=" + reprod_usage.ru_version + "&RSC_OPR_2=EQ&RSC_NXS_2=AND&RSC_FLD_3=RU_SCHEMA&RSC_VL_3=" + reprod_usage.ru_schema + "&RSC_OPR_3=EQ";
+	loadFile(url, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: seed_div_id, lang: lang, access_token_type: access_token_type, callback_function: callback_function, params_function: params_function, edit_button: false});
+}
+
+function GUFShowFeedbackInHTMLDiv(elem, seed_div_id, rsc_type, title, code, codespace, lang, access_token_type)
 {
-	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + codespace + "&TRG_OPR_2=EQ";
-	loadFile(url, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: div_id, rsc_type:rsc_type, lang: lang});
+var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
+	return GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, targets, lang, access_token_type);
+}
+
+/* Allows defining and retrieving FB using more than one identifier. This is helpful in order to describe primary and secondary targets. Targets is an array, 
+and each element of the array follows the structure {title: "title target 1", code: "code target 1", codespace: "codespace target 1", role: "role target 1"}.
+For example, for a Sentinel 2 image in the NextGEOSS catalogue, the "targets" could be:
+targets=[{title: "s2b_msil2a_20200922t054639_n0214_r048_t46wdc_20200922t073907", code: "s2a_msil1c_20200918t083621_n0209_r064_t39vul_20200918t090023", codespace: "https://catalogue.nextgeoss.eu/", role: "primary"},
+			  {title: "Sentinel 2 collection", code: "SENTINEL2_L2A", codespace: "https://catalogue.nextgeoss.eu/", role: "secondary"}]*/
+function GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, targets, lang, access_token_type)
+{
+	elem.innerHTML = GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(seed_div_id, rsc_type, targets, lang, access_token_type);
+	//demano el fitxer atom de feedbacks previs
+	GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(seed_div_id, rsc_type, targets, lang, access_token_type);
+}
+
+function GUFShowPreviousFeedbackInHTMLDiv(div_id, rsc_type, code, codespace, lang, access_token_type)
+{
+var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];	
+	return GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targets, lang, access_token_type);
+}
+
+function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targets, lang, access_token_type)
+{
+	var n_targets=0;
+	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK";
+	var url2=url;
+	
+	//busco el target primari i l'envio a la primera part de la finestra
+	for (var i=0; i<targets.length; i++)	
+	{
+		if (targets[i].title && targets[i].code && targets[i].codespace && targets[i].role=="primary")
+		{
+			url+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ";
+			break;
+		}
+	}	
+	loadFile(url, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: div_id+"Previ", rsc_type:rsc_type, lang: lang, access_token_type: access_token_type});
+
+	//busco el target secundari i l'envio a la segona part de la finestra
+	for (var i=0; i<targets.length; i++)	
+	{
+		if (targets[i].title && targets[i].code && targets[i].codespace && targets[i].role=="secondary")
+		{	//la peticio buscarà els que parlin del secondari d'ara, però només com a PRIMARI, per veure tb en el dataset els comentaris generals de la col·lecció (i no tornar a veure els secudaris d'questa o altres imatges!)
+			url2+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ" +
+						"&TRG_NXS_2=AND&TRG_TYPE_3=CITATION&TRG_FLD_3=RSRC_ROLE&TRG_VL_3=primary&TRG_OPR_3=EQ";
+			break;
+		}
+	}	
+	loadFile(url2, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url2, div_id: div_id+"Previ_secundari", rsc_type:rsc_type, lang: lang, access_token_type: access_token_type});
 }
 
 function GUFDonaCadenaLang(cadena_lang, lang)
@@ -120,6 +218,12 @@ function DonaCadenaDataHoraDesDeElementCompost(elem)
 	return s;
 }
 
+function CridaACallBackFunctionAmbEstructuraGUF(lang, resource_id, callback_function, params_function)
+{
+	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+lang+"&RESOURCE="+resource_id;		
+	loadFile(url, "text/xml", CarregaFeedbackAnterior, function(xhr, extra_param) { alert(url + ": " + xhr ); }, {url: url, lang: lang, callback_function: callback_function, params_function: params_function});
+}
+
 function CarregaFeedbacksAnteriors(doc, extra_param)
 {
 var cdns=[];
@@ -133,15 +237,23 @@ var cdns=[];
 
 	if (GUFAnalitzaExceptionReport(root, extra_param.url))
 		return;
+		
 	var owc=ParseOWSContextAtom(root);
 	if (owc.properties.totalResults==0 || !owc.features)
 	{
-		cdns.push(GUFDonaCadenaLang({"cat":"No hi ha cap valoració prèvia sobre la", 
-					"spa":"No hay ninguna valoración previa sobre la", 
-					"eng":"There is no previous user feedback on the", 
-					"fre":"Il n'y a pas encore de commentaires des utilisateurs sur la"}, extra_param.lang), 
-			" ", extra_param.rsc_type, " ",
-			GUFDonaCadenaLang({"cat":"encara", 
+		cdns.push(GUFDonaCadenaLang({"cat":"No hi ha cap valoració prèvia", 
+					"spa":"No hay ninguna valoración previa", 
+					"eng":"There is no previous user feedback", 
+					"fre":"Il n'y a pas encore de commentaires des utilisateurs"}, extra_param.lang)); 
+
+		if (extra_param.rsc_type != "")
+			cdns.push(GUFDonaCadenaLang({"cat":" sobre la", 
+						"spa":" sobre la", 
+						"eng":" on the", 
+						"fre":" sur la"}, extra_param.lang), 
+						" ", extra_param.rsc_type, " ");
+
+		cdns.push(GUFDonaCadenaLang({"cat":"encara", 
 					"spa":"todavía", 
 					"eng":"yet", 
 					"fre":"encore"}, extra_param.lang));
@@ -165,14 +277,28 @@ var cdns=[];
 				"</legend>", 							
 				"<div class=\"guf_fb_id user\"><span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+extra_param.lang+"&RESOURCE="+str+"\" target=\"_blank\">"+str+"</a></div>",				
 				"<div class=\"guf_abstract user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Résumé"}, extra_param.lang), "</span>: ", owc.features[i].properties.title,
-				"</div><div id=\"", extra_param.div_id, "_",i , "\"></div>",
-				"</fieldset>");
+				"</div><div id=\"", extra_param.div_id, "_",i , "\"></div>");
+								
+			if (typeof extra_param.callback_function!=="undefined" && extra_param.callback_function != "")
+			{
+				var params=JSON.stringify(extra_param.params_function);
+				
+					params=params.replaceAll("\"","\\\"");
+				cdns.push("<div class=\"guf_adopt user\"><input type=\"button\" class=\"guf_button user\" value=\"",
+						GUFDonaCadenaLang({"cat":"Adopta", "spa":"Adopta", "eng":"Adopt", "fre":"Adopter"}, extra_param.lang), "\"",
+						//" onClick='", extra_param.callback_function, "(\"", str, "\");' /> ");			
+						" onClick='CridaACallBackFunctionAmbEstructuraGUF(\"", extra_param.lang, "\",\"", str, "\",\"", extra_param.callback_function, "\",\"", params, "\");'/>");			
+			}
+			cdns.push("</fieldset>");		
 		}
 	}
-	cdns.push("<div class=\"guf_edit user\"><input type=\"button\" class=\"guf_button user\" value=\"",
-		GUFDonaCadenaLang({"cat":"Edita", "spa":"Edita", "eng":"Edit", "fre":"Éditer"}, extra_param.lang), "\"",
-		" onClick='GUFOpenNimmbus(\"", extra_param.lang, "\");' /> ",
-		GUFDonaCadenaLang({"cat":"les teves entrades prèvies", "spa":"tus entradas previas", "eng":"your previous entries", "fre":"vos entrées précédentes"}, extra_param.lang), "</div><!-- guf_edit -->"); 
+	if (typeof extra_param.edit_button!=="undefined" && extra_param.edit_button==false)
+		; //si el param no existeix o diu que no vull botó no el poso
+	else
+		cdns.push("<div class=\"guf_edit user\"><input type=\"button\" class=\"guf_button user\" value=\"",
+			GUFDonaCadenaLang({"cat":"Edita", "spa":"Edita", "eng":"Edit", "fre":"Éditer"}, extra_param.lang), "\"",
+			" onClick='GUFOpenNimmbus(\"", extra_param.lang, "\",\"", extra_param.access_token_type, "\");' /> ",
+			GUFDonaCadenaLang({"cat":"les teves entrades prèvies", "spa":"tus entradas previas", "eng":"your previous entries", "fre":"vos entrées précédentes"}, extra_param.lang), "</div><!-- guf_edit -->"); 
 	//fi de  "</div><!-- guf_report -->");
 	document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
 	for (var i=0; i<owc.features.length; i++)
@@ -329,6 +455,15 @@ function ConstrueixCadenaDesdeCitationOPublication(cdns, cit_o_pub, i_cit_o_pub,
 	return;
 }
 
+function HiHaReprodUsage(usage_descr)
+{
+	if (usage_descr.code || usage_descr.codeLink || usage_descr.codeMediaType ||
+			usage_descr.platform || usage_descr.version || usage_descr.schema || usage_descr.diagram ||
+			usage_descr.diagramLink || usage_descr.diagramMediaType)
+			return true;
+	return false; 
+}
+
 function CarregaFeedbackAnterior(doc, extra_param)
 {
 var cdns=[];
@@ -348,6 +483,12 @@ var cdns=[];
 	if (!guf)
 	{	
 		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no és un xml guf", "spa":"El retorno no es xml guf", "eng":"Return is not xml guf", "fre":"Le retour n'est pas xml guf"}, extra_param.lang)); 
+		return;
+	}
+	
+	if (extra_param.callback_function && typeof window[extra_param.callback_function]==="function")
+	{		
+		window[extra_param.callback_function](JSON.parse(extra_param.params_function), guf);
 		return;
 	}
 	
@@ -436,6 +577,59 @@ var cdns=[];
 				}
 				cdns.push("</div><!-- guf_add_doc -->");
 			}
+			
+			if (HiHaReprodUsage(guf.usage.usage_descr))
+			{
+				cdns.push("<div class=\"guf_reprodUsage user\">");
+				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Ús reproduïble", "spa":"Uso reproducible", "eng":"Reproducible usage", "fre":"Utilisation reproductible"}, extra_param.lang), ":</span>");								
+				if (guf.usage.usage_descr.code)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (text)", "spa":"Código (texto)", "eng":"Code (text)", "fre":"Code (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.code);
+				if (guf.usage.usage_descr.codeLinkage)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (adreça URL)", "spa":"Código (dirección URL)", "eng": "Code (URL link)", "fre":"Code (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.codeLinkage);												
+				if (guf.usage.usage_descr.codeMediaType && guf.usage.usage_descr.codeMediaType.length>0)
+				{
+					var s="";				
+					if (guf.usage.usage_descr.codeMediaType=="application/json")
+						s="JSON ("+guf.usage.usage_descr.codeMediaType+")";
+					else if (guf.usage.usage_descr.codeMediaType=="text/x-python")
+						s="Phyton ("+guf.usage.usage_descr.codeMediaType+")";
+					else if (guf.usage.usage_descr.codeMediaType=="text/x-r-source")
+						s="R ("+guf.usage.usage_descr.codeMediaType+")";
+					else if (guf.usage.usage_descr.codeMediaType=="application/vnd.docker")
+						s=GUFDonaCadenaLang({"cat":"Contenidor docker", "spa":"Contenedor docker", "eng":"Docker container", "fre":"Conteneur Docker"}, extra_param.lang)+" ("+guf.usage.usage_descr.codeMediaType+")";
+					else
+						s=guf.usage.usage_descr.codeMediaType;
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Format del codi", "spa":"Formato del código", "eng": "Code format", "fre":"Format de code"}, extra_param.lang), "</span>: ", s);								
+				}	
+				if (guf.usage.usage_descr.platform)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Plataforma", "spa":"Plataforma", "eng":"Platform", "fre":"Plateforme"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.platform);							
+				if (guf.usage.usage_descr.version)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Versió", "spa":"Versión", "eng": "Version", "fre":"Version"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.version);								
+				if (guf.usage.usage_descr.schema)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Esquema", "spa":"Esquema", "eng": "Schema", "fre":"Schème"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.schema);
+				if (guf.usage.usage_descr.diagram)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (text)", "spa":"Diagrama (texto)", "eng": "Diagram (text)", "fre":"Diagramme (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagram);			
+				if (guf.usage.usage_descr.diagramLinkage)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (adreça URL)", "spa":"Diagrama (dirección URL)", "eng": "Diagram (URL link)", "fre":"Diagramme (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagramLinkage);			
+				if (guf.usage.usage_descr.diagramMediaType && guf.usage.usage_descr.diagramMediaType.length>0)
+				{
+					var s="";					
+					if (guf.usage.usage_descr.diagramMediaType=="image/jpeg")
+						s="JPEG ("+guf.usage.usage_descr.diagramMediaType+")";
+					else if (guf.usage.usage_descr.diagramMediaType=="image/png")
+						s="PNG ("+guf.usage.usage_descr.diagramMediaType+")";
+					else if (guf.usage.usage_descr.diagramMediaType=="text/x-python")
+						s="Phyton ("+guf.usage.usage_descr.diagramMediaType+")";
+					else if (guf.usage.usage_descr.diagramMediaType=="text/x-yuml")
+						s="YUML ("+guf.usage.usage_descr.diagramMediaType+")";
+					else if (guf.usage.usage_descr.diagramMediaType=="application/xmi+xml")
+						s="XMI ("+guf.usage.usage_descr.diagramMediaType+")";
+					else
+						s=guf.usage.usage_descr.diagramMediaType;
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Format del diagrama", "spa":"Formato del diagrama", "eng": "Diagram format", "fre":"Format de diagramme"}, extra_param.lang), "</span>: ", s);
+				}
+				cdns.push("</div><!-- guf_reprodUsage -->");
+			}						
 			cdns.push("</div><!-- guf_usage_description -->");						
 		}	
 		if (guf.usage.discov_issue)
@@ -549,11 +743,11 @@ var cdns=[];
 }
 
 var GUFFeedbackWindow=null;
-function GUFOpenNimmbus(lang)
+function GUFOpenNimmbus(lang, access_token_type)
 {
 	if (GUFFeedbackWindow==null || GUFFeedbackWindow.closed)
 	{
-		GUFFeedbackWindow=window.open(ClientGUF, "Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
+		GUFFeedbackWindow=window.open(ClientGUF+"?ACCESS_TOKEN_TYPE="+access_token_type, "Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
 		GUFShaObertPopUp(GUFFeedbackWindow, lang);
 	}
 	else
@@ -563,52 +757,173 @@ function GUFOpenNimmbus(lang)
 	}
 }
 
-function GUFDonaNomFitxerAddFeedback(title, code, codespace)
+function GUFDonaNomFitxerAddFeedback(title, code, codespace, access_token_type, reprod_usage, lang)
 {
-	return ClientGUF+"?target_title=" + title + "&target_code=" + code + "&target_codespace=" + codespace + "&page=ADDFEEDBACK&share_borrower_1=Anonymous";
+var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
+//en versions previes no es passava lang, per això ho faig així:
+	return GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang ? lang : "eng", access_token_type, reprod_usage);
 }
 
-//function GUFAfegirFeedbackCapa(div_id, rsc_type, title, code, codespace, lang)
-function GUFAfegirFeedbackCapa(title, code, codespace, lang)
+function GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_type, reprod_usage)
 {
+	var url=ClientGUF;
+	var n_targets=0;
+
+	for (var i=0; i<targets.length; i++)	
+	{		
+		if (targets[i].title && targets[i].title!="" && targets[i].code && targets[i].code!="" && targets[i].codespace && targets[i].codespace!="")
+		{	//aquest target és vàlid
+			if (n_targets==0) //i és el primer
+				url+="?target_title=" + targets[i].title + "&target_code=" + targets[i].code + "&target_codespace=" + targets[i].codespace + (targets[i].role ? ("&target_role=" + targets[i].role) : ""); 	
+			else
+				url+="&target_title_" + (n_targets+1) + "=" + targets[i].title + "&target_code_" + (n_targets+1) + "=" + targets[i].code + 
+						"&target_codespace_" + (n_targets+1) + "=" + targets[i].codespace + 
+						(targets[i].role ? ("&target_role_" + (n_targets+1) + "=" + targets[i].role) : ""); 	
+			n_targets++;
+		}		
+		
+		if (n_targets>2)
+		{
+	    alert(GUFDonaCadenaLang({"cat":"De moment només s'accepten dos recursos objectius de la valoració, la resta seran ignorats.", 
+							  "spa":"De momento sólo se aceptan dos recursos objetivos de la valoración, el resto serán ignorados.", 
+							  "eng":"At the moment, only two target resources of the feedback item are accepted, the rest will be ignored.",
+							  "fre":"Pour le moment, seules deux ressources cibles de l'élément de rétroaction sont acceptées, le reste sera ignoré."}, lang));
+			break;
+		}
+	}
+	if (n_targets==0) //cap vàlid
+	{
+	    alert(GUFDonaCadenaLang({"cat":"No hi ha cap recurs objectiu de la valoració.", 
+							  "spa":"No hay ningún recurso objetivo de la valoración.", 
+							  "eng":"There is no target resources of the feedback item.",
+							  "fre":"Il n'y a pas de ressources cibles de l'élément de rétroaction."}, lang));	
+			return "";
+	}	
+	url+="&ACCESS_TOKEN_TYPE=" + access_token_type + "&page=ADDFEEDBACK&share_borrower_1=Anonymous"; 	
+
+	if (reprod_usage!=null)
+	{	//{abstract: "nom estil", specific_usage: "human-readble del equema", ru_code: JSON.parse(capa[12].estil[3]), ru_code_media_type: "JSON", ru_platform: "ecop.nav", ru_version: "6.0", ru_schema: "estil"});*/
+		if (reprod_usage.abstract!="")
+			url+="&ABSTRACT="+reprod_usage.abstract;					
+		url+="&REPORT_ASPECT="+"usage";
+		if (reprod_usage.specific_usage!="")
+			url+="&SPECIFIC_USAGE="+reprod_usage.specific_usage;
+		/*date time -> de moment es crearà amb l'actual en el nimmbus al darrer moment
+		if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.feedback_resource_form.usage_date.value,document.feedback_resource_form.usage_time.value))!="")
+			url+="&USAGE_DATE_TIME="+p;*/
+		if (reprod_usage.ru_code!="")
+			url+="&RU_CODE="+reprod_usage.ru_code;
+		if (reprod_usage.ru_code_media_type!="")
+			url+="&RU_CODE_FORMAT="+reprod_usage.ru_code_media_type;		
+		if (reprod_usage.ru_platform!="")
+			url+="&RU_PLATFORM="+reprod_usage.ru_platform;
+		if (reprod_usage.ru_version!="")
+			url+="&RU_VERSION="+reprod_usage.ru_version;
+		if (reprod_usage.ru_schema!="")
+			url+="&RU_SCHEMA="+reprod_usage.ru_schema;
+	}	
+	return url;
+}
+
+function GUFAfegirFeedbackCapa(title, code, codespace, lang, access_token_type, reprod_usage)
+{
+var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
+	return GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type, reprod_usage);
+}
+
+function GUFAfegirFeedbackCapaMultipleTargets(targets_obj_o_str, lang, access_token_type, reprod_usage)
+{
+	var targets={};
+	
+	if (typeof(targets_obj_o_str) === "string")
+		targets = JSON.parse(targets_obj_o_str);
+	else if (typeof(targets_obj_o_str) === "object" && Array.isArray(targets_obj_o_str))
+		targets=targets_obj_o_str;
+	else
+	{
+		alert("targets_obj_o_str needs and object or an string");	
+		return;
+	}
+	
 	if (GUFFeedbackWindow==null || GUFFeedbackWindow.closed)
 	{
-		var url=GUFDonaNomFitxerAddFeedback(title, code, codespace);
+		var url=GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_type, reprod_usage);
 		GUFFeedbackWindow=window.open(url,"Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
 		GUFShaObertPopUp(GUFFeedbackWindow, lang);
 	}
 	else
 	{
-		GUFFeedbackWindow.location.href=GUFDonaNomFitxerAddFeedback(title, code, codespace);
+		GUFFeedbackWindow.location.href=GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_type, reprod_usage);
 		GUFFeedbackWindow.focus();
 	}	
-
-	//GUFShowPreviousFeedbackInHTMLDiv(div_id+"Previ", rsc_type, code, codespace, lang);
 }
 
-function GUFDonaCadenaFinestraFeedbackResource(div_id, rsc_type, title, code, codespace, lang)
+function GUFDonaCadenaFinestraFeedbackResource(div_id, rsc_type, title, code, codespace, lang, access_token_type)
+{
+var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];	
+	return GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(div_id, rsc_type, targets, lang, access_token_type);
+}
+
+function TornaNTargetsSecundaris(targets)
+{
+	var n_targets_secundaris=0;
+
+	for (var i=0; i<targets.length; i++)	
+	{		
+		if (targets[i].role=="secondary")
+			n_targets_secundaris++;
+	}
+	return n_targets_secundaris;
+}
+
+function GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(div_id, rsc_type, targets, lang, access_token_type)
 {
 var cdns=[];
+var n_targets_secundaris=0;
 
 	cdns.push("<form name=\"FeedbackResourceForm\" onSubmit=\"return false;\">");
 	cdns.push("<div id=\"", div_id, "\" class=\"guf_widget user\" style=\"position:relative;left:10px;top:10px;width:95%\">");
-	cdns.push("<div class=\"guf_add_fb user\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">", 
-		GUFDonaCadenaLang({"cat":"Afegir valoracions a", "spa":"Añadir valoraciones a", "eng":"Add user feedback to", "fre":"Ajouter rétroaction de l'utilisateur de"}, lang), 
-		": ", rsc_type,
-		"</legend>");
+	if (rsc_type != "")
+		cdns.push("<div class=\"guf_add_fb user\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">", 
+			GUFDonaCadenaLang({"cat":"Afegir valoracions a", "spa":"Añadir valoraciones a", "eng":"Add user feedback to", "fre":"Ajouter rétroaction de l'utilisateur de"}, lang), 
+			" ", rsc_type,
+			"</legend>");
+	else
+		cdns.push("<div class=\"guf_add_fb user\">");
 
 	cdns.push("<input type=\"button\" class=\"guf_button user\" value=\"",
 				  GUFDonaCadenaLang({"cat":"Afegir una valoració", "spa":"Añadir una valoración", "eng":"Add a user feedback", "fre":"Ajouter une rétroaction de l'utilisateur"}, lang), "\"",
-				  //" onClick='GUFAfegirFeedbackCapa(\"", div_id, "\", \"", rsc_type, "\", \"", title, "\", \"", code, "\", \"", codespace, "\", \"", lang, "\");' />",
-				  " onClick='GUFAfegirFeedbackCapa(\"", title, "\", \"", code, "\", \"", codespace, "\", \"", lang, "\");' />",
-				  "</fieldset></div>");
-	cdns.push("<div class=\"guf_report user\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">", 
-			GUFDonaCadenaLang({"cat":"Valoracions prèvies a", "spa":"Valoraciones previas a", "eng":"Previous user feedback to", "fre":"Précédent rétroaction de l'utilisateur de"}, lang), 
-			": ", rsc_type,
-			"</legend>");
-	cdns.push("<div id=\"",div_id,"Previ\" class=\"Verdana11px\" style=\"width:98%\">",
-		"</div></fieldset></div>",
-		"</div></form>");
+				  " onClick='GUFAfegirFeedbackCapaMultipleTargets(\"", JSON.stringify(targets).replaceAll("\"","\\\""), "\", \"", lang, "\", \"", access_token_type, "\");' />");
 
+	if (rsc_type != "")
+		cdns.push("</fieldset></div>");
+	else
+		cdns.push("</div><br>");
+
+	cdns.push("<div class=\"guf_report user\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">"); 
+	if (rsc_type != "")
+		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prèvies a", "spa":"Valoraciones previas a", "eng":"Previous user feedback to", "fre":"Précédent rétroaction de l'utilisateur de"}, lang));
+	else
+		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prèvies", "spa":"Valoraciones previas", "eng":"Previous user feedback", "fre":"Précédent rétroaction de l'utilisateur"}, lang));
+	cdns.push(" ", rsc_type, "</legend>");
+	
+	cdns.push("<div id=\"",div_id,"Previ\" style=\"width:98%\">", "</div></fieldset>");
+	
+	n_targets_secundaris=TornaNTargetsSecundaris(targets);
+	if (n_targets_secundaris)
+	{
+		for (var i=0; i<targets.length; i++)	
+		{		
+			if (targets[i].role=="secondary")
+				break;
+		}
+		//caldria fer un bucle per els N secundaris, ara només uso el primer (pq com ara només permeto dos...)
+		cdns.push("<fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">"); 
+		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prèvies a l'objectiu secundari", "spa":"Valoraciones previas al objectivo secundario", "eng":"Previous user feedback to secondary target", "fre":"Précédent rétroaction de l'utilisateur sur la cible secondaire"}, lang));
+		cdns.push(" ", targets[i].title ? ("\""+targets[i].title +"\""): "", "</legend>");		
+		cdns.push("<div id=\"",div_id,"Previ_secundari\" style=\"width:98%\">", "</div></fieldset>");
+	}
+	cdns.push("</div>", "</div></form>");
+	
 	return cdns.join("");
 }

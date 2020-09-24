@@ -7,6 +7,23 @@
 
 "use strict"
 
+/*Aquesta funció fa un subconjunt del que fa encodeURIComponent(), que hem 
+  observat que remplaça les lletres accentuades per caràcters unicode i això no va bé.*/
+function DonaCadenaPerValorDeFormulari(s)
+{
+	//("\\?", "%3F" > http://stackoverflow.com/questions/889957/escaping-question-mark-in-regex-javascript
+	return s.replaceAll("#", "%23").replaceAll("+", "%2B").replaceAll("&", "%26").replaceAll("=", "%3D").replaceAll("?", "%3F");  
+}
+
+function DonaTextDesDeNmsElement(item, namespace, element)
+{
+	var elem=GetValueXMLElementByName(item, namespace, element);
+	if (elem)
+		return elem;
+	else
+		return "";
+}
+
 function DonaTextDesDeGcoCharacterString(item)
 {
 	var elem=GetValueXMLElementByName(item, "gco", "CharacterString");
@@ -21,7 +38,7 @@ function DonaTextDesDeGcoCharacterStringOGcxAnchor(item)
 	var elem=DonaTextDesDeGcoCharacterString(item);
 	if (elem)
 		return elem;
-
+	
 	elem=GetXMLElementByName(item, "gcx", "Anchor");
 	if (elem)
 	{
@@ -29,7 +46,7 @@ function DonaTextDesDeGcoCharacterStringOGcxAnchor(item)
 		if (code_list_value && code_list_value.value)
 			return code_list_value.value;
 		else
-			return "";
+			return "";		
 	}
 	else
 		return "";
@@ -39,187 +56,187 @@ function OmpleEstructuraDesdeCitationOPublication(item_cit_o_pub, cit_o_public, 
 {
 var elem, output, item, output2, item2;
 
-									//title
+	//title
 	elem=GetXMLElementByName(item_cit_o_pub, "cit", "title");
-									if (elem)
+	if (elem)
 		cit_o_public.title=DonaTextDesDeGcoCharacterString(elem);										
-									else
+	else
 		cit_o_public.title="";
 
-									//edition
+	//edition
 	elem=GetXMLElementByName(item_cit_o_pub, "cit", "edition");
-									if (elem)
+	if (elem)
 		cit_o_public.edition=DonaTextDesDeGcoCharacterString(elem);										
-									else
+	else
 		cit_o_public.edition="";
-										
-									//editionDate
+		
+	//editionDate
 	elem=GetXMLElementByName(item_cit_o_pub, "cit", "editionDate");
-									if (elem)
+	if (elem)
 		cit_o_public.editionDate=DonaDataDesDeGcoDateTime(elem);										
-									else
+	else
 		cit_o_public.editionDate="";
-										
-									//identifier(s)
+		
+	//identifier(s)
 	output=GetXMLElementCollectionByName(item_cit_o_pub , "cit", "identifier");								
 	if (output && output.length)
-									{
+	{
 		cit_o_public.identifier = [];																														
 		for (item=0; item<output.length; item++)
-										{
+		{
 			var identifier_item=output.item(item);
-											if (identifier_item)
-											{
-												//code
-												elem=GetXMLElementByName(identifier_item, "mcc", "code")
-												if (elem)
-												{
+			if (identifier_item)
+			{											
+				//code
+				elem=GetXMLElementByName(identifier_item, "mcc", "code")
+				if (elem)
+				{
 					cit_o_public.identifier.push({});
-													//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
+					//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
 
-													//code
+					//code
 					cit_o_public.identifier[cit_o_public.identifier.length-1].code=DonaTextDesDeGcoCharacterString(elem);
-
-													//code_space: pot ser un CharacterString o un anchor, miro les dues coses
-													elem=GetXMLElementByName(identifier_item, "mcc", "codeSpace");
-													if (elem)
+			
+					//code_space: pot ser un CharacterString o un anchor, miro les dues coses
+					elem=GetXMLElementByName(identifier_item, "mcc", "codeSpace");
+					if (elem)
 						cit_o_public.identifier[cit_o_public.identifier.length-1].codeSpace=DonaTextDesDeGcoCharacterStringOGcxAnchor(elem);
-													else
+					else
 						cit_o_public.identifier[cit_o_public.identifier.length-1].codeSpace="";
-												}
-											}
-										}
-									}
-					
-									//Responsible party(ies)
+				}
+			}
+		}
+	}
+	
+	//Responsible party(ies)	
 	output=GetXMLElementCollectionByName(item_cit_o_pub , "cit", "citedResponsibleParty");								
 	if (output && output.length)
-									{
+	{
 		cit_o_public.resp_party = [];
 		for (item=0; item<output.length; item++)
-										{
+		{
 			var responsibility=output.item(item);											
-											if (responsibility)
-											{											
-												//role
-												elem=GetXMLElementByName(responsibility, "cit", "role")
-												if (elem)
-												{																							
-													var role=DonaTextDesDeCodeList(elem, "cit", "CI_RoleCode");
-													if (role && role!="")
-													{	//si el codi de rol no és buit
+			if (responsibility)
+			{											
+				//role
+				elem=GetXMLElementByName(responsibility, "cit", "role")
+				if (elem)
+				{																							
+					var role=DonaTextDesDeCodeList(elem, "cit", "CI_RoleCode");
+					if (role && role!="")
+					{	//si el codi de rol no és buit
 						cit_o_public.resp_party.push({});
-														//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
+						//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
 						cit_o_public.resp_party[cit_o_public.resp_party.length-1].role=role;													
 						cit_o_public.resp_party[cit_o_public.resp_party.length-1].party_name = [];																														
-															
-														//de moment només recupero tots els "name" de dintre, que podrien ser individuals o organizations, però ara per ara com no recupero res més amb això ja m'apanyo
+							
+						//de moment només recupero tots els "name" de dintre, que podrien ser individuals o organizations, però ara per ara com no recupero res més amb això ja m'apanyo
 						output2=GetXMLElementCollectionByName(responsibility , "cit", "name");								
 						if (output2 && output2.length)
-														{
+						{
 							for (item2=0; item2<output2.length; item2++)
-															{
+							{
 								var party_name=output2.item(item2);																
-																if (party_name)
-																{
-																	var text_party=DonaTextDesDeGcoCharacterString(party_name);
-																	if (text_party && text_party!="")
-																	{
+								if (party_name)
+								{
+									var text_party=DonaTextDesDeGcoCharacterString(party_name);
+									if (text_party && text_party!="")
+									{
 										cit_o_public.resp_party[cit_o_public.resp_party.length-1].party_name.push({});
 										cit_o_public.resp_party[cit_o_public.resp_party.length-1].party_name[cit_o_public.resp_party[cit_o_public.resp_party.length-1].party_name.length-1].name=text_party;
-																	}
-																}
-															}															
-														}
-														
-														//Comprovo si no he recuperat cap name -> esborro aquesta resp_party
+									}
+								}
+							}															
+						}
+						
+						//Comprovo si no he recuperat cap name -> esborro aquesta resp_party
 						if (cit_o_public.resp_party[cit_o_public.resp_party.length-1].party_name.length==0)
 							cit_o_public.resp_party.pop();
-													}
-												}
-											}
-										}
-									}
-					
-									//series
+					}
+				}
+			}
+		}
+	}									
+						
+	//series
 	var series=GetXMLElementByName(item_cit_o_pub, "cit", "series");
-									if (series)
-									{
+	if (series)
+	{
 		cit_o_public.series={};
-										
-										var i_elem_series=0;
-										elem=GetXMLElementByName(series, "cit", "name");
-										if (elem)
-										{
-											i_elem_series++;
+		
+		var i_elem_series=0;
+		elem=GetXMLElementByName(series, "cit", "name");
+		if (elem)
+		{
+			i_elem_series++;
 			cit_o_public.series.name=DonaTextDesDeGcoCharacterString(elem);
-										}
-										else
+		}
+		else
 			cit_o_public.series.name="";
-											
-										elem=GetXMLElementByName(series, "cit", "issueIdentification");
-										if (elem)
-										{
-											i_elem_series++;
+			
+		elem=GetXMLElementByName(series, "cit", "issueIdentification");
+		if (elem)
+		{
+			i_elem_series++;
 			cit_o_public.series.issueIdentification=DonaTextDesDeGcoCharacterString(elem);
-										}
-										else
+		}
+		else
 			cit_o_public.series.issueIdentification="";
 
-										elem=GetXMLElementByName(series, "cit", "page");
-										if (elem)
-										{
-											i_elem_series++;
+		elem=GetXMLElementByName(series, "cit", "page");
+		if (elem)
+		{
+			i_elem_series++;
 			cit_o_public.series.page=DonaTextDesDeGcoCharacterString(elem);
-										}
-										else
+		}
+		else
 			cit_o_public.series.page="";
 
-										if (i_elem_series==0)
+		if (i_elem_series==0)
 			cit_o_public.series="";											
-									}
-									else
+	}
+	else
 		cit_o_public.series="";								
-																		
-									//otherCitationDetails
+										
+	//otherCitationDetails
 	elem=GetXMLElementByName(item_cit_o_pub, "cit", "otherCitationDetails");
-									if (elem)
+	if (elem)
 		cit_o_public.otherCitationDetails=DonaTextDesDeGcoCharacterString(elem);										
-									else
+	else
 		cit_o_public.otherCitationDetails="";
 
-									//onlineResource (a NiMMbus només un)
+	//onlineResource (a NiMMbus només un)
 	var onlineResource=GetXMLElementByName(item_cit_o_pub, "cit", "onlineResource");
-									if (onlineResource)
-									{
+	if (onlineResource)
+	{
 		cit_o_public.onlineResource={};
-										
-										var i_elem_onlineResource=0;
-										elem=GetXMLElementByName(onlineResource, "cit", "linkage");
-										if (elem)
-										{
-											i_elem_onlineResource++;
+		
+		var i_elem_onlineResource=0;
+		elem=GetXMLElementByName(onlineResource, "cit", "linkage");
+		if (elem)
+		{
+			i_elem_onlineResource++;
 			cit_o_public.onlineResource.linkage=DonaTextDesDeGcoCharacterString(elem);
-										}
-										else
+		}
+		else
 			cit_o_public.onlineResource.linkage="";
-											
-										elem=GetXMLElementByName(onlineResource, "cit", "description");
-										if (elem)
-										{
-											i_elem_onlineResource++;
+			
+		elem=GetXMLElementByName(onlineResource, "cit", "description");
+		if (elem)
+		{
+			i_elem_onlineResource++;
 			cit_o_public.onlineResource.description=DonaTextDesDeGcoCharacterString(elem);
-										}
-										else
+		}
+		else
 			cit_o_public.onlineResource.description="";
 
-										elem=GetXMLElementByName(onlineResource, "cit", "function");
+		elem=GetXMLElementByName(onlineResource, "cit", "function");
 		cit_o_public.onlineResource.function=DonaTextDesDeCodeList(elem, "cit", "CI_OnLineFunctionCode");										
-	
-										if (i_elem_onlineResource==0)
+
+		if (i_elem_onlineResource==0)
 			cit_o_public.onlineResource="";											
-									}
-									else
+	}
+	else
 		cit_o_public.onlineResource="";								
 	
 	if (es_public==true)
@@ -228,8 +245,8 @@ var elem, output, item, output2, item2;
 		var category;
 		category=GetXMLElementByName(item_cit_o_pub, "qcm", "category");
 		cit_o_public.category=DonaTextDesDeCodeList(category, "qcm", "QCM_PublicationCategoryCode");
-																	
-									//abstract																		
+								
+		//abstract																		
 		elem=GetXMLElementByName(item_cit_o_pub, "qcm", "abstract");
 		if (elem)
 			cit_o_public.abstract=DonaTextDesDeGcoCharacterString(elem);										
@@ -243,15 +260,15 @@ function DonaTextDesDeCodeList(item, namespace, code_list)
 {
 	if (item)
 	{
-	var elem=GetXMLElementByName(item, namespace, code_list);
-	if (elem)
-	{
-		var code_list_value=GetXMLAttributeByName(elem, null, "codeListValue");
-		if (code_list_value && code_list_value.value)
-			return code_list_value.value;
+		var elem=GetXMLElementByName(item, namespace, code_list);
+		if (elem)
+		{
+			var code_list_value=GetXMLAttributeByName(elem, null, "codeListValue");
+			if (code_list_value && code_list_value.value)
+				return code_list_value.value;
 		}
 	}
-		return "";
+	return "";
 }
 
 function DonaDataDesDeGcoDate(item)
@@ -398,13 +415,13 @@ var usage, usage_descr, discov_issue;
 						
 								//code_space: pot ser un CharacterString o un anchor, miro les dues coses
 								elem=GetXMLElementByName(item_identifier, "mcc", "codeSpace");
-									if (elem)
+								if (elem)
 									guf.identifier.codeSpace=DonaTextDesDeGcoCharacterStringOGcxAnchor(elem);
 								else
 									guf.identifier.codeSpace="";
 							}
 						}
-									else
+						else
 							guf.identifier=null;
 							
 						//guf.abstract
@@ -433,8 +450,8 @@ var usage, usage_descr, discov_issue;
 									OmpleEstructuraDesdeCitationOPublication(public_item, guf.public[guf.public.length-1], true);
 								}
 							}
-						}
-	
+						}					
+								
 						output2=GetXMLElementCollectionByName(feedback_item, "guf", "dateInfo");
 						if (output2 && output2.length)
 						{								
@@ -461,7 +478,7 @@ var usage, usage_descr, discov_issue;
 								}
 							}
 						}
-	
+						
 						elem=GetXMLElementByName(feedback_item, "guf", "rating");
 						if (elem)
 							guf.rating=DonaTextDesDeCodeList(elem, "guf", "GUF_RatingCode");
@@ -477,49 +494,49 @@ var usage, usage_descr, discov_issue;
 							if (elem)
 								guf.user_comment.motivation=DonaTextDesDeCodeList(elem, "guf", "GUF_MotivationCode");
 						}
-
+						
 						output2=GetXMLElementCollectionByName(feedback_item, "guf", "target");
 						if (output2 && output2.length)
 						{
 							guf.target = [];								
 							for (var item2=0; item2<output2.length; item2++)
-							{
-								target_item=GetXMLElementByName(output2.item(item2), "guf", "GUF_FeedbackTarget");
+							{				
+								target_item=GetXMLElementByName(output2.item(item2), "guf", "GUF_FeedbackTarget");															
 								if (target_item)
 								{
 									var role;
-
+									
 									role=GetXMLElementByName(target_item, "guf", "role");
 									//resourceRef poden ser diversos, em quedo amb el primer, de moment
 									resource_ref=GetXMLElementByName(target_item, "guf", "resourceRef");
 
 									if (role && resource_ref)
 									{
-										guf.target.push({});
+										guf.target.push({});										
 										//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
-
+										
 										//role
 										guf.target[guf.target.length-1].role=DonaTextDesDeCodeList(role, "guf", "GUF_TargetRoleCode");
-
+									
 										// resource_ref és de tipus CI_Citation o QCM_Publication, però de moment miro les part comunnes dels dos
 										// més endavant potser mirarem coses que només estan a QCM_Publication
 										//title
 										elem=GetXMLElementByName(resource_ref, "cit", "title");
 										if (elem)
-											guf.target[guf.target.length-1].title=DonaTextDesDeGcoCharacterString(elem);
+											guf.target[guf.target.length-1].title=DonaTextDesDeGcoCharacterString(elem);										
 										else
 											guf.target[guf.target.length-1].title="";
-
+										
 										//identifier(s)
-										guf.target[guf.target.length-1].identifier = [];
-										output3=GetXMLElementCollectionByName(resource_ref , "cit", "identifier");
+										guf.target[guf.target.length-1].identifier = [];																														
+										output3=GetXMLElementCollectionByName(resource_ref , "cit", "identifier");								
 										if (output3 && output3.length)
 										{
 											for (var item3=0; item3<output3.length; item3++)
 											{
 												identifier_item=output3.item(item3);
 												if (identifier_item)
-												{
+												{											
 													//code
 													elem=GetXMLElementByName(identifier_item, "mcc", "code")
 													if (elem)
@@ -529,7 +546,7 @@ var usage, usage_descr, discov_issue;
 
 														//code
 														guf.target[guf.target.length-1].identifier[guf.target[guf.target.length-1].identifier.length-1].code=DonaTextDesDeGcoCharacterString(elem);
-
+												
 														//code_space: pot ser un CharacterString o un anchor, miro les dues coses
 														elem=GetXMLElementByName(identifier_item, "mcc", "codeSpace");
 														if (elem)
@@ -598,7 +615,43 @@ var usage, usage_descr, discov_issue;
 											OmpleEstructuraDesdeCitationOPublication(citation_item, guf.usage.usage_descr.add_doc[guf.usage.usage_descr.add_doc.length-1], false);
 										}
 									}
-								}								
+								}
+					 
+								elem=GetXMLElementByName(usage_descr, "qcm", "code");
+								if (elem)
+									guf.usage.usage_descr.code=decodeURI(DonaTextDesDeGcoCharacterString(elem));
+	
+								elem=GetXMLElementByName(usage_descr, "qcm", "codeLinkage");
+								if (elem)
+									guf.usage.usage_descr.codeLink=DonaTextDesDeGcoCharacterString(elem);
+
+								elem=GetXMLElementByName(usage_descr, "qcm", "codeMediaType");
+								if (elem)
+									guf.usage.usage_descr.codeMediaType=DonaTextDesDeNmsElement(elem, "gcx", "MimeFileType");
+
+								elem=GetXMLElementByName(usage_descr, "qcm", "platform");
+								if (elem)
+									guf.usage.usage_descr.platform=DonaTextDesDeGcoCharacterString(elem);
+
+								elem=GetXMLElementByName(usage_descr, "qcm", "version");
+								if (elem)
+									guf.usage.usage_descr.version=DonaTextDesDeGcoCharacterString(elem);
+																
+								elem=GetXMLElementByName(usage_descr, "qcm", "schema");
+								if (elem)
+									guf.usage.usage_descr.schema=decodeURI(DonaTextDesDeGcoCharacterString(elem));
+
+								elem=GetXMLElementByName(usage_descr, "qcm", "diagram");
+								if (elem)
+									guf.usage.usage_descr.diagram=DonaTextDesDeGcoCharacterString(elem);
+
+								elem=GetXMLElementByName(usage_descr, "qcm", "diagramLinkage");
+								if (elem)
+									guf.usage.usage_descr.diagramLink=DonaTextDesDeGcoCharacterString(elem);
+
+								elem=GetXMLElementByName(usage_descr, "qcm", "diagramMediaType");
+								if (elem)
+									guf.usage.usage_descr.diagramMediaType=DonaTextDesDeNmsElement(elem, "gcx", "MimeFileType");
 							}
 							
 							discov_issue=GetXMLElementByName(usage, "guf", "discoveredIssue");
@@ -651,9 +704,9 @@ var usage, usage_descr, discov_issue;
 											guf.usage.discov_issue.fix_rsrc.push({});										
 											//en aquest moment el nou element de l'array ja s'ha creat i per tant length ja ha augmentat														
 											OmpleEstructuraDesdeCitationOPublication(citation_item, guf.usage.discov_issue.fix_rsrc[guf.usage.discov_issue.fix_rsrc.length-1], false);
-													}
-												}
-											}
+										}
+									}
+								}
 								
 								output2=GetXMLElementCollectionByName(discov_issue, "qcm", "alternativeResource");							
 								if (output2 && output2.length)
@@ -671,9 +724,9 @@ var usage, usage_descr, discov_issue;
 									}
 								}
 							}
-						}
+						}	
 					}
-				}
+				}	
 				else if (identifier.childNodes[0].nodeValue=="rights")
 					guf.rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 			}
@@ -710,7 +763,7 @@ function GetNimmbusTypeOfAOWCFeature(feature)
 			categories[j].term)
 		{
 			if (categories[j].term=="POI")
-				return "POI";
+				return "POI"; 
 			else if (categories[j].term=="HREF")
 				return "HREF";
 			else if (categories[j].term=="FEEDBACK")
@@ -724,6 +777,6 @@ function GetNimmbusTypeOfAOWCFeature(feature)
 			else if (categories[j].term=="ORGANISM")
 				return "ORGANISM";
 		}
-	}
-	return "";
+	}		
+	return "";		
 }

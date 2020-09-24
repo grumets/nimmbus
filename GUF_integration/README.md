@@ -4,15 +4,15 @@ This page provides general instructions for the GUF integration with your resour
 
  * The first one offers a **JavaScript API and a widget** that is very simple to integrate but, in contrast, provides a relative low level of flexibility. People with basic knowledge on JavaScript should select this one first. Basic knowledge on how to call a JavaScript function and include a library is required.
 
- * The second one offers access to the **Javascript for the Web API** where the programmer retrieves directly the feedback items encoded in XML and should generate a presentation himself/herself. It provides full control on how the content is shown in the screen but it requires considerable more knowledge on JavaScript programming, including XML parsing and AJAX calls.
+ * The second one offers access to the **Javascript for the Web API** where the programmer retrieves directly the feedback items encoded in XML and should generate a presentation himself/herself. It provides full control on how the content is shown in the screen, but it requires considerable more knowledge on JavaScript programming, including XML parsing and AJAX calls.
 
 There is a more complex and flexible possibility based on communicating with the server directly using the *Web API*. That will require to build a GUI for providing feedback that can take many days to build. For more information about the Web API see: [Web API](../API).
 
-Since the first level is build on top of second level, you can investigate how to use the second level by inspecting the JavaScript code provided in the libraries used in the first level. You can create your own intermediate levels by reusing some part of this code in your own application.
+Since the first level is built on top of second level, you can investigate how to use the second level by inspecting the JavaScript code provided in the libraries used in the first level. You can create your own intermediate levels by reusing some part of this code in your own application.
 
 ## What do you need to know before integrating the GUF
 
-The integration offered in this page assumes that you want to provide feedback about a **single resource**. Provide feedback about several resources in a single page is also possible but you might require to call the widget several times or from several places.
+The integration offered in this page assumes that you want to provide feedback about a **single resource**. Provide feedback about several resources in a single page is also possible but you might require calling the widget several times or from several places.
 
 To be able to start working with the integration, you need to have your resources uniquely identified in your system using a "code" (a.k.a. an identifier). Only identified resources can be associated to feedback items. This "code" needs to be unique in a "codespace". The combination of "code" and "codespace" should provide an identifier that can be considered unique and global. If you do not use the concept of "codespace" or "namespace", we recommend that you use the URL of your web service as the "codespace". Generally, the "codespace" is common to all your resources and can be hardcoded in your application.
 
@@ -41,7 +41,9 @@ Be aware that more than those two files need to be downloaded, as they are indir
   * wps_iso_guf.js
   * xml.js
 
-The inclusion of a style sheet (guf.css) is needed in order to have a special style for the detailed description in citations and publications. This detailed description is initially folded, and can be shown by clicking on a *"Click to show/hide more information"* text in the description. This guf.css style sheet is also used to describe several classes to select how different elements will be displayed. There is a by default style described on the widget, but you can modify how this elements are displayed (e.g. different font family, font color, background color, even which elements are displayed) if including a class ".XXX.user" in your style sheet (where "XXX" is substituted by the class you want to modify). Please check the following examples to see how these styles are used (the three test pages are showing feedback items for the same resource):
+The inclusion of a style sheet (guf.css) is needed in order to have a special style for the detailed description in citations and publications. This detailed description is initially folded and can be shown by clicking on a *"Click to show/hide more information"* text in the description. This guf.css style sheet is also used to describe several classes to select how different elements will be displayed. There is a by default style described on the widget, but you can modify how this elements are displayed (e.g. different font family, font color, background color, even which elements are displayed) if including a class ".XXX.user" in your style sheet (where "XXX" is substituted by the class you want to modify).
+
+Please check the following examples to see how these styles are used (the three test pages are showing feedback items for the same resource):
    * [test_widget.htm](../client_js/test_widget.htm): default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
    * [test_widget_custom.htm](../client_js/test_widget_custom.htm): custom style is used as family font and font color is change for all elements, and background color is changed for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_custom.htm
    * [test_widget_corine.htm](../client_js/test_widget_corine.htm): a different style (blue background) is used for extended description in citations and publications, Moreover, some elements have been hidden (guf_purpose, guf_contact_role, guf_date and guf_usage) to obtain shorter descriptions of feedback items. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm
@@ -49,7 +51,7 @@ The inclusion of a style sheet (guf.css) is needed in order to have a special st
 The list of the classes defined in guf.css style sheet, and which part of the feedback item description they refer to, is described in [GUF.css Reference](../GUF_integration/guf_css.md).
 
 ### Step 2: Define a division in your HTML page
-The GUF widget will be shown in the area of the page you want. You should define a division using relative position. In case of a relative division, the size will be redimensioned automatically when it is populated and what is below the division will be moved down to avoid overlapping with the GUF widget.
+The GUF widget will be shown in the area of the page you want. You should define a division using relative position. In case of a relative division, the size will be dimensioned automatically when it is populated and what is below the division will be moved down to avoid overlapping with the GUF widget.
 
 ```js
 <div id="div_guf" style="position: relative; width: 60%"></div>
@@ -68,6 +70,7 @@ This function has the following parameters in sequence:
   * _code_: A unique identifier of the resource in your system.
   * _codespace_: A "codespace" where the "code" is considered unique. A codespace should be a global identifier (e.g. a URI). If you do not use the concept of "codespace" or "namespace", we recommend that you use the URL of your web service as the "codespace".
   * _lang_: The language used in the HTML page. You can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
+  * _access_token_type_: In case the portal including the widget is using one of the supported Single-Sign-On (SSO) systems, it can be described here to allow the desired credentials to be used, thus avoiding the log-in step. Supported systems are: "NextGEOSS", "LandSense", "Google" or "NiMMbus" (being the latter the default value).
 
 For example, a call to this function could be:
 
@@ -78,14 +81,15 @@ For example, a call to this function could be:
 			"Corine Land Cover 2012",
 			"clc-2012",
 			"https://land.copernicus.eu",
-			"eng");
+			"eng",
+      "NextGEOSS");
 ```
 
 You can call the function directly or you can provide a button or link to "activate" the widget when the user requests it. This can be done with this code:
 
 ```html
 <a href="javascript:void();" onClick='GUFShowFeedbackInHTMLDiv(document.getElementById("div_guf"), "div_guf_internal", "resource",
-"Corine Land Cover 2012", "clc-2012", "https://land.copernicus.eu", "eng");'>Add user feedback or review previous feedback</a>
+"Corine Land Cover 2012", "clc-2012", "https://land.copernicus.eu", "eng", "NextGEOSS");'>Add user feedback or review previous feedback</a>
 ```
 
 You can see all elements together in a general example (using a button) [here](../client_js/test_widget.htm) or applied to the Corine Land Cover 2012 metadata page (using a link) [here](../client_js/test_widget_corine.htm).
@@ -109,7 +113,7 @@ At the moment, Single-Sign-On systems available are: NextGEOSS, LandSense, Googl
 For more details go to this [example](../client_js/test_new_feedback.htm) that allows you to create new feedback items of a certain resource (the citation of the resource is automatically created if needed).
 
 #### How to open the "add feedback" page in a new window
-You can use the window.open Javascript function to open the new window. Once the user clicks on save, the window will be closed and the focus will return to the main page.
+You can use the window.open Javascript function to open the new window. Once the user clicks on save, the window will be closed, and the focus will return to the main page.
 ```js
 window.open("https://www.opengis.uab.cat/nimmbus/index.htm?...", "Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
 ```
@@ -420,7 +424,7 @@ wps:ExecuteResponse/wps:ProcessOutputs/wps:Output[ows:Identifier="feedback"]/wps
 Comment motivation:
 wps:ExecuteResponse/wps:ProcessOutputs/wps:Output[ows:Identifier="feedback"]/wps:Data/wps:ComplexData/guf:GUF_FeedbackItem/guf:userComment/guf:GUF_UserComment/guf:motivation/guf:GUF_MotivationCode/@codeListValue
 
-Parsing XML is not easy in JavaScript is not easy. We recommend that you use the GetRetrieveResourceFeedbackOutputs() function to convert the XML encoding to a JavaScript object that easier to use.
+Parsing XML is not easy in JavaScript. We recommend that you use the GetRetrieveResourceFeedbackOutputs() function to convert the XML encoding to a JavaScript object that is easier to use.
 
 ```js
 	var guf=GetRetrieveResourceFeedbackOutputs(doc.documentElement);

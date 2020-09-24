@@ -3,7 +3,7 @@
   The main objective of this library is to expose localised strings that are useful both for NiMMbus application and for other GUF applications
      Developed by Joan Masó and Alaitz Zabala.
      License: Attribution 4.0 International (CC BY 4.0) http://creativecommons.org/licenses/by/4.0/
-*/
+*/	
 
 var LanguagesNB=["cat","spa","eng"];
 var ActiveLanguage=2;
@@ -13,7 +13,7 @@ var Terms_and_Privacy_Last_Updated="02-10-2018";
 var Msg_NiMMbus={cat: "NiMMbus", spa: "NiMMbus", eng: "NiMMbus"};
 var Msg_Welcome_NiMMbus={cat: "Benvinguts al NiMMbus", spa: "Bienvenidos al NiMMbus", eng: "Welcome to NiMMbus"};
 var Msg_EO_everywhere_Share={cat: "La observació de la terra a tot arreu. Comparteix informació i valoracions amb altres.", spa: "La observación de la tierra en todas partes. Comparte información y valoraciones con los demás.", eng: "Earth observation everywhere. Share information and feedback with others."};
-var Msg_Exit_NiMMbus_question={cat: "Realment vols sortir del NiMMbus? (Les accions no guardades es perdran)", spa: "¿Realmente desea salir de NiMMbus? (La acciones no guardadas se perderán)", eng: "Do you really want to exit NiMMbus? (The unsaved actions will be lost)"};
+var Msg_Exit_NiMMbus_Question={cat: "Realment vols sortir del NiMMbus? (Les accions no guardades es perdran)", spa: "¿Realmente desea salir de NiMMbus? (La acciones no guardadas se perderán)", eng: "Do you really want to exit NiMMbus? (The unsaved actions will be lost)"};
 var Msg_cannot_be_blank={cat: "no pot ser buit.", spa: "no puede estar vacio.", eng: "cannot be blank."};
 var Msg_Revalidating_authentication={cat: "Revalidant l'autentificació en", spa: "Revalidando la autentificación en", eng: "Revalidating authentication in"};
 var Msg_seconds={cat: "segons", spa: "segundos", eng: "seconds"};
@@ -270,6 +270,7 @@ var l_msg_Close_Sortir={cat: "Sortir", spa: "Salir", eng: "Close"};
 var l_msg_Close_Tancar={cat: "Tancar", spa: "Cerrar", eng: "Close"};
 var l_msg_Close_SignOut={cat: "Sortir", spa: "Salir", eng: "Sign out"};
 var l_msg_All={cat: "Tots", spa: "Todos", eng: "All"};
+var l_msg_Other={cat: "Altres", spa: "Otros", eng: "Other"};
 
 var l_msg_Resources={cat: "Recursos:", spa: "Recursos:", eng: "Resources:"};
 var l_msg_Owned_and_shared_with_me={cat: "Propis i compartits amb mi", spa: "Propios i compartidos conmigo", eng: "Owned and shared with me"};
@@ -411,7 +412,7 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("href-href-resource_screen").innerHTML=DonaCadenaJSON(Msg_Hyperlink);
 	document.getElementById("href-href-resource_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"http://www.gencat.net/mediamb/sig/bases/rius.mmz";
 	document.getElementById("mimetype-href-resource_screen").innerHTML=DonaCadenaJSON({cat: "Format", spa: "Formato", eng: "Format"});
-	document.getElementById("other-mimetype-href-resource_value").innerHTML=DonaCadenaJSON({cat: "Altres", spa: "Otros", eng: "Other"});
+	document.getElementById("other-mimetype-href-resource_value").innerHTML=DonaCadenaJSON(l_msg_Other);
 	document.getElementById("mimetype-href-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Format del fitxer al qual apunta l'hiperenllaç", spa: "Formato del fichero al que apunta el hiperenlace", eng: "File format of the Hyperlink target"});
 	document.getElementById("reason-href-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Motivation);
 	document.getElementById("reason-href-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Reason_why);
@@ -503,6 +504,35 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("add-doc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Additional_documentation);
 	document.getElementById("add-doc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
 	document.getElementById("add-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_citation_not_shared);
+
+	document.getElementById("reprodUsage-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Ús reproduïble", spa: "Uso reproducible", eng: "Reproducible usage"});
+	document.getElementById("reprodUsage-code-resource_screen").innerHTML=DonaCadenaJSON({cat: "Codi o sentència d'execució (text)", spa: "Código o sentencia de ejecución (texto)", eng: "Code or execution sentence (text)"});	
+	document.getElementById("reprodUsage-code-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Codi o sentència d'execució necessari per a reproduir aquest ús*", spa: "Código o sentencia de ejecución necesario para reproducir este uso*", eng: "Necessary code or execution sentence to reproduce this usage*"});	
+	document.getElementById("reprodUsage-codeLink-resource_screen").innerHTML=DonaCadenaJSON({cat: "Codi o sentència d'execució (Adreça URL)", spa: "Código o sentencia de ejecución (dirección URL)", eng: "Code or execution sentence (URL link)"});	
+	document.getElementById("reprodUsage-codeLink-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Adreça URL del codi o la sentència d'execució necessari per a reproduir aquest ús*", spa: "Dirección URL del código o la  sentencia de ejecución necesario para reproducir este uso*", eng: "URL Link of the necessary code or execution sentence to reproduce this usage*"});			
+	document.getElementById("reprodUsage-code-codeLink-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "*És habitual incloure només una descripció del codi o sentència d'execució (text o URL)", spa: "*Es habitual incluir sólo una descripción del código o sentencia de ejecución (texto o URL)", eng: "*Usually a single code or execution sentence description is provided (text or URL)"});			
+	document.getElementById("reprodUsage-mimetype-resource_screen").innerHTML=DonaCadenaJSON({cat: "Format", spa: "Formato", eng: "Format"});
+	document.getElementById("reprodUsage-mimetype-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Format del codi o la sentència d'execució necessari per a reproduir aquest ús", spa: "Formato del código o la sentencia de ejecución necesario para reproducir este uso", eng: "Format of the necessary code or execution sentence to reproduce this usage"});	
+	document.getElementById("bat-reprodUsage-mimetype-resource_value").innerHTML=DonaCadenaJSON({cat: "Línia de comada de Windows", spa: "Línea de comandos de Windows", eng: "Windows command line"});
+	document.getElementById("sh-reprodUsage-mimetype-resource_value").innerHTML=DonaCadenaJSON({cat: "Línia de comada de Linux", spa: "Línea de comandos de Linux", eng: "Linux command line"});
+	document.getElementById("wps-reprodUsage-mimetype-resource_value").innerHTML=DonaCadenaJSON({cat: "Document d’execució WPS", spa: "Documento de ejecución WPS", eng: "WPS execute document"});
+	document.getElementById("kvp-reprodUsage-mimetype-resource_value").innerHTML=DonaCadenaJSON({cat: "Parelles clau-valor (KVP)", spa: "Parejas clave-valor (KVP)", eng: "Key-value pair (KVP)"});
+	document.getElementById("dock-reprodUsage-mimetype-resource_value").innerHTML=DonaCadenaJSON({cat: "Contenidor docker", spa: "Contenedor docker", eng: "Docker container"});
+	document.getElementById("other-reprodUsage-mimetype-resource_value").innerHTML=DonaCadenaJSON(l_msg_Other);		
+	document.getElementById("reprodUsage-platform-resource_screen").innerHTML=DonaCadenaJSON({cat: "Plataforma", spa: "Plataforma", eng: "Platform"});	
+	document.getElementById("reprodUsage-platform-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Plataforma per a executar el codi o la sentència d'execució d'aquest ús", spa: "Plataforma para ejecutar el código o la sentencia de ejecución de este uso", eng: "Platform to execute the code or execution sentence of this usage"});	
+	document.getElementById("reprodUsage-version-resource_screen").innerHTML=DonaCadenaJSON({cat: "Versió", spa: "Versión", eng: "Version"});	
+	document.getElementById("reprodUsage-version-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Versió de la plataforma per a executar el codi o sentència d'execució d'aquest ús", spa: "Versión de la plataforma para ejecutar el código o sentencia de ejecución de este uso", eng: "Version of the platform to execute the code or execution sentence of this usage"});	
+	document.getElementById("reprodUsage-schema-resource_screen").innerHTML=DonaCadenaJSON({cat: "Esquema", spa: "Esquema", eng: "Schema"});	
+	document.getElementById("reprodUsage-schema-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Esquema del codi o la sentència d'execució per a reproduir aquest ús (només per a codi declaratiu: p.ex. JSON)", spa: "Esquema del código o la sentencia de ejecución necesario para reproducir este uso (sólo para código declarativo: p.ej. JSON)", eng: "Schema of the code or execution sentence to reproduce this usage (only for declarative code: e.g JSON)"});	
+	document.getElementById("reprodUsage-diagram-resource_screen").innerHTML=DonaCadenaJSON({cat: "Diagrama (text)", spa: "Diagrama (texto)", eng: "Diagram (text)"});	
+	document.getElementById("reprodUsage-diagram-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Diagrama descriptiu d'aquest ús reproduïble**", spa: "Diagrama descriptivo de este uso reproducible**", eng: "Descriptive diagram of this reproducible usage**"});	
+	document.getElementById("reprodUsage-diagramLink-resource_screen").innerHTML=DonaCadenaJSON({cat: "Diagrama (adreça URL)", spa: "Diagrama (dirección URL)", eng: "Diagram (URL link)"});	
+	document.getElementById("reprodUsage-diagramLink-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Adreça URL del diagrama descriptiu d'aquest ús reproduïble**", spa: "Dirección URL del diagrama descriptivo de este uso reproducible**", eng: "URL Link of the descriptive diagram of this reproducible usage**"});		
+	document.getElementById("reprodUsage-diagram-diagramLink-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "**És habitual incloure només una descripció del diagrama (text o URL)", spa: "**Es habitual incluir sólo una descripción del diagrama (texto o URL)", eng: "**Usually a single diagram description is provided (text or URL)"});	
+	document.getElementById("reprodUsage-diagram-mimetype-resource_screen").innerHTML=DonaCadenaJSON({cat: "Format del diagrama", spa: "Formato del diagrama", eng: "Diagram format"});
+	document.getElementById("reprodUsage-diagram-mimetype-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Format del diagrama descriptiu d'aquest ús reproduïble", spa: "Formato del diagrama descriptivo de este uso reproducible", eng: "Format of the descriptive diagram of this reproducible usage"});	
+	document.getElementById("other-reprodUsage-diagram-mimetype-resource_value").innerHTML=DonaCadenaJSON(l_msg_Other);		
 
 	document.getElementById("discovered-issue-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Problema descobert", spa: "Problema descubierto", eng: "Discovered issue"});	
 	document.getElementById("known-problem-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Problema conegut", spa: "Problema conocido", eng: "Known problem"});	
@@ -838,14 +868,14 @@ function ChangeLanguageTestWidget(lang, is_custom)
 	if (is_custom)
 	{
 		document.getElementById("head_title").innerHTML=DonaCadenaJSON({cat: "Test del NiMMbus Widget Personalitzat", spa: "Test del NiMMbus Widget Personalizado", eng: "NiMMbus Test Custom Widget"});
-		document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON({cat: "Test per a mostrar l'ús de l'API JavaScript i el Widget de NiMMbus per crear i mostrar valoracions. Personalització de l'estil del Widget.",
-				spa: "Test para mostrar el uso del API JavaScript y el Widget de NiMMbus per crear y mostrar valoraciones. Personalización del estilo del Widget.", 
-				eng: "Test to show JavaScrip API and NiMMbus widget use to create and recover feedbacks. Using custom styles in the widget."});
+		document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON({cat: "Test per a mostrar l'ús de l'API JavaScript i el Widget de NiMMbus per crear i mostrar valoracions amb estil personal",
+				spa: "Test para mostrar el uso del API JavaScript y el Widget de NiMMbus per crear y mostrar valoraciones con estilo personal", 
+				eng: "Test to show JavaScrip API and NiMMbus widget use to create and recover feedbacks using custom styles"});
 		document.getElementById("sign_explanation_css_1").innerHTML=DonaCadenaJSON({cat: "En aquesta pàgina, unes poques <b>classes han estat definides</b> a la secció &ltstyle&gt per a canviar: <ul><li>tipus i color de lletra i alçada de línea de <i>guf_report</i><li>color de lletra de <i>guf_key</i>"+
 				"<li>color de fons de <i>guf_folded</i><li>color dels vincles i de les línies horitzontals</ul>Això es pot usar també per decidir quins elements de les valoracions es mostren, modificant la seva propietat \"display\".</p>",
 				spa: "En esta página, unas pocas <b>clases se han definido</b> en la sección &ltstyle&gt para cambiar: <ul><li>tipo y color de letra y altura de línea de <i>guf_report</i><li>color de letra de <i>guf_key</i>"+
 				"<li>color de fondo de <i>guf_folded</i><li>color de los vínculos y de las lineas horizontales</ul>Esto se puede usar también para decidir que elementos de las valoraciones se muestran, modificando su propiedad \"display\".</p>",
-				eng: "In this test page, a few <b>classes have been defined</b> in the &ltstyle&gt section to change:	<ul><li>font family and color and line height of the <i>guf_report</i><li>font color for the <i>guf_key</i>"+
+				eng: "In this test page, a few <b>classes have been defined</b> in the &ltstyle&gt section to change:	<ul><li>font family and color and <i>guf_report</i> line height <li>font color for the <i>guf_key</i>"+
 				"<li>background color of the <i>guf_folded</i><li>color of the links and horizontal lines</ul>This can be also used to decide which elements in the feedback item are shown, by changing their \"display\" property.</p>"});
 		document.getElementById("sign_explanation_css_2").innerHTML=DonaCadenaJSON({cat: "La <b>referència</b> dels noms de classe del full d'estil guf.css que es poden modificar es poden consultar a la pàgina de GitHub ",
 				spa: "La <b>referencia</b> de los nombres de clase de la hoja de estilo guf.css que se pueden modificar se pueden consultar en la página de GitHub ",

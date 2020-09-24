@@ -18,18 +18,18 @@ hr.guf_solid {
 
 a.guf_link:link {
 	color: #0000EE;
-}
+} 
 
 a.guf_link:hover {
 	color: red;
-}
+} 
 
 a.guf_link:visited {
 	color: #551A8B;
 }
 
 div.guf_widget {
-	font-family: "Gotham Narrow SSm",sans-serif;
+	/*font-family: "Gotham Narrow SSm",sans-serif;*/
 	color: #66757F;
 }
 
@@ -47,7 +47,7 @@ span.guf_key {
 }
 
 span.guf_key_2 {
- 	text-decoration: underline;
+ 	text-decoration: underline; 
 }
 
 div.guf_add_fb {}
@@ -83,6 +83,8 @@ div.guf_user_deter_limits {}
 div.guf_response {}
 
 div.guf_add_doc {}
+
+div.guf_reprodUsage {}
 
 div.guf_discovered_issue {}
 

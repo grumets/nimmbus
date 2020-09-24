@@ -104,6 +104,15 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * USER_DETERMINED_LIMITATIONS=
   * RESPONSE=
   * ADD_DOC_#=
+  * RU_CODE=
+  * RU_CODE_LINK=
+  * RU_CODE_FORMAT=
+  * RU_PLATFORM=
+  * RU_VERSION=
+  * RU_SCHEMA=
+  * RU_DIAGRAM=
+  * RU_DIAGRAM_LINK=
+  * RU_DIAGRAM_FORMAT=   
   * KNOWN_PROBLEM=
   * PROBLEM_DATE_TIME=	//Format YYYY-MM-DDTHH:MM:SSZ is required
   * WORK_AROUND=
@@ -242,7 +251,16 @@ If a parameter is not indicated the value is not modified. If the parameter is i
   * USAGE_DATE_TIME=	//Format YYYY-MM-DDTHH:MM:SSZ is required
   * USER_DETERMINED_LIMITATIONS=
   * RESPONSE=
-  * ADD_DOC_#=	//Same strategy than for PUB_#= (above in this section) is applied
+  * ADD_DOC_#=	//Same strategy than for PUB_#= (above in this section) is applied    
+  * RU_CODE=
+  * RU_CODE_LINK=
+  * RU_CODE_FORMAT=
+  * RU_PLATFORM=
+  * RU_VERSION=
+  * RU_SCHEMA=
+  * RU_DIAGRAM=
+  * RU_DIAGRAM_LINK=
+  * RU_DIAGRAM_FORMAT=  
   * KNOWN_PROBLEM=
   * PROBLEM_DATE_TIME=	//Format YYYY-MM-DDTHH:MM:SSZ is required
   * WORK_AROUND=
