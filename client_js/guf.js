@@ -47,12 +47,12 @@ function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, acc
 {
 	for (var i=0; i<targets.length; i++)
 	{	
-		if (target[i].title)
-			target[i].title = DonaCadenaPerValorDeFormulari(target[i].title);
-		if (target[i].code)
-			target[i].code = DonaCadenaPerValorDeFormulari(target[i].code);
-		if (target[i].codespace) 
-			target[i].codespace = DonaCadenaPerValorDeFormulari(target[i].codespace);
+		if (targets[i].title)
+			targets[i].title = DonaCadenaPerValorDeFormulari(targets[i].title);
+		if (targets[i].code)
+			targets[i].code = DonaCadenaPerValorDeFormulari(targets[i].code);
+		if (targets[i].codespace) 
+			targets[i].codespace = DonaCadenaPerValorDeFormulari(targets[i].codespace);
 	}
 	reprod_usage.abstract = DonaCadenaPerValorDeFormulari(reprod_usage.abstract);
 	reprod_usage.ru_code = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code);
@@ -114,19 +114,22 @@ var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
 
 function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targets, lang, access_token_type)
 {
-	var n_targets=0;
+	var tinc_target_secondary=false;
 	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK";
 	var url2=url;
 	
+//ara assumeixo que tinc un primari segur i potser un secndari. Futur-> poden haver N de cada un dels TRES tipus, i per cada un farçe un quadradet, suposo ·$·
+
 	//busco el target primari i l'envio a la primera part de la finestra
 	for (var i=0; i<targets.length; i++)	
 	{
 		if (targets[i].title && targets[i].code && targets[i].codespace && targets[i].role=="primary")
 		{
-			url+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ";
+			url+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ";			
 			break;
 		}
-	}	
+	}
+	//l'espai de FB previs sobre el target primari el poso sempre, perquè sempre en tinc un	
 	loadFile(url, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: div_id+"Previ", rsc_type:rsc_type, lang: lang, access_token_type: access_token_type});
 
 	//busco el target secundari i l'envio a la segona part de la finestra
@@ -136,10 +139,12 @@ function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targe
 		{	//la peticio buscarà els que parlin del secondari d'ara, però només com a PRIMARI, per veure tb en el dataset els comentaris generals de la col·lecció (i no tornar a veure els secudaris d'questa o altres imatges!)
 			url2+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ" +
 						"&TRG_NXS_2=AND&TRG_TYPE_3=CITATION&TRG_FLD_3=RSRC_ROLE&TRG_VL_3=primary&TRG_OPR_3=EQ";
+			tinc_target_secondary=true;
 			break;
 		}
 	}	
-	loadFile(url2, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url2, div_id: div_id+"Previ_secundari", rsc_type:rsc_type, lang: lang, access_token_type: access_token_type});
+	if (tinc_target_secondary)
+		loadFile(url2, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url2, div_id: div_id+"Previ_secundari", rsc_type:rsc_type, lang: lang, access_token_type: access_token_type});
 }
 
 function GUFDonaCadenaLang(cadena_lang, lang)
@@ -833,12 +838,12 @@ var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
 
 function GUFAfegirFeedbackCapaMultipleTargets(targets_obj_o_str, lang, access_token_type, reprod_usage)
 {
-	var targets={};
+var targets;
 	
 	if (typeof(targets_obj_o_str) === "string")
 		targets = JSON.parse(targets_obj_o_str);
 	else if (typeof(targets_obj_o_str) === "object" && Array.isArray(targets_obj_o_str))
-		targets=targets_obj_o_str;
+		targets = targets_obj_o_str;
 	else
 	{
 		alert("targets_obj_o_str needs and object or an string");	

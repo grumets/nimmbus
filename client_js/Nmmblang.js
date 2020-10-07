@@ -7,7 +7,7 @@
 
 var LanguagesNB=["cat","spa","eng"];
 var ActiveLanguage=2;
-var Terms_and_Privacy_Last_Updated="02-10-2018";
+var Terms_and_Privacy_Last_Updated="06-10-2020";
 
 //Global message variables start by "Msg_" 
 var Msg_NiMMbus={cat: "NiMMbus", spa: "NiMMbus", eng: "NiMMbus"};
@@ -895,9 +895,21 @@ function ChangeLanguageTestWidget(lang, is_custom)
 	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
 	document.getElementById("sign_in_resource_type").innerHTML=DonaCadenaJSON({cat: "Text de tipus de recurs:", spa: "Texto de tipo de recurso:", eng: "Resource type text:"});
-	document.getElementById("sign_in_title").innerHTML=DonaCadenaJSON(Msg_Title)+':';
-	document.getElementById("sign_in_code").innerHTML=DonaCadenaJSON(Msg_Identifier)+':';
-	document.getElementById("sign_in_codespace").innerHTML=DonaCadenaJSON(Msg_Namespace)+':';
+	document.getElementById("sign_in_title").innerHTML=DonaCadenaJSON(Msg_Title)+" ("+DonaCadenaJSON({cat: "recurs valorat primari",
+				spa: "recurso valorado primario", eng: "primary target"})+"):";
+	document.getElementById("sign_in_code").innerHTML=DonaCadenaJSON(Msg_Identifier)+" ("+DonaCadenaJSON({cat: "recurs valorat primari",
+				spa: "recurso valorado primario", eng: "primary target"})+"):";
+	document.getElementById("sign_in_codespace").innerHTML=DonaCadenaJSON(Msg_Namespace)+" ("+DonaCadenaJSON({cat: "recurs valorat primari",
+				spa: "recurso valorado primario", eng: "primary target"})+"):";
+	if (document.getElementById("sign_in_title_2"))
+		document.getElementById("sign_in_title_2").innerHTML=DonaCadenaJSON(Msg_Title)+" ("+DonaCadenaJSON({cat: "recurs valorat secundari",
+				spa: "recurso valorado secundario", eng: "secondary target"})+"):";
+	if (document.getElementById("sign_in_code_2"))
+		document.getElementById("sign_in_code_2").innerHTML=DonaCadenaJSON(Msg_Identifier)+" ("+DonaCadenaJSON({cat: "recurs valorat secundari",
+				spa: "recurso valorado secundario", eng: "secondary target"})+"):";
+	if (document.getElementById("sign_in_codespace_2"))
+		document.getElementById("sign_in_codespace_2").innerHTML=DonaCadenaJSON(Msg_Namespace)+" ("+DonaCadenaJSON({cat: "recurs valorat secundari",
+				spa: "recurso valorado secundario", eng: "secondary target"})+"):";
 	document.getElementById("sign_in_btn").value=DonaCadenaJSON({cat: "Afegir/Revisar valoracions prèvies", spa: "Añadir/Revisar valoraciones previas", eng: "Add/Review previous feedback items"});
 	document.getElementById("clear_btn").value=DonaCadenaJSON({cat: "Buidar", spa: "Vaciar", eng: "Clear"});	
 }

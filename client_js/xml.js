@@ -17,15 +17,15 @@ var a;
 		a = root.getElementsByTagName(abbreb_ns + ":" + name)[0];
 		if(a && a != null)
 			return a;
-	    	return root.getElementsByTagName(name)[0];
+	    return root.getElementsByTagName(name)[0];
 	}
-    	return root.getElementsByTagName(name)[0];
+    return root.getElementsByTagName(name)[0];
 }
 
 //Return true if the node that has the abbreb_ns and the name. abbreb_ns can be '*' if we do not expect ns or if it does not matter.
 function HasXMLNodeTheRightName(node, abbreb_ns, name)
 {
-      	var ns_plus_name=node.nodeName.split(":");
+var ns_plus_name=node.nodeName.split(":");
 	if ((ns_plus_name[1] && (abbreb_ns==ns_plus_name[0] || abbreb_ns=='*') && ns_plus_name[1]==name) || 
 		(!ns_plus_name[1] && abbreb_ns=='*' && ns_plus_name[0]==name))
 		return node;
@@ -111,13 +111,13 @@ function loadFile(path, mimetype, success, error, extra_param)
 var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function()
 	{
-        	if (xhr.readyState === XMLHttpRequest.DONE) 
+        if (xhr.readyState === XMLHttpRequest.DONE) 
 		{
-	            	if (xhr.status === 200) 
+	       	if (xhr.status === 200) 
 			{
 				if (mimetype && mimetype!="" && mimetype!=xhr.getResponseHeader('content-type'))
 				{
-			                if (error)
+		            if (error)
 					{
 						var s=null;
 						if (xhr.response)
@@ -131,7 +131,7 @@ var xhr = new XMLHttpRequest();
 				}
 				else
 				{
-	                		if (success)
+	           		if (success)
 					{
 						if (IsXMLMimeType(mimetype))
 							success(xhr.responseXML, extra_param);
@@ -142,7 +142,7 @@ var xhr = new XMLHttpRequest();
 			} 
 			else 
 			{
-                		if (error)
+           		if (error)
 				{
 					var s=null;
 					if (xhr.response)
