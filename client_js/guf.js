@@ -31,18 +31,6 @@ GUFIncludeScript("owc_atom.js");
 GUFIncludeScript("wps_iso_guf.js");
 GUFIncludeScript("guf_locale.js");
 
-/* Example of use:
-	GUFCreateFeedbackWithReproducibleUsage(
-			[{title: "Mediterranean and Macaronesian coastal dune grassland (grey dune)", code: "B1_4b", codespace: "https://www.synbiosys.alterra.nl/nextgeoss", role: "primary"},
-			 {title: "NextGEOSS suitability map modeller", code: "F76A1A39-5BD1-4892-952C-D5B6B78DB28B", codespace: "https://www.synbiosys.alterra.nl/nextgeoss", role: "secondary"}], 
-			{abstract: "Habitat modelling for Mediterranean and Macaronesian coastal dune grassland (grey dune) (B1_4b), 
-			specific_usage: "Run MaxEnt model"},
-			ru_code: JSON.stringify(----),
-			ru_code_media_type: "----", 
-			ru_platform: "https://www.synbiosys.alterra.nl/nextgeoss",
-			ru_version: "----",
-			ru_schema: -----},
-			"eng", "NextGEOSS");*/
 function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, access_token_type)
 {
 	for (var i=0; i<targets.length; i++)
@@ -62,24 +50,11 @@ function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, acc
 	return GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type, reprod_usage);
 }
 
-/* Example of use: it is similar to GUFShowFeedbackInHTMLDiv (as documented in GitHub(but with the additional parameters:
-	reprod_usage -> 							{ru_platform: "ecop.nav", ru_version: "6.0", ru_schema: "estil"});
-		It is a parameter to describe the "type" of reproducible usage that will be retrieved and needs the platfom, version and schema
-		(tipically as in the related creation function GUFCreateFeedbackWithReproducibleUsage()
-	callback_function (string!) -> 	"AdoptaEstil" 
-		It is a function from the portal including the widget, that will be called when pressing the "Apply" button in the feedback items lists
-		that will be created by this function. The function will be be called using the params_function (next parameters) aswell as the GUF 
-		structure (see wps_iso_guf.js if needed), so internally should be defined for example as:
-			function AdoptaEstil(params_function, guf)
-	params_function (JSON) -> 			{i_capa: i_capa}
-		This is a JSON structure definining the internal (of the portal using the widget) parametres that will be passed to the 
-		callaback_funtion as first parameter (see below). The widget does not modify this element and will be passed as is.
-  No need of several targets as only primary is needed*/
-function GUFShowPreviousFeedbackWithReproducicleUsageInHTMLDiv(elem, seed_div_id, code, codespace, reprod_usage, lang, access_token_type, callback_function, params_function)
+function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id, code, codespace, reprod_usage, lang, access_token_type, callback_function, params_function)
 {	
 	var cdns=[];
 	
-	cdns.push("<form name=\"FeedbackWithReproducicleUsageResourceForm\" onSubmit=\"return false;\">");
+	cdns.push("<form name=\"FeedbackWithReproducibleUsageResourceForm\" onSubmit=\"return false;\">");
 	cdns.push("<div id=\"",seed_div_id,"\" style=\"width:98%\">", "</div></fieldset></div>", "</div></form>");
 	elem.innerHTML = cdns.join("")
 	
@@ -94,11 +69,6 @@ var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
 	return GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, targets, lang, access_token_type);
 }
 
-/* Allows defining and retrieving FB using more than one identifier. This is helpful in order to describe primary and secondary targets. Targets is an array, 
-and each element of the array follows the structure {title: "title target 1", code: "code target 1", codespace: "codespace target 1", role: "role target 1"}.
-For example, for a Sentinel 2 image in the NextGEOSS catalogue, the "targets" could be:
-targets=[{title: "s2b_msil2a_20200922t054639_n0214_r048_t46wdc_20200922t073907", code: "s2a_msil1c_20200918t083621_n0209_r064_t39vul_20200918t090023", codespace: "https://catalogue.nextgeoss.eu/", role: "primary"},
-			  {title: "Sentinel 2 collection", code: "SENTINEL2_L2A", codespace: "https://catalogue.nextgeoss.eu/", role: "secondary"}]*/
 function GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, targets, lang, access_token_type)
 {
 	elem.innerHTML = GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(seed_div_id, rsc_type, targets, lang, access_token_type);
@@ -769,6 +739,34 @@ var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
 	return GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang ? lang : "eng", access_token_type, reprod_usage);
 }
 
+function GUFFragmentKVPSobreReproducibleUsage(reprod_usage)
+{
+	var url="";
+
+	if (reprod_usage.abstract!="") //típicament hi va el nom estil, p.ex.
+		url+="&ABSTRACT="+reprod_usage.abstract;					
+	url+="&REPORT_ASPECT="+"usage";
+	if (reprod_usage.specific_usage!="")
+		url+="&SPECIFIC_USAGE="+reprod_usage.specific_usage;
+	/*date time -> de moment es crearà amb l'actual en el nimmbus al darrer moment
+	if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.feedback_resource_form.usage_date.value,document.feedback_resource_form.usage_time.value))!="")
+		url+="&USAGE_DATE_TIME="+p;*/
+	if (reprod_usage.ru_code!="")
+		url+="&RU_CODE="+reprod_usage.ru_code;
+	if (reprod_usage.ru_code_media_type!="")
+		url+="&RU_CODE_FORMAT="+reprod_usage.ru_code_media_type;		
+	if (reprod_usage.ru_platform!="")
+		url+="&RU_PLATFORM="+reprod_usage.ru_platform;
+	if (reprod_usage.ru_version!="")
+		url+="&RU_VERSION="+reprod_usage.ru_version;
+	if (reprod_usage.ru_schema!="")
+		url+="&RU_SCHEMA="+reprod_usage.ru_schema;
+	
+	return url;
+}
+
+var ReprodUsageForPostMessage="";
+
 function GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_type, reprod_usage)
 {
 	var url=ClientGUF;
@@ -806,26 +804,11 @@ function GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_t
 	}	
 	url+="&ACCESS_TOKEN_TYPE=" + access_token_type + "&page=ADDFEEDBACK&share_borrower_1=Anonymous"; 	
 
+	ReprodUsageForPostMessage="";
 	if (reprod_usage!=null)
-	{	//{abstract: "nom estil", specific_usage: "human-readble del equema", ru_code: JSON.parse(capa[12].estil[3]), ru_code_media_type: "JSON", ru_platform: "ecop.nav", ru_version: "6.0", ru_schema: "estil"});*/
-		if (reprod_usage.abstract!="")
-			url+="&ABSTRACT="+reprod_usage.abstract;					
-		url+="&REPORT_ASPECT="+"usage";
-		if (reprod_usage.specific_usage!="")
-			url+="&SPECIFIC_USAGE="+reprod_usage.specific_usage;
-		/*date time -> de moment es crearà amb l'actual en el nimmbus al darrer moment
-		if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.feedback_resource_form.usage_date.value,document.feedback_resource_form.usage_time.value))!="")
-			url+="&USAGE_DATE_TIME="+p;*/
-		if (reprod_usage.ru_code!="")
-			url+="&RU_CODE="+reprod_usage.ru_code;
-		if (reprod_usage.ru_code_media_type!="")
-			url+="&RU_CODE_FORMAT="+reprod_usage.ru_code_media_type;		
-		if (reprod_usage.ru_platform!="")
-			url+="&RU_PLATFORM="+reprod_usage.ru_platform;
-		if (reprod_usage.ru_version!="")
-			url+="&RU_VERSION="+reprod_usage.ru_version;
-		if (reprod_usage.ru_schema!="")
-			url+="&RU_SCHEMA="+reprod_usage.ru_schema;
+	{
+			url+="&POST_MESSAGE_FROM=" + location.href;	
+			ReprodUsageForPostMessage=GUFFragmentKVPSobreReproducibleUsage(reprod_usage);
 	}	
 	return url;
 }
@@ -836,6 +819,7 @@ var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
 	return GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type, reprod_usage);
 }
 
+var HeAfegitListenerReprodUsage=false;
 function GUFAfegirFeedbackCapaMultipleTargets(targets_obj_o_str, lang, access_token_type, reprod_usage)
 {
 var targets;
@@ -850,6 +834,11 @@ var targets;
 		return;
 	}
 	
+	if (!HeAfegitListenerReprodUsage)
+	{
+		window.addEventListener("message", EnviaReprodUsageComAPostMessage);
+		HeAfegitListenerReprodUsage=true;
+	}
 	if (GUFFeedbackWindow==null || GUFFeedbackWindow.closed)
 	{
 		var url=GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_type, reprod_usage);
@@ -931,4 +920,13 @@ var n_targets_secundaris=0;
 	cdns.push("</div>", "</div></form>");
 	
 	return cdns.join("");
+}
+
+function EnviaReprodUsageComAPostMessage(event)
+{
+	if (GUFFeedbackWindow && ReprodUsageForPostMessage!="")
+	{
+		GUFFeedbackWindow.postMessage(ReprodUsageForPostMessage, ClientGUF);
+		ReprodUsageForPostMessage="";
+	}
 }

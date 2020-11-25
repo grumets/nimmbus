@@ -1,5 +1,7 @@
 # Instructions for the integration of the GUF system (based on the NiMMbus service) in your resources
 
+The NiMMbus service is an OGC Geospatial User Feedback (GUF) implementation developed by the MiraMon team of the Grumets research group in the Universitat Autònoma de Barcelona and the CREAF, based on the previous NiMMbus system and evolved as a contribution to the H2020 NextGEOSS project. The NextGEOSS project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreement No 730329.
+
 This page provides general instructions for the GUF integration with your resources. They can be part of your catalogue or can be individual web pages. A "resource" can be anything that has an identifier in the web. Nevertheless, it is expected that your resources have some spatial component. In this page we explain two ways to integrate the Geospatial User Feedback in your web application:
 
  * The first one offers a **JavaScript API and a widget** that is very simple to integrate but, in contrast, provides a relative low level of flexibility. People with basic knowledge on JavaScript should select this one first. Basic knowledge on how to call a JavaScript function and include a library is required.
@@ -47,6 +49,7 @@ Please check the following examples to see how these styles are used (the three 
    * [test_widget.htm](../client_js/test_widget.htm): default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
    * [test_widget_custom.htm](../client_js/test_widget_custom.htm): custom style is used as family font and font color is change for all elements, and background color is changed for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_custom.htm
    * [test_widget_corine.htm](../client_js/test_widget_corine.htm): a different style (blue background) is used for extended description in citations and publications, Moreover, some elements have been hidden (guf_purpose, guf_contact_role, guf_date and guf_usage) to obtain shorter descriptions of feedback items. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm
+   * [test_widget_multitarget.htm](../client_js/test_widget_multitarget.htm): the same styling than the first test page but creating a multiple target user feedback item. In this test page a two-target user feedback item is created, with one primary target (a certain subarea within the Sentinel 2 L2A collection) default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
 
 The list of the classes defined in guf.css style sheet, and which part of the feedback item description they refer to, is described in [GUF.css Reference](../GUF_integration/guf_css.md).
 
@@ -60,7 +63,15 @@ The GUF widget will be shown in the area of the page you want. You should define
 In the example we create a division with the identifier "div_guf". For the moment, the division is small and it is not visible to the user because it has no content.
 
 ### Step 3: Fill the division with the GUF widget
-This will require that you call a JavaScript function with the name: GUFShowFeedbackInHTMLDiv().
+
+There are several options depending on the parameters that need to be sent to the GUF:
+ * Option 1: Feedback about a single primary target
+ * Option 2: Feedback about multiple targets
+ * Option 3: Feedback including reproducible usage
+
+#### Option 1: Feedback about a single primary target
+
+The first option to create feedback, related to a single primary targets, will require that you call a JavaScript function with the name: *GUFShowFeedbackInHTMLDiv()*.
 
 This function has the following parameters in sequence:
   * _elem_: The object that points to the division created in step 2. To get the object you can call a common JavaScript procedure: _document.getElementById("div_guf")_.
@@ -93,6 +104,116 @@ You can call the function directly or you can provide a button or link to "activ
 ```
 
 You can see all elements together in a general example (using a button) [here](../client_js/test_widget.htm) or applied to the Corine Land Cover 2012 metadata page (using a link) [here](../client_js/test_widget_corine.htm).
+
+#### Option 2: Feedback about multiple targets
+
+The second option to create feedback is to relate it to several targets, each of them with a certain role (at least one of them needs to be "primary"). In this case, the JavaScript function that needs to be used is: *GUFShowFeedbackMultipleTargetsInHTMLDiv()*.
+
+This function has the following parameters in sequence:
+  * _elem_: As in the previous function, the object that points to the division created in step 2. To get the object you can call a common JavaScript procedure: _document.getElementById("div_guf")_.
+  * _seed_div_id_: As in the previous function, a prefix for some divisions that are going to be created inside the widget. Having this name will allow you get access to the text created in the division or even to manipulate it.
+  * _rsc_type_: As in the previous function, text that is shown as the name of the resource. You can use "resource", "dataset" or a more concrete text for this resource in particular.
+  * _targets_: in this case, instead of describing a single target with three different parameters, as in the previous function, a single "targets" parameter, which is an array, includes the description of the list of targets.
+     * The structure of each element of the array has to be: _{title: "title target 1", code: "code target 1", codespace: "codespace target 1", role: "role target 1"}_.
+     * The elements of each element of the array are as follows:
+        * _title_: As in the previous function, the title of this target.
+        * _code_: As in the previous function, a unique identifier of this resource in your system.
+        * _codespace_: As in the previous function, a "codespace" where the "code" is considered unique.
+        *  _role_: The role of this target related to the feedback item that is being created. The available options are: "primary", "secondary" or "supplementary"
+  * _lang_: As in the previous function,  the language used in the HTML page. You can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
+  * _access_token_type_: As in the previous function, in case the portal including the widget is using one of the supported Single-Sign-On (SSO) systems, it can be described here to allow the desired credentials to be used, thus avoiding the log-in step. Supported systems are: "NextGEOSS", "LandSense", "Google" or "NiMMbus" (being the latter the default value).
+
+For example, a call to this function could be:
+
+```js
+	var targets=[{title: "Sentinel-2B Level-2A 2020-09-22 R051 T30TYL", code: "s2b_msil2a_20200922t104649_n0214_r051_t30tyl_20200927t135033", codespace: "https://catalogue.nextgeoss.eu/", role: "primary"},
+  			  {title: "Sentinel-2 Level-2A", code: "SENTINEL2_L2A", codespace: "https://catalogue.nextgeoss.eu/", role: "secondary"}];
+
+	GUFShowFeedbackMultipleTargetsInHTMLDiv(document.getElementById("div_guf"),
+			"div_guf_internal",
+			"resource",
+			targets,
+			"eng",
+			"NextGEOSS");
+```
+
+You can see a multiple targets example (using a button) [here](../client_js/test_widget_multitarget.htm), which described the same example than before: dataset as primary target and collection as secondary target.
+
+#### Option 3: Feedback including reproducible usage
+
+This option is the more advanced one. In this case, typically a portal uses user feedback to store and retrieve user feedback items including reproducible usage in a two steps process:
+  * _Creating the feedback items_: the portal integrating the GUF is creating the feedback items that includes reproducible usage of a certain type. In fact in a single portal more than one type of reproducible usage can be typically created, for example to include new style descriptions (of an existing layer in the portal) or new layer descriptions.
+  * _Retrieving the feedback items_: if some feedback items including reproducible usage have been stored before, the portal can retrieve and list them, for another user to apply them. For example, a user can retrieve an browse styles for a certain layer, described by other users previously, and select to apply some of them.
+
+Each of these two steps uses a different function, which are explained in the following subsections.
+
+##### 3.1 Creating feedback items with reproducible usage
+
+In this first step, to create the feedback item which includes reproducible usage, the JavaScript function that needs to be used is: *GUFCreateFeedbackWithReproducibleUsage()*. Typically thus function is used within a button or right-button menu, and triggers the opening of a NiMMbus window where the details of the feedback item including reproducible usage are shown, and the user can modify or add details and save the feedback element.
+
+This function has the following parameters in sequence:
+* _targets_: a single "targets" parameter, which is an array, includes the description of the list of targets.
+   * The structure of each element of the array has to be: _{title: "title target 1", code: "code target 1", codespace: "codespace target 1", role: "primary"}_.
+   * The elements of each element of the array are as follows:
+      * _title_: As in the previous function, the title of this target.
+      * _code_: As in the previous function, a unique identifier of this resource in your system.
+      * _codespace_: As in the previous function, a "codespace" where the "code" is considered unique.
+      *  _role_: The role of this target related to the feedback item that is being created. The available options are: "primary", "secondary" or "supplementary"
+* _reprod_usage_: this parameter is a structure including several elements:
+   * _abstract_: abstract of the feedback item, it can be, for example, the title assigned to the shared style
+   * _specific_usage_: Which is the general description of the usage described, for example "Share style"
+   * _ru_code_: code describing the reproducible usage, for example, the JSON description of the style that is being shared. Is the piece of code that in the second step, the portal will retrieve and apply
+   * _ru_code_media_type_: description of the media type of the code (previous element), tipically can have values such as "application/json" for JSON, "text/x-python" for Phyton, "text/x-r-source" for R, "application/x-bat" for a Windows command line, "application/x-sh" for a Linux command line, "application/wpsex+xml" for a WPS execute document, "application/KVP" for a Key-value pair (KVP), "application/vnd.docker" for a Docker container" or empty for others
+   * _ru_platform_: platform in which this reproducible usage can be applied. This not need to exactly refer to the URL that has created this (as usually used in the target code_space), but usually to a general URL describing the product, for example https://github.com/joanma747/MiraMonMapBrowser
+   * _ru_version_: version of the platform in which this reproducible usage can be applied, for example "6.0"
+   * _ru_schema_: type of reproducible usage within the platform, to be able to select several types of reproducible usages with different purposes, for example for sharing styles or layers. Sometimes it can be described as a section in a configuration file, but this is not mandatory.
+* _lang_: As in the previous function,  the language used in the HTML page. You can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
+* _access_token_type_: As in the previous function, in case the portal including the widget is using one of the supported Single-Sign-On (SSO) systems, it can be described here to allow the desired credentials to be used, thus avoiding the log-in step. Supported systems are: "NextGEOSS", "LandSense", "Google" or "NiMMbus" (being the latter the default value).
+
+Example of use:
+
+```js
+	var targets=[{title: "Sentinel 2 L2A", code: "DonanaSentinel2Level2a", codespace: "http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi", role: "primary"}];
+  var reprod_usage={
+    abstract: "Salinity Index-9: (NIRxR)/G",
+    specific_usage: "Share style",
+    ru_code: JSON.stringify({"nom":null,"desc":"Salinity Index-9: (NIRxR)/G","TipusObj":"P","component":[{"calcul":"({\"i_capa\":78,\"i_valor\":7}*{\"i_capa\":78,\"i_valor\":3})/{\"i_capa\":78,\"i_valor\":2}","FormulaConsulta":"(v[7]*v[3])/v[2]","estiramentPaleta":{"valorMinim":0,"valorMaxim":7000}}],"metadades":null,"nItemLlegAuto":20,"ncol":4,"descColorMultiplesDe":0.01,"origen":"usuari"}),
+    ru_code_media_type: "application/json",
+    ru_platform: "https://github.com/joanma747/MiraMonMapBrowser",
+    ru_version: "6.0",
+    ru_schema: "config-schema.json#/definitions/estil"};
+
+    GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, "eng", "NextGEOSS");    
+```    
+
+##### 3.2 Retrieving feedback items with reproducible usage
+
+In this second step, to retrieve (and use) the feedback item including reproducible usage, the JavaScript function that needs to be used is: *GUFShowPreviousFeedbackWithReproducicleUsageInHTMLDiv()*. Typically this function is used within a button or right-button menu, which opens a window showing the previous feedback items which include reproducible usage of a certain type, and may allow to apply them to the portal.
+
+* _elem_: As in the GUFShowFeedbackInHTMLDiv() function, the object that points to the division created in step 2. To get the object you can call a common JavaScript procedure: _document.getElementById("div_guf")_.
+* _seed_div_id_: As in the GUFShowFeedbackInHTMLDiv() function, a prefix for some divisions that are going to be created inside the widget. Having this name will allow you get access to the text created in the division or even to manipulate it.
+* _code_: A unique identifier of the resource in your system. No need of several targets as only the  primary one is needed.
+* _codespace_: A "codespace" where the "code" is considered unique. A codespace should be a global identifier (e.g. a URI). If you do not use the concept of "codespace" or "namespace", we recommend that you use the URL of your web service as the "codespace".
+* _reprod_usage_: this parameter is to describe the "type" of reproducible usage that will be retrieved and needs the platform, version and schema
+(typically as in the related creation function GUFCreateFeedbackWithReproducibleUsage()):
+   * _ru_platform_: platform in which this reproducible usage can be applied. This not need to exactly refer to the URL that has created this (as usually used in the target code_space), but usually to a general URL describing the product, for example https://github.com/joanma747/MiraMonMapBrowser
+   * _ru_version_: version of the platform in which this reproducible usage can be applied, for example "6.0"
+   * _ru_schema_: type of reproducible usage within the platform, to be able to select several types of reproducible usages with different purposes, for example for sharing styles or layers. Sometimes it can be described as a section in a configuration file, but this is not mandatory.
+* _lang_: As in the previous function,  the language used in the HTML page. You can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
+* _access_token_type_: As in the previous function, in case the portal including the widget is using one of the supported Single-Sign-On (SSO) systems, it can be described here to allow the desired credentials to be used, thus avoiding the log-in step. Supported systems are: "NextGEOSS", "LandSense", "Google" or "NiMMbus" (being the latter the default value).
+* _callback_function_: it is a function from the portal including the widget, that will be called when pressing the "Apply" button in the feedback items list that will be created by this function. The function will be be called using the params_function (next parameter) as well as the GUF structure (see wps_iso_guf.js if needed), so internally should be defined for example as: _function AdoptaEstil(params_function, guf)_
+* _params_function_: This is a JSON structure defining the internal (of the portal using the widget) parameters that will be passed to the _callaback_funtion_ as first parameter (see above). The widget does not modify this element and will be passed as is.
+
+Example of use:
+
+```js
+	var reprod_usage={ru_platform: "https://github.com/joanma747/MiraMonMapBrowser",
+    ru_version: "6.0",
+    ru_schema: "config-schema.json#/definitions/estil"};
+
+    GUFShowPreviousFeedbackWithReproducicleUsageInHTMLDiv(document.getElementById("div_guf"),
+        "div_guf_internal", "DonanaSentinel2Level2a", "http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi", reprod_usage, "eng", "NextGEOSS", "AdoptStyle", {i_capa: i_capa});    
+```    
 
 ## Option 2: JavaScript for the Web API
 

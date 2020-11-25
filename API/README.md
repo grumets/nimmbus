@@ -1,5 +1,9 @@
 # NiMMbus API
+
+The NiMMbus service is an OGC Geospatial User Feedback (GUF) implementation developed by the MiraMon team of the Grumets research group in the Universitat Autònoma de Barcelona and the CREAF, based on the previous NiMMbus system and evolved as a contribution to the H2020 NextGEOSS project. The NextGEOSS project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreement No 730329.
+
 The Nimmbus API is based on the CRUD (create, retrieve, update, and delete) 4 basic functions for persistent storage/management of objects (https://en.wikipedia.org/wiki/Create,_read,_update_and_delete). The API defines a set of object classes and provide mainly the 4 CRUD operations plus some additions when considered necessary. In this way, it mimics some of the RESTful design principles too.
+
 The Nimmbus API uses the OGC WPS 1.0 standard but with 2 significant modifications:
 * The WPS execute request uses the WPS 1.0 abstract model but is implemented as GET requests (not present in the WPS 1.0 standard.
 * The CREATE, MODIFY (update) and DELETE operations are implicitly asynchronous and respond a synchronization ID (more or less equivalent to the job id introduced in WPS 2.0 standard). An extra operation allows for requesting NB_SYNC:GETRETURN the status of the asynchronous process or the actual result if the process has ended.
@@ -117,7 +121,7 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * PROBLEM_DATE_TIME=	//Format YYYY-MM-DDTHH:MM:SSZ is required
   * WORK_AROUND=
   * REF_DOC_#=
-  * EXPECTED_FIX_DATE=	//Format YYYY-MM-DD is required 
+  * EXPECTED_FIX_DATE=	//Format YYYY-MM-DD is required
   * ALT_RSRC_#=
   * FIX_RSRC_#=
 
@@ -265,7 +269,7 @@ If a parameter is not indicated the value is not modified. If the parameter is i
   * PROBLEM_DATE_TIME=	//Format YYYY-MM-DDTHH:MM:SSZ is required
   * WORK_AROUND=
   * REF_DOC_#=	//Same strategy than for PUB_#= (above in this section) is applied
-  * EXPECTED_FIX_DATE=	//Format YYYY-MM-DD is required 
+  * EXPECTED_FIX_DATE=	//Format YYYY-MM-DD is required
   * ALT_RSRC_#=	//Same strategy than for PUB_#= (above in this section) is applied
   * FIX_RSRC_#=	//Same strategy than for PUB_#= (above in this section) is applied
 

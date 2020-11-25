@@ -72,6 +72,8 @@ function decode_utf8(s) {
 }
 
 //Després de intentar fer servir l'objecte link() sense exit he hagut de fer això.
+//En realitat el que s'hauria de fer servir és el constructor new URL().
+// A aquesta funció se li pot passar el path absolut o un path relatiu seguit d'una adreça base. 
 //Returns the hostname and port number of a URL
 function DonaHost(s)
 {
@@ -623,144 +625,176 @@ var ActionAfterSignIn=null;
 var ParamActionAfterSignIn=null;
 var ChangeLang=true;  //Change language following user preferences?
 
-function AnalitzarParametresURL()
+function ExtreuParametresKVPdeCadena(cadena, query)
 {
-var clau=new Array("USER=", "PASSWORD=", "EMAIL=", "LANGUAGE=", "TOKEN=", "TOKEN_DESC=", "PAGE=", "TARGET_TITLE=", "TARGET_CODE=", "TARGET_CODESPACE=", "TARGET_ROLE=", 
-		"TARGET_TITLE_2=", "TARGET_CODE_2=", "TARGET_CODESPACE_2=", "TARGET_ROLE_2=", //en un futur quan canvien estrtègia d'aquesta funció es farà diferent i serà realment N
-		"SHARE_BORROWER_1=", "ACCESS_TOKEN_TYPE=", "ABSTRACT=", "REPORT_ASPECT=", "SPECIFIC_USAGE=", "RU_CODE=", "RU_CODE_FORMAT=", "RU_PLATFORM=", "RU_VERSION=", "RU_SCHEMA=");
-var newpage="";
-var email, target_title="", target_code="", target_code_space="", target_role="", target_title_2="", target_code_2="", target_code_space_2="", target_role_2="", share_borrower_1="", access_token_type="";
-
-	if (location.search && location.search.substring(0,1)=="?")
-	{
-		var kvp=location.search.substring(1, location.search.length).split("&");
-		for (var i_kvp=0; i_kvp<kvp.length; i_kvp++)
+		for (var i=0; i<cadena.length; i++)
 		{
-			for (var i_clau=0; i_clau<clau.length; i_clau++)
+			var j = cadena[i].indexOf("=");  // Gets the first index where a space occours
+			if (j==-1)
 			{
-				if (kvp[i_kvp].substring(0, clau[i_clau].length).toUpperCase()==clau[i_clau])
-				{
-					var valor=unescape(kvp[i_kvp].substring(clau[i_clau].length,kvp[i_kvp].length));
-					if (i_clau==0)  //USER
-						document.sign_in.user.value=valor;
-					else if (i_clau==1)  //PASSWORD
-						document.sign_in.pass.value=valor;
-					else if (i_clau==2)  //EMAIL
-						email=valor;
-					else if (i_clau==3)  //LANGUAGE
-					{
-						var i;
-						i=GetActiveLanguageIndex(valor.toLowerCase());
-						if (i==-1)
-							ShowInfo("long", DonaCadenaJSON(Msg_Unsupported_language)+": \""+ valor.toLowerCase()+"\".");
-						else
-						{
-							ActiveLanguage=i;
-							ChangeLang=false;
-						}
-					}
-					else if (i_clau==4)  //TOKEN
-						PendingToken=valor;
-					else if (i_clau==5)  //TOKEN_DESC
-						document.getElementById("execute-token-subtitle-text").innerHTML=valor;
-					else if (i_clau==6)  // PAGE
-						newpage=valor.toUpperCase();
-					else if (i_clau==7)  // TARGET_TITLE
-						target_title=valor;
-					else if (i_clau==8)  // TARGET_CODE
-						target_code=valor;
-					else if (i_clau==9)  // TARGET_CODESPACE
-						target_code_space=valor;
-					else if (i_clau==10)  // TARGET_ROLE
-						target_role=valor;
-					else if (i_clau==11)  // TARGET_TITLE_2
-						target_title_2=valor;
-					else if (i_clau==12)  // TARGET_CODE_2
-						target_code_2=valor;
-					else if (i_clau==13)  // TARGET_CODESPACE_2
-						target_code_space_2=valor;
-					else if (i_clau==14)  // TARGET_ROLE_2
-						target_role_2=valor;
-					else if (i_clau==15)  // SHARE_BORROWER_1
-						share_borrower_1=valor;
-					else if (i_clau==16)  // ACCESS_TOKEN_TYPE
-					{
-						access_token_type=valor;
-						if (valor.toLowerCase()=="nextgeoss")
-							ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);
-						else if (valor.toLowerCase()=="landsense")
-							ValidaSSOLandSense(true, SignInNBLandSense, null);
-						else if (valor.toLowerCase()=="google")
-							ValidaSSOGoogle();
-						else if (valor.toLowerCase()=="debug")
-							ValidaSSODebug();					
-					}
-					else if (i_clau==17)  // ABSTRACT
-					{
-						if (!ElementsOfAFeedback)
-							ElementsOfAFeedback={};						
-						ElementsOfAFeedback.abstract=valor;
-					}
-					else if (i_clau==18)  // REPORT_ASPECT
-					{
-						if (!ElementsOfAFeedback)
-							ElementsOfAFeedback={};						
-						ElementsOfAFeedback.report_aspect=valor;
-					}
-					else if (i_clau==19)  // SPECIFIC_USAGE
-					{
-						if (!ElementsOfAFeedback)
-							ElementsOfAFeedback={};						
-						ElementsOfAFeedback.specific_usage=valor;
-					}
-					else if (i_clau==20)  // RU_CODE
-					{
-						if (!ElementsOfAFeedback)
-							ElementsOfAFeedback={};						
-						ElementsOfAFeedback.ru_code=valor;
-					}
-					else if (i_clau==21)  // RU_CODE_FORMAT
-					{
-						if (!ElementsOfAFeedback)
-							ElementsOfAFeedback={};						
-						ElementsOfAFeedback.ru_code_format=valor;
-					}
-					else if (i_clau==22)  // RU_PLATFORM
-					{
-						if (!ElementsOfAFeedback)
-							ElementsOfAFeedback={};						
-						ElementsOfAFeedback.ru_platform=valor;
-					}
-					else if (i_clau==23)  // RU_VERSION
-					{
-						if (!ElementsOfAFeedback)
-							ElementsOfAFeedback={};						
-						ElementsOfAFeedback.ru_version=valor;
-					}
-					else if (i_clau==24)  // RU_SCHEMA
-					{
-						if (!ElementsOfAFeedback)
-							ElementsOfAFeedback={};						
-						ElementsOfAFeedback.ru_schema=valor;
-					}					
-					else
-						ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_key) +": \""+ valor+"\".");
-					break;
-				}				
+				alert("Format error in query URL '" + cadena + "', Key and value pair (KVP) '" + cadena[i] + "' without '='.").
+				break;
 			}
+			query[unescape(cadena[i].substring(0, j)).toUpperCase()]=unescape(cadena[i].substring(j+1));
+		}
+		return;
+}
+
+var PendingPostMessage="";
+var ParamsQuery={};
+
+function AnalitzarParametresURL(fragment)
+{
+var share_borrower_1="", access_token_type="";
+var i;
+var query={};
+var kvp="";
+		
+	if (fragment)
+	{
+		PendingPostMessage="";
+		kvp=fragment.substring(1, fragment.length).split("&");
+	}
+	else if (location.search && location.search.substring(0,1)=="?")
+	{
+		ParamsQuery.newpage="";
+		ParamsQuery.email="";
+		ParamsQuery.llista_targets=[];		
+		kvp=location.search.substring(1, location.search.length).split("&");
+	 }
+		
+	if (kvp)
+	{		
+		ExtreuParametresKVPdeCadena(kvp, query);
+		if (query["USER"])
+			document.sign_in.user.value=query["USER"];
+		if (query["PASSWORD"])
+			document.sign_in.pass.value=query["PASSWORD"];
+		if (query["EMAIL"])
+			ParamsQuery.email=query["EMAIL"];
+		if (query["LANGUAGE"])
+		{
+			i=GetActiveLanguageIndex(query["LANGUAGE"].toLowerCase());
+			if (i==-1)
+				ShowInfo("long", DonaCadenaJSON(Msg_Unsupported_language)+": \""+query["LANGUAGE"].toLowerCase()+"\".");
+			else
+			{
+				ActiveLanguage=i;
+				ChangeLang=false;
+			}
+		}
+		if (query["TOKEN"])
+			PendingToken=query["TOKEN"];
+		if (query["TOKEN_DESC"])
+			document.getElementById("execute-token-subtitle-text").innerHTML=query["TOKEN_DESC"];
+		if (query["PAGE"])
+			ParamsQuery.newpage=query["PAGE"].toUpperCase();
+		if (query["SHARE_BORROWER_1"])
+			share_borrower_1=query["SHARE_BORROWER_1"];
+			
+		var sufix="";
+		i=1
+		while (true)
+		{
+			if (query["TARGET_TITLE"+sufix] && query["TARGET_CODE"+sufix])
+				;
+			else
+			   break;
+		
+			ParamsQuery.llista_targets.push({"title": query["TARGET_TITLE"+sufix], "code": query["TARGET_CODE"+sufix], 
+					"code_space": (query["TARGET_CODESPACE"+sufix] ? query["TARGET_CODESPACE"+sufix] : ""), 
+					"role": (query["TARGET_ROLE"+sufix] ? query["TARGET_ROLE"+sufix] : "primary"), 
+					"share_borrower_1": share_borrower_1});				
+	
+			i++;
+			sufix="_"+i;
+		}
+		
+		if (query["ACCESS_TOKEN_TYPE"])
+		{
+			access_token_type=query["ACCESS_TOKEN_TYPE"].toLowerCase;
+			if (access_token_type=="nextgeoss")
+				ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);
+			else if (access_token_type=="landsense")
+				ValidaSSOLandSense(true, SignInNBLandSense, null);
+			else if (access_token_type=="google")
+				ValidaSSOGoogle();
+			else if (access_token_type=="debug")
+				ValidaSSODebug();					
+		}
+		if (query["ABSTRACT"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.abstract=query["ABSTRACT"];
+		}
+		if (query["REPORT_ASPECT"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.report_aspect=query["REPORT_ASPECT"];
+		}
+		if (query["SPECIFIC_USAGE"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.specific_usage=query["SPECIFIC_USAGE"];
+		}
+		if (query["RU_CODE"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.ru_code=query["RU_CODE"];
+		}
+		if (query["RU_CODE_FORMAT"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.ru_code_format=query["RU_CODE_FORMAT"];
+		}
+		if (query["RU_PLATFORM"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.ru_platform=query["RU_PLATFORM"];
+		}
+		if (query["RU_VERSION"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.ru_version=query["RU_VERSION"];
+		}
+		if (query["RU_SCHEMA"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.ru_schema=query["RU_SCHEMA"];
+		}					
+		/*else
+			ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_key) +": \""+ valor+"\".");
+		break;*/
+		if (query["POST_MESSAGE_FROM"])
+		{
+			PendingPostMessage=query["POST_MESSAGE_FROM"];
+			if (window.opener)
+			{
+				NotifyOpenerIAmReady(PendingPostMessage);
+				return;
+			}	
+			else
+				ShowInfo("long", "POST_MESSAGE_FROM param without an opener, it will be ommited");
 		}
 	}
 
-	if (newpage!="")
-	{
-	
-		if (newpage=="NEWPASSWORD")
+	if (typeof ParamsQuery.newpage !== "undefined" && ParamsQuery.newpage!="")
+	{	
+		if (ParamsQuery.newpage=="NEWPASSWORD")
 			EntraANewPassword();
-		else if (newpage=="NEWUSER")
-			EntraANewUser(email);
-		else if (newpage=="TOKEN")
+		else if (ParamsQuery.newpage=="NEWUSER")
+			EntraANewUser(ParamsQuery.email);
+		else if (ParamsQuery.newpage=="TOKEN")
 			EntraAExecuteToken();
-		else if (newpage=="RESETPASSWORD")
+		else if (ParamsQuery.newpage=="RESETPASSWORD")
 		{
 			if (PendingToken=="")
 			{
@@ -769,30 +803,27 @@ var email, target_title="", target_code="", target_code_space="", target_role=""
 			}
 			EntraAResetPassword();
 		}
-		else if (newpage=="MAIN")
+		else if (ParamsQuery.newpage=="MAIN")
 			EntraANimmbusMain();
-		else if (newpage=="ADDFEEDBACK")
+		else if (ParamsQuery.newpage=="ADDFEEDBACK")
 		{
-			var llista_targets=[];
-			
-			if ((target_title=="" || target_code=="") && (target_title_2=="" || target_code_2=="")) //alguna de les 2 cites ha de ser completa
+			if (ParamsQuery.llista_targets.length==0) //no he detectat cap target vàlid
 			{
 				ShowInfo("long", DonaCadenaJSON(Msg_TARGET_TILE_and_CODE_needed));
 				return;
 			}
-			ActionAfterSignIn=EntraAAddFeedback;
-			
-			if (target_title!="" && target_code!="")
-				llista_targets.push({"title": target_title, "code": target_code, "code_space": target_code_space, "role": (target_role ? target_role : "primary"), "share_borrower_1": share_borrower_1});
-			if (target_title_2!="" && target_code_2!="")
-				llista_targets.push({"title": target_title_2, "code": target_code_2, "code_space": target_code_space_2, "role": (target_role_2 ? target_role_2 : "primary"), "share_borrower_1": share_borrower_1});
-			
-			ParamActionAfterSignIn={targets : llista_targets};
+			ActionAfterSignIn=EntraAAddFeedback;	
+			ParamActionAfterSignIn={targets : ParamsQuery.llista_targets};
 		}
 		else
-			ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_page) +": \""+ newpage+"\".");
+			ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_page) +": \""+ ParamsQuery.newpage+"\".");
 	}
+}
 
+function NotifyOpenerIAmReady(url)
+{
+	if (window.opener)
+		window.opener.postMessage("I'm ready", url); //"el primer paràmetre no l'usem per res però podria servir per dir alguna cosa al opener"
 }
 
 function InitFrontPage()
@@ -6785,6 +6816,12 @@ function CurrentPassInputChange()
 		CurrentPassChangeTimeOut=setTimeout("CheckCurrentPassCorrectness();",1500);
 }
 
+function AnalitzaMessage(event)
+{
+	if (event && DonaHost(event.origin)==DonaHost(PendingPostMessage)) //PendingPostMessage conté la URL
+		AnalitzarParametresURL(event.data);		
+}
+
 </script>
 
 <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
@@ -6792,7 +6829,7 @@ function CurrentPassInputChange()
 </head>
 
 
-<body onLoad="InitFrontPage();">
+<body onLoad="InitFrontPage();" onMessage="AnalitzaMessage(event);">
 
 <div class="long-note-outer">
 <div id="long-note" class="note-inner"></div>

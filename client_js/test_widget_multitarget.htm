@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title id="head_title">NiMMbus Test Widget</title>
+
+<link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+<link rel="stylesheet" href="guf.css">
+<link rel="stylesheet" href="nimmbus.css">
+
+<script language="JavaScript" src="Nmmblang.js"></script>
+<script language="JavaScript" src="guf.js"></script>
+
+<script>
+<!--
+
+//From: http://www.technicaladvices.com/2012/07/16/preventing-backspace-from-navigating-back-in-all-the-browsers/
+document.onkeydown = function (event) 
+{
+	
+	if (!event) { /* This will happen in IE */
+		event = window.event;
+	}
+		
+	var keyCode = event.keyCode;
+	
+	if (keyCode == 8 &&
+		((event.target || event.srcElement).tagName != "TEXTAREA") && 
+		((event.target || event.srcElement).tagName != "INPUT")) { 
+		
+		if (navigator.userAgent.toLowerCase().indexOf("msie") == -1) {
+			event.stopPropagation();
+		} else {
+			event.returnValue = false;
+		}
+		
+		return false;
+	}
+};	
+
+function InitFrontPage()
+{
+	ChangeLanguageTestWidget(ActiveLanguage, false);
+}
+
+var TimeOutBoxCloser=0;
+var CloseDropDownListOutMenu=null;
+var CloseDropDownListOutSubMenu=null;
+
+function SwitchDropDownList(menu_id, submenu_id)
+{
+	if (document.getElementById(submenu_id).style.visibility=="")
+		document.getElementById(submenu_id).style.visibility="hidden";
+
+	if (document.getElementById(submenu_id).style.visibility=="hidden")
+	{
+		document.getElementById(submenu_id).style.visibility="visible";
+		//Remove menu when clicking outside: http://www.techjunkie.com/close-div-click-outside/
+		CloseDropDownListOut(CloseDropDownListOutSubMenu);
+
+		CloseDropDownListOutMenu=menu_id;
+		CloseDropDownListOutSubMenu=submenu_id;
+
+		document.body.removeEventListener('click', CloseDropDownListOutEvent, false);
+		if (TimeOutBoxCloser)
+			clearTimeout(TimeOutBoxCloser);
+		TimeOutBoxCloser=setTimeout("document.body.addEventListener('click', CloseDropDownListOutEvent, false);", 300);
+	}
+	else
+		CloseDropDownListOut(submenu_id);
+}
+
+function CloseDropDownListOut(id)
+{
+	document.body.removeEventListener('click', CloseDropDownListOut, false);
+	if (id)
+		document.getElementById(id).style.visibility='hidden';
+}
+
+function CloseDropDownListOutEvent(event)
+{
+	if (!event)
+		event=window.event;
+	if(event.target.id != CloseDropDownListOutMenu)
+	{
+		CloseDropDownListOut(CloseDropDownListOutSubMenu);
+		CloseDropDownListOutSubMenu=null;		
+	}
+}	
+
+var previous_feedback_loaded=false;
+
+function ChangeLanguageReloadPreviousFeedbackIfNeeded(language)
+{
+	ChangeLanguageTestWidget(language);
+	if (previous_feedback_loaded)
+		LoadPreviousFeedback();
+}
+	
+function LoadPreviousFeedback()
+{
+var targets=[];
+	
+	previous_feedback_loaded=true;
+	
+	if (document.form_guf.title.value!="" && document.form_guf.code.value!="" && document.form_guf.codespace.value!="")
+		targets.push({title: document.form_guf.title.value, 
+									code: document.form_guf.code.value, 
+									codespace: document.form_guf.codespace.value, 
+									role: "primary"});
+	
+	if (document.form_guf.title_2.value!="" && document.form_guf.code_2.value!="" && document.form_guf.codespace_2.value!="")
+		targets.push({title: document.form_guf.title_2.value, 
+									code: document.form_guf.code_2.value,
+									codespace: document.form_guf.codespace_2.value,
+									role: "secondary"});
+	
+	GUFShowFeedbackMultipleTargetsInHTMLDiv(document.getElementById("div_guf"), 
+			"LayerFeedbackCapa", 
+			document.form_guf.rsc_type.value, 
+			targets, 
+			LanguagesNB[ActiveLanguage]);
+
+	return false;
+}
+
+function ClearGUFDiv()
+{
+	document.getElementById("div_guf").innerHTML="";
+	previous_feedback_loaded=false;	
+}
+
+</script>
+</head>
+
+<!--body-->
+<body onLoad="InitFrontPage();">
+	 
+<div class="long-note-outer">
+<div id="long-note" class="note-inner"></div>
+</div>
+
+<div class="short-note-outer">
+<div id="short-note" class="note-inner"></div>
+</div>
+	
+<!-- *** IDENTIFICATION FRONT PAGE *** -->
+
+<div id="front-page">
+	
+<div class="front-bg">
+<img src="topoorto.jpg" style="display: block;">
+</div>
+
+<div class="front-welcome-text">
+<h1 id="front-welcome-text-title" style="line-height: normal; margin: 0px">Benvinguts al NiMMbus.</h1>
+<p id="front-welcome-text-subtitle" style="margin: 10px"></p>
+<br>
+<img src="NiMMbus.png" style="display: block;">
+<table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table>
+<br>
+<table style="width: 100%"><tr><td style="text-align: left; width: 27%"><p class="front-conditions-text"><a id="welcome-terms_of_use" href="TermsOfUse.htm" style="color: #CCD6DD">Terms_of_use</a></p></td>
+	<td style="text-align: center; width: 33%"><p class="front-conditions-text"><a id="welcome-privacy_statement" href="PrivacyStatement.htm" style="color: #CCD6DD">Privacy_Statement</a></p></td>
+	<td style="text-align: right"><p id="welcome-last_updated" class="front-conditions-text"><i>Last_updated_October_2_2018</i></p></td></tr></table>
+</div>
+
+<div class="front-language">
+<a class="dropdown-language" id="dropdown-language" onClick="SwitchDropDownList('dropdown-language', 'front-language-list');">
+<span id="front-language-lang">
+Language: English
+</span>
+<b class="caret"></b>
+</a>
+</div>
+
+<div id="front-language-list" class="dropdown-list" style="left: 85%; top: 70px; width: 70px; height: 70px;">
+<div class="dropdown-caret">
+<span class="caret-outer"></span>
+<span class="caret-inner"></span>
+</div>
+<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(0);SwitchDropDownList('dropdown-language', 'front-language-list');">
+Català</a>
+<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(1);SwitchDropDownList('dropdown-language', 'front-language-list');">
+Español</a>
+<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(2);SwitchDropDownList('dropdown-language', 'front-language-list');">
+English</a>
+</div>
+
+<div class="white-area" style="left: 50%; top: 130px; width: 300px; height: 80px;">
+<form name="form_guf" onSubmit="return LoadPreviousFeedback();">
+<p class="packet_paragraph" id="sign_in_resource_type"></p>
+<input name="rsc_type" value="the dataset" size=50></input>
+<p class="packet_paragraph" id="sign_in_title"></p>
+<input name="title" value="Sentinel-2B Level-2A 2020-09-22 R051 T30TYL" size=50></input>
+<p class="packet_paragraph" id="sign_in_code"></p>
+<input name="code" value="s2b_msil2a_20200922t104649_n0214_r051_t30tyl_20200927t135033" size=50></input>
+<p class="packet_paragraph" id="sign_in_codespace"></p>
+<input name="codespace" value="https://catalogue.nextgeoss.eu/" size=50></input><br>
+<p class="packet_paragraph" id="sign_in_title_2">title secodary target</p>
+<input name="title_2" value="Sentinel-2 Level-2A" size=50></input>
+<p class="packet_paragraph" id="sign_in_code_2">Code seconday target</p>
+<input name="code_2" value="SENTINEL2_L2A" size=50></input>
+<p class="packet_paragraph" id="sign_in_codespace_2">Codespace seconday target</p>
+<input name="codespace_2" value="https://catalogue.nextgeoss.eu/" size=50></input><br>
+<br>
+<input id="sign_in_btn" class="submit_btn" type="submit"><input id="clear_btn" class="submit_btn" type="button" onClick="ClearGUFDiv()")>
+<form>
+</div>
+
+<div id="div_guf" class="white-area" style="left: 10%; top: 550px; width: 60%;"></div>
+</div>  <!--End of id="front-page" -->
+
+</body>
+</html>
