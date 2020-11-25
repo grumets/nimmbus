@@ -49,7 +49,7 @@ Please check the following examples to see how these styles are used (the three 
    * [test_widget.htm](../client_js/test_widget.htm): default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
    * [test_widget_custom.htm](../client_js/test_widget_custom.htm): custom style is used as family font and font color is change for all elements, and background color is changed for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_custom.htm
    * [test_widget_corine.htm](../client_js/test_widget_corine.htm): a different style (blue background) is used for extended description in citations and publications, Moreover, some elements have been hidden (guf_purpose, guf_contact_role, guf_date and guf_usage) to obtain shorter descriptions of feedback items. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm
-   * [test_widget_multitarget.htm](../client_js/test_widget_multitarget.htm): the same styling than the first test page but creating a multiple target user feedback item. In this test page a two-target user feedback item is created, with one primary target (a certain subarea within the Sentinel 2 L2A collection) default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
+   * [test_widget_multitarget.htm](../client_js/test_widget_multitarget.htm): the same styling than the first test page but creating a multiple target user feedback item. In this test page a two-target user feedback item is created, with one primary target (a certain subarea within the Sentinel 2 L2A collection) default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_multitarget.htm
 
 The list of the classes defined in guf.css style sheet, and which part of the feedback item description they refer to, is described in [GUF.css Reference](../GUF_integration/guf_css.md).
 
@@ -103,7 +103,7 @@ You can call the function directly or you can provide a button or link to "activ
 "Corine Land Cover 2012", "clc-2012", "https://land.copernicus.eu", "eng", "NextGEOSS");'>Add user feedback or review previous feedback</a>
 ```
 
-You can see all elements together in a general example (using a button) [here](../client_js/test_widget.htm) or applied to the Corine Land Cover 2012 metadata page (using a link) [here](../client_js/test_widget_corine.htm).
+You can see all elements together in a general example (using a button) here: [code](../client_js/test_widget.htm) and [test_widget](https://www.opengis.uab.cat/nimmbus/test_widget.htm). You can also check an example applied to the Corine Land Cover 2012 metadata page (using a link) here: [code](../client_js/test_widget_corine.htm) and [test_widget_corine](https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm).
 
 #### Option 2: Feedback about multiple targets
 
@@ -137,7 +137,7 @@ For example, a call to this function could be:
 			"NextGEOSS");
 ```
 
-You can see a multiple targets example (using a button) [here](../client_js/test_widget_multitarget.htm), which described the same example than before: dataset as primary target and collection as secondary target.
+You can see a multiple targets example (using a button) here: [code](../client_js/test_widget_multitarget.htm) and [test_widget_multitarget](https://www.opengis.uab.cat/nimmbus/test_widget_multitarget.htm). This test page for multitargets describes the same example than before: dataset as primary target and collection as secondary target.
 
 #### Option 3: Feedback including reproducible usage
 
