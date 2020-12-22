@@ -8,7 +8,7 @@ Materials:
   * the [API documentation](API) to interact with the server
   * instructions on [how to integrate](GUF_integration) this system in existing metadata catalogues
 
-Several integrations have been illustrated in [www.eneon.org](ENEON graph), the INSPIRE catalogue, GEO-DAB API test instance, [maps.ecopotential-project.eu](ECOPotential maps browser), etc.
+Several integrations have been illustrated in [www.eneon.org](ENEON graph), the INSPIRE catalogue, GEO-DAB API test instance, [maps.ecopotential-project.eu](ECOPotential maps browser), [https://geoessential.unepgrid.ch/portal/sdg15_3_1.html](GeoEssential dashboard for SDG15.3.1 indicator Land Degradation), etc.
 
 ```
 The NextGEOSS project has received funding from the European Union Horizon 2020 research and innovation programme
