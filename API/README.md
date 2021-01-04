@@ -16,7 +16,7 @@ The Nimmbus API uses the OGC WPS 1.0 standard but with 2 significant modificatio
 * In the following descriptions a parameter ending by _# means that the parameters can be used n times substituting the # by sequential numbers starting by 1.
 
 ## General response
-All responses follow the WPS 1.0 specified XML syntax except the NB_RESOURCE:RETRIEVE request that follows ATOM syntax.
+All responses follow the WPS 1.0 specified XML syntax except the NB_RESOURCE:ENUMERATE request that follows ATOM syntax.
 
 ## General exceptions
 All responses follow the WPS 1.0 specified XML syntax for exceptions.
