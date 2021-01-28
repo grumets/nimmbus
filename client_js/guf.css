@@ -1,9 +1,128 @@
 
-.no_display {
+div.guf_folded {
   display: none;
   background: #EEEEEE;
 }
 
-:checked + .no_display {
+:checked + div.guf_folded {
   display: block;
 }
+
+hr.guf_dashed {
+	border-top: 1px dashed #a6a6a6;
+}
+
+hr.guf_solid {
+	border-top: 1px solid #a6a6a6;
+}
+
+a.guf_link:link {
+	color: #0000EE;
+} 
+
+a.guf_link:hover {
+	color: red;
+} 
+
+a.guf_link:visited {
+	color: #551A8B;
+}
+
+div.guf_widget {
+	/*font-family: "Gotham Narrow SSm",sans-serif;*/
+	color: #66757F;
+}
+
+legend.guf_legend {
+	font-weight: bold;
+	color: #555555;
+}
+
+input.guf_button {}
+
+fieldset.guf_fieldset {}
+
+span.guf_key {
+	font-weight: bold;
+}
+
+span.guf_key_2 {
+ 	text-decoration: underline; 
+}
+
+div.guf_add_fb {}
+
+div.guf_report {}
+
+div.guf_fb_id {}
+
+div.guf_abstract {}
+
+div.guf_purpose {}
+
+div.guf_contact_role {}
+
+div.guf_date {}
+
+div.guf_rating {}
+
+div.guf_comment {}
+
+div.guf_usage {}
+
+div.guf_aspect_reported {}
+
+div.guf_usage_description {}
+
+div.guf_spec_usage_description {}
+
+div.guf_usage_dt {}
+
+div.guf_user_deter_limits {}
+
+div.guf_response {}
+
+div.guf_add_doc {}
+
+div.guf_reprodUsage {}
+
+div.guf_discovered_issue {}
+
+div.guf_known_problem {}
+
+div.guf_known_problem_dt {}
+
+div.guf_work_around {}
+
+div.guf_ref_doc {}
+
+div.guf_exp_solution_date {}
+
+div.guf_alt_rsrc {}
+
+div.guf_fix_rsrc {}
+
+div.guf_public {}
+
+span.guf_show_more {
+	font-style: italic;
+}
+
+div.guf_edit {}
+
+div.guf_target {}
+
+/* Citation and publication elements */
+div.guf_cit_edition {}
+
+div.guf_cit_series {}
+
+div.guf_cit_other_citation {}
+
+div.guf_cit_responsibles {}
+
+div.guf_cit_online_resource {}
+
+div.guf_cit_identifier {}
+
+div.guf_pub_abstract {}

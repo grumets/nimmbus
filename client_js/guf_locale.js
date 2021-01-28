@@ -5,6 +5,8 @@
      License: Attribution 4.0 International (CC BY 4.0) http://creativecommons.org/licenses/by/4.0/
 */
 
+"use strict"
+
 var Msg_Indefinit={cat: "Indefinit", spa: "Indefinido", eng: "Undefined", fre: "Indéfini"};
 
 
@@ -81,14 +83,14 @@ var GUF_MotivationCode={"undefined": Msg_Indefinit,
 		"moderation": {cat: "Moderació", spa: "Moderación", eng: "Moderation", fre: "Modération"}};
 
 // GUF Table 13 — GUF_UsageReport data type
-
+			
 // GUF Table 14 — GUF_ReportAspectCode code list
-/*var GUF_ReportAspectCode={"undefined": Msg_Indefinit,
-		"usage":
-		"fitnessForPurpose":
-		"limitation":
-		"alternative":
-		"problem": };*/
+var GUF_ReportAspectCode={
+		"usage": {cat: "Ús", spa: "Uso", eng: "Usage", fre: "Usage"},
+		"fitnessForPurpose": {cat: "Adequació a un propòsit", spa: "Adecuación a un propósito", eng: "Fitness for purpose", fre: "Aptitude à l'emploi"},
+		"limitation": {cat: "Limitació", spa: "Limitación", eng: "Limitation", fre: "Limitation"},
+		"alternative": {cat: "Alternativa", spa: "Alternativa", eng: "Alternative", fre: "Alternative"}, 
+		"problem": {cat: "Problema", spa: "Problema", eng: "Problem", fre: "Problème"}};
 
 // GUF Table 15 — GUF_Rating data type
 // GUF Table 16 — GUF_SignificantEvent data type
@@ -184,6 +186,30 @@ var CI_DateTypeCode={"undefined": Msg_Indefinit,
 		"validityBegins": {cat: "inici validesa", spa: "inicio validez", eng: "validity begin", fre: "début de validité"},
 		"validityExpires": {cat: "fi validesa", spa: "fin validez", eng: "validity end", fre: "validité finale"},
 		"released": {cat: "divulgación", spa: "divulgación", eng: "release", fre: "sortie"},
-		"distribution": {cat: "distribució", spa: "distribución", eng: "distribution", fre: "diffusion"}}
+		"distribution": {cat: "distribució", spa: "distribución", eng: "distribution", fre: "diffusion"}};
 
 //MD_ScopeCode ...
+
+
+//CI_RoleCode
+var CI_RoleCode={"undefined": Msg_Indefinit,			
+		"resourceProvider": {cat: "Proveïdor de recursos", spa: "Proveedor de recursos", eng: "Resource provider", fre: "Fournisseur ressource"},
+		"custodian": {cat: "Custodi", spa: "Custodio", eng: "Custodian", fre: "Conservateur"},
+		"owner": {cat: "Propietari", spa: "Propietario", eng: "Owner", fre: "Propriétaire"},
+		"user": {cat: "Usuari", spa: "Usuario", eng: "User", fre: "Utilisateur"},
+		"distributor": {cat: "Distribuïdor", spa: "Distribuidor", eng: "Distributor", fre: "Distributeur"},
+		"originator": {cat: "Originador", spa: "Originador", eng: "Originator", fre: "Créateur"},
+		"pointOfContact": {cat: "Punt de contacte", spa: "Punto de contacto", eng: "Point of contact", fre: "Contact"},
+		"principalInvestigator": {cat: "Investigador principal", spa: "Investigador principal", eng: "Principal investigator", fre: "Chercheur Principal"},
+		"processor": {cat: "Processador", spa: "Procesador", eng: "Processor", fre: "Traiteur"},
+		"publisher": {cat: "Editor", spa: "Editor", eng: "Publisher", fre: "Éditeur"},
+		"author": {cat: "Autor", spa: "Autor", eng: "Author", fre: "Auteur"},
+		"sponsor": {cat: "Patrocinador", spa: "Patrocinador", eng: "Sponsor", fre: "Parrainer"},
+		"coAuthor": {cat: "Coautor", spa: "Coautor", eng: "Co-author", fre: "Coauteur"},
+		"collaborator": {cat: "Col·laborador", spa: "Colaborador", eng: "Collaborator", fre: "Collaborateur"},
+		"editor": {cat: "Editor", spa: "Editor", eng: "Editor", fre: "Réviseur"},
+		"mediator": {cat: "Mediador", spa: "Mediador", eng: "Mediator", fre: "Médiateur"},
+		"rightsHolder": {cat: "Titular dels drets", spa: "Titular de derechos", eng: "Rights holder", fre: "Détenteur droits"},
+		"contributor": {cat: "Col·laborador", spa: "Contribuyente", eng: "Contributor", fre: "Donateur"},
+		"funder": {cat: "Finançador", spa: "Financiador", eng: "Funder", fre: "Bailleur de fonds"},
+		"stakeholder": {cat: "Interessat", spa: "Interesado", eng: "Stakeholder", fre: "Intervenant"}};

@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title id="head_title">NiMMbus Temporary Out of Service</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title id="head_title">NiMMbus Test Widget</title>
 
 <link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+<link rel="stylesheet" href="guf.css">
 <link rel="stylesheet" href="nimmbus.css">
 
 <script language="JavaScript" src="Nmmblang.js"></script>
+<script language="JavaScript" src="guf.js"></script>
 
 <script>
 <!--
@@ -36,12 +39,9 @@ document.onkeydown = function (event)
 	}
 };	
 
-var expected_date_time="24-09-2020 21:00 CET";
-
 function InitFrontPage()
 {
-	//SurtDeNimmbus();
-	ChangeLanguageIndexTOS(ActiveLanguage, expected_date_time);
+	ChangeLanguageTestWidget(ActiveLanguage, false);
 }
 
 var TimeOutBoxCloser=0;
@@ -87,14 +87,56 @@ function CloseDropDownListOutEvent(event)
 		CloseDropDownListOut(CloseDropDownListOutSubMenu);
 		CloseDropDownListOutSubMenu=null;		
 	}
+}	
+
+var previous_feedback_loaded=false;
+
+function ChangeLanguageReloadPreviousFeedbackIfNeeded(language)
+{
+	ChangeLanguageTestWidget(language);
+	if (previous_feedback_loaded)
+		LoadPreviousFeedback();
+}
+	
+function LoadPreviousFeedback()
+{
+var targets=[];
+	
+	previous_feedback_loaded=true;
+	
+	if (document.form_guf.title.value!="" && document.form_guf.code.value!="" && document.form_guf.codespace.value!="")
+		targets.push({title: document.form_guf.title.value, 
+									code: document.form_guf.code.value, 
+									codespace: document.form_guf.codespace.value, 
+									role: "primary"});
+	
+	if (document.form_guf.title_2.value!="" && document.form_guf.code_2.value!="" && document.form_guf.codespace_2.value!="")
+		targets.push({title: document.form_guf.title_2.value, 
+									code: document.form_guf.code_2.value,
+									codespace: document.form_guf.codespace_2.value,
+									role: "secondary"});
+	
+	GUFShowFeedbackMultipleTargetsInHTMLDiv(document.getElementById("div_guf"), 
+			"LayerFeedbackCapa", 
+			document.form_guf.rsc_type.value, 
+			targets, 
+			LanguagesNB[ActiveLanguage]);
+
+	return false;
+}
+
+function ClearGUFDiv()
+{
+	document.getElementById("div_guf").innerHTML="";
+	previous_feedback_loaded=false;	
 }
 
 </script>
 </head>
 
-
+<!--body-->
 <body onLoad="InitFrontPage();">
-
+	 
 <div class="long-note-outer">
 <div id="long-note" class="note-inner"></div>
 </div>
@@ -102,15 +144,14 @@ function CloseDropDownListOutEvent(event)
 <div class="short-note-outer">
 <div id="short-note" class="note-inner"></div>
 </div>
-
+	
 <!-- *** IDENTIFICATION FRONT PAGE *** -->
 
 <div id="front-page">
-
+	
 <div class="front-bg">
 <img src="topoorto.jpg" style="display: block;">
 </div>
-
 
 <div class="front-welcome-text">
 <h1 id="front-welcome-text-title" style="line-height: normal; margin: 0px">Benvinguts al NiMMbus.</h1>
@@ -138,19 +179,36 @@ Language: English
 <span class="caret-outer"></span>
 <span class="caret-inner"></span>
 </div>
-<a class="dropdown-list_active" onClick="ChangeLanguageIndexTOS(0,expected_date_time);SwitchDropDownList('dropdown-language', 'front-language-list');">
+<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(0);SwitchDropDownList('dropdown-language', 'front-language-list');">
 Català</a>
-<a class="dropdown-list_active" onClick="ChangeLanguageIndexTOS(1,expected_date_time);SwitchDropDownList('dropdown-language', 'front-language-list');">
+<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(1);SwitchDropDownList('dropdown-language', 'front-language-list');">
 Español</a>
-<a class="dropdown-list_active" onClick="ChangeLanguageIndexTOS(2,expected_date_time);SwitchDropDownList('dropdown-language', 'front-language-list');">
+<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(2);SwitchDropDownList('dropdown-language', 'front-language-list');">
 English</a>
 </div>
 
 <div class="white-area" style="left: 50%; top: 130px; width: 300px; height: 80px;">
-<h2 class="packet_paragraph" id="front-temp-oos-lang"></h2>
+<form name="form_guf" onSubmit="return LoadPreviousFeedback();">
+<p class="packet_paragraph" id="sign_in_resource_type"></p>
+<input name="rsc_type" value="the dataset" size=50></input>
+<p class="packet_paragraph" id="sign_in_title"></p>
+<input name="title" value="Sentinel-2B Level-2A 2020-09-22 R051 T30TYL" size=50></input>
+<p class="packet_paragraph" id="sign_in_code"></p>
+<input name="code" value="s2b_msil2a_20200922t104649_n0214_r051_t30tyl_20200927t135033" size=50></input>
+<p class="packet_paragraph" id="sign_in_codespace"></p>
+<input name="codespace" value="https://catalogue.nextgeoss.eu/" size=50></input><br>
+<p class="packet_paragraph" id="sign_in_title_2">title secodary target</p>
+<input name="title_2" value="Sentinel-2 Level-2A" size=50></input>
+<p class="packet_paragraph" id="sign_in_code_2">Code seconday target</p>
+<input name="code_2" value="SENTINEL2_L2A" size=50></input>
+<p class="packet_paragraph" id="sign_in_codespace_2">Codespace seconday target</p>
+<input name="codespace_2" value="https://catalogue.nextgeoss.eu/" size=50></input><br>
 <br>
-<p class="packet_paragraph" id="front-temp-bts-lang"></p>
+<input id="sign_in_btn" class="submit_btn" type="submit"><input id="clear_btn" class="submit_btn" type="button" onClick="ClearGUFDiv()")>
+<form>
 </div>
+
+<div id="div_guf" class="white-area" style="left: 10%; top: 550px; width: 60%;"></div>
 </div>  <!--End of id="front-page" -->
 
 </body>
