@@ -108,7 +108,7 @@ function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targe
 		if (targets[i].title && targets[i].code && targets[i].codespace && targets[i].role=="secondary")
 		{	//la peticio buscarà els que parlin del secondari d'ara, però només com a PRIMARI, per veure tb en el dataset els comentaris generals de la col·lecció (i no tornar a veure els secudaris d'questa o altres imatges!)
 			url2+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ" +
-						"&TRG_NXS_2=AND&TRG_TYPE_3=CITATION&TRG_FLD_3=RSRC_ROLE&TRG_VL_3=primary&TRG_OPR_3=EQ";
+						"&TRG_ROLE=primary";
 			tinc_target_secondary=true;
 			break;
 		}
