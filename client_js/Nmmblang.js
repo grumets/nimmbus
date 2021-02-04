@@ -1,9 +1,47 @@
-/*
-	This is part of the NiMMbus libraries.
-  The main objective of this library is to expose localised strings that are useful both for NiMMbus application and for other GUF applications
-     Developed by Joan Masó and Alaitz Zabala.
-     License: Attribution 4.0 International (CC BY 4.0) http://creativecommons.org/licenses/by/4.0/
+/* 
+    This file is part of NiMMbus system. NiMMbus is a solution for 
+    storing geospatial resources on the MiraMon private cloud. 
+    MiraMon is a family of GIS&RS products developed since 1994 
+    and includes a desktop GIS, a desktop Metadata Manager, a 
+    Web Map Browser and the NiMMbus system. 
+    
+    The NiMMbus JavaScript client is free software: you can redistribute 
+    it and/or modify it under the terms of the GNU Affero General 
+    Public License as published by the Free Software Foundation, 
+    either version 3 of the License, or (at your option) any later version.
+
+    The NiMMbus JavaScript client is distributed in the hope that 
+    it will be useful, but WITHOUT ANY WARRANTY; without even the 
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+    See the GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General 
+    Public License along with the NiMMbus JavaScript Client.
+    If not, see https://www.gnu.org/licenses/licenses.html#AGPL.
+    
+    The NiMMbus JavaScript Client can be updated from
+    https://github.com/grumets/NiMMbus.
+
+    Copyright 2014, 2021 Xavier Pons
+
+    Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
+    amb l'ajut de l'Alaitz Zabala (alaitz zabala at uab cat)
+    dins del grup del MiraMon. MiraMon és un projecte del 
+    CREAF que elabora programari de Sistema d'Informació Geogràfica 
+    i de Teledetecció per a la visualització, consulta, edició i anàlisi 
+    de mapes ràsters i vectorials. Aquest progamari programari inclou
+    aplicacions d'escriptori i també servidors i clients per Internet.
+    No tots aquests productes són gratuïts o de codi obert. 
+    
+    En particular, el client JavaScript del NiMMbus es distribueix sota 
+    els termes de la llicència GNU Affero General Public License, 
+    mireu https://www.gnu.org/licenses/licenses.html#AGPL.
+    
+    El client JavaScript del NiMMbus es pot actualitzar des de 
+    https://github.com/grumets/NiMMbus.
 */	
+
+"use strict"
 
 var LanguagesNB=["cat","spa","eng"];
 var ActiveLanguage=2;
