@@ -88,6 +88,47 @@ function DonaTextDesDeGcoCharacterStringOGcxAnchor(item)
 		return "";
 }
 
+function OmpleEstructuraOnlineResource(item)
+{
+	var element_to_fill={};		
+
+	if (item)
+	{
+		var i_elem_onlineResource=0;	
+		var elem=GetXMLElementByName(item, "cit", "linkage");		
+		if (elem)
+		{
+			i_elem_onlineResource++;
+			element_to_fill.linkage=DonaTextDesDeGcoCharacterString(elem);
+		}
+		else
+			element_to_fill.linkage="";
+			
+		elem=GetXMLElementByName(item, "cit", "description");
+		if (elem)
+		{
+			i_elem_onlineResource++;
+			element_to_fill.description=DonaTextDesDeGcoCharacterString(elem);
+		}
+		else
+			element_to_fill.description="";
+	
+		elem=GetXMLElementByName(item, "cit", "function");
+		element_to_fill.function=DonaTextDesDeCodeList(elem, "cit", "CI_OnLineFunctionCode");										
+	
+		/*·$· L'estructura és més complexa però nosaltres ara no tenim més elements
+		ni pels onlineResources de les citations/publications, ni pels onlineResources 
+		del codeLinkage i el de diagramLinkage dins de ReproducibleUsage */
+		
+		if (i_elem_onlineResource==0)
+			element_to_fill="";											
+	}
+	else 
+		element_to_fill="";
+		
+	return element_to_fill;
+}
+
 function OmpleEstructuraDesdeCitationOPublication(item_cit_o_pub, cit_o_public, es_public)
 {
 var elem, output, item, output2, item2;
@@ -242,38 +283,8 @@ var elem, output, item, output2, item2;
 		cit_o_public.otherCitationDetails="";
 
 	//onlineResource (a NiMMbus només un)
-	var onlineResource=GetXMLElementByName(item_cit_o_pub, "cit", "onlineResource");
-	if (onlineResource)
-	{
-		cit_o_public.onlineResource={};
-		
-		var i_elem_onlineResource=0;
-		elem=GetXMLElementByName(onlineResource, "cit", "linkage");
-		if (elem)
-		{
-			i_elem_onlineResource++;
-			cit_o_public.onlineResource.linkage=DonaTextDesDeGcoCharacterString(elem);
-		}
-		else
-			cit_o_public.onlineResource.linkage="";
-			
-		elem=GetXMLElementByName(onlineResource, "cit", "description");
-		if (elem)
-		{
-			i_elem_onlineResource++;
-			cit_o_public.onlineResource.description=DonaTextDesDeGcoCharacterString(elem);
-		}
-		else
-			cit_o_public.onlineResource.description="";
-
-		elem=GetXMLElementByName(onlineResource, "cit", "function");
-		cit_o_public.onlineResource.function=DonaTextDesDeCodeList(elem, "cit", "CI_OnLineFunctionCode");										
-
-		if (i_elem_onlineResource==0)
-			cit_o_public.onlineResource="";											
-	}
-	else
-		cit_o_public.onlineResource="";								
+	elem=GetXMLElementByName(item_cit_o_pub, "cit", "onlineResource");
+	cit_o_public.onlineResource=OmpleEstructuraOnlineResource(elem); //if (elem) protegit dins
 	
 	if (es_public==true)
 	{
@@ -658,9 +669,8 @@ var usage, usage_descr, discov_issue;
 									guf.usage.usage_descr.code=decodeURI(DonaTextDesDeGcoCharacterString(elem));
 	
 								elem=GetXMLElementByName(usage_descr, "qcm", "codeLinkage");
-								if (elem)
-									guf.usage.usage_descr.codeLink=DonaTextDesDeGcoCharacterString(elem);
-
+								guf.usage.usage_descr.codeLink=OmpleEstructuraOnlineResource(elem);	//if (elem) protegit dins
+							
 								elem=GetXMLElementByName(usage_descr, "qcm", "codeMediaType");
 								if (elem)
 									guf.usage.usage_descr.codeMediaType=DonaTextDesDeNmsElement(elem, "gcx", "MimeFileType");
@@ -677,13 +687,16 @@ var usage, usage_descr, discov_issue;
 								if (elem)
 									guf.usage.usage_descr.schema=decodeURI(DonaTextDesDeGcoCharacterString(elem));
 
+								elem=GetXMLElementByName(usage_descr, "qcm", "suggestedApplication");
+								if (elem)
+									guf.usage.usage_descr.suggestedApplication=DonaTextDesDeGcoCharacterString(elem);
+
 								elem=GetXMLElementByName(usage_descr, "qcm", "diagram");
 								if (elem)
 									guf.usage.usage_descr.diagram=DonaTextDesDeGcoCharacterString(elem);
 
 								elem=GetXMLElementByName(usage_descr, "qcm", "diagramLinkage");
-								if (elem)
-									guf.usage.usage_descr.diagramLink=DonaTextDesDeGcoCharacterString(elem);
+								guf.usage.usage_descr.diagramLink=OmpleEstructuraOnlineResource(elem); //if (elem) protegit dins
 
 								elem=GetXMLElementByName(usage_descr, "qcm", "diagramMediaType");
 								if (elem)

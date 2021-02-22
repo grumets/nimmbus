@@ -815,6 +815,12 @@ var kvp="";
 				ElementsOfAFeedback={};						
 			ElementsOfAFeedback.ru_schema=query["RU_SCHEMA"];
 		}					
+		if (query["RU_SUGG_APP"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.ru_sugg_app=query["RU_SUGG_APP"];
+		}
 		/*else
 			ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_key) +": \""+ valor+"\".");
 		break;*/
@@ -2370,8 +2376,9 @@ var root, output, identifier, s, feedback_item, user_comment;
 					document.feedback_resource_form.code.value=guf.usage.usage_descr.code;
 				else
 					document.feedback_resource_form.code.value="";				
-				if (guf.usage.usage_descr.codeLink)
-					document.feedback_resource_form.codeLink.value=guf.usage.usage_descr.codeLink;
+				//if (guf.usage.usage_descr.codeLink) -> ara és un onlineResource que potser té de tot però de moment només usem el linkage
+				if (guf.usage.usage_descr.codeLink.linkage)
+					document.feedback_resource_form.codeLink.value=guf.usage.usage_descr.codeLink.linkage;
 				else
 					document.feedback_resource_form.codeLink.value="";			
 				if (guf.usage.usage_descr.codeMediaType)
@@ -2390,12 +2397,17 @@ var root, output, identifier, s, feedback_item, user_comment;
 					document.feedback_resource_form.schema.value=guf.usage.usage_descr.schema;
 				else
 					document.feedback_resource_form.schema.value="";
+				if (guf.usage.usage_descr.suggestedApplication)
+					document.feedback_resource_form.sugg_app.value=guf.usage.usage_descr.suggestedApplication;
+				else
+					document.feedback_resource_form.sugg_app.value="";
 				if (guf.usage.usage_descr.diagram)
 					document.feedback_resource_form.diagram.value=guf.usage.usage_descr.diagram;
 				else
 					document.feedback_resource_form.diagram.value="";
-				if (guf.usage.usage_descr.diagramLink)
-					document.feedback_resource_form.diagramLink.value=guf.usage.usage_descr.diagramLink;
+				//if (guf.usage.usage_descr.diagramLink) -> ara és un onlineResource que potser té de tot però de moment només usem el linkage
+				if (guf.usage.usage_descr.diagramLink.linkage)
+					document.feedback_resource_form.diagramLink.value=guf.usage.usage_descr.diagramLink.linkage;
 				else
 					document.feedback_resource_form.diagramLink.value="";
 				if (guf.usage.usage_descr.diagramMediaType)
@@ -2414,6 +2426,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 				document.feedback_resource_form.platform.value="";
 				document.feedback_resource_form.version.value="";
 				document.feedback_resource_form.schema.value="";
+				document.feedback_resource_form.sugg_app.value="";
 				document.feedback_resource_form.diagram.value="";
 				document.feedback_resource_form.diagramLink.value="";
 				SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
@@ -2438,6 +2451,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 			document.feedback_resource_form.platform.value="";
 			document.feedback_resource_form.version.value="";
 			document.feedback_resource_form.schema.value="";
+			document.feedback_resource_form.sugg_app.value="";
 			document.feedback_resource_form.diagram.value="";
 			document.feedback_resource_form.diagramLink.value="";
 			SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
@@ -2606,6 +2620,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 		document.feedback_resource_form.platform.value="";
 		document.feedback_resource_form.version.value="";
 		document.feedback_resource_form.schema.value="";
+		document.feedback_resource_form.sugg_app.value="";
 		document.feedback_resource_form.diagram.value="";
 		document.feedback_resource_form.diagramLink.value="";
 		SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
@@ -3730,8 +3745,8 @@ var root, s, type;
 			{
 				type=GetNimmbusTypeOfAOWCFeature(owc.features[i]);
 	
-				var object_id=owc.features[i].id.slice(owc.features[i].id.search("RESOURCE=")+9);
-				object_id.slice(0,object_id.search("&")); // si darrera de RESOURCE hi ha algun paràmetre més, que comença sempre amb "&", ho elimino. Si no ho ha trobat search torna -1 i slice no fa res.
+				var object_id=owc.features[i].id.slice(owc.features[i].id.indexOf("RESOURCE=")+9);
+				object_id.slice(0,object_id.indexOf("&")); // si darrera de RESOURCE hi ha algun paràmetre més, que comença sempre amb "&", ho elimino. Si no ho ha trobat indexOf torna -1 i slice no fa res.
 				ja_seleccionat=false;
 				es_ell_mateix=false;
 				es_un_target=false;
@@ -4344,6 +4359,13 @@ function OmpleElementsOfAFeedback()
 			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "block"); //not collapsed if it has content	
 			CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "block");
 		}
+		if (ElementsOfAFeedback.ru_sugg_app)
+		{			
+			document.feedback_resource_form.sugg_app.value=ElementsOfAFeedback.ru_sugg_app;
+			CollapseFieldset(document.getElementById("usage-feedback-resource"), "block"); //not collapsed if it has content
+			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "block"); //not collapsed if it has content	
+			CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "block");
+		}
 		ElementsOfAFeedback=null; //perquè un cop usat no es torni a usar més
 	}
 }
@@ -4549,6 +4571,7 @@ function BuidaPlegaFeedbackElements()
 	document.feedback_resource_form.platform.value="";
 	document.feedback_resource_form.version.value="";
 	document.feedback_resource_form.schema.value="";	
+	document.feedback_resource_form.sugg_app.value="";	
 	document.feedback_resource_form.diagram.value="";
 	document.feedback_resource_form.diagramLink.value="";
 	SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"
@@ -5499,7 +5522,9 @@ var s,s2;
 		if (document.feedback_resource_form.version.value!="")
 			s2+="&RU_VERSION="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.version.value);
 		if (document.feedback_resource_form.schema.value!="")
-			s2+="&RU_SCHEMA="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.schema.value);
+			s2+="&RU_SCHEMA="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.schema.value);		
+		if (document.feedback_resource_form.sugg_app.value!="")
+			s2+="&RU_SUGG_APP="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.sugg_app.value);		
 		if (document.feedback_resource_form.diagram.value!="")			
 			s2+="&RU_DIAGRAM="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.diagram.value);
 		if (document.feedback_resource_form.diagramLink.value!="")
@@ -5538,6 +5563,7 @@ var s,s2;
 			"&RU_PLATFORM="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.platform.value)+
 			"&RU_VERSION="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.version.value)+
 			"&RU_SCHEMA="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.schema.value)+
+			"&RU_SUGG_APP="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.sugg_app.value)+
 			"&RU_DIAGRAM="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.diagram.value)+
 			"&RU_DIAGRAM_LINK="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.diagramLink.value)+
 			"&RU_DIAGRAM_FORMAT="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.diagramMediaType)+			
@@ -7516,6 +7542,15 @@ Sign out</a>
 					</div>
 				</div>  <!--End of id="reprodUsage-schema-resource_fieldset" -->
 		
+				<div id="reprodUsage-suggApp-resource_fieldset" class="control-group">
+				<label class="control-label" id="reprodUsage-suggApp-resource_screen" for="reprodUsage-suggApp-resource_screen_value"></label>
+					<div class="controls">
+						<p id="reprodUsage-suggApp-resource_alert" style="display: none;"></p>
+						<input type="text" class="text-input" value="" id="reprodUsage-suggApp-resource_screen_value" name="sugg_app" style="width: 100%;" maxlength="254"/>
+						<p id="reprodUsage-suggApp-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+					</div>
+				</div>  <!--End of id="reprodUsage-suggApp-resource_fieldset" -->
+
 				<div id="reprodUsage-diagram-resource_fieldset" class="control-group">
 				<label class="control-label" id="reprodUsage-diagram-resource_screen" for="reprodUsage-diagram-resource_screen_value"></label>
 					<div class="controls">

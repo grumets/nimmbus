@@ -82,7 +82,6 @@ var x, ns_plus_name;
 	return null;
 }
 
-
 function GetValueXMLElementByName(root, abbreb_ns, name)
 {
 var elem;
@@ -90,8 +89,7 @@ var elem;
 	elem=GetXMLElementByName(root, abbreb_ns, name);
 	if (elem && elem.childNodes[0] && elem.childNodes[0].nodeValue)
 		return elem.childNodes[0].nodeValue;
-	else
-		return null;
+	return null;
 }
 
 function GetXMLAttributeByName(element, abbreb_ns, name)
@@ -114,8 +112,7 @@ var attrib;
 	attrib=GetXMLAttributeByName(root, abbreb_ns, name);
 	if (attrib && attrib.value)
 		return attrib.value;
-	else
-		return null;
+	return null;
 }
 
 function GetXMLElementCollectionByName(root, abbreb_ns, name)
@@ -137,10 +134,28 @@ function IsXMLMimeType(mimetype)
 		mimetype=="application/vnd.ogc.gml" || mimetype=="application/vnd.ogc.gml/3.1.1" || 
 		mimetype=="subtype=gml/3.1.1"))
 		return true;
-	else
-		return false;
+	return false;
 }
 
+
+function ResponseHeaderContentTypeConteMimeType(mimetype, xhr)
+{
+	if(typeof mimetype==="undefined" || !mimetype || mimetype=="")
+		return true;
+	var content_type=xhr.getResponseHeader('content-type');
+	if(mimetype==content_type)
+		return true;
+	
+	if(mimetype.length<content_type.length)
+	{
+		if(mimetype==content_type.substring(0,mimetype.length))
+			return true;
+	}
+	return false;
+}
+
+								  
+								  
 function loadFile(path, mimetype, success, error, extra_param)
 {
 var xhr = new XMLHttpRequest();
@@ -150,7 +165,8 @@ var xhr = new XMLHttpRequest();
 		{
 	       	if (xhr.status === 200) 
 			{
-				if (mimetype && mimetype!="" && mimetype!=xhr.getResponseHeader('content-type'))
+				//if (mimetype && mimetype!="" && mimetype!=xhr.getResponseHeader('content-type'))
+				if(!ResponseHeaderContentTypeConteMimeType(mimetype, xhr))
 				{
 		            if (error)
 					{

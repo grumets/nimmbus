@@ -78,11 +78,20 @@ function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, acc
 		if (targets[i].codespace) 
 			targets[i].codespace = DonaCadenaPerValorDeFormulari(targets[i].codespace);
 	}
-	reprod_usage.abstract = DonaCadenaPerValorDeFormulari(reprod_usage.abstract);
-	reprod_usage.ru_code = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code);
-	reprod_usage.ru_code_media_type = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code_media_type);
-	reprod_usage.ru_platform = encodeURI(reprod_usage.ru_platform);
-	reprod_usage.ru_schema = DonaCadenaPerValorDeFormulari(reprod_usage.ru_schema);
+	if (reprod_usage.abstract)
+		reprod_usage.abstract = DonaCadenaPerValorDeFormulari(reprod_usage.abstract);
+	if (reprod_usage.ru_code)
+		reprod_usage.ru_code = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code);
+	if (reprod_usage.ru_code_media_type)
+		reprod_usage.ru_code_media_type = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code_media_type);
+	if (reprod_usage.ru_platform)
+		reprod_usage.ru_platform = encodeURI(reprod_usage.ru_platform);
+	if (reprod_usage.ru_schema)
+		reprod_usage.ru_schema = encodeURIComponent(reprod_usage.ru_schema);
+	if (typeof reprod_usage.ru_sugg_app === "undefined")
+		reprod_usage.ru_sugg_app = encodeURI(location.href);
+	else if (reprod_usage.ru_sugg_app)
+		reprod_usage.ru_sugg_app = encodeURI(reprod_usage.ru_sugg_app);
 	return GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type, reprod_usage);
 }
 
@@ -93,9 +102,59 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 	cdns.push("<form name=\"FeedbackWithReproducibleUsageResourceForm\" onSubmit=\"return false;\">");
 	cdns.push("<div id=\"",seed_div_id,"\" style=\"width:98%\">", "</div></fieldset></div>", "</div></form>");
 	elem.innerHTML = cdns.join("")
+
+	if (!code || !codespace)
+	{
+		alert("code and codespace are mandatory in GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv()");
+		return;
+	}
 	
-	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + codespace + "&TRG_OPR_2=EQ" +
-	 				"&RSC_FLD_1=RU_PLATFORM&RSC_VL_1=" + reprod_usage.ru_platform + "&RSC_OPR_1=EQ&RSC_NXS_1=AND&RSC_FLD_2=RU_VERSION&RSC_VL_2=" + reprod_usage.ru_version + "&RSC_OPR_2=EQ&RSC_NXS_2=AND&RSC_FLD_3=RU_SCHEMA&RSC_VL_3=" + reprod_usage.ru_schema + "&RSC_OPR_3=EQ";
+	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE";
+	if (lang)
+		url+="&LANGUAGE=" + lang;
+		
+		
+	url+="&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + DonaCadenaPerValorDeFormulari(code) + 
+					"&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + encodeURI(codespace) + "&TRG_OPR_2=EQ";
+	
+	var i_cond=1;
+	if (reprod_usage.ru_platform)
+	{		
+		url+="&RSC_FLD_" + i_cond + "=RU_PLATFORM&RSC_VL_" + i_cond + "=" + encodeURI(reprod_usage.ru_platform) + "&RSC_OPR_" + i_cond + "=EQ";
+		i_cond++;
+	}
+	if (reprod_usage.ru_version)
+	{
+		if (i_cond>1)
+			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
+			
+		url+="&RSC_FLD_" + i_cond + "=RU_VERSION&RSC_VL_" + i_cond + "=" + DonaCadenaPerValorDeFormulari(reprod_usage.ru_version) + "&RSC_OPR_" + i_cond + "=EQ";
+		i_cond++;
+	}
+	
+	if (reprod_usage.ru_schema)
+	{
+		if (i_cond>1)
+			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
+			
+		url+="&RSC_FLD_" + i_cond + "=RU_SCHEMA&RSC_VL_" + i_cond + "=" + encodeURIComponent(reprod_usage.ru_schema) + "&RSC_OPR_" + i_cond + "=EQ";
+		i_cond++;
+	}
+	
+	var intern_sugg_app;
+	if (typeof reprod_usage.ru_sugg_app === "undefined")
+		intern_sugg_app=location.href;
+	else 
+		intern_sugg_app=reprod_usage.ru_sugg_app;
+	
+	if (intern_sugg_app)
+	{
+		if (i_cond>1)
+			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
+	
+		url+="&RSC_FLD_" + i_cond + "=RU_SUGG_APP&RSC_VL_" + i_cond + "=" + encodeURI(intern_sugg_app) + "&RSC_OPR_" + i_cond + "=EQ";				
+		i_cond++;
+	}
 	loadFile(url, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: seed_div_id, lang: lang, access_token_type: access_token_type, callback_function: callback_function, params_function: params_function, edit_button: false});
 }
 
@@ -279,9 +338,9 @@ var cdns=[];
 		if (type=="FEEDBACK")
 		{
 			var str = owc.features[i].properties.links.alternates[0].href; 
-			var n = str.search("&RESOURCE=");
+			var n = str.indexOf("&RESOURCE=");
 			var str2 = str.substring(n+10);
-			var n2 = str2.search("&");  
+			var n2 = str2.indexOf("&");  
 			str = str2.substring(0, n2);
  		  
 			cdns.push("<fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">", owc.features[i].properties.authors[0].name, ", ", DonaDataISOComAText(owc.features[i].properties.updated), 
@@ -469,8 +528,8 @@ function ConstrueixCadenaDesdeCitationOPublication(cdns, cit_o_pub, i_cit_o_pub,
 function HiHaReprodUsage(usage_descr)
 {
 	if (usage_descr.code || usage_descr.codeLink || usage_descr.codeMediaType ||
-			usage_descr.platform || usage_descr.version || usage_descr.schema || usage_descr.diagram ||
-			usage_descr.diagramLink || usage_descr.diagramMediaType)
+			usage_descr.platform || usage_descr.version || usage_descr.schema || usage_descr.suggestedApplication ||
+			usage_descr.diagram || usage_descr.diagramLink || usage_descr.diagramMediaType)
 			return true;
 	return false; 
 }
@@ -595,8 +654,8 @@ var cdns=[];
 				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Ús reproduïble", "spa":"Uso reproducible", "eng":"Reproducible usage", "fre":"Utilisation reproductible"}, extra_param.lang), ":</span>");								
 				if (guf.usage.usage_descr.code)
 					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (text)", "spa":"Código (texto)", "eng":"Code (text)", "fre":"Code (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.code);
-				if (guf.usage.usage_descr.codeLinkage)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (adreça URL)", "spa":"Código (dirección URL)", "eng": "Code (URL link)", "fre":"Code (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.codeLinkage);												
+				if (guf.usage.usage_descr.codeLink.linkage)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (adreça URL)", "spa":"Código (dirección URL)", "eng": "Code (URL link)", "fre":"Code (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.codeLink.linkage);												
 				if (guf.usage.usage_descr.codeMediaType && guf.usage.usage_descr.codeMediaType.length>0)
 				{
 					var s="";				
@@ -618,10 +677,12 @@ var cdns=[];
 					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Versió", "spa":"Versión", "eng": "Version", "fre":"Version"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.version);								
 				if (guf.usage.usage_descr.schema)
 					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Esquema", "spa":"Esquema", "eng": "Schema", "fre":"Schème"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.schema);
+				if (guf.usage.usage_descr.suggestedApplication)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Aplicació suggerida", "spa":"Aplicación sugerida", "eng":"Suggested application", "fre":"Application suggérée"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.suggestedApplication);							
 				if (guf.usage.usage_descr.diagram)
 					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (text)", "spa":"Diagrama (texto)", "eng": "Diagram (text)", "fre":"Diagramme (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagram);			
-				if (guf.usage.usage_descr.diagramLinkage)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (adreça URL)", "spa":"Diagrama (dirección URL)", "eng": "Diagram (URL link)", "fre":"Diagramme (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagramLinkage);			
+				if (guf.usage.usage_descr.diagramLink.linkage)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (adreça URL)", "spa":"Diagrama (dirección URL)", "eng": "Diagram (URL link)", "fre":"Diagramme (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagramLink.linkage);			
 				if (guf.usage.usage_descr.diagramMediaType && guf.usage.usage_descr.diagramMediaType.length>0)
 				{
 					var s="";					
@@ -795,9 +856,10 @@ function GUFFragmentKVPSobreReproducibleUsage(reprod_usage)
 		url+="&RU_PLATFORM="+reprod_usage.ru_platform;
 	if (reprod_usage.ru_version!="")
 		url+="&RU_VERSION="+reprod_usage.ru_version;
+	if (reprod_usage.ru_sugg_app!="")
+		url+="&RU_SUGG_APP="+reprod_usage.ru_sugg_app;
 	if (reprod_usage.ru_schema!="")
-		url+="&RU_SCHEMA="+reprod_usage.ru_schema;
-	
+		url+="&RU_SCHEMA="+reprod_usage.ru_schema;	
 	return url;
 }
 

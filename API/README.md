@@ -114,6 +114,7 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * RU_PLATFORM=
   * RU_VERSION=
   * RU_SCHEMA=
+  *	RU_SUGG_APP=
   * RU_DIAGRAM=
   * RU_DIAGRAM_LINK=
   * RU_DIAGRAM_FORMAT=   
@@ -202,7 +203,7 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * TRG_NXS_#=AND (Optional filter applicable if TYPE=FEEDBACK)
   * TRG_PRTY_#= (Optional. Starts with 1)  
   * RSC_FLD_#= (Optional filter applicable if TYPE=FEEDBACK. Currently can only be ABSTRACT, REASON, ROLE, COMMENT, MOTIVATION, RATING, REP_ASPECT, SPCF_USAGE, USAGE_DT, US_DET_LIM, RESPONSE, 
-	RU_CODE, RU_CODE_LINK, RU_CODE_FORMAT, RU_PLATFORM, RU_VERSION, RU_SCHEMA, RU_DIAGRAM, RU_DIAGRAM_LINK, RU_DIAGRAM_FORMAT, KWN_PRBLM, PRBLM_DT, WORK_ARND, EXP_FIX_D  
+	RU_CODE, RU_CODE_LINK, RU_CODE_FORMAT, RU_PLATFORM, RU_VERSION, RU_SCHEMA, RU_SUGG_APP, RU_DIAGRAM, RU_DIAGRAM_LINK, RU_DIAGRAM_FORMAT, KWN_PRBLM, PRBLM_DT, WORK_ARND, EXP_FIX_D  
   * RSC_VL_#= (Optional filter applicable if TYPE=FEEDBACK)
   * RSC_OPR_#=EQ (Optional filter applicable if TYPE=FEEDBACK)
   * RSC_NXS_#=AND (Optional filter applicable if TYPE=FEEDBACK)
@@ -225,16 +226,13 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
 		&RSC_FLD_1=RU_PLATFORM&RSC_VL_1=https://github.com/joanma747/MiraMonMapBrowser&RSC_OPR_1=EQ&RSC_NXS_1=AND
 		&RSC_FLD_2=RU_VERSION&RSC_VL_2=6.0&RSC_OPR_2=EQ&RSC_NXS_2=AND
 		&RSC_FLD_3=RU_SCHEMA&RSC_VL_3=config-schema.json%23%2Fdefinitions%2Festil&RSC_OPR_3=EQ
+		&RSC_FLD_4=RU_SUGG_APP&RSC_VL_4=http://maps.ecopotential-project.eu&RSC_OPR_4=EQ
 			* This request retrives all the FB items targeting DonanaSentinel2Level2a in http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi which has the 
-			reproducible usage section defined with a certain platform (https://github.com/joanma747/MiraMonMapBrowser), a certain version (6.0) and a certain
-			schema (config-schema.json%23%2Fdefinitions%2Festil). It is interesting to retrive a certain "type" of reproducible usage that can applied under
-			certain circumstances. Typically these feedback items type are created and retrieved using the widget functions for reproducible usage.
+			reproducible usage section defined with a certain platform (https://github.com/joanma747/MiraMonMapBrowser), a certain version (6.0), a certain
+			schema (config-schema.json%23%2Fdefinitions%2Festil) and specific application instance (http://maps.ecopotential-project.eu).
+			It is interesting to retrive a certain "type" of reproducible usage that can applied under certain circumstances. 
+			Typically these feedback items type are created and retrieved using the widget functions for reproducible usage.
 
-			
-			&&& el widget d'aquest darrer ha de dir PRIMARY en fer la petició, tb, que no sigui un secundari d'aquest però no s'hi pugui aplicar?
-			
-			&&& si no diu role porta torna els primary o tots? jo diria que tots, oi? confirmar en una petició "normal" sobre la coleccio
-		
 * Resource details retrieval
   * IDENTIFIER=NB_RESOURCE:RETRIEVE
   * LANGUAGE=cat,spa,eng
@@ -292,6 +290,7 @@ If a parameter is not indicated the value is not modified. If the parameter is i
   * RU_PLATFORM=
   * RU_VERSION=
   * RU_SCHEMA=
+  * RU_SUGG_APP=
   * RU_DIAGRAM=
   * RU_DIAGRAM_LINK=
   * RU_DIAGRAM_FORMAT=  

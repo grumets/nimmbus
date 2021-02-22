@@ -167,6 +167,7 @@ This function has the following parameters in sequence:
    * _ru_platform_: platform in which this reproducible usage can be applied. This not need to exactly refer to the URL that has created this (as usually used in the target code_space), but usually to a general URL describing the product, for example https://github.com/joanma747/MiraMonMapBrowser
    * _ru_version_: version of the platform in which this reproducible usage can be applied, for example "6.0"
    * _ru_schema_: type of reproducible usage within the platform, to be able to select several types of reproducible usages with different purposes, for example for sharing styles or layers. Sometimes it can be described as a section in a configuration file, but this is not mandatory.
+   * _ru_sugg_app_: specific suggested application that can be used to load the reproducible usage. Usually an specific instance of the generic _ru_platform_. If not specified it is automatically determined from "location.href". To avoid automatic value use ru_sugg_app=null;
 * _lang_: As in the previous function,  the language used in the HTML page. You can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
 * _access_token_type_: As in the previous function, in case the portal including the widget is using one of the supported Single-Sign-On (SSO) systems, it can be described here to allow the desired credentials to be used, thus avoiding the log-in step. Supported systems are: "NextGEOSS", "LandSense", "Google" or "NiMMbus" (being the latter the default value).
 
@@ -181,14 +182,15 @@ Example of use:
     ru_code_media_type: "application/json",
     ru_platform: "https://github.com/joanma747/MiraMonMapBrowser",
     ru_version: "6.0",
-    ru_schema: "config-schema.json#/definitions/estil"};
+    ru_schema: "config-schema.json#/definitions/estil",
+    ru_sugg_app: "http://maps.ecopotential-project.eu"};
 
     GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, "eng", "NextGEOSS");    
 ```    
 
 ##### 3.2 Retrieving feedback items with reproducible usage
 
-In this second step, to retrieve (and use) the feedback item including reproducible usage, the JavaScript function that needs to be used is: *GUFShowPreviousFeedbackWithReproducicleUsageInHTMLDiv()*. Typically this function is used within a button or right-button menu, which opens a window showing the previous feedback items which include reproducible usage of a certain type, and may allow to apply them to the portal.
+In this second step, to retrieve (and use) the feedback item including reproducible usage, the JavaScript function that needs to be used is: *GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv()*. Typically this function is used within a button or right-button menu, which opens a window showing the previous feedback items which include reproducible usage of a certain type, and may allow to apply them to the portal.
 
 * _elem_: As in the GUFShowFeedbackInHTMLDiv() function, the object that points to the division created in step 2. To get the object you can call a common JavaScript procedure: _document.getElementById("div_guf")_.
 * _seed_div_id_: As in the GUFShowFeedbackInHTMLDiv() function, a prefix for some divisions that are going to be created inside the widget. Having this name will allow you get access to the text created in the division or even to manipulate it.
@@ -199,6 +201,7 @@ In this second step, to retrieve (and use) the feedback item including reproduci
    * _ru_platform_: platform in which this reproducible usage can be applied. This not need to exactly refer to the URL that has created this (as usually used in the target code_space), but usually to a general URL describing the product, for example https://github.com/joanma747/MiraMonMapBrowser
    * _ru_version_: version of the platform in which this reproducible usage can be applied, for example "6.0"
    * _ru_schema_: type of reproducible usage within the platform, to be able to select several types of reproducible usages with different purposes, for example for sharing styles or layers. Sometimes it can be described as a section in a configuration file, but this is not mandatory.
+   * _ru_sugg_app_: specific suggested application that can be used to load the reproducible usage. Usually an specific instance of the generic _ru_platform_. If not specified it is automatically determined from "location.href". To avoid automatic value use ru_sugg_app=null;
 * _lang_: As in the previous function,  the language used in the HTML page. You can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
 * _access_token_type_: As in the previous function, in case the portal including the widget is using one of the supported Single-Sign-On (SSO) systems, it can be described here to allow the desired credentials to be used, thus avoiding the log-in step. Supported systems are: "NextGEOSS", "LandSense", "Google" or "NiMMbus" (being the latter the default value).
 * _callback_function_: it is a function from the portal including the widget, that will be called when pressing the "Apply" button in the feedback items list that will be created by this function. The function will be be called using the params_function (next parameter) as well as the GUF structure (see wps_iso_guf.js if needed), so internally should be defined for example as: _function AdoptaEstil(params_function, guf)_
@@ -209,9 +212,10 @@ Example of use:
 ```js
 	var reprod_usage={ru_platform: "https://github.com/joanma747/MiraMonMapBrowser",
     ru_version: "6.0",
-    ru_schema: "config-schema.json#/definitions/estil"};
+    ru_schema: "config-schema.json#/definitions/estil",
+    ru_sugg_app: "http://maps.ecopotential-project.eu"};
 
-    GUFShowPreviousFeedbackWithReproducicleUsageInHTMLDiv(document.getElementById("div_guf"),
+    GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(document.getElementById("div_guf"),
         "div_guf_internal", "DonanaSentinel2Level2a", "http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi", reprod_usage, "eng", "NextGEOSS", "AdoptStyle", {i_capa: i_capa});    
 ```    
 
