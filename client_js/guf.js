@@ -120,7 +120,7 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 	var i_cond=1;
 	if (reprod_usage.ru_platform)
 	{		
-		url+="&RSC_FLD_" + i_cond + "=RU_PLATFORM&RSC_VL_" + i_cond + "=" + encodeURI(reprod_usage.ru_platform) + "&RSC_OPR_" + i_cond + "=EQ";
+		url+="&RSC_FLD_" + i_cond + "=RU_PLATFORM&RSC_VL_" + i_cond + "=" + /*encodeURI(*/reprod_usage.ru_platform/*)*/ + "&RSC_OPR_" + i_cond + "=EQ"; //no needed
 		i_cond++;
 	}
 	if (reprod_usage.ru_version)
@@ -128,7 +128,7 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 		if (i_cond>1)
 			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
 			
-		url+="&RSC_FLD_" + i_cond + "=RU_VERSION&RSC_VL_" + i_cond + "=" + DonaCadenaPerValorDeFormulari(reprod_usage.ru_version) + "&RSC_OPR_" + i_cond + "=EQ";
+		url+="&RSC_FLD_" + i_cond + "=RU_VERSION&RSC_VL_" + i_cond + "=" + /*DonaCadenaPerValorDeFormulari(*/reprod_usage.ru_version/*)*/ + "&RSC_OPR_" + i_cond + "=EQ"; //no needed
 		i_cond++;
 	}
 	
@@ -137,7 +137,7 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 		if (i_cond>1)
 			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
 			
-		url+="&RSC_FLD_" + i_cond + "=RU_SCHEMA&RSC_VL_" + i_cond + "=" + encodeURIComponent(reprod_usage.ru_schema) + "&RSC_OPR_" + i_cond + "=EQ";
+		url+="&RSC_FLD_" + i_cond + "=RU_SCHEMA&RSC_VL_" + i_cond + "=" + /*encodeURIComponent(*/reprod_usage.ru_schema/*)*/ + "&RSC_OPR_" + i_cond + "=EQ"; //no needed
 		i_cond++;
 	}
 	
@@ -152,7 +152,7 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 		if (i_cond>1)
 			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
 	
-		url+="&RSC_FLD_" + i_cond + "=RU_SUGG_APP&RSC_VL_" + i_cond + "=" + encodeURI(intern_sugg_app) + "&RSC_OPR_" + i_cond + "=EQ";				
+		url+="&RSC_FLD_" + i_cond + "=RU_SUGG_APP&RSC_VL_" + i_cond + "=" + /*encodeURI(*/intern_sugg_app/*)*/ + "&RSC_OPR_" + i_cond + "=EQ";	 //no needed			
 		i_cond++;
 	}
 	loadFile(url, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: seed_div_id, lang: lang, access_token_type: access_token_type, callback_function: callback_function, params_function: params_function, edit_button: false});
