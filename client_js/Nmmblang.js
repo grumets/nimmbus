@@ -45,7 +45,7 @@
 
 var LanguagesNB=["cat","spa","eng"];
 var ActiveLanguage=2;
-var Terms_and_Privacy_Last_Updated="06-10-2020";
+var Terms_and_Privacy_Last_Updated="15-03-2021";
 
 //Global message variables start by "Msg_" 
 var Msg_NiMMbus={cat: "NiMMbus", spa: "NiMMbus", eng: "NiMMbus"};
@@ -273,7 +273,9 @@ var Msg_Identifier={cat: "Identificador", spa: "Identificador", eng: "Identifier
 var Msg_Namespace={cat: "Espai de noms", spa: "Espacio de nombres", eng: "Namespace"};
 var Msg_Terms_use={cat: "Condicions d'Ús", spa: "Condiciones de Uso", eng: "Terms of Use"};
 var Msg_Privacy_Statement={cat: "Declaració de Privacitat", spa: "Declaración de Privacidad", eng: "Privacy Statement"};
+var Msg_Access_Policy={cat: "Política d'accés", spa: "Política de acceso", eng: "Access Policy"};
 var Msg_Last_Update={cat: "Darrera actualització", spa: "Última actualización", eng: "Last updated"};
+var Msg_Mail_contacte={cat: "Contacte", spa: "Contacto", eng: "Contact"};
 
 function DonaCadenaJSON(s)
 {
@@ -376,6 +378,8 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
 	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
+	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
 	
 	document.getElementById("front-signin-nimmbus-lang").innerHTML=DonaCadenaJSON({cat: "Identificació usuaris NiMMbus", spa: "Identificación usuarios NiMMbus", eng: "Login with NiMMbus user"});
@@ -867,6 +871,8 @@ function ChangeLanguageIndexTOS(lang, expected_date_time)
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
 	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
+	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
 	document.getElementById("front-temp-oos-lang").innerHTML=DonaCadenaJSON({cat: "Servei temporalment fora de servei", 
 		spa: "Servicio temporalmente fuera de servicio", eng: "Temporary Out of Service"});
@@ -888,6 +894,8 @@ function ChangeLanguageTestNewFeedback(lang)
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
 	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
+	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
 	document.getElementById("sign_in_title").placeholder=DonaCadenaJSON(Msg_Title);
 	document.getElementById("sign_in_code").placeholder=DonaCadenaJSON(Msg_Identifier);
@@ -909,7 +917,7 @@ function ChangeLanguageTestWidget(lang, is_custom)
 	{
 		document.getElementById("head_title").innerHTML=DonaCadenaJSON({cat: "Test del NiMMbus Widget Personalitzat", spa: "Test del NiMMbus Widget Personalizado", eng: "NiMMbus Test Custom Widget"});
 		document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON({cat: "Test per a mostrar l'ús de l'API JavaScript i el Widget de NiMMbus per crear i mostrar valoracions amb estil personal",
-				spa: "Test para mostrar el uso del API JavaScript y el Widget de NiMMbus per crear y mostrar valoraciones con estilo personal", 
+				spa: "Test para mostrar el uso del API JavaScript y el Widget de NiMMbus para mostrar valoraciones con estilo personal", 
 				eng: "Test to show JavaScrip API and NiMMbus widget use to create and recover feedbacks using custom styles"});
 		document.getElementById("sign_explanation_css_1").innerHTML=DonaCadenaJSON({cat: "En aquesta pàgina, unes poques <b>classes han estat definides</b> a la secció &ltstyle&gt per a canviar: <ul><li>tipus i color de lletra i alçada de línea de <i>guf_report</i><li>color de lletra de <i>guf_key</i>"+
 				"<li>color de fons de <i>guf_folded</i><li>color dels vincles i de les línies horitzontals</ul>Això es pot usar també per decidir quins elements de les valoracions es mostren, modificant la seva propietat \"display\".</p>",
@@ -933,6 +941,8 @@ function ChangeLanguageTestWidget(lang, is_custom)
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
 	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
+	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
 	document.getElementById("sign_in_resource_type").innerHTML=DonaCadenaJSON({cat: "Text de tipus de recurs:", spa: "Texto de tipo de recurso:", eng: "Resource type text:"});
 	document.getElementById("sign_in_title").innerHTML=DonaCadenaJSON(Msg_Title)+" ("+DonaCadenaJSON({cat: "recurs valorat primari",
@@ -970,6 +980,8 @@ function ChangeLanguageTestWidgetCorine(lang)
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
 	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
+	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang)
 	
 	document.getElementById("title").innerHTML=DonaCadenaJSON({cat: "<b>Exemple del Corine Land Cover 2012 amb el NiMMbus GUF widget</b>", spa: "<b>Ejemplo del Corine Land Cover 2012 con el NiMMbus GUF widget</b>", eng: "<b>Corine Land Cover 2012 with NiMMbus GUF widget example</b>"});	

@@ -94,7 +94,7 @@
   left: 10%;
   top: 130px;
   width: 33%;
-  height: 370px;
+  height: 390px;
   line-height: 22px;
   padding: 20px;
   position: absolute;
@@ -107,7 +107,7 @@
 
 .front-conditions-text { 
   color: #CCD6DD;
-  /*#66757F*/
+  margin: 0px;
   font-size: 13px;
   text-shadow: 0 0px 0px #000000;
   font-family: "Gotham Narrow SSm",sans-serif;
