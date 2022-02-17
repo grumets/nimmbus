@@ -29,7 +29,7 @@
     dins del grup del MiraMon. MiraMon és un projecte del 
     CREAF que elabora programari de Sistema d'Informació Geogràfica 
     i de Teledetecció per a la visualització, consulta, edició i anàlisi 
-    de mapes ràsters i vectorials. Aquest progamari programari inclou
+    de mapes ràsters i vectorials. Aquest programari inclou
     aplicacions d'escriptori i també servidors i clients per Internet.
     No tots aquests productes són gratuïts o de codi obert. 
     
