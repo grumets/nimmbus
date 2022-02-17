@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>GIAPI - DAB discover - Basic functionality</title>
+
+        <script type="text/javascript" src="sources/js/jquery/jquery-1.10.2.min.js"></script> 
+	                           
+        <script type="text/javascript" src="sources/js/min/giapi-1.2.9-beta.min.js"></script>
+        
+    </head>
+    <body>        
+        <script>
+            // creates a new DAB instance with the given endpoint
+            var dab = GIAPI.DAB(GIAPI.demo.api);
+
+            // defining discover response callback function
+            var onResponse = function(result){
+                
+                // only one result set is expected (discover not expanded)               
+                var paginator = result[0];
+                
+                // retrieving the result set
+                var resultSet = paginator.resultSet();
+                
+                // printing the result set
+                document.writeln("<h3>- Result set -</h3>"); 
+                document.writeln(JSON.stringify(resultSet,null,4)); 
+     
+                // the current paginator page (the first of the result set)    
+                var page = paginator.page();
+                
+                // printing page nodes
+                document.writeln("<h3>- Nodes of first result set page-</h3>"); 
+                document.writeln("<pre>"); 
+    
+                while(page.hasNext()){
+    
+                    // retrieving the next page node
+                    var node = page.next();
+                
+                    // retrieving the node report
+                    var report = node.report();     
+                                   
+                    document.writeln(JSON.stringify(report,null,4));
+                }
+                document.writeln("</pre>"); 
+            };
+
+            // discover constraints
+            var constraints = {
+                
+                "where": {
+                    "south": 0,
+                    "west": -103,
+                    "north": 35,
+                    "east": -35
+                 },
+                 
+                 "when": {
+                     "from": "2000-01-01",
+                     "to": "2014-12-12"
+                 },
+                 
+                 "what": "temperature"               
+            };
+            
+            // setting maximum page size
+            var options = {
+                
+                "pageSize": 5,
+                "spatialRelation" : GIAPI.SpatialRelation.OVERLAPS           
+            };
+            
+            var onStatus = function(statusList) {
+                
+                if(statusList){
+    
+                    for (var i = 0; i < statusList.length; i++) {
+                        var s = statusList[i];
+                        var title = s.title();
+                        
+                        console.log("Title: " + s.title());
+                        console.log("Message: " + s.message());
+                        console.log("Phase: " + s.phase());
+                        console.log("Progress: " + s.progress());
+                    }
+                }
+            };
+
+                        
+            // start discover
+            dab.discover(onResponse, constraints, options, onStatus);
+            
+        </script>    
+    </body>
+</html>

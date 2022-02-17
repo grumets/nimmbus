@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INSPIRE Geoportal: Discovery / Viewer. Hacked for the INSPIRE Hackaton 2017</title>
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+
+        <link rel="icon" type="image/png" href="http://inspire-geoportal.ec.europa.eu/common2/common2/images/fav.png"/>
+
+        <link rel="stylesheet" type="text/css" href="http://inspire-geoportal.ec.europa.eu/common2/common2/css/colorbox.css"/>
+        <link rel="stylesheet" type="text/css" href="http://inspire-geoportal.ec.europa.eu/common2/common2/css/banners.css"/>
+        <link rel="stylesheet" type="text/css" href="http://inspire-geoportal.ec.europa.eu/common2/common2/css/main.css"/>
+        <link rel="stylesheet" type="text/css" href="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/jquery-ui-1.8.11.custom/css/ui-lightness/jquery-ui-1.8.11.custom.css"/>
+        <link rel="stylesheet" type="text/css" href="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/jquery.layout-1.3.0_rc29.14/jquery.layout-default.css"/>
+        <link rel="stylesheet" type="text/css" href="http://inspire-geoportal.ec.europa.eu/common2/common2/css/igp.css"/>
+        <!--[if IE 7]>
+        <style type="text/css">
+          #logo {
+            top:7px;
+            margin-right:80px;
+          }
+        </style>
+        <![endif]-->
+        <!--[if IE]>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/js/excanvas_r3/excanvas.compiled.js"></script>
+        <![endif]-->
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/conf/hosts.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/jquery-ui-1.8.11.custom/js/jquery-1.5.1.min.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/jquery-ui-1.8.11.custom/js/jquery-ui-1.8.11.custom.min.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/jquery.livequery.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/jquery.colorbox-min.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/jquery.layout-1.3.0_rc29.14/jquery.layout.min.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/common2.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/banners.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/main.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/igp.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lang.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/core/Core.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/core/AbstractManager.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/managers/Manager.jquery.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/core/Parameter.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/core/ParameterStore.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/core/AbstractWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/helpers/jquery/ajaxsolr.theme.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/jquery/PagerWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/core/AbstractTextWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/core/AbstractFacetWidget.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/helpers/ajaxsolr.support.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/helpers/ajaxsolr.theme.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/ResultWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/TagcloudWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/CurrentSearchWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/CurrentSearchWidgetInline.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/AutocompleteWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/TextWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/ResourceTypeWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/CountryCodeWidget.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/inspiregeoportal/widgets/CalendarWidget.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/OpenLayers-2.12/OpenLayers.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/OpenLayers-2.12/LoadingPanel.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/igp.theme.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/jquery.cookie.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/function-query.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/filter-query.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/maps-arcgiscache.js"></script>
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/maps-arcgiscache-discovery.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/changelog.js"></script>
+
+        <script type="text/javascript" src="http://inspire-geoportal.ec.europa.eu/common2/common2/js/lib/browserstate-history.js-1.8-13/scripts/bundled/html4+html5/jquery.history.js"></script>
+
+	<script language="JavaScript" src="https://www.nimmbus.cat/xml.js"></script>
+	<script language="JavaScript" src="https://www.nimmbus.cat/owc_atom.js"></script>
+	<script language="JavaScript" src="https://www.nimmbus.cat/wps_iso_guf.js"></script>
+
+
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(["_setAccount", "UA-9954870-4"]);
+            _gaq.push(["_trackPageview"]);
+            (function () {
+                var a = document.createElement("script");
+                a.type = "text/javascript";
+                a.async = true;
+                a.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
+                var b = document.getElementsByTagName("script")[0];
+                b.parentNode.insertBefore(a, b)
+            })();
+
+function GetXMLElementCollectionByName(root, abbreb_ns, name)
+{
+var a;
+	if (abbreb_ns)
+	{
+		a = root.getElementsByTagName(abbreb_ns + ":" + name);
+		if(a && a != null && a.length)
+			return a;
+	    	return root.getElementsByTagName(name);
+	}
+    	return root.getElementsByTagName(name);
+}
+
+function GetXMLElementByName(root, abbreb_ns, name)
+{
+var a;
+	if (abbreb_ns)
+	{
+		a = root.getElementsByTagName(abbreb_ns + ":" + name)[0];
+		if(a && a != null)
+			return a;
+	    	return root.getElementsByTagName(name)[0];
+	}
+    	return root.getElementsByTagName(name)[0];
+}
+
+function GetXMLAttributeByName(element, abbreb_ns, name)
+{
+var a;
+	if (abbreb_ns)
+	{
+		a=element.attributes.getNamedItem(abbreb_ns + ":" + name);
+		if(a && a != null)
+			return a;
+		return element.attributes.getNamedItem(name);
+	}
+	return element.attributes.getNamedItem(name);	
+}
+
+function GetValueXMLAttributeByName(root, abbreb_ns, name)
+{
+var attrib;
+
+	attrib=GetXMLAttributeByName(root, abbreb_ns, name);
+	if (attrib && attrib.value)
+		return attrib.value;
+	else
+		return null;
+}
+
+function GetValueXMLElementByName(root, abbreb_ns, name)
+{
+var elem;
+
+	elem=GetXMLElementByName(root, abbreb_ns, name);
+	if (elem && elem.childNodes[0] && elem.childNodes[0].nodeValue)
+		return elem.childNodes[0].nodeValue;
+	else
+		return null;
+}
+
+
+function OmpleInputDesDeWPSLiteralOutput(item)
+{
+	var literal_data=GetXMLElementByName(item, "wps", "LiteralData");
+	if (literal_data && literal_data.childNodes[0] && literal_data.childNodes[0].nodeValue)
+		return literal_data.childNodes[0].nodeValue;
+	else
+		return "";
+}
+
+function DonaTextDesDeGcoCharacterString(item)
+{
+	var elem=GetValueXMLElementByName(item, "gco", "CharacterString");
+	if (elem)
+		return elem;
+	else
+		return "";
+}
+
+function OmpleInputDesDeWPSComplexOutput(item)
+{
+	return GetXMLElementByName(item, "wps", "ComplexData");
+}
+
+function DonaTextDesDeCodeList(item, namespace, code_list)
+{
+	var elem=GetXMLElementByName(item, namespace, code_list);
+	if (elem)
+	{
+		var code_list_value=GetXMLAttributeByName(elem, null, "codeListValue");
+		if (code_list_value && code_list_value.value)
+			return code_list_value.value;
+		else
+			return "";
+	}
+	else
+		return "";
+}
+
+function loadFile(path, mimetype, success, error, extra_param)
+{
+var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function()
+	{
+        	if (xhr.readyState === XMLHttpRequest.DONE) 
+		{
+	            	if (xhr.status === 200) 
+			{
+				if (mimetype!=xhr.getResponseHeader('content-type'))
+				{
+			                if (error)
+					{
+						var s=null;
+						if (xhr.response)
+						{
+							var s=xhr.response;
+							if (-1!=s.indexOf("<body>"))
+								s=s.substring(s.indexOf("<body>"));
+						}
+						error("Wrong response content type:"+ xhr.getResponseHeader('content-type') + "\n\nResponse headers:\n"+ ((xhr.getAllResponseHeaders && xhr.getAllResponseHeaders()) ? xhr.getAllResponseHeaders() : "") + ((s) ? "\nResponse Body:\n"+s : ""), extra_param);
+					}
+				}
+				else
+				{
+	                		if (success)
+					{
+						if (mimetype=="text/xml" ||
+						    mimetype=="application/xml")
+							success(xhr.responseXML, extra_param);
+						else
+							success(xhr.responseText, extra_param);
+					}
+				}
+			} 
+			else 
+			{
+                		if (error)
+				{
+					var s=null;
+					if (xhr.response)
+					{
+						var s=xhr.response;
+						if (-1!=s.indexOf("<body>"))
+							s=s.substring(s.indexOf("<body>"));
+					}
+					error(xhr.status + ": " +xhr.statusText + "\n\nURL: "+ path + ((xhr.getAllResponseHeaders && xhr.getAllResponseHeaders()) ? "\n\nResponse headers:\n"+ xhr.getAllResponseHeaders() : "") + ((s) ? "\nResponse Body:\n"+s : ""), extra_param);
+				}
+			}
+		}
+	};
+	xhr.open("GET", path, true);
+	//xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=ISO-8859-1');
+	//xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+	xhr.send();
+}
+
+function GetResourceIdentifierMetadataWindow()
+{	
+	//I'm not able to get access to the interior of the iframe (the actual metadata) due to CORS but, at least, I'm able to extract the src of the iframe that contains an identifier (it is not the producer ID but an inspire id, but is something)
+	var node=document.querySelector("#dialog > iframe");
+	if (!node || !node.src)
+		return null
+	var prefix="http://inspire-geoportal.ec.europa.eu/resources/INSPIRE-";
+	return {"title": node.src, "code": node.src.substring(prefix.length, prefix.length+36), "codespace": "inspire-geoportal"};
+}
+
+function ShowFeedbackItem(doc, entry)
+{
+	if (!doc || !doc.documentElement)
+	{	
+		document.getElementById("guf-pannel").innerHTML="Error reading server response";
+		return;
+	}
+	var root=doc.documentElement;
+	if (!root)
+	{
+		document.getElementById("guf-pannel").innerHTML="Error reading server response";
+		return;
+	}
+
+	var guf=GetRetrieveResourceFeedbackOutputs(root);
+	if (!guf)
+	{
+		document.getElementById("guf-pannel").innerHTML="Error reading server response";
+		return;
+	}
+
+	document.getElementById("guf-pannel").innerHTML+="<h3>Feedback " + entry.i_entry + "/" + entry.n_entry + "</h3>" + 
+					"<b>Title</b>: " + guf.title+ "<br/>" +
+					"<b>Reason</b>: " + guf.reason + "<br/>" +
+					"<b>Abstract</b>: " + guf.abstract+ "<br/>" +
+					"<b>Contact role</b>: " + guf.contactRole+ "<br/>" +
+					"<b>Comment</b>: " + guf.comment+ "<br/>" +
+					"<b>Motivation</b>: " + guf.motivation+ "<br/>" +
+					"<b>Rating</b>: " + guf.rating + "/5<br/><br/>";
+}
+
+function ErrorFeedbackItem(info, extra_param)
+{
+	alert(info);
+}
+
+function ShowPreviousFeedback(doc, res_id)
+{
+var i_entry=0, n_entry=0;
+
+	if (!doc || !doc.documentElement)
+	{	
+		document.getElementById("guf-pannel").innerHTML="Error reading server response";
+		return;
+	}
+	var root=doc.documentElement;
+	//Analize entries
+
+	var elems=root.childNodes;
+	if (elems)
+	{
+		for (var item=0; item<elems.length; item++)
+		{
+			if (elems[item].nodeName=="entry" || elems[item].nodeName=="atom:entry")
+			{
+				var properties=elems[item].childNodes;
+				if (properties)
+					n_entry++;
+			}
+		}
+		for (var item=0; item<elems.length; item++)
+		{
+			if (elems[item].nodeName=="entry" || elems[item].nodeName=="atom:entry")
+			{
+				var properties=elems[item].childNodes;
+				if (properties)
+				{
+					i_entry++;
+					for (var i_property=0; i_property<properties.length; i_property++)
+					{
+						if (properties[i_property].nodeName=="link" || properties[i_property].nodeName=="atom:link")
+						{
+							var url=GetValueXMLAttributeByName(properties[i_property], "atom", "href");
+							loadFile(url, "text/xml", ShowFeedbackItem, ErrorFeedbackItem, {"i_entry": i_entry, "n_entry": n_entry});
+						}
+					}
+				}
+			}
+		}
+	}
+	if (i_entry==0)
+		document.getElementById("guf-pannel").innerHTML="No feedback has been found about this record. Consider to post feedback yourself.";
+}
+
+function ErrorPreviousFeedback(info, extra_param)
+{
+	alert(info);
+}
+
+function GetPreviousFeedback()
+{
+	document.getElementById("guf-pannel").innerHTML="";
+	res_id=GetResourceIdentifierMetadataWindow();
+	if (!res_id)
+	{
+		document.getElementById("guf-pannel").innerHTML="No INSPIRE metadata window detected. Please make a query and click on a result to open the metadata windows first.";
+		return;
+	}
+	//document.getElementById("guf-pannel").innerHTML=res_id.code;
+	loadFile("https://www.nimmbus.cat/cgi-bin/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1="+res_id.code+"&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2="+res_id.codespace+"&TRG_OPR_2=EQ", "text/xml", ShowPreviousFeedback, ErrorPreviousFeedback, res_id);
+}
+
+function OpenPostFeedback()
+{
+	res_id=GetResourceIdentifierMetadataWindow();
+	if (!res_id)
+	{
+		document.getElementById("guf-pannel").innerHTML="No INSPIRE metadata window detected. Please make a query and click on a result to open the metadata windows first.";
+		return;
+	}
+	window.open("https://www.nimmbus.cat/index.htm?target_title="+res_id.title+"&target_code="+res_id.code+"&target_codespace="+res_id.codespace+"&page=ADDFEEDBACK&share_borrower_1=Anonymous")
+	document.getElementById("guf-pannel").innerHTML="Once you have provided the feedback, please press [Get previous feedback] to see your new entry";
+}
+
+        </script>
+
+	<style>
+#wrap-inspire {
+    min-width: 800px;
+    min-height: 400px;
+    margin: 10px 5px 5px 5px;
+    position: absolute;
+    top: 14px;
+    right: 0px;
+    bottom: 30%;
+    left: 0px;
+}
+	</style>
+
+	<style>
+#wrap-guf {
+    min-width: 800px;
+    min-height: 400px;
+    margin: 10px 5px 5px 5px;
+    position: absolute;
+    top: 70%;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+}
+
+	</style>
+    </head>
+    <body>
+            <div id="topright">
+                <div id="topright-links"><a href="mailto:inspire-geoportal@jrc.ec.europa.eu">Contact INSPIRE</a> | <a href="http://inspire-geoportal.ec.europa.eu/discovery/" target="_blank">Original version</a></div>
+            </div>
+                INSPIRE GEOPORTAL Hacked!!&nbsp;&gt;
+                <span>Discovery / Viewer with Geospatial User Feedback (<a href="http://www.plan4all.eu/inspire-hack-2017/" target="_black">INSPIRE Hackaton 2017</a>)</span>
+
+	<div id="wrap-inspire">
+            <div id="page-content">
+                <div id="left" class="ui-layout-west">
+                    <div id="findaplace-box" class="ui-layout-north" title="Enter a place name in the search box and press the search button. A list of matching place names will appear. Clicking on one place name will centre the place on the map." >
+                        <form id="findaplace" name="findaplace" action="">
+                            <ul>
+                                <li>
+                                    <div class="ui-widget">
+                                        <label for="place">Find a place in:</label>
+                                        <select id="continentCode" name="continentCode" style="width: 20%">
+                                            <option value="EU" selected="selected">Europe</option>
+                                            <option value="AS">Asia</option>
+                                            <option value="AF">Africa</option>
+                                            <option value="NA">North America</option>
+                                            <option value="OC">Oceania</option>
+                                            <option value="SA">South America</option>
+                                            <option value="AN">Antarctica</option>
+                                        </select>
+                                        <input id="place" name="place"  style="width: 40%"/>
+                                        <div class="search-help"><a href="http://geonames.org" target="_blank">Powered by GeoNames</a></div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </form>
+                        <div style="display: none">
+                            <div style="margin-top: 10px;padding-left: 0px;padding-right: 0px;">
+                                <div class="ui-widget" style="margin-top:2em; font-family:Arial;">
+                                    <span>Bookmarks:</span>
+                                    <div id="log" style="height: 100px; overflow: auto;" class="ui-widget-content"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="map" class="smallmap ui-layout-center"></div>
+                    <div id="map-panels" class="ui-layout-south">
+                        <div id="layers-panel" class="ui-layout-center">
+                            <h1 id="layers-panel-title" class="ui-layout-north ui-layout-content">Active Layers: <span id="layers-panel-active-layers-nr">0</span></h1>
+                            <div id="layers-panel-body" class="ui-layout-center"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="right" class="ui-layout-center">
+                    <div id="search-header" class="ui-layout-north">
+                        <div id="search-advanced-toggler" title="Toggle advanced search panel."><a href="#">Advanced Search</a></div>
+                        <div id="search-box" title="Type your search terms here. A list of matches will appear, with the total number of matches in parentheses">
+                            <form id="search" name="search" action="" >
+                                <ul>
+                                    <li>
+                                        <div class="ui-widget">
+                                            <label for="query">Search:</label>
+                                            <input type="text" id="query" name="query"  placeholder="Enter your query in any language of the European Union"/>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </form>
+                        </div>
+                        <div id="search-criteria2">
+                            <div id="criteria2"></div>
+                            <ul id="selection2"></ul>
+                        </div>
+
+                        <div id="resource-type-panel"></div>
+                    </div>
+                    <div id="search-sidebar" class="ui-layout-east">
+                        <div id="search-panel">
+                            <div id="search-panel-body">
+                                <!--<div id="resouce-type-panel"></div>-->
+                                <div id="search-criteria">
+                                    <h2>Active Search Criteria</h2>
+                                    <h3>Bounding Box Restrictions</h3>
+                                    <div id="bbox-criteria"></div>
+                                    <h3>Active Search Filters</h3>
+                                    <div id="criteria"></div>
+                                    <ul id="selection"></ul>
+                                </div>
+                                <div id="filter-by-metadata-info" style="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="search-results" class="ui-layout-center">
+                        <div id="result" class="ui-layout-center">
+                            <div class="ui-layout-north">
+                                <div id="navigation" class="ui-layout-north">
+                                    <div id="sort-box" style="height: 5px;">
+                                    </div>
+                                    <div id="pager-header" ></div>
+                                    <ul id="pager"></ul>
+                                </div>
+                            </div>
+                            <div class="ui-layout-center">
+                                <div id="result-summary">
+                                    <!-- <img id="tagcloud_spinner" src="discovery/images/ajax-loader.gif"></img>
+                                    <div id="general-tagcloud"></div> -->
+                                </div>
+                                <ul id="docs"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dialog" title="INSPIRE Metadata" style="display: none"></div>
+                </div>
+            </div>
+        </div>
+	<div id="wrap-guf">
+	<form name="guf" onSubmit="return false">
+		<input type="button" value="Get previous feedback" onClick="GetPreviousFeedback();">
+		<input type="button" value="Post feedback" onClick="OpenPostFeedback();">
+	</form>
+	<div id="guf-pannel"></div>
+        </div>
+	
+        <script>
+
+            var urlParams = getParameters();
+            var id = urlParams['id'];
+            if (urlParams != undefined && id != undefined) {
+                displayMetadata("resourceTitle", id);
+            }
+
+        </script>
+    </body>
+</html>
