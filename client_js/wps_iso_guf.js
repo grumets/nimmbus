@@ -808,7 +808,7 @@ function GetNimmbusTypeOfAOWCFeature(feature)
 	for (var j=0; j<categories.length; j++)
 	{
 		if (categories[j].scheme &&
-			categories[j].scheme=="http://www.opengis.uab.cat/nimmbus/resource_type" &&
+			categories[j].scheme=="https://www.nimmbus.cat/resource_type" &&
 			categories[j].term)
 		{
 			if (categories[j].term=="POI")

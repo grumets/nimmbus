@@ -1,10 +1,10 @@
 # NiMMbus API
 
-The NiMMbus service is an OGC Geospatial User Feedback (GUF) implementation developed by the MiraMon team of the Grumets research group in the Universitat Autònoma de Barcelona and the CREAF, based on the previous NiMMbus system and evolved as a contribution to the H2020 NextGEOSS project. The NextGEOSS project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreement No 730329.
+The NiMMbus service is an OGC Geospatial User Feedback (GUF) implementation developed by the MiraMon team of the Grumets research group in the Universitat Autònoma de Barcelona and the CREAF, based on the previous NiMMbus system and evolved as a contribution to the H2020 NextGEOSS project. The NextGEOSS project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreement No 730329. Currently GUF is being extended through the H2020 Eiffel project, under grant agreement 101003518, to extend quality elements to capture quality metadata in climate change scenarios, as well as to extend GUF features to store and share knowledge elements.
 
-The Nimmbus API is based on the CRUD (create, retrieve, update, and delete) 4 basic functions for persistent storage/management of objects (https://en.wikipedia.org/wiki/Create,_read,_update_and_delete). The API defines a set of object classes and provide mainly the 4 CRUD operations plus some additions when considered necessary. In this way, it mimics some of the RESTful design principles too.
+The NiMMbus API is based on the CRUD (create, retrieve, update, and delete) 4 basic functions for persistent storage/management of objects (https://en.wikipedia.org/wiki/Create,_read,_update_and_delete). The API defines a set of object classes and provide mainly the 4 CRUD operations plus some additions when considered necessary. In this way, it mimics some of the RESTful design principles too.
 
-The Nimmbus API uses the OGC WPS 1.0 standard but with 2 significant modifications:
+The NiMMbus API uses the OGC WPS 1.0 standard but with 2 significant modifications:
 * The WPS execute request uses the WPS 1.0 abstract model but is implemented as GET requests (not present in the WPS 1.0 standard.
 * The CREATE, MODIFY (update) and DELETE operations are implicitly asynchronous and respond a synchronization ID (more or less equivalent to the job id introduced in WPS 2.0 standard). An extra operation allows for requesting NB_SYNC:GETRETURN the status of the asynchronous process or the actual result if the process has ended.
 
@@ -217,17 +217,17 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
 			* This request retrieves all the FB items targeting the Sentinel2Level2aCollection (in http://sdi.eea.europa.eu/catalogue&TRG_OPR_2=EQ) (with any target role)
     * SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK
 		&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=Sentinel2Level2aCollection&TRG_OPR_1=EQ&TRG_NXS_1=AND
-		&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi&TRG_OPR_2=EQ
+		&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=https://www.datacube.cat/cgi-bin/ecopotential/miramon.cgi&TRG_OPR_2=EQ
 		&TRG_ROLE=primary
-			* This request retrieves all the FB items primary targeting the Sentinel2Level2aCollection (in http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi)
+			* This request retrieves all the FB items primary targeting the Sentinel2Level2aCollection (in https://www.datacube.cat/cgi-bin/ecopotential/miramon.cgi)
     * SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK
 		&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=DonanaSentinel2Level2a&TRG_OPR_1=EQ&TRG_NXS_1=AND
-		&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi&TRG_OPR_2=EQ
+		&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=https://www.datacube.cat/cgi-bin/ecopotential/miramon.cgi&TRG_OPR_2=EQ
 		&RSC_FLD_1=RU_PLATFORM&RSC_VL_1=https://github.com/joanma747/MiraMonMapBrowser&RSC_OPR_1=EQ&RSC_NXS_1=AND
 		&RSC_FLD_2=RU_VERSION&RSC_VL_2=6.0&RSC_OPR_2=EQ&RSC_NXS_2=AND
 		&RSC_FLD_3=RU_SCHEMA&RSC_VL_3=config-schema.json%23%2Fdefinitions%2Festil&RSC_OPR_3=EQ
 		&RSC_FLD_4=RU_SUGG_APP&RSC_VL_4=http://maps.ecopotential-project.eu&RSC_OPR_4=EQ
-			* This request retrives all the FB items targeting DonanaSentinel2Level2a in http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi which has the 
+			* This request retrives all the FB items targeting DonanaSentinel2Level2a in https://www.datacube.cat/cgi-bin/ecopotential/miramon.cgi which has the 
 			reproducible usage section defined with a certain platform (https://github.com/joanma747/MiraMonMapBrowser), a certain version (6.0), a certain
 			schema (config-schema.json%23%2Fdefinitions%2Festil) and specific application instance (http://maps.ecopotential-project.eu).
 			It is interesting to retrive a certain "type" of reproducible usage that can applied under certain circumstances. 

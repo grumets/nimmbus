@@ -102,8 +102,8 @@ var div=elem.nextElementSibling;
 	
 <!--
 
-//var ServersNB=["http://localhost/cgi-bin/server1/nimmbus.cgi","http://localhost/cgi-bin/server2/nimmbus.cgi"];
-var ServersNB=["https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi"];
+var ServersNB=["http://localhost/cgi-bin/server1/nimmbus.cgi","http://localhost/cgi-bin/server2/nimmbus.cgi"];
+//var ServersNB=["https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi"];
 var LastServerNB=0;
 
 
@@ -117,8 +117,6 @@ function decode_utf8(s) {
 }
 
 //Després de intentar fer servir l'objecte link() sense exit he hagut de fer això.
-//En realitat el que s'hauria de fer servir és el constructor new URL().
-// A aquesta funció se li pot passar el path absolut o un path relatiu seguit d'una adreça base. 
 //Returns the hostname and port number of a URL
 function DonaHost(s)
 {
@@ -362,11 +360,16 @@ function Ajax()
 	};
 	this.doGet = function(url, hand, response_format, struct) 
 	{
+		//if (confirm(url)) //·$·Per a depurar
+		//{  
 			this.url = url;
 			this.handleResp = hand;
 			this.responseFormat = response_format || 'text/plain';
 			this.structResp = struct;
 			this.doReq();
+		//}
+		//else
+		//	console.log(url); //·$·Per a depurar
 	};
 
 	this.doPost = function(url, request_format, dataPayload, hand, response_format, struct) 
@@ -466,7 +469,8 @@ function Ajax()
 					{
 						try
 						{
-					            	self.handleResp(resp, self.structResp);
+							//·$· aqui es on hauria d'interpretar si hi ha més d0un param?
+					     self.handleResp(resp, self.structResp);
 						}
 						catch(e)
 						{
@@ -504,7 +508,8 @@ function Ajax()
 	};
 	this.setMimeType = function(mimeType) {
 		this.mimeType = mimeType;
-	};
+	};  
+	//·$· o es aqui on he de mirar si tinc un o n params que van a la funcio??? 
 	this.setHandlerResp = function(funcRef) {
 		this.handleResp = funcRef;
 	};
@@ -670,182 +675,147 @@ var ActionAfterSignIn=null;
 var ParamActionAfterSignIn=null;
 var ChangeLang=true;  //Change language following user preferences?
 
-function ExtreuParametresKVPdeCadena(cadena, query)
+function AnalitzarParametresURL()
 {
-		for (var i=0; i<cadena.length; i++)
-		{
-			var j = cadena[i].indexOf("=");  // Gets the first index where a space occours
-			if (j==-1)
-			{
-				alert("Format error in query URL '" + cadena + "', Key and value pair (KVP) '" + cadena[i] + "' without '='.").
-				break;
-			}
-			query[unescape(cadena[i].substring(0, j)).toUpperCase()]=unescape(cadena[i].substring(j+1));
-		}
-		return;
-}
+/* canviar l'estratègia de la funció per a fer alguna cosa com es fa als navegadors a dins la funció IniciaVisualitzacio, de miramon.js, 
+a l'if de if (location.search && location.search.substring(0,1)=="?"). Fer això permetrà acceptar N TARGET_TITLE, i similars. enlloc de 
+els dos que miro ara*/
+var clau=new Array("USER=", "PASSWORD=", "EMAIL=", "LANGUAGE=", "TOKEN=", "TOKEN_DESC=", "PAGE=", "TARGET_TITLE=", "TARGET_CODE=", "TARGET_CODESPACE=", "TARGET_ROLE=", 
+		"TARGET_TITLE_2=", "TARGET_CODE_2=", "TARGET_CODESPACE_2=", "TARGET_ROLE_2=", //en un futur quan canvien estrtègia d'aquesta funció es farà diferent i serà realment N
+		"SHARE_BORROWER_1=", "ACCESS_TOKEN_TYPE=", "ABSTRACT=", "REPORT_ASPECT=", "SPECIFIC_USAGE=", "RU_CODE=", "RU_CODE_FORMAT=", "RU_PLATFORM=", "RU_VERSION=", "RU_SCHEMA=");
+var newpage="";
+var email, target_title="", target_code="", target_code_space="", target_role="", target_title_2="", target_code_2="", target_code_space_2="", target_role_2="", share_borrower_1="", access_token_type="";
 
-var PendingPostMessage="";
-var ParamsQuery={};
-
-function AnalitzarParametresURL(fragment)
-{
-var share_borrower_1="", access_token_type="";
-var i;
-var query={};
-var kvp="";
-		
-	if (fragment)
+	if (location.search && location.search.substring(0,1)=="?")
 	{
-		PendingPostMessage="";
-		kvp=fragment.substring(1, fragment.length).split("&");
+		var kvp=location.search.substring(1, location.search.length).split("&");
+		for (var i_kvp=0; i_kvp<kvp.length; i_kvp++)
+		{
+			for (var i_clau=0; i_clau<clau.length; i_clau++)
+			{
+				if (kvp[i_kvp].substring(0, clau[i_clau].length).toUpperCase()==clau[i_clau])
+				{
+					var valor=unescape(kvp[i_kvp].substring(clau[i_clau].length,kvp[i_kvp].length));
+					if (i_clau==0)  //USER
+						document.sign_in.user.value=valor;
+					else if (i_clau==1)  //PASSWORD
+						document.sign_in.pass.value=valor;
+					else if (i_clau==2)  //EMAIL
+						email=valor;
+					else if (i_clau==3)  //LANGUAGE
+					{
+						var i;
+						i=GetActiveLanguageIndex(valor.toLowerCase());
+						if (i==-1)
+							ShowInfo("long", DonaCadenaJSON(Msg_Unsupported_language)+": \""+ valor.toLowerCase()+"\".");
+						else
+						{
+							ActiveLanguage=i;
+							ChangeLang=false;
+						}
+					}
+					else if (i_clau==4)  //TOKEN
+						PendingToken=valor;
+					else if (i_clau==5)  //TOKEN_DESC
+						document.getElementById("execute-token-subtitle-text").innerHTML=valor;
+					else if (i_clau==6)  // PAGE
+						newpage=valor.toUpperCase();
+					else if (i_clau==7)  // TARGET_TITLE
+						target_title=valor;
+					else if (i_clau==8)  // TARGET_CODE
+						target_code=valor;
+					else if (i_clau==9)  // TARGET_CODESPACE
+						target_code_space=valor;
+					else if (i_clau==10)  // TARGET_ROLE
+						target_role=valor;
+					else if (i_clau==11)  // TARGET_TITLE_2
+						target_title_2=valor;
+					else if (i_clau==12)  // TARGET_CODE_2
+						target_code_2=valor;
+					else if (i_clau==13)  // TARGET_CODESPACE_2
+						target_code_space_2=valor;
+					else if (i_clau==14)  // TARGET_ROLE_2
+						target_role_2=valor;
+					else if (i_clau==15)  // SHARE_BORROWER_1
+						share_borrower_1=valor;
+					else if (i_clau==16)  // ACCESS_TOKEN_TYPE
+					{
+						access_token_type=valor;
+						if (valor.toLowerCase()=="nextgeoss")
+							ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);
+						else if (valor.toLowerCase()=="landsense")
+							ValidaSSOLandSense(true, SignInNBLandSense, null);
+						else if (valor.toLowerCase()=="google")
+							ValidaSSOGoogle();
+						else if (valor.toLowerCase()=="debug")
+							ValidaSSODebug();					
+					}
+					else if (i_clau==17)  // ABSTRACT
+					{
+						if (!ElementsOfAFeedback)
+							ElementsOfAFeedback={};						
+						ElementsOfAFeedback.abstract=valor;
+					}
+					else if (i_clau==18)  // REPORT_ASPECT
+					{
+						if (!ElementsOfAFeedback)
+							ElementsOfAFeedback={};						
+						ElementsOfAFeedback.report_aspect=valor;
+					}
+					else if (i_clau==19)  // SPECIFIC_USAGE
+					{
+						if (!ElementsOfAFeedback)
+							ElementsOfAFeedback={};						
+						ElementsOfAFeedback.specific_usage=valor;
+					}
+					else if (i_clau==20)  // RU_CODE
+					{
+						if (!ElementsOfAFeedback)
+							ElementsOfAFeedback={};						
+						ElementsOfAFeedback.ru_code=valor;
+					}
+					else if (i_clau==21)  // RU_CODE_FORMAT
+					{
+						if (!ElementsOfAFeedback)
+							ElementsOfAFeedback={};						
+						ElementsOfAFeedback.ru_code_format=valor;
+					}
+					else if (i_clau==22)  // RU_PLATFORM
+					{
+						if (!ElementsOfAFeedback)
+							ElementsOfAFeedback={};						
+						ElementsOfAFeedback.ru_platform=valor;
+					}
+					else if (i_clau==23)  // RU_VERSION
+					{
+						if (!ElementsOfAFeedback)
+							ElementsOfAFeedback={};						
+						ElementsOfAFeedback.ru_version=valor;
+					}
+					else if (i_clau==24)  // RU_SCHEMA
+					{
+						if (!ElementsOfAFeedback)
+							ElementsOfAFeedback={};						
+						ElementsOfAFeedback.ru_schema=valor;
+					}					
+					else
+						ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_key) +": \""+ valor+"\".");
+					break;
+				}				
+			}
+		}
 	}
-	else if (location.search && location.search.substring(0,1)=="?")
+
+	if (newpage!="")
 	{
-		ParamsQuery.newpage="";
-		ParamsQuery.email="";
-		ParamsQuery.llista_targets=[];		
-		kvp=location.search.substring(1, location.search.length).split("&");
-	 }
-		
-	if (kvp)
-	{		
-		ExtreuParametresKVPdeCadena(kvp, query);
-		if (query["USER"])
-			document.sign_in.user.value=query["USER"];
-		if (query["PASSWORD"])
-			document.sign_in.pass.value=query["PASSWORD"];
-		if (query["EMAIL"])
-			ParamsQuery.email=query["EMAIL"];
-		if (query["LANGUAGE"])
-		{
-			i=GetActiveLanguageIndex(query["LANGUAGE"].toLowerCase());
-			if (i==-1)
-				ShowInfo("long", DonaCadenaJSON(Msg_Unsupported_language)+": \""+query["LANGUAGE"].toLowerCase()+"\".");
-			else
-			{
-				ActiveLanguage=i;
-				ChangeLang=false;
-			}
-		}
-		if (query["TOKEN"])
-			PendingToken=query["TOKEN"];
-		if (query["TOKEN_DESC"])
-			document.getElementById("execute-token-subtitle-text").innerHTML=query["TOKEN_DESC"];
-		if (query["PAGE"])
-			ParamsQuery.newpage=query["PAGE"].toUpperCase();
-		if (query["SHARE_BORROWER_1"])
-			share_borrower_1=query["SHARE_BORROWER_1"];
-			
-		var sufix="";
-		i=1
-		while (true)
-		{
-			if (query["TARGET_TITLE"+sufix] && query["TARGET_CODE"+sufix])
-				;
-			else
-			   break;
-		
-			ParamsQuery.llista_targets.push({"title": query["TARGET_TITLE"+sufix], "code": query["TARGET_CODE"+sufix], 
-					"code_space": (query["TARGET_CODESPACE"+sufix] ? query["TARGET_CODESPACE"+sufix] : ""), 
-					"role": (query["TARGET_ROLE"+sufix] ? query["TARGET_ROLE"+sufix] : "primary"), 
-					"share_borrower_1": share_borrower_1});				
 	
-			i++;
-			sufix="_"+i;
-		}
-		
-		if (query["ACCESS_TOKEN_TYPE"])
-		{
-			access_token_type=query["ACCESS_TOKEN_TYPE"].toLowerCase;
-			if (access_token_type=="nextgeoss")
-				ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);
-			else if (access_token_type=="landsense")
-				ValidaSSOLandSense(true, SignInNBLandSense, null);
-			else if (access_token_type=="google")
-				ValidaSSOGoogle();
-			else if (access_token_type=="debug")
-				ValidaSSODebug();					
-		}
-		if (query["ABSTRACT"])
-		{
-			if (!ElementsOfAFeedback)
-				ElementsOfAFeedback={};						
-			ElementsOfAFeedback.abstract=query["ABSTRACT"];
-		}
-		if (query["REPORT_ASPECT"])
-		{
-			if (!ElementsOfAFeedback)
-				ElementsOfAFeedback={};						
-			ElementsOfAFeedback.report_aspect=query["REPORT_ASPECT"];
-		}
-		if (query["SPECIFIC_USAGE"])
-		{
-			if (!ElementsOfAFeedback)
-				ElementsOfAFeedback={};						
-			ElementsOfAFeedback.specific_usage=query["SPECIFIC_USAGE"];
-		}
-		if (query["RU_CODE"])
-		{
-			if (!ElementsOfAFeedback)
-				ElementsOfAFeedback={};						
-			ElementsOfAFeedback.ru_code=query["RU_CODE"];
-		}
-		if (query["RU_CODE_FORMAT"])
-		{
-			if (!ElementsOfAFeedback)
-				ElementsOfAFeedback={};						
-			ElementsOfAFeedback.ru_code_format=query["RU_CODE_FORMAT"];
-		}
-		if (query["RU_PLATFORM"])
-		{
-			if (!ElementsOfAFeedback)
-				ElementsOfAFeedback={};						
-			ElementsOfAFeedback.ru_platform=query["RU_PLATFORM"];
-		}
-		if (query["RU_VERSION"])
-		{
-			if (!ElementsOfAFeedback)
-				ElementsOfAFeedback={};						
-			ElementsOfAFeedback.ru_version=query["RU_VERSION"];
-		}
-		if (query["RU_SCHEMA"])
-		{
-			if (!ElementsOfAFeedback)
-				ElementsOfAFeedback={};						
-			ElementsOfAFeedback.ru_schema=query["RU_SCHEMA"];
-		}					
-		if (query["RU_SUGG_APP"])
-		{
-			if (!ElementsOfAFeedback)
-				ElementsOfAFeedback={};						
-			ElementsOfAFeedback.ru_sugg_app=query["RU_SUGG_APP"];
-		}
-		/*else
-			ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_key) +": \""+ valor+"\".");
-		break;*/
-		if (query["POST_MESSAGE_FROM"])
-		{
-			PendingPostMessage=query["POST_MESSAGE_FROM"];
-			if (window.opener)
-			{
-				NotifyOpenerIAmReady(PendingPostMessage);
-				return;
-			}	
-			else
-				ShowInfo("long", "POST_MESSAGE_FROM param without an opener, it will be ommited");
-		}
-	}
-
-	if (typeof ParamsQuery.newpage !== "undefined" && ParamsQuery.newpage!="")
-	{	
-		if (ParamsQuery.newpage=="NEWPASSWORD")
+		if (newpage=="NEWPASSWORD")
 			EntraANewPassword();
-		else if (ParamsQuery.newpage=="NEWUSER")
-			EntraANewUser(ParamsQuery.email);
-		else if (ParamsQuery.newpage=="TOKEN")
+		else if (newpage=="NEWUSER")
+			EntraANewUser(email);
+		else if (newpage=="TOKEN")
 			EntraAExecuteToken();
-		else if (ParamsQuery.newpage=="RESETPASSWORD")
+		else if (newpage=="RESETPASSWORD")
 		{
 			if (PendingToken=="")
 			{
@@ -854,27 +824,30 @@ var kvp="";
 			}
 			EntraAResetPassword();
 		}
-		else if (ParamsQuery.newpage=="MAIN")
+		else if (newpage=="MAIN")
 			EntraANimmbusMain();
-		else if (ParamsQuery.newpage=="ADDFEEDBACK")
+		else if (newpage=="ADDFEEDBACK")
 		{
-			if (ParamsQuery.llista_targets.length==0) //no he detectat cap target vàlid
+			var llista_targets=[];
+			
+			if ((target_title=="" || target_code=="") && (target_title_2=="" || target_code_2=="")) //alguna de les 2 cites ha de ser completa
 			{
 				ShowInfo("long", DonaCadenaJSON(Msg_TARGET_TILE_and_CODE_needed));
 				return;
 			}
-			ActionAfterSignIn=EntraAAddFeedback;	
-			ParamActionAfterSignIn={targets : ParamsQuery.llista_targets};
+			ActionAfterSignIn=EntraAAddFeedback;
+			
+			if (target_title!="" && target_code!="")
+				llista_targets.push({"title": target_title, "code": target_code, "code_space": target_code_space, "role": (target_role ? target_role : "primary"), "share_borrower_1": share_borrower_1});
+			if (target_title_2!="" && target_code_2!="")
+				llista_targets.push({"title": target_title_2, "code": target_code_2, "code_space": target_code_space_2, "role": (target_role_2 ? target_role_2 : "primary"), "share_borrower_1": share_borrower_1});
+			
+			ParamActionAfterSignIn={targets : llista_targets};
 		}
 		else
-			ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_page) +": \""+ ParamsQuery.newpage+"\".");
+			ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_page) +": \""+ newpage+"\".");
 	}
-}
 
-function NotifyOpenerIAmReady(url)
-{
-	if (window.opener)
-		window.opener.postMessage("I'm ready", url); //"el primer paràmetre no l'usem per res però podria servir per dir alguna cosa al opener"
 }
 
 function InitFrontPage()
@@ -1467,6 +1440,7 @@ var fn;
 					{
 						RemoveInfo("permanent");
 						ShowInfo("short", DonaCadenaJSON(Msg_Ok));
+						//·$· M'agradaria obtenir l'identificador del codi del objecte creat/modificat aquí i posar-lo a IdResourceToSaveChanges 
 						UpdateLastServer();
 						//uso el truco següent: http://www.sitepoint.com/call-javascript-function-string-without-using-eval
 						fn=window[nom_funcio_i_params.nom_funcio]
@@ -1513,6 +1487,7 @@ var fn;
 function EvaluateGetReturnProcess(id, nom_funcio_i_params)
 {
 	ajaxExecuteNB=new Ajax();
+	//·$· aquí entenc que no he de fer AfegeixCredencialsUsuari(), igual que no enviava el user ni pwd :)
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_SYNC:GETRETURN&LANGUAGE="+LanguagesNB[ActiveLanguage]+"&SYNC_ID="+id, AvaluaRespostaGetReturn, "text/xml", 
 				nom_funcio_i_params);
 }
@@ -2376,9 +2351,8 @@ var root, output, identifier, s, feedback_item, user_comment;
 					document.feedback_resource_form.code.value=guf.usage.usage_descr.code;
 				else
 					document.feedback_resource_form.code.value="";				
-				//if (guf.usage.usage_descr.codeLink) -> ara és un onlineResource que potser té de tot però de moment només usem el linkage
-				if (guf.usage.usage_descr.codeLink.linkage)
-					document.feedback_resource_form.codeLink.value=guf.usage.usage_descr.codeLink.linkage;
+				if (guf.usage.usage_descr.codeLink)
+					document.feedback_resource_form.codeLink.value=guf.usage.usage_descr.codeLink;
 				else
 					document.feedback_resource_form.codeLink.value="";			
 				if (guf.usage.usage_descr.codeMediaType)
@@ -2397,17 +2371,12 @@ var root, output, identifier, s, feedback_item, user_comment;
 					document.feedback_resource_form.schema.value=guf.usage.usage_descr.schema;
 				else
 					document.feedback_resource_form.schema.value="";
-				if (guf.usage.usage_descr.suggestedApplication)
-					document.feedback_resource_form.sugg_app.value=guf.usage.usage_descr.suggestedApplication;
-				else
-					document.feedback_resource_form.sugg_app.value="";
 				if (guf.usage.usage_descr.diagram)
 					document.feedback_resource_form.diagram.value=guf.usage.usage_descr.diagram;
 				else
 					document.feedback_resource_form.diagram.value="";
-				//if (guf.usage.usage_descr.diagramLink) -> ara és un onlineResource que potser té de tot però de moment només usem el linkage
-				if (guf.usage.usage_descr.diagramLink.linkage)
-					document.feedback_resource_form.diagramLink.value=guf.usage.usage_descr.diagramLink.linkage;
+				if (guf.usage.usage_descr.diagramLink)
+					document.feedback_resource_form.diagramLink.value=guf.usage.usage_descr.diagramLink;
 				else
 					document.feedback_resource_form.diagramLink.value="";
 				if (guf.usage.usage_descr.diagramMediaType)
@@ -2426,7 +2395,6 @@ var root, output, identifier, s, feedback_item, user_comment;
 				document.feedback_resource_form.platform.value="";
 				document.feedback_resource_form.version.value="";
 				document.feedback_resource_form.schema.value="";
-				document.feedback_resource_form.sugg_app.value="";
 				document.feedback_resource_form.diagram.value="";
 				document.feedback_resource_form.diagramLink.value="";
 				SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
@@ -2451,7 +2419,6 @@ var root, output, identifier, s, feedback_item, user_comment;
 			document.feedback_resource_form.platform.value="";
 			document.feedback_resource_form.version.value="";
 			document.feedback_resource_form.schema.value="";
-			document.feedback_resource_form.sugg_app.value="";
 			document.feedback_resource_form.diagram.value="";
 			document.feedback_resource_form.diagramLink.value="";
 			SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
@@ -2620,7 +2587,6 @@ var root, output, identifier, s, feedback_item, user_comment;
 		document.feedback_resource_form.platform.value="";
 		document.feedback_resource_form.version.value="";
 		document.feedback_resource_form.schema.value="";
-		document.feedback_resource_form.sugg_app.value="";
 		document.feedback_resource_form.diagram.value="";
 		document.feedback_resource_form.diagramLink.value="";
 		SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
@@ -2699,6 +2665,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 	RemoveInfo("permanent");
 	IdResourceToSaveChanges=id;	
 	UpdateLastServer();
+	//·$· quan intento enviar el modify hauria de vigilar que tingui lo obligatori, no?
 	return;
 }
 
@@ -3745,8 +3712,8 @@ var root, s, type;
 			{
 				type=GetNimmbusTypeOfAOWCFeature(owc.features[i]);
 	
-				var object_id=owc.features[i].id.slice(owc.features[i].id.indexOf("RESOURCE=")+9);
-				object_id.slice(0,object_id.indexOf("&")); // si darrera de RESOURCE hi ha algun paràmetre més, que comença sempre amb "&", ho elimino. Si no ho ha trobat indexOf torna -1 i slice no fa res.
+				var object_id=owc.features[i].id.slice(owc.features[i].id.search("RESOURCE=")+9);
+				object_id.slice(0,object_id.search("&")); // si darrera de RESOURCE hi ha algun paràmetre més, que comença sempre amb "&", ho elimino. Si no ho ha trobat search torna -1 i slice no fa res.
 				ja_seleccionat=false;
 				es_ell_mateix=false;
 				es_un_target=false;
@@ -3944,7 +3911,7 @@ var root, s, type;
 				else if (type=="POI")
 					s+=owc.features[i].properties.title+" (lat/long: "+ owc.features[i].geometry.coordinates[1]+","+owc.features[i].geometry.coordinates[0]+")";
 				else if (type=="FEEDBACK" || type=="CITATION" || type=="PUBLICAT" || type=="INDIVIDU" || type=="ORGANISM")
-					s+=owc.features[i].properties.title; 
+					s+=owc.features[i].properties.title; //·$· potser posaré més coses més endavant, però per fer-ho cal que estiguin al feed
 	      
 	      if (dades.type_enum=="resources")
 	      {
@@ -4220,6 +4187,7 @@ function MostraAccount(es_nou)
 var IdResourceToSaveChanges="";
 var IdTargetResourceToSaveChanges="";
 var IdFeedbackResourceToSaveChanges="";
+//·$·$·$· -> caldran altres, ara que puc entrar a cites també? o no perquè el mecanisme és com per les publics que ja sembla que no calen aquí???
 
 var TargetsOfAFeedback=[];
 var TargetsOfAFeedbackHaveChanged=false;
@@ -4355,13 +4323,6 @@ function OmpleElementsOfAFeedback()
 		if (ElementsOfAFeedback.ru_schema)
 		{
 			document.feedback_resource_form.schema.value=ElementsOfAFeedback.ru_schema;
-			CollapseFieldset(document.getElementById("usage-feedback-resource"), "block"); //not collapsed if it has content
-			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "block"); //not collapsed if it has content	
-			CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "block");
-		}
-		if (ElementsOfAFeedback.ru_sugg_app)
-		{			
-			document.feedback_resource_form.sugg_app.value=ElementsOfAFeedback.ru_sugg_app;
 			CollapseFieldset(document.getElementById("usage-feedback-resource"), "block"); //not collapsed if it has content
 			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "block"); //not collapsed if it has content	
 			CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "block");
@@ -4571,7 +4532,6 @@ function BuidaPlegaFeedbackElements()
 	document.feedback_resource_form.platform.value="";
 	document.feedback_resource_form.version.value="";
 	document.feedback_resource_form.schema.value="";	
-	document.feedback_resource_form.sugg_app.value="";	
 	document.feedback_resource_form.diagram.value="";
 	document.feedback_resource_form.diagramLink.value="";
 	SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"
@@ -4683,7 +4643,7 @@ function SurtDeAddFeedbackCallBack(obj_amb_targets)
 
 	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":false});	
-	MostraFeedbackResource('', null); 
+	MostraFeedbackResource('', null); //·$· en alguns casos em passva i_target i ara ja no -> no sembla ser un problema ara, potser perquè era la marca de "l'estic creant" però ara ja ho sabem fer
 	//MostraFeedbackResource('', null, target_role, i_target);
 }
 
@@ -5522,9 +5482,7 @@ var s,s2;
 		if (document.feedback_resource_form.version.value!="")
 			s2+="&RU_VERSION="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.version.value);
 		if (document.feedback_resource_form.schema.value!="")
-			s2+="&RU_SCHEMA="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.schema.value);		
-		if (document.feedback_resource_form.sugg_app.value!="")
-			s2+="&RU_SUGG_APP="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.sugg_app.value);		
+			s2+="&RU_SCHEMA="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.schema.value);
 		if (document.feedback_resource_form.diagram.value!="")			
 			s2+="&RU_DIAGRAM="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.diagram.value);
 		if (document.feedback_resource_form.diagramLink.value!="")
@@ -5563,7 +5521,6 @@ var s,s2;
 			"&RU_PLATFORM="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.platform.value)+
 			"&RU_VERSION="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.version.value)+
 			"&RU_SCHEMA="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.schema.value)+
-			"&RU_SUGG_APP="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.sugg_app.value)+
 			"&RU_DIAGRAM="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.diagram.value)+
 			"&RU_DIAGRAM_LINK="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.diagramLink.value)+
 			"&RU_DIAGRAM_FORMAT="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.diagramMediaType)+			
@@ -6623,6 +6580,8 @@ function SendAccountChanges()
 function SendPasswordReset()
 {
 	ajaxExecuteNB=new Ajax();
+	//·$· es pot enviar el USER per capçalera fent AfegeixCredencialsUsuari(ajaxExecuteNB, null, null); encar que sigui amb un parametre que només afegeixi el user?
+	//·$· respecte a anterior com que "només" envio el USER no sembla tant crític :)
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_USER:RESETPASSWORD&LANGUAGE="+LanguagesNB[ActiveLanguage]+
 				"&USER="+DonaCadenaPerValorDeFormulari(document.reset_pass_form.user.value), AvaluaResposta, "text/xml", 
 				"{nom_funcio: \"SurtDeResetPasswordCallBack\", params: null}");
@@ -6633,6 +6592,7 @@ function SendPasswordReset()
 function SendNewPasswordToken()
 {
 	ajaxExecuteNB=new Ajax();
+	//·$· aquí entenc que no he de fer AfegeixCredencialsUsuari(), igual que no enviava el user ni pwd :)
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_TOKEN:EXECUTE&LANGUAGE="+LanguagesNB[ActiveLanguage]+
 				"&TOKEN="+PendingToken+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.new_pass_form.new_pass.value), AvaluaResposta, "text/xml", 
 				"{nom_funcio: \"SurtDeNewPasswordCallBack\", params: null}");
@@ -6740,6 +6700,7 @@ function CheckNewUserCorrectness(alert_id, new_user, user)
 	elem.innerHTML=DonaCadenaJSON(Msg_Checking);
 	var user_pass = {alert_id:alert_id};
 	ajaxExecuteNB=new Ajax();
+	//·$· aquí entenc que no he de fer AfegeixCredencialsUsuari(), igual que no enviava el user ni pwd :)
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_USER:AVAILABLE&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+"&USER="+DonaCadenaPerValorDeFormulari(user)+
 				"&NEW_USER="+DonaCadenaPerValorDeFormulari(new_user), EscriuStatusAElement, "text/xml", 
 				user_pass);
@@ -6786,6 +6747,7 @@ function CheckNewPassCorrectness(pass_alert_id, pass_valid_alert_id, user, pass,
 	elem.innerHTML=DonaCadenaJSON(Msg_Checking);
 	var user_pass = {alert_id:pass_alert_id, pass_valid_alert_id:pass_valid_alert_id, pass:pass, pass_valid:pass_valid};
 	ajaxExecuteNB=new Ajax();
+	//·$· aquí entenc que no he de fer AfegeixCredencialsUsuari(), igual que no enviava el user ni pwd :)
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_USER:GOODPASSWORD&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+"&USER="+DonaCadenaPerValorDeFormulari(user) +
 				"&PASSWORD="+DonaCadenaPerValorDeFormulari(pass), EscriuStatusAElement, "text/xml", user_pass);
 }
@@ -6887,12 +6849,6 @@ function CurrentPassInputChange()
 		CurrentPassChangeTimeOut=setTimeout("CheckCurrentPassCorrectness();",1500);
 }
 
-function AnalitzaMessage(event)
-{
-	if (event && DonaHost(event.origin)==DonaHost(PendingPostMessage)) //PendingPostMessage conté la URL
-		AnalitzarParametresURL(event.data);		
-}
-
 </script>
 
 <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
@@ -6900,7 +6856,7 @@ function AnalitzaMessage(event)
 </head>
 
 
-<body onLoad="InitFrontPage();" onMessage="AnalitzaMessage(event);">
+<body onLoad="InitFrontPage();">
 
 <div class="long-note-outer">
 <div id="long-note" class="note-inner"></div>
@@ -6923,12 +6879,23 @@ function AnalitzaMessage(event)
 <h1 id="front-welcome-text-title" style="line-height: normal; margin: 0px">Benvinguts al NiMMbus.</h1>
 <p id="front-welcome-text-subtitle" style="margin: 10px"></p>
 <br>
-<img src="NiMMbus.png" style="display: block;">
-<table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table>
+<!--img src="NiMMbus.png" style="display: block;">
+<table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table-->
+<table style="width: 100%">
+	<tr><td align="center"><img src="NiMMbus.png" style="display: block;"><br><!--img src="nextgeoss36.png" style="display: block;"--></td><td align="center"><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr>
+	<tr><td align="center"><img src="Eiffel_logo_color_v1.png" width="200" style="display: block;"></td><td align="center"><img src="nextgeoss36.png" style="display: block;"></td></tr></table>
 <br>
-<table style="width: 100%"><tr><td style="text-align: left; width: 27%"><p class="front-conditions-text"><a id="welcome-terms_of_use" href="TermsOfUse.htm" style="color: #CCD6DD">Terms_of_use</a></p></td>
-	<td style="text-align: center; width: 33%"><p class="front-conditions-text"><a id="welcome-privacy_statement" href="PrivacyStatement.htm" style="color: #CCD6DD">Privacy_Statement</a></p></td>
-	<td style="text-align: right"><p id="welcome-last_updated" class="front-conditions-text"><i>Last_updated_October_2_2018</i></p></td></tr></table>
+<table style="width: 100%">
+	<tr>
+	<td style="text-align: left; width: 26%"><p class="front-conditions-text"><a id="welcome-terms_of_use" href="TermsOfUse.htm" style="color: #CCD6DD">Terms_of_use</a></p></td>
+	<td style="text-align: center; width: 39%"><p class="front-conditions-text"><a id="welcome-privacy_statement" href="PrivacyStatement.htm" style="color: #CCD6DD">Privacy_Statement</a></p></td>
+	<td style="text-align: right; width: 35%""><p class="front-conditions-text" id="welcome-mail-contact">contact</p></td>
+	</tr>
+	<tr>
+	<td style="text-align: left; width: 26%"><p class="front-conditions-text"><a id="welcome-access_policy" href="AccessPolicy.htm" style="color: #CCD6DD">Access_Policy</a></p></td>
+	<td style="text-align: center; width: 39%"><p id="welcome-last_updated" class="front-conditions-text"><i>Last_updated_October_2_2018</i></p></td>
+	<td style="text-align: right; width: 35%"><p class="front-conditions-text"><a href="mailto:contacte@miramon.uab.cat" style="color: #CCD6DD">contacte@miramon.uab.cat</a></p></td>
+	</tr></table>
 </div>
 
 <div class="front-language">
@@ -7542,15 +7509,6 @@ Sign out</a>
 					</div>
 				</div>  <!--End of id="reprodUsage-schema-resource_fieldset" -->
 		
-				<div id="reprodUsage-suggApp-resource_fieldset" class="control-group">
-				<label class="control-label" id="reprodUsage-suggApp-resource_screen" for="reprodUsage-suggApp-resource_screen_value"></label>
-					<div class="controls">
-						<p id="reprodUsage-suggApp-resource_alert" style="display: none;"></p>
-						<input type="text" class="text-input" value="" id="reprodUsage-suggApp-resource_screen_value" name="sugg_app" style="width: 100%;" maxlength="254"/>
-						<p id="reprodUsage-suggApp-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-					</div>
-				</div>  <!--End of id="reprodUsage-suggApp-resource_fieldset" -->
-
 				<div id="reprodUsage-diagram-resource_fieldset" class="control-group">
 				<label class="control-label" id="reprodUsage-diagram-resource_screen" for="reprodUsage-diagram-resource_screen_value"></label>
 					<div class="controls">

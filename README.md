@@ -1,7 +1,7 @@
 # NiMMbus
-The OGC Geospatial User Feedback (GUF) implementation of the H2020 NextGEOSS project is developed by the MiraMon team of the Grumets research group in the Universitat Autònoma de Barcelona and the CREAF.
+The OGC Geospatial User Feedback (GUF) implementation is developed by the MiraMon team of the Grumets research group in the Universitat Autònoma de Barcelona and in CREAF.
 
-NiMMbus (http://www.opengis.uab.cat/nimmbus) is a solution for storing geospatial resources on the MiraMon cloud. The system implements the Geospatial User Feedback standard (http://www.opengeospatial.org/standards/guf) originated in the EU FP7 GeoViQua project. It allows to provide comments, ratings, questions, etc that can be associated with geospatial assets on a catalogue using a data/metadata identifier. The contribution of the H2020 NextGEOSS project is to extend the initial implementation of NiMMbus to support GUF resources. The system allows for creating a citation of an external resource (pointing to a external catalogue or repository) and associate feedback items to it.
+NiMMbus (https://www.nimmbus.cat/) is a solution for storing geospatial resources on the MiraMon cloud. The system implements the Geospatial User Feedback standard (http://www.opengeospatial.org/standards/guf) originated in the EU FP7 GeoViQua project. It allows to provide comments, ratings, questions, etc that can be associated with geospatial assets on a catalogue using a data/metadata identifier. The contribution of the H2020 NextGEOSS project was to extend the initial implementation of NiMMbus to support Geospatial User Feedback (GUF) resources. The system allows for creating a citation of an external resource (pointing to an external catalogue or repository) and associate feedback items to it. Currently GUF is being extended through the H2020 Eiffel project which contribution is to extend quality elements to capture quality metadata in climate change scenarios, as well as to extend GUF features to store and share knowledge elements.
 
 Materials:
   * the open source [code of the client](client_js)
@@ -12,7 +12,7 @@ Several integrations have been illustrated in [www.eneon.org](ENEON graph), the 
 
 ```
 The NextGEOSS project has received funding from the European Union Horizon 2020 research and innovation programme
-under grant agreement No 730329.
+under grant agreements No 730329 - NextGEOSS and No 101003518 - EIFFEL.
 This documentation and implementation reflects only the author's view and the Agency is not
 responsible for any use that may be made of the information it contains.
 ```

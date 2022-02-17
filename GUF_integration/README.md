@@ -1,6 +1,6 @@
 # Instructions for the integration of the GUF system (based on the NiMMbus service) in your resources
 
-The NiMMbus service is an OGC Geospatial User Feedback (GUF) implementation developed by the MiraMon team of the Grumets research group in the Universitat Autònoma de Barcelona and the CREAF, based on the previous NiMMbus system and evolved as a contribution to the H2020 NextGEOSS project. The NextGEOSS project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreement No 730329.
+The NiMMbus service is an OGC Geospatial User Feedback (GUF) implementation developed by the MiraMon team of the Grumets research group in the Universitat Autònoma de Barcelona and the CREAF, based on the previous NiMMbus system and evolved as a contribution to the H2020 NextGEOSS project. The NextGEOSS project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreement No 730329. Currently GUF is being extended through the H2020 Eiffel project, under grant agreement 101003518, to extend quality elements to capture quality metadata in climate change scenarios, as well as to extend GUF features to store and share knowledge elements.
 
 This page provides general instructions for the GUF integration with your resources. They can be part of your catalogue or can be individual web pages. A "resource" can be anything that has an identifier in the web. Nevertheless, it is expected that your resources have some spatial component. In this page we explain two ways to integrate the Geospatial User Feedback in your web application:
 
@@ -46,10 +46,10 @@ Be aware that more than those two files need to be downloaded, as they are indir
 The inclusion of a style sheet (guf.css) is needed in order to have a special style for the detailed description in citations and publications. This detailed description is initially folded and can be shown by clicking on a *"Click to show/hide more information"* text in the description. This guf.css style sheet is also used to describe several classes to select how different elements will be displayed. There is a by default style described on the widget, but you can modify how this elements are displayed (e.g. different font family, font color, background color, even which elements are displayed) if including a class ".XXX.user" in your style sheet (where "XXX" is substituted by the class you want to modify).
 
 Please check the following examples to see how these styles are used (the three test pages are showing feedback items for the same resource):
-   * [test_widget.htm](../client_js/test_widget.htm): default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget.htm
-   * [test_widget_custom.htm](../client_js/test_widget_custom.htm): custom style is used as family font and font color is change for all elements, and background color is changed for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_custom.htm
-   * [test_widget_corine.htm](../client_js/test_widget_corine.htm): a different style (blue background) is used for extended description in citations and publications, Moreover, some elements have been hidden (guf_purpose, guf_contact_role, guf_date and guf_usage) to obtain shorter descriptions of feedback items. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm
-   * [test_widget_multitarget.htm](../client_js/test_widget_multitarget.htm): the same styling than the first test page but creating a multiple target user feedback item. In this test page a two-target user feedback item is created, with one primary target (a certain subarea within the Sentinel 2 L2A collection) default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.opengis.uab.cat/nimmbus/test_widget_multitarget.htm
+   * [test_widget.htm](../client_js/test_widget.htm): default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.nimmbus.cat/test_widget.htm
+   * [test_widget_custom.htm](../client_js/test_widget_custom.htm): custom style is used as family font and font color is change for all elements, and background color is changed for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.nimmbus.cat/test_widget_custom.htm
+   * [test_widget_corine.htm](../client_js/test_widget_corine.htm): a different style (blue background) is used for extended description in citations and publications, Moreover, some elements have been hidden (guf_purpose, guf_contact_role, guf_date and guf_usage) to obtain shorter descriptions of feedback items. You can also see the example in the same test page in the official NiMMbus service: https://www.nimmbus.cat/test_widget_corine.htm
+   * [test_widget_multitarget.htm](../client_js/test_widget_multitarget.htm): the same styling than the first test page but creating a multiple target user feedback item. In this test page a two-target user feedback item is created, with one primary target (a certain subarea within the Sentinel 2 L2A collection) default style (grey background) is used for extended description in citations and publications. You can also see the example in the same test page in the official NiMMbus service: https://www.nimmbus.cat/test_widget_multitarget.htm
 
 The list of the classes defined in guf.css style sheet, and which part of the feedback item description they refer to, is described in [GUF.css Reference](../GUF_integration/guf_css.md).
 
@@ -103,7 +103,7 @@ You can call the function directly or you can provide a button or link to "activ
 "Corine Land Cover 2012", "clc-2012", "https://land.copernicus.eu", "eng", "NextGEOSS");'>Add user feedback or review previous feedback</a>
 ```
 
-You can see all elements together in a general example (using a button) here: [code](../client_js/test_widget.htm) and [test_widget](https://www.opengis.uab.cat/nimmbus/test_widget.htm). You can also check an example applied to the Corine Land Cover 2012 metadata page (using a link) here: [code](../client_js/test_widget_corine.htm) and [test_widget_corine](https://www.opengis.uab.cat/nimmbus/test_widget_corine.htm).
+You can see all elements together in a general example (using a button) here: [code](../client_js/test_widget.htm) and [test_widget](https://www.nimmbus.cat/test_widget.htm). You can also check an example applied to the Corine Land Cover 2012 metadata page (using a link) here: [code](../client_js/test_widget_corine.htm) and [test_widget_corine](https://www.nimmbus.cat/test_widget_corine.htm).
 
 #### Option 2: Feedback about multiple targets
 
@@ -137,7 +137,7 @@ For example, a call to this function could be:
 			"NextGEOSS");
 ```
 
-You can see a multiple targets example (using a button) here: [code](../client_js/test_widget_multitarget.htm) and [test_widget_multitarget](https://www.opengis.uab.cat/nimmbus/test_widget_multitarget.htm). This test page for multitargets describes the same example than before: dataset as primary target and collection as secondary target.
+You can see a multiple targets example (using a button) here: [code](../client_js/test_widget_multitarget.htm) and [test_widget_multitarget](https://www.nimmbus.cat/test_widget_multitarget.htm). This test page for multitargets describes the same example than before: dataset as primary target and collection as secondary target.
 
 #### Option 3: Feedback including reproducible usage
 
@@ -162,10 +162,10 @@ This function has the following parameters in sequence:
 * _reprod_usage_: this parameter is a structure including several elements:
    * _abstract_: abstract of the feedback item, it can be, for example, the title assigned to the shared style
    * _specific_usage_: Which is the general description of the usage described, for example "Share style"
-   * _ru_code_: code describing the reproducible usage, for example, the JSON description of the style that is being shared. Is the piece of code that in the second step, the portal will retrieve and apply
-   * _ru_code_media_type_: description of the media type of the code (previous element), tipically can have values such as "application/json" for JSON, "text/x-python" for Phyton, "text/x-r-source" for R, "application/x-bat" for a Windows command line, "application/x-sh" for a Linux command line, "application/wpsex+xml" for a WPS execute document, "application/KVP" for a Key-value pair (KVP), "application/vnd.docker" for a Docker container" or empty for others
+   * _ru_code_: code describing the reproducible usage, for example, the JSON dhe code (previous element), tipically can have values such as "application/json" for JSON, "text/x-python" for Phyton, "text/x-r-source" for R, "application/x-bat" for a Windows command line, "application/x-sh" for a Linux command line, "application/wpsex+xml" for a WPS execute document, "application/KVP" for a Key-value pair (KVP), "application/vnd.docker" for a Docker container" or empty for others
    * _ru_platform_: platform in which this reproducible usage can be applied. This not need to exactly refer to the URL that has created this (as usually used in the target code_space), but usually to a general URL describing the product, for example https://github.com/joanma747/MiraMonMapBrowser
-   * _ru_version_: version of the platform in which this reproducible usage can be applied, for example "6.0"
+   * _ru_version_: version of the platform in which this reproducible usage can be applied, for example "6.0"escription of the style that is being shared. Is the piece of code that in the second step, the portal will retrieve and apply
+   * _ru_code_media_type_: description of the media type of t
    * _ru_schema_: type of reproducible usage within the platform, to be able to select several types of reproducible usages with different purposes, for example for sharing styles or layers. Sometimes it can be described as a section in a configuration file, but this is not mandatory.
    * _ru_sugg_app_: specific suggested application that can be used to load the reproducible usage. Usually an specific instance of the generic _ru_platform_. If not specified it is automatically determined from "location.href". To avoid automatic value use ru_sugg_app=null;
 * _lang_: As in the previous function,  the language used in the HTML page. You can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
@@ -174,7 +174,7 @@ This function has the following parameters in sequence:
 Example of use:
 
 ```js
-	var targets=[{title: "Sentinel 2 L2A", code: "DonanaSentinel2Level2a", codespace: "http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi", role: "primary"}];
+	var targets=[{title: "Sentinel 2 L2A", code: "DonanaSentinel2Level2a", codespace: "https://www.datacube.cat/cgi-bin/ecopotential/miramon.cgi", role: "primary"}];
   var reprod_usage={
     abstract: "Salinity Index-9: (NIRxR)/G",
     specific_usage: "Share style",
@@ -216,14 +216,14 @@ Example of use:
     ru_sugg_app: "http://maps.ecopotential-project.eu"};
 
     GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(document.getElementById("div_guf"),
-        "div_guf_internal", "DonanaSentinel2Level2a", "http://datacube.uab.cat/cgi-bin/ecopotential/miramon.cgi", reprod_usage, "eng", "NextGEOSS", "AdoptStyle", {i_capa: i_capa});    
+        "div_guf_internal", "DonanaSentinel2Level2a", "https://www.datacube.cat/cgi-bin/ecopotential/miramon.cgi", reprod_usage, "eng", "NextGEOSS", "AdoptStyle", {i_capa: i_capa});    
 ```    
 
 ## Option 2: JavaScript for the Web API
 
 You can see this procedure in action in the following working examples:
-  * [integration with the DAB API](http://www.creaf.uab.cat/temp/dab) ([source code](guf_dab_nimmbus.htm)).
-  * [integration with the INSPIRE Portal](http://www.creaf.uab.cat/temp/inspire) ([source code](guf_inspire_nimmbus.htm)).
+  * [integration with the DAB API](examples/dab/index.htm) ([source code](guf_dab_nimmbus.htm)).
+  * [integration with the INSPIRE Portal](examples/inspire/index.htm) ([source code](guf_inspire_nimmbus.htm)).
 
 ### Step 1: Include a button to add feedback for resource (e.g. a catalogue entry)
 
@@ -231,7 +231,7 @@ For each entry in a catalogue, a button with a text [Add feedback] is expected, 
 
 The button will start another window with the NiMMbus interface (href target=_blank). To ease the process to the user, the link to NiMMbus can be populated with the target_code and target_codespace of the catalogue entry (a target_title is also recommended).
 
-To create the URL please follow the template: https://www.opengis.uab.cat/nimmbus?target_title={target_title}&target_code={target_code}&target_codespace={target_codespace}&page=ADDFEEDBACK&share_borrower_1=Anonymous&access_token_type={SSO_system}
+To create the URL please follow the template: https://www.nimmbus.cat?target_title={target_title}&target_code={target_code}&target_codespace={target_codespace}&page=ADDFEEDBACK&share_borrower_1=Anonymous&access_token_type={SSO_system}
 
 At the moment, Single-Sign-On systems available are: NextGEOSS, LandSense, Google or NiMMbus (being "NiMMbus" the default value).
 
@@ -240,7 +240,7 @@ For more details go to this [example](../client_js/test_new_feedback.htm) that a
 #### How to open the "add feedback" page in a new window
 You can use the window.open Javascript function to open the new window. Once the user clicks on save, the window will be closed, and the focus will return to the main page.
 ```js
-window.open("https://www.opengis.uab.cat/nimmbus/index.htm?...", "Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
+window.open("https://www.nimmbus.cat/index.htm?...", "Feedback",'toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=800,height=700');
 ```
 
 The use of the JavaScript function GUFAfegirFeedbackCapa(title, code, codespace, lang) (in guf.js) can simplify this task.
@@ -249,7 +249,7 @@ The use of the JavaScript function GUFAfegirFeedbackCapa(title, code, codespace,
 
 For each entry in the catalogue, a list of previous user feedback items is expected to be shown. To do that the NiMMbus API allows for an easy retrieval of this information as an ATOM file format.
 
-To create the URL please follow the ENUMERATE template: https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1={catalogue_id}&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2={catalogue_namespace}&TRG_OPR_2=EQ
+To create the URL please follow the ENUMERATE template: https://www.nimmbus.cat/cgi-bin/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=eng&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1={catalogue_id}&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2={catalogue_namespace}&TRG_OPR_2=EQ
 
 To submit a request to the server with a URL without losing the current page content you can use the loadFile() function (in xml.js) that will retrieve the xml document asynchronously.
 
@@ -261,11 +261,11 @@ Example of successful response:
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xmlns:owc="http://www.opengis.net/owc/1.0" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xml:lang="ca">
     <link rel="profile" href="http://www.opengis.net/spec/owc-atom/1.0/req/core" title="This file is compliant with version 1.0 of OGC Context"/>
     <title>NiMMbus resources response</title>
-    <id>http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng</id>
+    <id>https://www.nimmbus.cat/cgi-bin/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng</id>
     <subtitle type="text">Resources [1, 1] of 1 shared with "Anonymous" user</subtitle>
     <updated>2017-07-18T17:37:18.471Z</updated>
     <dc:publisher>NiMMbus</dc:publisher>
-    <generator uri="https://www.opengis.uab.cat/nimmbus/" version="1.0">
+    <generator uri="https://www.nimmbus.cat/" version="1.0">
          NiMMbus: MiraMon Cloud Service NB_RESOURCE:ENUMERATE
     </generator>
     <rights>
@@ -273,18 +273,18 @@ Example of successful response:
     <opensearch:totalResults>1</opensearch:totalResults>
     <opensearch:startIndex>1</opensearch:startIndex>
     <opensearch:itemsPerPage>1</opensearch:itemsPerPage>
-    <link rel="self" type="application/atom+xml" href="https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng"/>
+    <link rel="self" type="application/atom+xml" href="https://www.nimmbus.cat/cgi-bin/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:ENUMERATE&amp;LANGUAGE=eng"/>
     <entry>
-        <id>https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX</id>
+        <id>https://www.nimmbus.cat/cgi-bin/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX</id>
         <title>Used to extract forest areas</title>
-        <link href="https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX&amp;USER=Anonymous"/>
+        <link href="https://www.nimmbus.cat/cgi-bin/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=EXECUTE&amp;IDENTIFIER=NB_RESOURCE:RETRIEVE&amp;LANGUAGE=cat&amp;RESOURCE=664U89X4ICLG1SZM1268VNI6723QS0D43048IVE6AJ97RCX&amp;USER=Anonymous"/>
         <author>
             <name>Alaitz Zabala (AlaitzZabala)</name>
         </author>
         <dc:publisher>NiMMbus</dc:publisher>
         <updated>2017-07-18T17:37:18.471Z</updated>
         <dc:rights>RWSO</dc:rights>
-        <category scheme="http://www.opengis.uab.cat/nimmbus/resource_type" term="FEEDBACK" label="a user feedback item" />
+        <category scheme="https://www.nimmbus.cat/resource_type" term="FEEDBACK" label="a user feedback item" />
         <content type="text">We are reporting this for other to be able to generalise the methodology around the world.</content>
     </entry>
 </feed>
@@ -307,7 +307,8 @@ The simpler (but not necessarily appropriate) alternative is to modify the above
 
 ### Step 3b: Get more information about a specific feedback item one by one
 
-The second alternative is to extract the resource_id from the atom response entry and follow the RETRIEVE template: http://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE=eng&USER=Anonymous&RESOURCE={resource_id}.
+The second alternative is to extract the resource_id from the atom response entry and follow the RETRIEVE template: 
+https://www.nimmbus.cat/cgi-bin/nimmbus.cgi?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE=eng&USER=Anonymous&RESOURCE={resource_id}.
 
 Please note that this URL is provided directly in each entry of the atom feed in a link element.
 
@@ -318,7 +319,7 @@ Example of a successful feedback retrieval:
           xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsExecute_response.xsd"
           service="WPS" version="1.0.0"
-          serviceInstance="https://www.opengis.uab.cat:443/cgi-bin/nimmbus/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=GetCapabilities" xml:lang="en-US">
+          serviceInstance="https://www.nimmbus.cat/cgi-bin/nimmbus.cgi?SERVICE=WPS&amp;REQUEST=GetCapabilities" xml:lang="en-US">
   <wps:Process wps:processVersion="1">
     <ows:Identifier>NB_RESOURCE:RETRIEVE</ows:Identifier>
     <ows:Title></ows:Title>
@@ -402,7 +403,7 @@ Example of a successful feedback retrieval:
 							<gco:CharacterString>7QPC81L0Q0RP26E71RAQJ87CBMX1GQ54N1Y444FPDT21E09</gco:CharacterString>
 						</mcc:code>
 						<mcc:codeSpace>
-							<gcx:Anchor xlink:href="http://www.opengis.uab.cat/nimmbus/resourceId">ResourceID</gcx:Anchor>
+							<gcx:Anchor xlink:href="https://www.nimmbus.cat/resourceId">ResourceID</gcx:Anchor>
 						</mcc:codeSpace>
 					</mcc:MD_Identifier>
 				</guf:itemIdentifier>
@@ -437,7 +438,7 @@ Example of a successful feedback retrieval:
 									<gco:CharacterString>Y1626Y5LFDTPW237H496487433D61T879E135J208878G05</gco:CharacterString>
 								</mcc:code>
 								<mcc:codeSpace>
-									<gcx:Anchor xlink:href="http://www.opengis.uab.cat/nimmbus/userId">UserID</gcx:Anchor>
+									<gcx:Anchor xlink:href="https://www.nimmbus.cat/userId">UserID</gcx:Anchor>
 								</mcc:codeSpace>
 								<mcc:description>
 									<gco:CharacterString>JoanMaso</gco:CharacterString>
@@ -506,7 +507,7 @@ Example of a successful feedback retrieval:
             	       		<gco:CharacterString>7M3F4F8MVMWTKRU025155WX151V5Q7936226D54T8HDQ0U4</gco:CharacterString>
                    		</mcc:code>
                    		<mcc:codeSpace>
-							<gcx:Anchor xlink:href="http://www.opengis.uab.cat/nimmbus/resourceId">ResourceID</gcx:Anchor>
+            	       		<gcx:Anchor xlink:href="https://www.nimmbus.cat/resourceId">ResourceID</gcx:Anchor>
                    		</mcc:codeSpace>
                    	</mcc:MD_Identifier>
                    </cit:identifier>

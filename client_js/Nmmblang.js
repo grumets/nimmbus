@@ -753,7 +753,7 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("id-namespace-2-individual-resource_screen").innerHTML=DonaCadenaJSON(Msg_Namespace);
 	document.getElementById("id-namespace-2-individual-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Namespace_where_id_unique_eg_)+" "+"http://scholar.google.es/citations?user=";	
 	document.getElementById("url-link-individual-resource_screen").innerHTML=DonaCadenaJSON(l_msg_URL_link);
-	document.getElementById("url-link-individual-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Online_resource_related_eg_)+" "+"http://www.grumets.uab.cat/index_eng.htm";
+	document.getElementById("url-link-individual-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Online_resource_related_eg_)+" "+"https://www.grumets.cat/index_eng.htm";
 	
 	document.getElementById("open-data-individual-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
  	document.getElementById("open-data-individual-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquest individu (i els recursos associats) amb tothom", spa: "Compartir este individuo (y los recursos asociados) con todos", eng: "If check this individual (and related resources) will be visible to everyone"});

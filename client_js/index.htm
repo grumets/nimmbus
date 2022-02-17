@@ -103,7 +103,7 @@ var div=elem.nextElementSibling;
 <!--
 
 //var ServersNB=["http://localhost/cgi-bin/server1/nimmbus.cgi","http://localhost/cgi-bin/server2/nimmbus.cgi"];
-var ServersNB=["https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi"];
+var ServersNB=["https://www.nimmbus.cat/cgi-bin/nimmbus.cgi"];
 var LastServerNB=0;
 
 
@@ -2216,7 +2216,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 			{
   			for (var item2=0; item2<guf.target[item].identifier.length; item2++)
   			{
-  				if (guf.target[item].identifier[item2].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+  				if (guf.target[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
   				{	//Aquí encara no sé si es open data o no, però ja ho "ompliré" quan faci el retrieve de l'element
   					TargetsOfAFeedback[item]={"id_target": guf.target[item].identifier[item2].code, "role": guf.target[item].role};  					
   					break;
@@ -2349,7 +2349,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 					{
 		  			for (var item2=0; item2<guf.usage.usage_descr.add_doc[item].identifier.length; item2++)
 		  			{		  				
-		  				if (guf.usage.usage_descr.add_doc[item].identifier[item2].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+		  				if (guf.usage.usage_descr.add_doc[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
 		  				{ //Aquí encara no sé si es open data o no, però ja ho "ompliré" quan faci el retrieve de l'element
 		  					AddDocsOfAFeedback[item]={"id_citation": guf.usage.usage_descr.add_doc[item].identifier[item2].code};
 		  					break;
@@ -2500,7 +2500,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 					{
 		  			for (var item2=0; item2<guf.usage.discov_issue.ref_doc[item].identifier.length; item2++)
 		  			{		  				
-		  				if (guf.usage.discov_issue.ref_doc[item].identifier[item2].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+		  				if (guf.usage.discov_issue.ref_doc[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
 		  				{ //Aquí encara no sé si es open data o no, però ja ho "ompliré" quan faci el retrieve de l'element
 		  					RefDocsOfAFeedback[item]={"id_public": guf.usage.discov_issue.ref_doc[item].identifier[item2].code};
 		  					break;
@@ -2534,7 +2534,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 					{
 		  			for (var item2=0; item2<guf.usage.discov_issue.fix_rsrc[item].identifier.length; item2++)
 		  			{		  				
-		  				if (guf.usage.discov_issue.fix_rsrc[item].identifier[item2].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+		  				if (guf.usage.discov_issue.fix_rsrc[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
 		  				{ //Aquí encara no sé si es open data o no, però ja ho "ompliré" quan faci el retrieve de l'element
 		  					FixRsrcsOfAFeedback[item]={"id_citation": guf.usage.discov_issue.fix_rsrc[item].identifier[item2].code};
 		  					break;
@@ -2563,7 +2563,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 					{
 		  			for (var item2=0; item2<guf.usage.discov_issue.alt_rsrc[item].identifier.length; item2++)
 		  			{		  				
-		  				if (guf.usage.discov_issue.alt_rsrc[item].identifier[item2].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+		  				if (guf.usage.discov_issue.alt_rsrc[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
 		  				{ //Aquí encara no sé si es open data o no, però ja ho "ompliré" quan faci el retrieve de l'element
 		  					AltRsrcsOfAFeedback[item]={"id_citation": guf.usage.discov_issue.alt_rsrc[item].identifier[item2].code};
 		  					break;
@@ -2658,7 +2658,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 			{
   			for (var item2=0; item2<guf.public[item].identifier.length; item2++)
   			{
-  				if (guf.public[item].identifier[item2].codeSpace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+  				if (guf.public[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
   				{ //Aquí encara no sé si es open data o no, però ja ho "ompliré" quan faci el retrieve de l'element
   					PublicsOfAFeedback[item]={"id_public": guf.public[item].identifier[item2].code};
   					break;
@@ -2783,7 +2783,7 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 									
 									if (code)
 									{
-										if (namespace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+										if (namespace=="https://www.nimmbus.cat/resourceId")
 										//aquest és el IdNiMMbus, no el vull mostrar!
 											continue;
 										
@@ -2836,7 +2836,7 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 														else
 															code_space="";
 														
-														if (p_code && p_codeSpace && code_space=="http://www.opengis.uab.cat/nimmbus/resourceId")
+														if (p_code && p_codeSpace && code_space=="https://www.nimmbus.cat/resourceId")
 														{ //aquest és el IdNiMMbus d'aquesta party
 															ResponsiblesOfACitation[i_resp]={"id_responsible": DonaTextDesDeGcoCharacterString(p_code), "role": role};
 															i_resp++;															
@@ -3013,7 +3013,7 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 									
 									if (code)
 									{
-										if (namespace=="http://www.opengis.uab.cat/nimmbus/resourceId")
+										if (namespace=="https://www.nimmbus.cat/resourceId")
 										//aquest és el IdNiMMbus, no el vull mostrar!
 											continue;
 										
@@ -3065,7 +3065,7 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 													else
 														code_space="";
 													
-													if (p_code && p_codeSpace && code_space=="http://www.opengis.uab.cat/nimmbus/resourceId")
+													if (p_code && p_codeSpace && code_space=="https://www.nimmbus.cat/resourceId")
 													{ //aquest és el IdNiMMbus d'aquesta party
 														ResponsiblesOfAPublication[i_resp]={"id_responsible": DonaTextDesDeGcoCharacterString(p_code), "role": role};
 														i_resp++;															
@@ -3252,7 +3252,7 @@ var root, output, identifier, s, elem, individual, contact, partyIdentifier, md_
 										if (elem2)
 										{
 											var namespace=DonaTextDesDeGcoCharacterString(elem2);
-											var n=namespace.includes("nimmbus/resourceId");
+											var n=namespace.includes("nimmbus.cat/resourceId");
 											if (n) //aquest no el mostro
 												continue;
 											
@@ -6923,8 +6923,11 @@ function AnalitzaMessage(event)
 <h1 id="front-welcome-text-title" style="line-height: normal; margin: 0px">Benvinguts al NiMMbus.</h1>
 <p id="front-welcome-text-subtitle" style="margin: 10px"></p>
 <br>
-<img src="NiMMbus.png" style="display: block;">
-<table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table>
+<!--img src="NiMMbus.png" style="display: block;">
+<table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table-->
+<table style="width: 100%">
+	<tr><td align="center"><img src="NiMMbus.png" style="display: block;"><br><!--img src="nextgeoss36.png" style="display: block;"--></td><td align="center"><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr>
+	<tr><td align="center"><img src="Eiffel_logo_color_v1.png" width="200" style="display: block;"></td><td align="center"><img src="nextgeoss36.png" style="display: block;"></td></tr></table>
 <br>
 <table style="width: 100%">
 	<tr>
@@ -6935,7 +6938,7 @@ function AnalitzaMessage(event)
 	<tr>
 	<td style="text-align: left; width: 26%"><p class="front-conditions-text"><a id="welcome-access_policy" href="AccessPolicy.htm" style="color: #CCD6DD">Access_Policy</a></p></td>
 	<td style="text-align: center; width: 39%"><p id="welcome-last_updated" class="front-conditions-text"><i>Last_updated_October_2_2018</i></p></td>
-	<td style="text-align: right; width: 35%"><p class="front-conditions-text"><a href="mailto:contacte@miramon.uab.es" style="color: #CCD6DD">contacte@miramon.uab.es</a></p></td>
+	<td style="text-align: right; width: 35%"><p class="front-conditions-text"><a href="mailto:contacte@miramon.uab.cat" style="color: #CCD6DD">contacte@miramon.uab.cat</a></p></td>
 	</tr></table>
 </div>
 

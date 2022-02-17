@@ -45,8 +45,8 @@
 
 //var ServerGUF="http://localhost/cgi-bin/server1/nimmbus.cgi";
 //var ClientGUF="http://localhost/nimmbus/index.htm";
-var ServerGUF="https://www.opengis.uab.cat/cgi-bin/nimmbus/nimmbus.cgi";
-var ClientGUF="https://www.opengis.uab.cat/nimmbus/index.htm";
+var ServerGUF="https://www.nimmbus.cat/cgi-bin/nimmbus.cgi";
+var ClientGUF="https://www.nimmbus.cat/index.htm";
 
 function GUFIncludeScript(url, late)   //https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file
 {
@@ -401,7 +401,7 @@ function ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(identifier, lang, es_id_fb_it
 			
 		if (text_html.indexOf("www.doi.org") >= 0 || text_html.indexOf("/doi.org") >= 0)
 			link_html="<span class=\"guf_key_2 user\">DOI</span>: <a class=\"guf_link user\" href=\""+text_html+"\" target=\"_blank\">"+identifier.code+"</a>. <br/>";
-		else if (text_html.indexOf("nimmbus/resourceId") >= 0) //si codeSpace és http://www.opengis.uab.cat/nimmbus/resourceId és que és un recurs NiMMbus, i per tant puc fer la consulta de retrieve
+		else if (text_html.indexOf("https://www.nimmbus.cat/resourceId") >= 0) //si codeSpace és https://www.nimmbus.cat/resourceId és que és un recurs NiMMbus, i per tant puc fer la consulta de retrieve
 		{
 			if (es_id_fb_item)
 				link_html="<span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+lang+"&RESOURCE="+identifier.code+"\" target=\"_blank\">"+identifier.code+"</a><br/>";
