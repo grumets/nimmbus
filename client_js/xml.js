@@ -22,7 +22,7 @@
     The NiMMbus JavaScript Client can be updated from
     https://github.com/grumets/NiMMbus.
 
-    Copyright 2014, 2021 Xavier Pons
+    Copyright 2014, 2022 Xavier Pons
 
     Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
     amb l'ajut de l'Alaitz Zabala (alaitz zabala at uab cat)
