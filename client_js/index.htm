@@ -1219,13 +1219,13 @@ function HandleGoogleApiLibrary()
 				}, 
 				// On error
 				function(error) {
-					alert(DonaCadenaJSON(Msg_Error_loading_Google_libraries));
+					alert(DonaCadenaJSON(Msg_Failure_loading_Google_libraries));
 			  	}
 			);
 		},
 		onerror: function() {
 			// Failed to load libraries
-			alert(DonaCadenaJSON(Msg_Error_loading_Google_libraries));
+			alert(DonaCadenaJSON(Msg_Failure_loading_Google_libraries));
 		}
 	});
 }
@@ -6396,7 +6396,7 @@ function SignUpNB(name_fn_callback)
 	AfegeixCredencialsUsuari(ajaxExecuteNB, document.sign_up.user, document.sign_up.pass);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_USER:CREATE&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_up.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_up.pass.value)
-				, AvaluaResposta, "text/xml", "{nom_funcio: name_fn_callback, params: null}");
+				, AvaluaResposta, "text/xml", "{nom_funcio: \""+name_fn_callback+"\", params: null}");
         ShowInfo("permanent", DonaCadenaJSON(Msg_Message_sent));
 	return false;
 }
