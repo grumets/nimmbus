@@ -77,8 +77,8 @@ function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, acc
 			targets[i].title = DonaCadenaPerValorDeFormulari(targets[i].title);
 		if (targets[i].code)
 			targets[i].code = DonaCadenaPerValorDeFormulari(targets[i].code);
-		if (targets[i].codespace) 
-			targets[i].codespace = DonaCadenaPerValorDeFormulari(targets[i].codespace);
+		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara
+			targets[i].codespace = DonaCadenaPerValorDeFormulari(targets[i].codespace).replace("https://","http://"); 
 	}
 	if (reprod_usage.abstract)
 		reprod_usage.abstract = DonaCadenaPerValorDeFormulari(reprod_usage.abstract);
@@ -115,7 +115,8 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 	if (lang)
 		url+="&LANGUAGE=" + lang;
 		
-		
+	//decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara 
+	codespace = codespace.replace("https://","http://"); 
 	url+="&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + DonaCadenaPerValorDeFormulari(code) + 
 					"&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + encodeURI(codespace) + "&TRG_OPR_2=EQ";
 	
@@ -192,7 +193,8 @@ function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targe
 	{
 		if (targets[i].title && targets[i].code && targets[i].codespace && (typeof(targets[i].role)== "undefined" || targets[i].role=="primary"))
 		{
-			url+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ";			
+			//decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara 
+			url+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace.replace("https://","http://") + "&TRG_OPR_2=EQ";			
 			break;
 		}
 	}
