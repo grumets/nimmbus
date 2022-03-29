@@ -747,7 +747,7 @@ var kvp="";
 			   break;
 		
 			ParamsQuery.llista_targets.push({"title": query["TARGET_TITLE"+sufix], "code": query["TARGET_CODE"+sufix], 
-					"code_space": (query["TARGET_CODESPACE"+sufix] ? query["TARGET_CODESPACE"+sufix] : ""), 
+					"code_space": (query["TARGET_CODESPACE"+sufix] ? query["TARGET_CODESPACE"+sufix].replace("https://","http://") : ""), 
 					"role": (query["TARGET_ROLE"+sufix] ? query["TARGET_ROLE"+sufix] : "primary"), 
 					"share_borrower_1": share_borrower_1});				
 	
