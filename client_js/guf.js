@@ -169,6 +169,11 @@ var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
 
 function GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, targets, lang, access_token_type)
 {
+	for (var i=0; i<targets.length; i++)	
+	{
+		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara
+			targets[i].codespace=targets[i].codespace.replace("https://","http://");
+	}
 	elem.innerHTML = GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(seed_div_id, rsc_type, targets, lang, access_token_type);
 	//demano el fitxer atom de feedbacks previs
 	GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(seed_div_id, rsc_type, targets, lang, access_token_type);
@@ -186,15 +191,17 @@ function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targe
 	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK";
 	var url2=url;
 	
-//ara assumeixo que tinc un primari segur i potser un secndari. Futur-> poden haver N de cada un dels TRES tipus, i per cada un farçe un quadradet, suposo
+//ara assumeixo que tinc un primari segur i potser un secundari. Futur-> poden haver N de cada un dels TRES tipus, i per cada un farçe un quadradet, suposo
 
 	//busco el target primari i l'envio a la primera part de la finestra
 	for (var i=0; i<targets.length; i++)	
 	{
+		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara
+			targets[i].codespace=targets[i].codespace.replace("https://","http://");
+	
 		if (targets[i].title && targets[i].code && targets[i].codespace && (typeof(targets[i].role)== "undefined" || targets[i].role=="primary"))
-		{
-			//decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara 
-			url+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace.replace("https://","http://") + "&TRG_OPR_2=EQ";			
+		{			 
+			url+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ";			
 			break;
 		}
 	}
