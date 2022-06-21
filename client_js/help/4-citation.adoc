@@ -1,4 +1,27 @@
 [[Citation]]
-== Citation
+== *Citation*
 
-explicar la pàgina citation
+As was explained before, this type of resource is a standardized resource reference that is tipically used whitin a feedback item.
+
+//associated to the *set of bibliographic characteristics of a file*, so that it's defined as the information object containing information that directs a user's attention from one resource to another.
+
+The structure of this type of resource has seven subsections, the ones that will be explain next:
+
+* *Title*, to write the name of your citation.
+* *Resource edition*: with two fields to add information:
+Edition, one to indicate the version of the cited resource; Edition date, to indicate the date of edition.
+* *Citation identifier*: to design a Code on the resource, and a special namespace where the identifier is unique.
+* *Responsible party*: to link to an already created resource as _individual_ or _organization_.
+* *Series wich the resource is part of*: to identify the name of the series where the resource is part, the identifier of the issue in th series of the resource, pages that the resource fills in the series issue.
+* *Other citation details*: to explain in a text any other details.
+* *Online resource*: to identify the URL related to the element, also giving a description or explanation about it and the URL funtion (there is a dropdown list with different options to mark).
+
+Finally, and before creating the resource, its the little box to check if the citation will be available on the sharing resources list, or will be just for the owner.
+
+
+== *Publication*
+
+The structure of this type of resource its quite simmilar to citation explain before, but has another two subsections to define:
+
+* *Abstract*: to copy and paste the abstract of the publication.
+* *Category*: for selecting from a dropdown list the type of publication you are interested in creating a resource.

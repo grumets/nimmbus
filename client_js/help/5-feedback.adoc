@@ -1,10 +1,97 @@
 [[Feedback]]
-== Feedback
+== *Feedback*
+
+A feedback item can be understood as any *comment or information* about a resource, both quantitative and/or qualitative, sharing experience when using a specific data. It may help other users to improve the identification and usefulness of datasets, the resolution of problems with datasets, comments about quality of dataset, report positive and negative experiences using the data, finding new usages of the data, among many other possibilities.
+
+Anyone who has worked with a geospatial dataset can provide feedback about it, as users with different backgrounds can assess the dataset from different points of view, which can be interesting to other users, also for producers of datasets who can discover new uses of their data or improve it.
+
+All these uses of feedback helps to create and transmit knowledge, as it supports the continuous process of knowledge creation.
+
+
+
+----Different parts of feddback section----
+
+The final aim is to refine query results, by including user feedback in search algorithms. Another form of user feedback is applied when users are questioned to determine the quality of image classification.
+
+/Metadata is composed of information that helps the user assess the usefulness of a dataset relative to a user problem or need.
+
+/to communicate information and knowledge gained by using the dataset
+
+/End-users can potentially provide additional facets of metadata that are more desirable for other users. For example, a scientist using the data and producing an academic paper is reflecting their experience with the data, and typically describes use cases, as well as difficulties. Experts can report positive and negative experiences using the data, and can relate the dataset to other datasets and provide a comparison report. In addition, when using geospatial datasets, users with different backgrounds can assess the dataset from varying points of view
+
+Without a feedback mechanism, producers need to have a very active role in finding out new usages of the data.
+
+/The introduction of user feedback in metadata catalogues is expected to improve dataset search
+
+/for enriching metadata records with references to relevant literature (e.g., information on citations), less formal opinions from the data producers; expert opinions of data quality, and user feedback regarding previous data use. The introduction of informal voluntary user feedback and commentaries can also facilitate a more “user-centric approach” to geospatial metadata
+
+/focus on end-users: end-users also have the desire for more user-focused metadata information including
+dataset citations in publications, user feedback on dataset quality and trustworthiness, and
+expert reviews and recommendations
+
+/to extend the user feedback concept to support the continuous process of knowledge creation.
+
+/There is a need for the analytics system to incorporate human-understandable feedback to explain analytics results and the steps taken to obtain them
+
+/roles: The item’s targets (GUF_FeedbackTarget) uniquely identify the dataset or a subset of the resources. A role primary is used to point to the main target dataset or resource the feedback is about. A role secondary is used to refer to target resources that might be relevant to the referenced resource and thus to a user searching for feedback. To add additional references, a target role supplementary can be used. In remote sensing applications, when a scene or sheet of a product is used, we found it useful to make the primary target point to the specific scene used and the secondary target to the complete product or time series
 
 === Feedback elements
 
+pagina inicial para hacer feedback --> add
+
+_Feedback target resource_
+role
+select (para cambiar de target resource)
+
+_asbtract_, brief narrative description
+_Purpose_, reason or intention with which i xplain my experience and provide feedback
+
+_user role_ (desplegable opciones)
+_rating_ (estrellitas)
+_User comment_ comment comment motivation
+_usage_ aspect reported (about target)
+  _usage description_ specific usage/briev description of the target usage
+                      usage data and time
+                      user determined limitations (applications, determined by the user, for which the target is not suitable)
+                      response (responde to the user-determined limitations)
+  _additional documentation describing the usage of the target resource(s)_ (select)
+  _reproducible usage_ code or execution sentence* (to reproduce)
+                      code or execution sentence* (URL link)
+                      format (desplegable)
+                      platform (platform to execute code)
+                      version (of platform)
+                      schema ()
+                      suggested application ()
+                      diagram (text)
+                      Diagram (URL link)
+                      diagram format (desplegable)
+_discovered issue_    known problem
+                      known problem date and time
+                      work around (possible way to work around the problem)
+  _reference document(s) that exposes the issue_ -select-
+                      expected fix date
+                      _new version of the target resource(s) with the known problem fixed_ -select-
+                      _alternative resource(s) that can be used instead of the target resource(s)_ -select-
+
+_publication(s) related to the evaluated resource_ -select-
+
+
+
 explicar la pàgina FB
+
+elementos de citación en detalles
+descripción básica de elementos
+
+buscar uno bien hecho, y poner una imagen de cómo está bien
 
 === Managing feedbacks of a resource
 
 how to add new or edit feedbacks about a target
+
+To create a new Feedback, first you have to create a resource (publication, citation, hyperlink, etc). Once it is done, you go to the resource list and press a little bottom under the name of it that says _"Feedback"_.
+
+To define the characteristics of this feedback you will have the option of adding a lot of details:
+
+/To define a _Role, wich is used to point the main target dataset or resource the feedback is about. A secondary is used to refer to target resources that might be relevant to the referenced resource and thus to a user searching for feedback. To add additional references, a target role supplementary can be used.
+
+In remote sensing applications, when a scene or sheet of a product is used, we found it useful to make the primary target point to the specific scene used and the secondary target to the complete product or time series.

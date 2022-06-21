@@ -1,15 +1,16 @@
 [[Overview]]
-== Overview
+== *Overview*
 
-This document describes NiMMbus system and its characteristics. Next subsection describes ho to sign-in the system, and allowed single-sign-on systems for users.
+This section describes NiMMbus system and it's characteristics. Next subsection describes how to sign-in the system, and allowed single-sign-on systems for users.
 
 Following sections in the document (_under construction_) explain the different pages of the system:
 
 * resources: describes the main page after sing-in: the resource list
-* citation: describes the citation resource page
-* publication: describes the publication resource page
+* citation & publication:describes the citation resource page
 * feedback: describes the feedback resource page and also how to manage feedback items for other resources
 * user: describes the user page and also how to share resources with other users
+
+Each of this ones has a specific form, and you can decide which informacion fulfill on base of your feedback item.
 
 Moreover there are two appendices, the first one with the document history (list of versions), and the second one describing test pages created to support in NiMMbus integration in other community portals.
 
@@ -21,12 +22,13 @@ The Log In page to the system is:
 .Log in
 image::images/2_1_log_in.png[]
 
-At the moment, several single-sign-one systems have been connected:
+Several single-sign-one systems have been connected:
 
 * NextGEOSS
 * LandSense
 * Google
 
-Moreover a user in the NiMMbus user system can be created to sign-in.
+Moreover, a user in the NiMMbus system can be created to sign-in, its just needed a username and an email, which will be the base of your profile.
+Once you have created your _user_, you can
 
-// See more details about user creation an management in section USER ·· com es feia el link a una altra secció?
+For more details about user creation an management of your profile, got to   +++<a href="https://www.nimmbus.cat/PrivacyStatement.htm" target="_blank">USER(cambiarlink)</a>+++ section

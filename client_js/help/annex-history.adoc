@@ -6,4 +6,5 @@
 |====================
 | Date | Release | Editor | Primary clauses modified | Descriptions
 | October 11, 2018  | A. Zabala | 0.1 | all | initial version
+| June 15, 2022  | J. Crisóstomo | 1.0 | all | second version
 |====================

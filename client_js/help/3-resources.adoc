@@ -1,4 +1,45 @@
 [[Resources]]
-== Resources
 
-explicar la pàgina principal de llista de recursos
+== *Resources*
+
+As *NiMMbus is a repository for saving and sharing geospatial information*, there are five types of resources to be created, in order to the characteristics of the information that you want to save (see details of each one, next).
+
+//editar y completar:
+Further more, as *one of NiMMbus's main goals is to generate and improve knowlegde from metadata and interaction between users*, this is a system that can also *work as a community*. For that, there is the option of creating a new resource just for yourself, to share it with an specific person/organization (using a NiMMbus user name or an e-mail), or to share it with the NiMMbus community. To define that property, there is a small box at the end of each resource page to mark/unmark for making it visible to other users. For sharing resources, you have to look for it at the general resources page, and press on "share" buttom.
+
+
+
+=== Types of resources:
+*•	Feedback item:*
+Creating _feedback_ is providing information or opinions about a geospatial resource, on base of the experience of other users with it. In that way, it is also a *key driver to improve data information*, as to make and transmit knowledge.
+
+The goal is to *inform other users about the experience using a specific resource* (for example: how, when and why it was used in a particular way, and/or an opinion about it), so that other users can consider that assessment when it's needed, also the provider can improve the product after reading it. In that way, feedbacks are helping us on making knowledge from metadata.
+
+One of next sections it's specially made to explain in details about user feedbacks (look for more details there).
+
+*•	Citation & Publication:*
+This type of resource is a standardized resource reference, associated to the *set of bibliographic characteristics of a file*, so that it's defined as the information object containing information that directs a user's attention from one resource to another.
+
+The information needed is the title or name of the resource, the creating date, a unique identification code, information about the person responsible for the resource (that could be a singular person or an organization), information about the serial number of the file (name, ID, and pages), also about the online resource (URL, URL description) and a summary.
+
+This resource is tipically used whitin a feedback item. both will be shown next.
+
+*•	Responsible party (individual & organization):*
+This section is for making an *identification file of a single person or an organization that has created a resource*.
+
+In the case of creating a file for an author, it contains: the role, name, contact and position of the person. When it comes to an organization, the required data are: the name and some address data, such as the city, postal code, country, among others.
+
+This resource is tipically used whitin a feedback item.
+
+*•	New hiperlink:*
+This seccion is for creating a *link to an online resource of your interest*, such as a website with shapefiles or satellite images, for example.
+
+To create this type of resource you shall define some characteristics, as the title, the URL, the format of the resource (MMZ, MMZX, ZIP, JEPG, PNG, or others -to define-), and give a briev explanation of your motivation to save this resource.
+
+*• New point of interest:* The main goal is to be able to *pinpoint a single point feature with an exact location* (with coordinates), so that you can accurate features or phenomenons at a single pixel or group of pixels.
+
+To create this type of resource, you need to indicate: a title, the coordinates (you can link directly from your device, just with a clic in the buttom), and you shall write a small note with the motivation of this resource.
+
+
+// indicar cómo se crean
+// indicar para qué se usan

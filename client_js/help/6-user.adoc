@@ -1,10 +1,23 @@
 [[User]]
-== User
+== *User profile*
 
-=== User options
+This is the section to *create and edit all the personal information* associated to your account. As in the pages presented above, it *is not a requirement to complete all the requested information*, so you can choose which personal data to include in your profile and which not.
 
-explicar la pàgina user
+Among the personal data that you can add and edit, there is: a username, a personal email (minimum requirement), real name and a biography review.
 
-=== Sharing Resources
+All the information in your profile can be modified as many times as you want, except for *the email*, since *is the basis on which your profile is built*. If you want to change your profile email, you will have to create a new profile account, but it will disconnect your inicial resources, feedbacks or features from the new ones whitin the new account.
 
-how to share with other users
+As for the *username*, it *can be changed as many times as you want without losing the resources you have created*, since everything is associated to the email you have registered in first instance. Thus, and as you have full control of your personal data, you can have an anonymous profile by using a random username.
+
+
+=== *Privacy and security of your personal data*
+
+Regarding the security of your personal data, and as it is written in the +++<a href="https://www.nimmbus.cat/PrivacyStatement.htm" target="_blank">Privacy Statement</a>+++, we will not use or share any informations, unless you ask for it. It is necessary to mention that *your username* is the only visible personal data that we will be using in this webpage. Only in case it is necessary, we may use your personal information to contact you, for example if other user request to get in touch with you or you had forgotten your password and request to recover it.
+
+The security of your Personal Information is important to us, and we will do our best for saving it properly, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Information, we cannot guarantee its absolute security.
+
+//=== User options
+
+//=== Sharing Resources
+
+//how to share with other users
