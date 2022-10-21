@@ -68,8 +68,9 @@ var Msg_Available_={cat: "Disponible!", spa: "¡Disponible!", eng: "Available!"};
 var Msg_Done={cat: "Fet", spa: "Hecho", eng: "Done"};
 var Msg_Error_without_description={cat: "Error sense descripció. Codi", spa: "Error sin descripción. Código", eng: "Error without description. Code"};
 var Msg_Failure_loading_Google_libraries={cat: "Error en carregar les llibreries de les comptes de Google", spa: "Error al cargar las librerías de las cuentas de Google", eng: "Failure loading Google account libraries"};
-var Msg_LandSense_login_failed={cat: "Error o cancel·lació de la identificació amb el compte de LandSense", spa: "Error o cancelación de la identificación en la cuenta de LandSense", eng: "Login in your LandSense account failed or cancelled"};
+var Msg_Authenix_login_failed={cat: "Error o cancel·lació de la identificació amb el compte de Authenix", spa: "Error o cancelación de la identificación en la cuenta de Authenix", eng: "Login in your Authenix account failed or cancelled"};
 var Msg_NextGEOSS_login_failed={cat: "Error o cancel·lació de la identificació amb el compte de NextGEOSS", spa: "Error o cancelación de la identificación en la cuenta de NextGEOSS", eng: "Login in your NextGEOSS account failed or cancelled"};
+var Msg_WQeMS_login_failed={cat: "Error o cancel·lació de la identificació amb el compte de WQeMS", spa: "Error o cancelación de la identificación en la cuenta de WQeMS", eng: "Login in your WQeMS account failed or cancelled"};
 var Msg_Google_login_failed={cat: "Error o cancel·lació de la identificació amb el compte de Google", spa: "Error o cancelación de la identificación en la cuenta de Google", eng: "Login in your Google account failed or cancelled"};
 var Msg_Google_Account_info_not_retrieved={cat: "No puc obtenir la informació sobre l'usuari del compte de Google", spa: "No puedo obtener la información sobre el usuario la cuenta de Google", eng: "The user information of the Google Account cannot be retrieved"};
 var Msg_Requesting_data_={cat: "Demanant dades...", spa: "Pidiendo datos...", eng: "Requesting data..."};
@@ -263,7 +264,6 @@ var Msg_NiMMbus_ResourcesSelector={cat: "NiMMbus: Selector de recursos", spa: "N
 var Msg_NiMMbus_Feedbacks={cat: "NiMMbus: Valoracions", spa: "NiMMbus: Valoraciones", eng: "NiMMbus: Feedbacks"};
 var Msg_NiMMbus_Share={cat: "NiMMbus: Compartir", spa: "NiMMbus: Compartir", eng: "NiMMbus: Share"};
 var Msg_Not_implemented_yet={cat: "Ho sentim, no implementat encara", spa: "Lo sentimos, no implementado aún", eng: "Sorry, not implemented yet"};
-
 
 //Needed for Test_*.html
 var Msg_NiMMbus_Test_Pages={cat: "Tests de NiMMbus", spa: "Tests de NiMMbus", eng: "NiMMbus test pages"};
