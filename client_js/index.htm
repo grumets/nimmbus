@@ -758,7 +758,7 @@ var kvp="";
 		
 		if (query["ACCESS_TOKEN_TYPE"])
 		{
-			access_token_type=query["ACCESS_TOKEN_TYPE"].toLowerCase;
+			access_token_type=query["ACCESS_TOKEN_TYPE"].toLowerCase();
 			if (access_token_type=="nextgeoss")
 				ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);
 			else if (access_token_type=="authenix")
