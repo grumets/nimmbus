@@ -1,46 +1,37 @@
+[[Summary]]
 == *Summary*
 
-//NiMMbus (+++<a href="https://www.nimmbus.cat/" target="_blank">https://www.nimmbus.cat</a>+++) is a solution for storing geospatial resources on the MiraMon cloud. Several resources can be stored in NiMMbus: points of interest, hyperlinks to a geospatial databases, citations of geospatial resources, publications and feedback items.
+NiMMbus is a *solution for storing geospatial resources* on the _MiraMon_ private cloud. +++<a href="http://www.miramon.cat" target="_blank">MiraMon</a>+++ is a family of GIS products, developed since 1994, that includes a desktop GIS, a web map browser and the NiMMbus system.
 
-//simplificar
+NiMMbus was originally created to store geospatial resources such as points of interest or hyperlinks to geospatial resources in the web. It has evolved from the original approach and now the main goal of NiMMbus is to *provide an interface for user feedback that can be easily integrated into existing servers or  online data catalogues*, by a *data or metadata identifier*, beside of being the online storage cloud thought on its beginning.
 
-//NiMMbus (https://www.nimmbus.cat/) is a solution for storing geospatial resources on the MiraMon cloud (MiraMon is a family of GIS products developed since 1994, and includes the NiMMbus system, among others).
+The system implements the *Geospatial User Feedback standard*, originated in the EU FP7 GeoViQua project (since now on, we will refer to Geospatial user Feedback as _GUF_) and which evolved to become an +++<a href="https://www.ogc.org/standards" target="_blank">OGC</a>+++ standard.
 
-NiMMbus is a *solution for storing geospatial resources* on the _MiraMon_ private cloud (MiraMon is a family of GIS products, developed since 1994, that includes a desktop GIS, a web map browser and the NiMMbus system).
+*GUF is metadata produced by the users of geospatial data products* as they use and gain experience with them, so that is directly related to their background while working with a given geospatial resource. It allows to provide comments, ratings (evaluations), making questions or user reports of dataset problems, and proposing solutions to those problems (among others possibilities), all of them related to the use or interpretation of a dataset, by the one that has been using it. For more information about GUF, you can check the information in the +++<a href="https://www.ogc.org/standards/guf" target="_blank">OGC_GUF</a>+++ look on the webpage OGC.
 
-NiMMbus was originally created to store geospatial resources such as points of interest or hyperlinks to geospatial resources in the web. It has evolved from the original and now the main goal of NiMMbus is to *provide an interface for user feedback that can be easily integrated into existing data catalogues* on the web, by a *data or metadata identifier*, beside of being the online storage cloud thought on its beginning.
-
-The system implements the *Geospatial User Feedback standard*, originated in the EU FP7 GeoViQua project (since now on, we will refer to Geospatial user Feedback as _GUF_).
-
-*GUF is metadata produced by users of geospatial data products* as they use and gain experience with them, so that is directly related to their background while working with a given geospatial resource. It allows to provide comments, ratings (evaluations), making questions or user reports of dataset problems, and proposing solutions to those problems (among others possibilities), all of them related to the use or interpretation of a dataset, by the one that has been using it (for more information about GUF, look on the webpage +++<a href="http://www.opengeospatial.org/standards" target="_blank">OGC</a>+++).
-
-//The contribution of the H2020 NextGEOSS project was to extend the initial implementation of NiMMbus to support GUF resources.
-
-On *NiMMbus*, it is possible to create a citation of an external resource (pointing to an external catalogue or repository) and associate feedback items to it (more information about different types of resources on next sections). As users are the
-
-//Currently, GUF is being extended through the _H2020 Eiffel project_, which contribution is to extend quality elements to capture quality metadata in climate change scenarios, as well as to extend GUF features to store and share knowledge elements.
+On *NiMMbus*, it is possible to create a citation of an external resource (pointing to an external catalogue or repository) and associate feedback items to it (more information about different types of resources on next sections).
 
 
+More information about the NiMMbus system can be found in the +++<a href="https://github.com/joanma747/nimmbus" target="_blank">NiMMbus GitHub</a>+++.
 
-//For the latter, the system implements the Geospatial User Feedback (GUF) standard (+++<a href="http://www.opengeospatial.org/standards/guf" target="_blank">http://www.opengeospatial.org/standards/guf</a>+++) originated in the EU FP7 GeoViQua project. It allows to provide comments, ratings, questions, etc that can be associated with geospatial assets on a catalogue using a data/metadata identifier. The contribution of the H2020 NextGEOSS project is to extend the initial implementation of NiMMbus to support GUF resources. The system allows for creating a citation of an external resource (pointing to an external catalogue or repository) and associate feedback items to it.
-
-More information about NiMMbus can be found in +++<a href="https://github.com/joanma747/nimmbus" target="_blank">NiMMbus GitHub</a>+++.
-//nimmbus mm cloud, incloent citations i guf...
-
-
-
-//origen MM i nextgeooss
-
+[[Acknowledgements]]
 === *Acknowledgements*
 
-The NextGEOSS project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreements No 730329 - NextGEOSS and No 101003518 - EIFFEL.
+The NiMMbus project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreements No 730329 - NextGEOSS and No 101003518 - EIFFEL.
 
-This documentation and implementation reflects only the author's view and the Agency is not
-responsible for any use that may be made of the information it contains.
+The contribution of the H2020 NextGEOSS project was to extend the initial implementation of NiMMbus to support GUF resources.
 
+Currently, GUF is being extended through the pass:[<u>H2020 Eiffel project</u>], which contribution is to extend quality elements to capture quality metadata in climate change scenarios, as well as to extend GUF features to store and share knowledge elements.
+
+---
+This documentation and implementation reflect only the author's view and the Agency is not responsible for any use that may be made of the information it contains.
+
+---
+
+[[Contributors]]
 ===	*Document contributor contact points*
 
-All questions regarding this document should be directed to the editor or the contributors:
+All questions regarding this document should be directed to the editor or the contributors, through the general MiraMon+++<a href="mailto:suport@miramon.uab.cat" target="_blank"> support email</a>+++ account:
 
 .Contacts
 [width="80%",options="header",caption=""]
@@ -48,4 +39,5 @@ All questions regarding this document should be directed to the editor or the co
 |Name |Organization
 |Alaitz Zabala | UAB
 |Joan Masó | CREAF
+|Javiera Crisóstomo L. | UAB
 |====================

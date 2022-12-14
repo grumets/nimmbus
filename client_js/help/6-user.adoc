@@ -1,23 +1,17 @@
 [[User]]
 == *User profile*
 
-This is the section to *create and edit all the personal information* associated to your account. As in the pages presented above, it *is not a requirement to complete all the requested information*, so you can choose which personal data to include in your profile and which not.
+This is the section to *edit all the personal information* associated to a user account. *It is not mandatory to complete all the requested information*, so is possible to choose which personal data to include in the profile and which not.
 
-Among the personal data that you can add and edit, there is: a username, a personal email (minimum requirement), real name and a biography review.
+Among the personal data that can be added and edited, there is: a username, a personal email (minimum requirement), the real name and a biography review.
 
-All the information in your profile can be modified as many times as you want, except for *the email*, since *is the basis on which your profile is built*. If you want to change your profile email, you will have to create a new profile account, but it will disconnect your inicial resources, feedbacks or features from the new ones whitin the new account.
+All the information on profiles can be modified as many times as needed except for *the email*, since *is the basis on which the profile is built*. If it is needed to change the profile email, a new profile account needs to be created, but it will disconnect the user’s initial resources, feedbacks or features from the new ones within the new account.
 
-As for the *username*, it *can be changed as many times as you want without losing the resources you have created*, since everything is associated to the email you have registered in first instance. Thus, and as you have full control of your personal data, you can have an anonymous profile by using a random username.
+As for the *username*, it *can be changed as several times without losing the created resources*, since everything is built over the registered email address in the first instance. In this way, and as users have full control of personal data, is possible to use a profile named different to the user’s real name. However, using a different username is not recommended from the creators’ team point of view, as one of main purposes of NiMMbus is to share comments and knowledge between users, and having a “default” name, may not be trustable for other users.
 
+[[Privacy]]
+=== *Privacy and security of personal data*
 
-=== *Privacy and security of your personal data*
+Regarding the security of personal data, and as it is written in the +++<a href="https://www.nimmbus.cat/PrivacyStatement.htm" target="_blank">Privacy Statement</a>+++, personal information will not be used or shared, unless the user ask for it. It is necessary to mention that *username* is the only visible personal data that will be used publicly in this webpage, as every feedback item publicly shared is related to its creator trough this username. Only in case it is necessary, users’ personal information may be used to contact them, for example if other user request to get in touch with other, or when a user had forgotten the password and request to recover it.
 
-Regarding the security of your personal data, and as it is written in the +++<a href="https://www.nimmbus.cat/PrivacyStatement.htm" target="_blank">Privacy Statement</a>+++, we will not use or share any informations, unless you ask for it. It is necessary to mention that *your username* is the only visible personal data that we will be using in this webpage. Only in case it is necessary, we may use your personal information to contact you, for example if other user request to get in touch with you or you had forgotten your password and request to recover it.
-
-The security of your Personal Information is important to us, and we will do our best for saving it properly, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Information, we cannot guarantee its absolute security.
-
-//=== User options
-
-//=== Sharing Resources
-
-//how to share with other users
+The security of Personal Information is important to us, and we will do our best for saving it properly, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect Personal Information, we cannot guarantee its absolute security.

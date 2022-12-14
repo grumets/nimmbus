@@ -3,9 +3,9 @@
 // *****************************************************************************
 // name of the help after the colon
 :title: NiMMbus Help
-:postedDate: 2022-06-21
+:postedDate: 2022-11-17
 // name of all editors. Separate multiple editors by comma, e.g. John Wayne, Bud Spencer
-:editor: Alaitz Zabala, Joan Maso
+:editor: Javiera Crisóstomo L., Alaitz Zabala, Joan Masó.
 // *****************************************************************************
 // done, please continue with the imports at line 62 of this document
 // *****************************************************************************
@@ -15,7 +15,7 @@
 :encoding: utf-8
 :lang: en
 :toc: left
-:toclevels: 3
+:toclevels: 4
 :numbered:
 :sectanchors:
 :source-highlighter: coderay
@@ -41,13 +41,15 @@ include::1-summary.adoc[]
 // *****************************************************************************
 include::2-overview.adoc[]
 
-//include::3-resources.adoc[]
+include::3-resources.adoc[]
 
-//include::4-citation.adoc[]
+include::4-citation.adoc[]
 
-//include::5-feedback.adoc[]
+include::5-feedback.adoc[]
 
-//include::6-user.adoc[]
+include::6-user.adoc[]
+
+include::7-how-to.adoc[]
 
 ////
 Revision History should be the last annex before the Bibliography

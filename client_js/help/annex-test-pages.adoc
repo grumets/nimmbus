@@ -1,20 +1,33 @@
 [appendix]
 [[TestPages]]
-== Test pages for NiMMbus GUF integration
+== NiMMbus GUF integration
 
-To show NiMMbus GUF integration options, several test pages have been created. More information on NiMMbus integration can be found in NiMMbus GitHub, in +++<a href="https://github.com/joanma747/nimmbus/tree/master/GUF_integration" target="_blank">GUF integration</a>+++ section.
+There are other integration options (using Javascript and the NiMMbus Web API, that are described on next subsection) which provide full control on how the content is shown in the screen, but require considerable more knowledge on JavaScript programming, including XML parsing and AJAX calls. This is the widget option recommended for most of the cases. Detailed information on all integration options can be found in +++<a href="https://github.com/joanma747/nimmbus/tree/master/GUF_integration" target="_blank">GUF integration</a>+++.
 
+To integrate the widget there are three steps: 
+
+1. Include the JavaScript library in the HTML page.
+
+2. Create a division or a window to contain the feedback.
+
+3. Fill in the division (or window) with the widget. 
+
+
+[[Integration_1]]
 === Option 1: JavaScript API and widget
+
+There are several options depending on the type of feedback that wants to be provided
 
 A couple of test pages have been created to show the use of the widget to integrate NiMMbus GUF in any community portal:
 
    * General example: +++<a href="../test_widget.htm" target="_blank">test_widget.htm</a>+++
    * General example with custom styles: +++<a href="../test_widget_custom.htm" target="_blank">test_widget_custom.htm</a>+++
    * Corine Land Cover 2012 example: +++<a href="../test_widget_corine.htm" target="_blank">test_widget_corine.htm</a>+++
-
+   * Sentinel 2 image and series example:  +++<a href="../test_widget_multitarget.htm" target="_blank">test_widget_multitarget.htm</a>+++
+   
+[[Integration_2]]
 === Option 2: JavaScript for the Web API
 
 A couple of test pages have been created how to directly use the NiMMbus API to add or retrieve feedback items:
 
    * New feedback example: +++<a href="../test_new_feedback.htm" target="_blank">test_new_feedback.htm</a>+++
-   * Retrieve feedback example: _under development_

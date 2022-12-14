@@ -1,27 +1,34 @@
 [[Citation]]
 == *Citation*
 
-As was explained before, this type of resource is a standardized resource reference that is tipically used whitin a feedback item.
+Is a resource reference that is typically used within a feedback item, for example to point out to the targets or publications related to the feedback item.
 
-//associated to the *set of bibliographic characteristics of a file*, so that it's defined as the information object containing information that directs a user's attention from one resource to another.
+The structure of this type of resource has seven subsections:
 
-The structure of this type of resource has seven subsections, the ones that will be explain next:
-
-* *Title*, to write the name of your citation.
+* *Title*: to write the name of the resource you are  citing.
 * *Resource edition*: with two fields to add information:
-Edition, one to indicate the version of the cited resource; Edition date, to indicate the date of edition.
-* *Citation identifier*: to design a Code on the resource, and a special namespace where the identifier is unique.
-* *Responsible party*: to link to an already created resource as _individual_ or _organization_.
-* *Series wich the resource is part of*: to identify the name of the series where the resource is part, the identifier of the issue in th series of the resource, pages that the resource fills in the series issue.
-* *Other citation details*: to explain in a text any other details.
-* *Online resource*: to identify the URL related to the element, also giving a description or explanation about it and the URL funtion (there is a dropdown list with different options to mark).
+Edition, to indicate the version of the cited resource; Edition date, to indicate the date of edition.
+* *Citation identifier*: to design a Code on the resource (a.k.a. Identifier), and a special name space where this identifier is unique.
+* *Responsible party*: to link to an _individual or organization_ (already created using the specific resource types) and to define the role this party has with the cited resource (i.e. author of the resource, editor, contributor...).
+* *Series which the resource is part of*: to identify the name of the series where the resource is part, the identifier of the issue in the series and the  pages that the resource fills in the series issue. Typically (but not only) used to define the journal, issue and pages of a scientific publication.
+* *Other citation details*: to explain in a text any other details required to complete the citation.
+* *Online resource*: to identify the URL related to the element, also giving a description or explanation about it and the URL function (there is a drop-down list with different options to mark such as: information, download, view...).
 
-Finally, and before creating the resource, its the little box to check if the citation will be available on the sharing resources list, or will be just for the owner.
+Finally, and before creating the resource, there is an option to check if the citation will be publicly available on the sharing resources list or will be just for the owner (or the specific users to which it has been shared with).
 
-
+[[Publication]]
 == *Publication*
 
-The structure of this type of resource its quite simmilar to citation explain before, but has another two subsections to define:
+The structure of this type of resource has nine subsections, the first seven identical to the ones in a Citation resource:
 
+•	*Title*: to write the name of the resource you are  citing.
+•	*Resource edition*: with two fields to add information: Edition, one to indicate the version of the cited resource; Edition date, to indicate the date of edition.
+•	*Citation identifier*: to design a Code on the resource (a.k.a. Identifier), and a special name space where this identifier is unique.
+•	*Responsible party*: to link to an individual or organization (already created using the specific resource types) and to define the role this party has with the cited resource (i.e. author of the resource, editor, contributor...).
+•	*Series which the resource is part of*: to identify the name of the series where the resource is part, the identifier of the issue in the series and the  pages that the resource fills in the series issue. Typically (but not only) used to define the journal, issue and pages of a scientific publication.
+•	*Other citation details*: to explain in a text any other details required to complete the citation.
+•	*Online resource*: to identify the URL related to the element, also giving a description or explanation about it and the URL function (there is a drop-down list with different options to mark such as: information, download, view...).
 * *Abstract*: to copy and paste the abstract of the publication.
-* *Category*: for selecting from a dropdown list the type of publication you are interested in creating a resource.
+* *Category*: for selecting from a drop-down list the type of publication this resource is (e.g. book chapter, journal article, webpage...).
+
+Finally, and before creating the resource, there is an option to check if the citation will be publicly available on the sharing resources list or will be just for the owner (or the specific users to which it has been shared with).

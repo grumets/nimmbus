@@ -1,97 +1,92 @@
 [[Feedback]]
 == *Feedback*
 
-A feedback item can be understood as any *comment or information* about a resource, both quantitative and/or qualitative, sharing experience when using a specific data. It may help other users to improve the identification and usefulness of datasets, the resolution of problems with datasets, comments about quality of dataset, report positive and negative experiences using the data, finding new usages of the data, among many other possibilities.
+A geospatial feedback item can be understood as any *comment or information about a geospatial resource*, both quantitative and/or qualitative, made to share a personal experience when using a specific dataset or a recommendation about it. It may help other users to improve the identification and usefulness of datasets, to resolve problems with datasets, to share personal comments about quality of dataset, to report positive and negative experiences using the resource or to find new usages of the data, among many other possibilities.
 
-Anyone who has worked with a geospatial dataset can provide feedback about it, as users with different backgrounds can assess the dataset from different points of view, which can be interesting to other users, also for producers of datasets who can discover new uses of their data or improve it.
+Anyone who has been working with a geospatial dataset can provide feedback about it, regardless of the area of expertise they come from, as users with different backgrounds can assess the dataset from several points of view. This can be useful for users by gaining access to the experience of others, and also for the producers of the datasets, who can discover new uses of or receive hints to improve their resources, among others.
 
-All these uses of feedback helps to create and transmit knowledge, as it supports the continuous process of knowledge creation.
+One of the main objectives is to build a network of feedbacks associated with the experience of users with different datasets, in order to collectively generate knowledge, facilitating a “user-centric" approach and being able to transmit and share it.
 
-
-
-----Different parts of feddback section----
-
-The final aim is to refine query results, by including user feedback in search algorithms. Another form of user feedback is applied when users are questioned to determine the quality of image classification.
-
-/Metadata is composed of information that helps the user assess the usefulness of a dataset relative to a user problem or need.
-
-/to communicate information and knowledge gained by using the dataset
-
-/End-users can potentially provide additional facets of metadata that are more desirable for other users. For example, a scientist using the data and producing an academic paper is reflecting their experience with the data, and typically describes use cases, as well as difficulties. Experts can report positive and negative experiences using the data, and can relate the dataset to other datasets and provide a comparison report. In addition, when using geospatial datasets, users with different backgrounds can assess the dataset from varying points of view
-
-Without a feedback mechanism, producers need to have a very active role in finding out new usages of the data.
-
-/The introduction of user feedback in metadata catalogues is expected to improve dataset search
-
-/for enriching metadata records with references to relevant literature (e.g., information on citations), less formal opinions from the data producers; expert opinions of data quality, and user feedback regarding previous data use. The introduction of informal voluntary user feedback and commentaries can also facilitate a more “user-centric approach” to geospatial metadata
-
-/focus on end-users: end-users also have the desire for more user-focused metadata information including
-dataset citations in publications, user feedback on dataset quality and trustworthiness, and
-expert reviews and recommendations
-
-/to extend the user feedback concept to support the continuous process of knowledge creation.
-
-/There is a need for the analytics system to incorporate human-understandable feedback to explain analytics results and the steps taken to obtain them
-
-/roles: The item’s targets (GUF_FeedbackTarget) uniquely identify the dataset or a subset of the resources. A role primary is used to point to the main target dataset or resource the feedback is about. A role secondary is used to refer to target resources that might be relevant to the referenced resource and thus to a user searching for feedback. To add additional references, a target role supplementary can be used. In remote sensing applications, when a scene or sheet of a product is used, we found it useful to make the primary target point to the specific scene used and the secondary target to the complete product or time series
-
-=== Feedback elements
-
-pagina inicial para hacer feedback --> add
-
-_Feedback target resource_
-role
-select (para cambiar de target resource)
-
-_asbtract_, brief narrative description
-_Purpose_, reason or intention with which i xplain my experience and provide feedback
-
-_user role_ (desplegable opciones)
-_rating_ (estrellitas)
-_User comment_ comment comment motivation
-_usage_ aspect reported (about target)
-  _usage description_ specific usage/briev description of the target usage
-                      usage data and time
-                      user determined limitations (applications, determined by the user, for which the target is not suitable)
-                      response (responde to the user-determined limitations)
-  _additional documentation describing the usage of the target resource(s)_ (select)
-  _reproducible usage_ code or execution sentence* (to reproduce)
-                      code or execution sentence* (URL link)
-                      format (desplegable)
-                      platform (platform to execute code)
-                      version (of platform)
-                      schema ()
-                      suggested application ()
-                      diagram (text)
-                      Diagram (URL link)
-                      diagram format (desplegable)
-_discovered issue_    known problem
-                      known problem date and time
-                      work around (possible way to work around the problem)
-  _reference document(s) that exposes the issue_ -select-
-                      expected fix date
-                      _new version of the target resource(s) with the known problem fixed_ -select-
-                      _alternative resource(s) that can be used instead of the target resource(s)_ -select-
-
-_publication(s) related to the evaluated resource_ -select-
-
-
-
-explicar la pàgina FB
-
-elementos de citación en detalles
-descripción básica de elementos
-
-buscar uno bien hecho, y poner una imagen de cómo está bien
-
+[[Managing_Feedback]]
 === Managing feedbacks of a resource
 
-how to add new or edit feedbacks about a target
+//In remote sensing applications, when a scene or sheet of a product is used, we found it useful to make the primary target point to the specific scene used and the secondary target to the complete product or time series.
+There are two ways to create a feedback item on NiMMbus: one is within NiMMbus website, the other one is integrating the NiMMbus widget on a geospatial platform. Both options are explained next.
 
-To create a new Feedback, first you have to create a resource (publication, citation, hyperlink, etc). Once it is done, you go to the resource list and press a little bottom under the name of it that says _"Feedback"_.
+==== Within stand-alone-NiMMbus
 
-To define the characteristics of this feedback you will have the option of adding a lot of details:
+To create a new Feedback on NiMMbus, there must be a resource already created, which will be the target of the new feedback item. Feedback can be given about any of the resource types recently shown (citation, publication, hyperlink, point of interest, etc), even about another feedback item. 
 
-/To define a _Role, wich is used to point the main target dataset or resource the feedback is about. A secondary is used to refer to target resources that might be relevant to the referenced resource and thus to a user searching for feedback. To add additional references, a target role supplementary can be used.
+There are two options to generate a new feedback item: to create a new resource and then create a feedback item about this newly created resource, or to add a feedback item to a resource already created by someone else (or by us).
 
-In remote sensing applications, when a scene or sheet of a product is used, we found it useful to make the primary target point to the specific scene used and the secondary target to the complete product or time series.
+Once the resource exists, find it in the list of resources and click on the _Feedback icon_, which is under the resource name and looks like a _dialog cloud_, as shown in red square at the image below.
+
+.Feedback button on Resources list
+image::images/6_1_1_FB_boton.png[]
+
+==== When NiMMbus is integrated in other portals
+
+The other option for creating a Feedback item about a target resource, is to integrate the NiMMbus widget into other geospatial platforms. This is generally the preferred options, as the feedback items are created linked to a current geospatial service or catalogue such as it has been done in the +++<a href="https://catalogue.nextgeoss.eu/" target="_blank">NextGEOSS catalogue</a>+++ created in the +++<a href="https://nextgeoss.eu/" target="_blank">NextGEOSS H2020 project</a>+++, +++<a href="http://maps.ecopotential-project.eu/" target="_blank">Protected Areas from space</a>+++ web map browser created in the +++<a href="http://www.ecopotential-project.eu/" target="_blank">ECOPotential H2020 project</a>+++, or an internal web map browser in the +++<a href="https://wqems.eu/" target="_blank">WQeMS H2020 project</a>+++. 
+
+The feedback creation through the widget is associated to a specific resource from the beginning, and also implies the automatic creation of the citation to this resource, easing the process for the final user. 
+
+There are three steps to integrate the widget. The first one is to include the JavaScript library in the HTML page, the second one to create a division or a window to contain the feedback, and finally to fill in the division (or window) with the widget. More details for the widget integration are explained on +++<a href="https://github.com/joanma747/nimmbus" target="_blank">NiMMbus GitHub</a>+++.
+
+.Example of the Feedback widget on the ECOPotential project web map browser
+image::images/6_1_2_a_ejemp_eco_fb_wdg.png[]
+
+.One of the feedback items from the previous example from ECOPotential, as viewed on NiMMbus
+image::images/6_1_2_b_nimm_eco_fb_wdg.png[]
+
+[[Feedback_elements]]
+=== Feedback elements
+
+Feedback repository is organized in 5 subsections, to be explained:
+
+*FEEDBACK TARGET RESOURCE(S)*
+
+* *_Role_*: To identify the type of target a certain resource is. With a dropdown list, there are three options to choose.
+  - Primary role: Points to the resource(s) the feedback it is mainly about. i.e. the specific scene or layer (or other) used.
+  - Secondary Role: Point to the resource(s) the feedback is also related to, usually not as directly as for a primary target, but for the feedback item is also relevant. i.e. the complete product or time series.
+  - Supplementary Role: For additional references. i.e. another dataset with similar problems.
+
+---
+* *_Abstract_*: Brief narrative description, to help other users to understand the summary of the contribution.
+
+---
+
+*PURPOSE*
+
+* *_Purpose_*: Is a non-quantitative description to explain the rationale for creating a feedback item and contains information about its intended use.
+
+* *_User role_*: This is a set of dropdown choices to characterize the one giving feedback, as: Commercial data producer, Commercial added value, Scientific data producer, Research end user, Decision maker, and general public.
+
+* *_Rating_*: Evaluation space, showing 1-5 stars, to subjectively rank the target resources. The idea is to help others on identifying satisfaction with the resource about which the feedback us given.
+
+---
+*USER COMMENT*
+
+* *_User comment_*: Area for commenting about the target resource(s) resource. In this section there is also a dropdown option, namely Comment motivation,  to select the type of comment about the resource. The options are: Comment, Question, Answer, Accepted answer, Response, Justification, Resolution, and Moderation.
+
+---
+
+*USAGE*
+
+This section describes the application(s) for which a dataset (the target resource(s)) has been used by the data producer or by other, distinct, data users. It has several elements to be fulfilled:
+
+•	Aspect reported: To describe the aspect (facet) that the feedback item is covering about the target resource(s). One or many options can be selected from the following list: Usage, Fitness for purpose, Limitation, Alternative, and/or Problem. Depending on which report aspects have been selected, some elements below or others should be described:
+
+-	Usage: Description of a usage of the target resource. At least one element on 'Usage description' should be defined.
+
+-	Fitness for purpose: Description of a usage of the target resource that was appropriated for the intended purpose. At least one element on 'Usage description' should be defined.
+
+-	Limitation: Description of a limitation of the target resource. At least one 'User determined limitations' in 'Usage description' should be defined.
+
+-	Alternative: Alternative route that helps to avoid a problem or a limitation. At least one 'Work around' or one 'Alternative resource' should be defined.
+
+-	Problem: A report of a problem or an issue. At least one 'Discovered issue' should be described.
+
+•	*_Usage description_*: To describe how the target has been used.  This subsection contains several elements such as specific usage description, date and time, user determined limitations, additional documentation and reproducible usage (including code, format, platform...). 
+
+•	*_Discovered issue_*:   To report an error or identified problem with data. This subsection contains several elements such as known problem, date and time, workaround, alternative resources or fixed resource.
+
