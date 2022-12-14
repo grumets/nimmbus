@@ -19,8 +19,9 @@
 <script language="JavaScript" src="hello.all.min.js"></script>
 <!-- https://adodson.com/hello.js/modules#hellojs-already-has-you-connected -->
 <!--script language="JavaScript" src="google.js"></script-->
-<script language="JavaScript" src="landsense.js"></script>
 <script language="JavaScript" src="nextgeoss.js"></script>
+<script language="JavaScript" src="authenix.js"></script>
+<script language="JavaScript" src="authwqems.js"></script>
 
 <script>
 
@@ -384,14 +385,14 @@ function Ajax()
 
 	this.doReq = function()
 	{
-		if (AccessTokenType=="landsense" || AccessTokenType=="nextgeoss")
+		if (AccessTokenType=="authenix" || AccessTokenType=="nextgeoss" ||  AccessTokenType=="wqems")
 		{
 			//In external authentication, session expires. We need to be sure that it is valid or we risc that a server that is slow on responding could try to validate a token that has already expired.
 			var currentTime, expires;
 
-			if (AccessTokenType=="nextgeoss")
+			/*if (AccessTokenType=="nextgeoss") //amb nou SSO nextgeoss ja no cal
 				expires=AccessTokenExpires;
-			else
+			else*/
 				expires=OmpleHelloAccessTokenIType(AccessTokenType);  //Automatic regenerated token is valid
 			
 			var currentTime = (new Date()).getTime() / 1000;  //in seconds since 1970/01/01
@@ -422,7 +423,7 @@ function Ajax()
 			return;
 		}
 
-		if (AccessTokenType=="landsense" || AccessTokenType=="nextgeoss")
+		if (AccessTokenType=="authenix" || AccessTokenType=="nextgeoss" ||  AccessTokenType=="wqems")
 			OmpleHelloAccessTokenIType(AccessTokenType);
 		AfegeixCredencialsToken(this);
 
@@ -757,11 +758,13 @@ var kvp="";
 		
 		if (query["ACCESS_TOKEN_TYPE"])
 		{
-			access_token_type=query["ACCESS_TOKEN_TYPE"].toLowerCase;
+			access_token_type=query["ACCESS_TOKEN_TYPE"].toLowerCase();
 			if (access_token_type=="nextgeoss")
 				ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);
-			else if (access_token_type=="landsense")
-				ValidaSSOLandSense(true, SignInNBLandSense, null);
+			else if (access_token_type=="authenix")
+				ValidaSSOAuthenix(true, SignInNBAuthenix, null);
+			else if (access_token_type=="wqems")
+				ValidaSSOWQeMS(true, SignInNBWQeMS, null);
 			else if (access_token_type=="google")
 				ValidaSSOGoogle();
 			else if (access_token_type=="debug")
@@ -1182,12 +1185,16 @@ var root, output, process_succeeded, identifier;
 function InitHello()
 {
 	hello.init({
-		//google: '281597821362-tkj1tngjiiuul47m6dkhrorrsdqomahu.apps.googleusercontent.com',
-		landsense: '920b7ffa-1d18-b836-8ff3-514042772543@as.landsense.eu',
-		nextgeoss: '@!27B7.E085.07A1.6DE7!0001!F5E4.0B8E!0008!7BBE.671A.BD2B.6459'
+		//google: '281597821362-tkj1tngjiiuul47m6dkhrorrsdqomahu.apps.googleusercontent.com', -> fet abans sense usar funcions hello. es podria canviar, però com està ara funciona
+		//landsense: '920b7ffa-1d18-b836-8ff3-514042772543@as.landsense.eu',
+		authenix: '54a136e7-a1af-3fa6-a3f0-d20d99aef14d',
+		//nextgeoss: '@!27B7.E085.07A1.6DE7!0001!F5E4.0B8E!0008!7BBE.671A.BD2B.6459'
+		nextgeoss: 'e52394ef-57ff-4248-957c-6e51b672cae5',
+		wqems: 'wqems-miramon'
 	}, {redirect_uri: ((location.pathname.charAt(location.pathname.length-1)=='/') ? location.pathname.substring(0, location.pathname.length-1) : location.pathname), popup: {width: 800}});
-	document.getElementById("landsense-button").disabled=false;
+	document.getElementById("authenix-button").disabled=false;
 	document.getElementById("nextgeoss-button").disabled=false;
+	document.getElementById("wqems-button").disabled=false;
 }
 
 /* Called when Google Javascript API Javascript is loaded
@@ -1253,11 +1260,17 @@ function OmpleHelloAccessTokenIType(access_token_type)
 			var jwt = parseJwt(authResponse.id_token);
 	
 			// https://github.com/kjur/jsrsasign/wiki/Tutorial-for-JWT-verification
+			//if (access_token_type=="nextgeoss") -> antic SSO nextgeoos tornava el user_name en UTF8, ara ja no cal
+				//document.sign_in.user.value=decode_utf8(jwt.user_name);
 	
-			if (access_token_type=="nextgeoss")
-				document.sign_in.user.value=decode_utf8(jwt.user_name);  //Sembla que nextgeoss que ho diferent i envia el nom del utf8. En canvi landsense ho fa "normal".
-			else
+			if (jwt.user_name)
+				document.sign_in.user.value=jwt.user_name;
+			else if (jwt.name)
 				document.sign_in.user.value=jwt.name;
+			else if (jwt.preferred_username)
+				document.sign_in.user.value=jwt.preferred_username;
+			else
+				document.sign_in.user.value=jwt.sub; //subject
 			AccessToken = authResponse.access_token;
 			AccessTokenType = access_token_type;
 		}
@@ -1275,45 +1288,56 @@ function SignInNBNextGEOSS()
 	SignInNB();
 }
 
-function SignInNBLandSense()
+function SignInNBAuthenix()
 {
-	OmpleHelloAccessTokenIType("landsense");
+	OmpleHelloAccessTokenIType("authenix");
+	SignInNB();
+}
+
+function SignInNBWQeMS()
+{
+	OmpleHelloAccessTokenIType("wqems");
 	SignInNB();
 }
 
 function ValidaSSO(popup, f_callback, pending_ajax_req)
 {
-	if (AccessTokenType=="landsense")
+	if (AccessTokenType=="authenix")
 	{
-		ValidaSSOLandSense(popup, f_callback, pending_ajax_req);
+		ValidaSSOAuthenix(popup, f_callback, pending_ajax_req);
 		return;
 	}
 	if (AccessTokenType=="nextgeoss")
 	{
 		ValidaSSONextGEOSS(popup, f_callback, pending_ajax_req);
 		return;
+	}
+	if (AccessTokenType=="wqems")
+	{
+		ValidaSSOWQeMS(popup, f_callback, pending_ajax_req);
+		return;
 }
 }
 
 // Click on login button
-function ValidaSSOLandSense(popup, f_callback, pending_ajax_req)
+function ValidaSSOAuthenix(popup, f_callback, pending_ajax_req)
 {
-	document.getElementById("landsense-button").disabled=true;
+	document.getElementById("authenix-button").disabled=true;
 
-	hello("landsense").login({redirect_uri: location.pathname, scope: "openid profile email", display: (popup ? "popup" : "none")}).then(
+	hello("authenix").login({redirect_uri: location.pathname, scope: "openid profile email", display: (popup ? "popup" : "none")}).then(
 		function(success) {
 			//alert("success");
-			//console.log("Success login LandSense: " + success);
+			//console.log("Success login Authenix: " + success);
 			if (f_callback)
 				f_callback();
 			if (pending_ajax_req)
 				pending_ajax_req.doReqAutenticated();
-			document.getElementById("landsense-button").disabled=false;
+			document.getElementById("authenix-button").disabled=false;
 		},
 		// On error
 		function(error) {
-			alert(DonaCadenaJSON(Msg_LandSense_login_failed) + error.error.message);
-			document.getElementById("landsense-button").disabled=false;
+			alert(DonaCadenaJSON(Msg_Authenix_login_failed) + " " + error.error.message);
+			document.getElementById("authenix-button").disabled=false;
 		}
 	);
 }
@@ -1326,7 +1350,7 @@ function ValidaSSONextGEOSS(popup, f_callback, pending_ajax_req)
 	To make the situation worse, the automatically generated new token does not work in the server side, so I have to force reauthentification using 
 	'force: true'. Then, I cannot relay on the expiration of the new automatic token that I get from hello.getAutoResponse() and I will save the old 
 	expiration date and relay on it. (JM) 2018-07-05*/
-	hello("nextgeoss").login({redirect_uri: ((location.pathname.charAt(location.pathname.length-1)=='/') ? location.pathname.substring(0, location.pathname.length-1) : location.pathname), scope: "open_id profile email user_name", display: (popup ? "popup" : "none"), force: true}).then(
+	hello("nextgeoss").login({redirect_uri: ((location.pathname.charAt(location.pathname.length-1)=='/') ? location.pathname.substring(0, location.pathname.length-1) : location.pathname), scope: "openid profile email user_name", display: (popup ? "popup" : "none"), force: true}).then(
 		function(success) {
 			//alert("success");
 			//console.log("Success login NextGEOSS: " + success);
@@ -1339,8 +1363,31 @@ function ValidaSSONextGEOSS(popup, f_callback, pending_ajax_req)
 		},
 		// On error
 		function(error) {
-			alert(DonaCadenaJSON(Msg_NextGEOSS_login_failed) + error.error.message);
+			alert(DonaCadenaJSON(Msg_NextGEOSS_login_failed) + " " + error.error.message);
 			document.getElementById("nextgeoss-button").disabled=false;
+		}
+	);
+}
+
+// Click on login button
+function ValidaSSOWQeMS(popup, f_callback, pending_ajax_req)
+{
+	document.getElementById("wqems-button").disabled=true;
+
+	hello("wqems").login({redirect_uri: location.pathname, scope: "openid profile email", display: (popup ? "popup" : "none")}).then(
+		function(success) {
+			//alert("success");
+			//console.log("Success login WQeMS: " + success);
+			if (f_callback)
+				f_callback();
+			if (pending_ajax_req)
+				pending_ajax_req.doReqAutenticated();
+			document.getElementById("wqems-button").disabled=false;
+		},
+		// On error
+		function(error) {
+			alert(DonaCadenaJSON(Msg_WQeMS_login_failed) + " " + error.error.message);
+			document.getElementById("wqems-button").disabled=false;
 		}
 	);
 }
@@ -6927,7 +6974,7 @@ function AnalitzaMessage(event)
 <table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table-->
 <table style="width: 100%">
 	<tr><td align="center"><img src="NiMMbus.png" style="display: block;"><br><!--img src="nextgeoss36.png" style="display: block;"--></td><td align="center"><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr>
-	<tr><td align="center"><img src="Eiffel_logo_color_v1.png" width="200" style="display: block;"></td><td align="center"><img src="nextgeoss36.png" style="display: block;"></td></tr></table>
+	<tr><td align="center"><a href="https://www.eiffel4climate.eu/"><img src="Eiffel_logo_color_v1.png" width="200" style="display: block;"></a></td><td align="center"><a href="https://nextgeoss.eu/"><img src="nextgeoss36.png" style="display: block;"></a></td><td align="center"><a href="https://wqems.eu/"><img src="logowqems2.png" width="100" style="display: block;"></a></td><td align="center" width="80"></td></tr></table>
 <br>
 <table style="width: 100%">
 	<tr>
@@ -6990,8 +7037,9 @@ English</a>
 <div class="white-area" style="left: 50%; top: 130px; width: 306px;">
 <h2 id="front-signin-external-lang" class="white-area-title"></h2>
 <button id="nextgeoss-button" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);">NextGEOSS</button>
-<button id="landsense-button" class="submit_btn" disabled onClick="ValidaSSOLandSense(true, SignInNBLandSense, null);">LandSense</button>
+<button id="authenix-button" class="submit_btn" disabled onClick="ValidaSSOAuthenix(true, SignInNBAuthenix, null);">Authenix</button>
 <br>
+<button id="wqems-button" class="submit_btn" disabled onClick="ValidaSSOWQeMS(true, SignInNBWQeMS, null);">WQeMS</button>
 <button id="google-button" class="submit_btn" disabled onClick="ValidaSSOGoogle();">Google</button>
 <button id="sso-debug-button" class="submit_btn" disabled onClick="ValidaSSODebug();" style="display: none;">Debug</button>
 </div>
@@ -7014,7 +7062,7 @@ English</a>
 </span>
 
 <span style="left: 85%; top:5px; position: absolute;">
-<a target="_blank" href="help/help.htm"><img src="help.png" style="vertical-align: bottom;" /></a>
+<a target="NiMMbus_help" href="help/help.htm"><img src="help.png" style="vertical-align: bottom;" /></a>
 <a id="dropdown-settings" onClick="SwitchDropDownList('dropdown-settings', 'settings-list');" onMouseOver="document.getElementById('settings-tooltip').style.opacity='1';" onMouseOut="document.getElementById('settings-tooltip').style.opacity='0';">
 <img src="gear_icon.png" style="vertical-align: bottom;" />
 </a>

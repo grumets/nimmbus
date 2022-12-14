@@ -8,25 +8,30 @@
 
 			oauth: {
 				version: 2,
-				auth: "https://um.nextgeoss.eu/oxauth/restv1/authorize",
-				grant: "https://um.nextgeoss.eu/oxauth/restv1/token"
+				//auth: "https://um.nextgeoss.eu/oxauth/restv1/authorize",
+				//grant: "https://um.nextgeoss.eu/oxauth/restv1/token"
+				auth: "https://triple-a.services4eo.com/oxauth/restv1/authorize",
+				grant: "https://triple-a.services4eo.com/oxauth/restv1/token"
 			},
 
 			scope: {
 				openid: "openid",
-				profile: "profile"
+				profile: "profile",
+				user_name: "user_name"
 			},
 
 			login: function (p) {
-				p.qs.nonce = "12345";
-				p.qs.response_type = "token id_token";
+				p.qs.nonce = "12345";				
+				//p.qs.response_type = "token id_token"; 
+				p.qs.response_type = "id_token token";
 			},
 
 			logout: function (callback, o) {
 
 				if (o.options.force) {
 					var token = (o.authResponse || {}).access_token;
-					var revokeUrl = "https://um.nextgeoss.eu/oxauth/restv1/revoke";
+					//var revokeUrl = "https://um.nextgeoss.eu/oxauth/restv1/revoke";
+					var revokeUrl = "https://triple-a.services4eo.com/oxauth/restv1/revoke";
 
 					var xhr = new XMLHttpRequest();
 					xhr.open("POST", revokeUrl, true);
@@ -47,7 +52,8 @@
 				}
 			},
 
-			base: "https://um.nextgeoss.eu/oxauth/restv1/",
+			//base: "https://um.nextgeoss.eu/oxauth/restv1/",
+			base: "https://triple-a.services4eo.com/oxauth/",
 
 			get: {
 				me: "userinfo"
