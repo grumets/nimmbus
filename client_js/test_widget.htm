@@ -135,68 +135,87 @@ function ClearGUFDiv()
 
 <div id="front-page">
 	
-<div class="front-bg">
-<img src="topoorto.jpg" style="display: block;">
-</div>
+	<div class="front-bg">
+		<img src="cloudbackgroud.jpg" style="display: block;">
+	</div>
+	
+	<div class="front-welcome-frame">
+		<div class="front-welcome-text">
+			<h1 id="front-welcome-text-title" style="line-height: normal; margin: 10px;">Benvinguts al NiMMbus.</h1>
+			<p id="front-welcome-text-subtitle" style="margin: 10px"></p>
+			<br>
+			<table style="width: 90%; margin-top: 8%">
+				<tr>
+					<td style="text-align: center;"><a href="https://www.nimmbus.cat/"><img src="NiMMbus.png"></a></td>
+					<td style="text-align: center;"><a href="https://www.ogc.org/docs/is/"><img src="OGC_WPS_GUF.png" width="100"></a></td>
+				</tr>
+			</table>
+	
+			<table style="width: 100%; margin-top: 15%">
+				<tr>
+					<td style="text-align: center;"><a href="https://www.eiffel4climate.eu/"><img src="Eiffel_logo_color_v1.png" width="160"></a></td>
+					<td style="text-align: center;"><a href="https://nextgeoss.eu/"><img src="nextgeoss36.png"></a></td>
+					<td style="text-align: center;"><a href="https://wqems.eu/"><img src="logowqems2.png" width="100"></a></td>
+				</tr>
+			</table>		
+		</div>
+	
+		<div class="front-welcome-forms">
+			<div class="white-area" style="top: 105px; width: 326px">
+				<form name="form_guf" onSubmit="return LoadPreviousFeedback();">
+					<p class="packet_paragraph" id="sign_in_resource_type"></p>
+					<input name="rsc_type" value="the layer 'Corine Land Cover 2012'" size=40></input>
+					<p class="packet_paragraph" id="sign_in_title"></p>
+					<input name="title" value="Corine Land Cover 2012" size=40></input>
+					<p class="packet_paragraph" id="sign_in_code"></p>
+					<input name="code" value="clc-2012" size=40></input>
+					<p class="packet_paragraph" id="sign_in_codespace"></p>
+					<input name="codespace" value="https://land.copernicus.eu" size=40></input><br>
+					<br>
+					<input id="sign_in_btn" class="submit_btn" type="submit">
+					<input id="clear_btn" class="submit_btn" type="button" onClick="ClearGUFDiv()">
+				<form>
+			</div>
+			<div id="div_guf" class="white-area" style="top: 410px; width: 326px;"></div>
+		</div>
+				
+	</div>
 
-<div class="front-welcome-text">
-<h1 id="front-welcome-text-title" style="line-height: normal; margin: 0px">Benvinguts al NiMMbus.</h1>
-<p id="front-welcome-text-subtitle" style="margin: 10px"></p>
-<br>
-<img src="NiMMbus.png" style="display: block;">
-<table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table>
-<br>
-<table style="width: 100%">
-	<tr>
-	<td style="text-align: left; width: 26%"><p class="front-conditions-text"><a id="welcome-terms_of_use" href="TermsOfUse.htm" style="color: #CCD6DD">Terms_of_use</a></p></td>
-	<td style="text-align: center; width: 39%"><p class="front-conditions-text"><a id="welcome-privacy_statement" href="PrivacyStatement.htm" style="color: #CCD6DD">Privacy_Statement</a></p></td>
-	<td style="text-align: right; width: 35%""><p class="front-conditions-text" id="welcome-mail-contact">contact</p></td>
-	</tr>
-	<tr>
-	<td style="text-align: left; width: 26%"><p class="front-conditions-text"><a id="welcome-access_policy" href="AccessPolicy.htm" style="color: #CCD6DD">Access_Policy</a></p></td>
-	<td style="text-align: center; width: 39%"><p id="welcome-last_updated" class="front-conditions-text"><i>Last_updated_October_2_2018</i></p></td>
-	<td style="text-align: right; width: 35%"><p class="front-conditions-text"><a href="mailto:contacte@miramon.uab.cat" style="color: #CCD6DD">contacte@miramon.uab.cat</a></p></td>
-	</tr></table>
-</div>
+	<div class="terms-welcome-front">
+		<table style="width: 100%">
+			<tr>
+				<td style="text-align: left; width: 12%"><p class="front-conditions-text"><a id="welcome-terms_of_use" href="TermsOfUse.htm" style="color: #999999;">Terms_of_use</a></p></td>
+				<td style="text-align: center; width: 18%"><p class="front-conditions-text"><a id="welcome-privacy_statement" href="PrivacyStatement.htm" style="color: #999999">Privacy_Statement</a></p></td>
+				<td style="text-align: center; width: 18%"><p class="front-conditions-text"><a id="welcome-access_policy" href="AccessPolicy.htm" style="color: #999999">Access_Policy</a></p></td>
+				<td style="text-align: center; width: 16%"><p class="front-conditions-text"><a id="welcome-mail-contact" href="mailto:contacte@miramon.uab.cat" style="color: #999999">contacte@miramon.uab.cat</a></p></td>
+				<td style="text-align: right; width: 18%;"><p id="welcome-last_updated" class="front-conditions-text" style="color: #999999"><i>Last_updated_October_2_2018</i></p></td>
+			</tr>
+		</table>
+		<br>
+	
+	</div>
+	
+	
 
-<div class="front-language">
-<a class="dropdown-language" id="dropdown-language" onClick="SwitchDropDownList('dropdown-language', 'front-language-list');">
-<span id="front-language-lang">
-Language: English
-</span>
-<b class="caret"></b>
-</a>
-</div>
+		
 
-<div id="front-language-list" class="dropdown-list" style="left: 85%; top: 70px; width: 70px; height: 70px;">
-<div class="dropdown-caret">
-<span class="caret-outer"></span>
-<span class="caret-inner"></span>
-</div>
-<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(0);SwitchDropDownList('dropdown-language', 'front-language-list');">
-Català</a>
-<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(1);SwitchDropDownList('dropdown-language', 'front-language-list');">
-Español</a>
-<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(2);SwitchDropDownList('dropdown-language', 'front-language-list');">
-English</a>
-</div>
+	<div id="front-language-list" class="dropdown-list" style="left: 85%; top: 70px; width: 70px; height: 70px;">
+		<div class="dropdown-caret">
+			<span class="caret-outer"></span>
+			<span class="caret-inner"></span>
+		</div>
+		<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(0);SwitchDropDownList('dropdown-language', 'front-language-list');">Català</a>
+		<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(1);SwitchDropDownList('dropdown-language', 'front-language-list');">Español</a>
+		<a class="dropdown-list_active" onClick="ChangeLanguageReloadPreviousFeedbackIfNeeded(2);SwitchDropDownList('dropdown-language', 'front-language-list');">English</a>
+	</div>
+	
+	<div class="front-language">
+		<a class="dropdown-language" id="dropdown-language" onClick="SwitchDropDownList('dropdown-language', 'front-language-list');">
+		<span id="front-language-lang">Language: English</span>
+		<b class="caret"></b>
+		</a>
+	</div>
 
-<div class="white-area" style="left: 50%; top: 130px; width: 300px; height: 80px;">
-<form name="form_guf" onSubmit="return LoadPreviousFeedback();">
-<p class="packet_paragraph" id="sign_in_resource_type"></p>
-<input name="rsc_type" value="the layer 'Corine Land Cover 2012'" size=50></input>
-<p class="packet_paragraph" id="sign_in_title"></p>
-<input name="title" value="Corine Land Cover 2012" size=50></input>
-<p class="packet_paragraph" id="sign_in_code"></p>
-<input name="code" value="clc-2012" size=50></input>
-<p class="packet_paragraph" id="sign_in_codespace"></p>
-<input name="codespace" value="https://land.copernicus.eu" size=50></input><br>
-<br>
-<input id="sign_in_btn" class="submit_btn" type="submit"><input id="clear_btn" class="submit_btn" type="button" onClick="ClearGUFDiv()")>
-<form>
-</div>
-
-<div id="div_guf" class="white-area" style="left: 10%; top: 570px; width: 60%;"></div>
 </div>  <!--End of id="front-page" -->
 
 </body>

@@ -46,6 +46,7 @@
 var LanguagesNB=["cat","spa","eng"];
 var ActiveLanguage=2;
 var Terms_and_Privacy_Last_Updated="15-03-2021";
+var Client_Last_Updated="01-02-2023";
 
 //Global message variables start by "Msg_" 
 var Msg_NiMMbus={cat: "NiMMbus", spa: "NiMMbus", eng: "NiMMbus"};
@@ -159,7 +160,7 @@ var Msg_Reference_documents={cat: "Document(s) de referencia que exposa el probl
 var Msg_List_available_citations={cat: "Llista de citacions disponibles", spa: "Lista de citations disponibles", eng: "List of available citations"};
 var Msg_Citation_already_related={cat: "Citació actualment ja relacionada amb aquesta valoració.", spa: "Citación actualmente ya relacionada con esta valoración.", eng: "Citation already related with this feedback item."};
 var Msg_Fixed_Resource={cat: "Nova versió del recurs(os) valorat(s) amb el problema descobert solucionat", spa: "Nueva versión del recurso(s) valorado(s) con el problema descubierto solucionado", eng: "New version of the target resource(s) with the known problem fixed"};
-var Msg_Alternative_Resource={cat: "Recurs(os) alternatiu(s) que es poden usar enlloc del recurs(os) valorat(s) i que no presenten el problema descobert", spa: "Recurso(s) alternativos que se pueden usar en lugar del recurso(s) valorado(s) y que no presentan el problema descubierto", eng: "Alternative resource(s) thath can be used instead of the target resource(s) and does not present the known problem"};
+var Msg_Alternative_Resource={cat: "Recurs(os) alternatiu(s) que es poden usar enlloc del recurs(os) valorat(s) i que no presenten el problema descobert", spa: "Recurso(s) alternativos que se pueden usar en lugar del recurso(s) valorado(s) y que no presentan el problema descubierto", eng: "Alternative resource(s) that can be used instead of the target resource(s) and does not present the known problem"};
 var Msg_Additional_documentation={cat: "Documentació addicional que descriu l'ús del(s) recurs(os) valorats", spa: "Documentación adicional que describe el uso del recurso(s) valorado(s)", eng: "Additional documentation describing the usage of the target resource(s)"};
 
 var Msg_Target_without_NiMMbus_id={cat: "Un dels recursos valorats no té identificador de recurs de NiMMbus.", spa: "Uno de los recursos valorador no tiene identificador de recurso de NiMMbus.", eng: "One of target resources in this feedback does not have NiMMbus resource identifier."};
@@ -263,7 +264,31 @@ var Msg_NiMMbus_Resources={cat: "NiMMbus: Recursos", spa: "NiMMbus: Recursos", e
 var Msg_NiMMbus_ResourcesSelector={cat: "NiMMbus: Selector de recursos", spa: "NiMMbus: Selector de recursos", eng: "NiMMbus: Resource selector"};
 var Msg_NiMMbus_Feedbacks={cat: "NiMMbus: Valoracions", spa: "NiMMbus: Valoraciones", eng: "NiMMbus: Feedbacks"};
 var Msg_NiMMbus_Share={cat: "NiMMbus: Compartir", spa: "NiMMbus: Compartir", eng: "NiMMbus: Share"};
+var Msg_NiMMbus_Scope={cat: "NiMMbus: Abast", spa: "NiMMbus: Alcance", eng: "NiMMbus: Scope"};
 var Msg_Not_implemented_yet={cat: "Ho sentim, no implementat encara", spa: "Lo sentimos, no implementado aún", eng: "Sorry, not implemented yet"};
+
+var Msg_Press_select_choose_citation={cat: "Prem [Seleccionar] per a escollir una nova cita.", spa: "Presione [Seleccionar] para escoger una nueva cita.", eng: "Press [Select] to choose a new citation."};
+var Msg_Press_select_choose_publication={cat: "Prem [Seleccionar] per a escollir una nova publicació.", spa: "Presione [Seleccionar] para escoger una nueva publicació.", eng: "Press [Select] to choose a new publication."};
+var Msg_indicates_citation_not_shared={cat: "indica que la cita no està compartida amb tothom.", spa: "indica que la cita no está compartida con todos.", eng: "indicates that the citation is not shared to everyone."};
+var Msg_indicates_publication_not_shared={cat: "indica que la publicació no està compartida amb tothom.", spa: "indica que la publicació no está compartida con todos.", eng: "indicates that the publication is not shared to everyone."};
+
+var Msg_asterisk_for_mandatory_elements={cat:'<span class="mandatory_txt"><b>&nbsp*</b></span>', spa:'<span class="mandatory_txt"><b>&nbsp*</b></span>', eng:'<span class="mandatory_txt"><b>&nbsp*</b></span>'};
+var Msg_mandatory_elements={cat:'<span>* camps obligatoris</span>', spa:'<span>* campos obligatorios</span>', eng:'<span>* mandatory elements</span>'};
+
+var Msg_PoI_Lat={cat: "Latitud", spa: "Latitud", eng: "Latitude"};
+var Msg_PoI_Lon={cat: "Longitud", spa: "Longitud", eng: "Longitude"};
+var Msg_Individual_Name={cat: "Nom de l'individu", spa: "Nombre del individuo", eng: "Individual name"};
+var Msg_Org_Name={cat: "Nom de la organització", spa: "Nombre de la organización", eng: "Organism name"};
+var Msg_Abstract={cat: "Resum", spa: "Resumen", eng: "Abstract"};
+
+var Msg_Mimetype_types={cat: "Per exemple: image/gif", spa: "Por ejemplo: image/gif", eng: "For example: image/gif"};
+var Msg_Mimetype_list={cat: "Llistat de tipus MIME", spa: "Lista de tipos MIME", eng: "MIME type list"};
+var Msg_Confirma_Mime={cat: "El MIME introduït és desconegut. Estàs segur que vols continuar?", spa: "El MIME insertado es desconocido. ¿Seguro que quiere continuar?", eng: "The inserted MIME is unknown. Are you sure you want to continue?"};
+
+var Msg_Scope={cat: "Àmbit de Valoració", spa: "Ámbito de Valoración", eng: "Feedback's Scope"};
+var Msg_Modify_Scope={cat: "Modifica l'àmbit referent a aquesta valoració", spa: "Modifica el ámbito referente a esta valoración", eng: "Modify this feedback's scope"};
+var Msg_New_Scope={cat: "Nou Àmbit de Valoració", spa: "Nuevo Ámbito de Valoración", eng: "New Feedback's Scope"};
+var Msg_For_example_={cat: "Per exemple:", spa: "Por ejemplo:", eng: "For example:"};
 
 //Needed for Test_*.html
 var Msg_NiMMbus_Test_Pages={cat: "Tests de NiMMbus", spa: "Tests de NiMMbus", eng: "NiMMbus test pages"};
@@ -311,7 +336,6 @@ var l_msg_Close_Tancar={cat: "Tancar", spa: "Cerrar", eng: "Close"};
 var l_msg_Close_SignOut={cat: "Sortir", spa: "Salir", eng: "Sign out"};
 var l_msg_All={cat: "Tots", spa: "Todos", eng: "All"};
 var l_msg_Other={cat: "Altres", spa: "Otros", eng: "Other"};
-
 var l_msg_Resources={cat: "Recursos:", spa: "Recursos:", eng: "Resources:"};
 var l_msg_Owned_and_shared_with_me={cat: "Propis i compartits amb mi", spa: "Propios i compartidos conmigo", eng: "Owned and shared with me"};
 var l_msg_Only_Owned={cat: "Només els propis", spa: "Sólo los propios", eng: "Only if owned"};
@@ -323,13 +347,12 @@ var l_msg_Share_to_everyone_for_reading={cat: "Compartir amb tothom per llegir",
 //var l_msg_Filter_by_owner_={cat: "Filtrar per propietari:", spa: "Filtrar por propietario:", eng: "Filter by owner:"};
 var l_msg_see_newer_resources={cat: "Veure recursos més nous", spa: "Ver recursos más nuevos", eng: "See newer resources"};
 var l_msg_see_older_resources={cat: "Veure recursos més antics", spa: "Ver recursos más antiguos", eng: "See older resources"};
-var l_msg_For_example_={cat: "Per exemple:", spa: "Por ejemplo:", eng: "For example:"};
 var l_msg_Motivation={cat: "Motivació", spa: "Motivación", eng: "Motivation"};
 var l_msg_Reason_why={cat: "Motiu pel qual el recurs resulta rellevant", spa: "Motivo por el cual el recurso resulta relevante", eng: "Reason why the resource is relevant"};
 var l_msg_Discard={cat: "Descartar", spa: "Descartar", eng: "Discard"};
 var l_msg_Add={cat: "Afegir", spa: "Añadir", eng: "Add"};
 var l_msg_Select={cat: "Seleccionar", spa: "Seleccionar", eng: "Select"};
-var l_msg_Abstract={cat: "Resum", spa: "Resumen", eng: "Abstract"};
+//var l_msg_Abstract={cat: "Resum", spa: "Resumen", eng: "Abstract"};
 var l_msg_Resource_Edition={cat: "Edició del recurs", spa: "Edición del recurso", eng: "Resource edition"};
 var l_msg_Edition={cat: "Edició", spa: "Edición", eng: "Edition"};
 var l_msg_Version_of_the_resource={cat: "Versió del recurs citat", spa: "Versión del recurso citado", eng: "Version of the cited resource"};
@@ -359,27 +382,63 @@ var l_msg_Detailed_description_onlineresource_eg_={cat: "Descripció detallada de
 var l_msg_URL_function={cat: "Funció URL", spa: "Función URL", eng: "URL Function"};  
 var l_msg_URL_function_eg_={cat: "Funció del recurs en línia. P. ex.:", spa: "Función del recurso en línea. P. ex.:", eng: "Function of the link. E.g.:"};
 
-var l_msg_Press_select_choose_citation={cat: "Prem [Seleccionar] per a escollir una nova cita.", spa: "Presione [Seleccionar] para escoger una nueva cita.", eng: "Press [Select] to choose a new citation."};
-var l_msg_indicates_citation_not_shared={cat: "indica que la cita no està compartida amb tothom.", spa: "indica que la cita no está compartida con todos.", eng: "indicates that the citation is not shared to everyone."};
-var l_msg_Press_select_choose_publication={cat: "Prem [Seleccionar] per a escollir una nova publicació.", spa: "Presione [Seleccionar] para escoger una nueva publicació.", eng: "Press [Select] to choose a new publication."};
-var l_msg_indicates_publication_not_shared={cat: "indica que la publicació no està compartida amb tothom.", spa: "indica que la publicació no está compartida con todos.", eng: "indicates that the publication is not shared to everyone."};
-
 var l_msg_Verify_pwd={cat: "Validació de contrasenya", spa: "Validación de contraseña", eng: "Verify password"};
 var l_msg_Repeat_password={cat: "Cal que tornis a escriure la teva contrasenya nova.", spa: "Debes repetir la nueva contraseña.", eng: "You need to repeat your new password."};
 var l_msg_New_Pwd={cat: "Contrasenya nova", spa: "Contraseña nueva", eng: "New password"};
 var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Email"};
+
+var l_msg_Define_Scope={cat: "Introdueix l'àmbit referent a aquesta valoració", spa: "Introduce el ámbito referente a esta valoración", eng: "Define this feedback's scope"};
+
+var l_msg_Min_Lat={cat: "Latitud mínima", spa: "Latitud mínima", eng: "Minimum latitude"};
+var l_msg_Max_Lat={cat: "Latitud màxima", spa: "Latitud màxima", eng: "Maximum latitude"};
+var l_msg_Min_Lon={cat: "Longitud mínima", spa: "Longitud mínima", eng: "Minimum longitude"};
+var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud màxima", eng: "Maximum longitude"};
 	
 		
 	ActiveLanguage=lang;
+	
+	/* setting attribute "title" for onhover description of left panel "create resources" and "main top bar" buttons */
+	/* OG 20221102*/
+	document.getElementById("new-resource-href").title=DonaCadenaJSON(Msg_New_Hyperlink);
+	document.getElementById("new-resource-poi").title=DonaCadenaJSON(Msg_New_PoI);
+	document.getElementById("new-resource-citation").title=DonaCadenaJSON(Msg_New_citation);
+	document.getElementById("new-resource-publication").title=DonaCadenaJSON(Msg_New_publication);
+	document.getElementById("new-resource-individual").title=DonaCadenaJSON(Msg_New_individual);
+	document.getElementById("new-resource-organism").title=DonaCadenaJSON(Msg_New_organism);
+		
+	document.getElementById("dropdown-settings").title=DonaCadenaJSON({cat: "Configuració", spa: "Configuración", eng: "Settings"});
+	document.getElementById("NiMMbus_help").title=DonaCadenaJSON({cat: "Ajuda", spa: "Ayuda", eng: "Help"});
+	document.getElementById("NiMMbus_home").title=DonaCadenaJSON({cat: "Inici", spa: "Inicio", eng: "Home"});
+	/*end*/
+	
+	/* setting attribute "title" for onhover description of "next page" and "previous page" buttons */
+	/* OG 20221103*/
+	document.getElementById("newer-resources_btn").title=DonaCadenaJSON(l_msg_see_newer_resources);
+	document.getElementById("older-resources_btn").title=DonaCadenaJSON(l_msg_see_older_resources);
+	document.getElementById("newer-resource-selector_btn").title=DonaCadenaJSON(l_msg_see_newer_resources);
+	document.getElementById("older-resource-selector_btn").title=DonaCadenaJSON(l_msg_see_older_resources);
+	/*end*/
+	
+	/*msg SCOPE */
+	document.getElementById("scope-subtitle-text").innerHTML=DonaCadenaJSON(l_msg_Define_Scope);
+	document.getElementById("max-lat-scope_screen").innerHTML=DonaCadenaJSON(l_msg_Max_Lat);
+	document.getElementById("max-long-scope_screen").innerHTML=DonaCadenaJSON(l_msg_Max_Lon);
+	document.getElementById("min-long-scope_screen").innerHTML=DonaCadenaJSON(l_msg_Min_Lon);
+	document.getElementById("min-lat-scope_screen").innerHTML=DonaCadenaJSON(l_msg_Min_Lat);
+	document.getElementById("bbox-scope_descrip").innerHTML=DonaCadenaJSON({cat: "Coordenades en graus", spa: "Coordenadas en grados", eng: "Coordinates in degrees"})+". "+DonaCadenaJSON(Msg_For_example_)+" 2.05764, "+"2.09929, "+"41.4886, "+"41.5137";
+	document.getElementById("GMLpolygon-scope_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_) + '<br>' + '&ltgml:Polygon srsName="EPSG:4326"&gt' + '<br>&emsp;' + '&ltgml:exterior&gt'+ '<br>&emsp;&emsp;' +'&ltgml:LinearRing&gt'+ '<br>&emsp;&emsp;&emsp;' +'&ltgml:posList srsDimension="2"&gt'+ '<br>&emsp;&emsp;&emsp;&emsp;' +'41.81 1.46 41.81 2.73 40.88 2.73 40.88 1.46 41.81 1.46'+ '<br>&emsp;&emsp;&emsp;' +'&lt/gml:posList&gt'+ '<br>&emsp;&emsp;' +'&lt/gml:LinearRing&gt'+ '<br>&emsp;' +'&lt/gml:exterior&gt'+ '<br>' +'&lt/gml:Polygon&gt';
+	document.getElementById("GMLpol-scope_screen").innerHTML=DonaCadenaJSON({cat: "Poligon GML", spa: "Polígono GML", eng: "GML polygon"});
+	document.getElementById("bbox-scope_screen").innerHTML=DonaCadenaJSON({cat: "Envolupant", spa: "Envolvente", eng: "Bounding box"});
 
+	
 	document.getElementById("head_title").innerHTML=DonaCadenaJSON(Msg_NiMMbus_login);
 	document.getElementById("front-welcome-text-title").innerHTML=DonaCadenaJSON(Msg_Welcome_NiMMbus);
 	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON(Msg_EO_everywhere_Share);
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
-	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Client_Last_Updated+"</i>";	
 	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
-	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
+	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte);
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
 	
 	document.getElementById("front-signin-nimmbus-lang").innerHTML=DonaCadenaJSON({cat: "Identificació usuaris NiMMbus", spa: "Identificación usuarios NiMMbus", eng: "Login with NiMMbus user"});
@@ -396,7 +455,7 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 
 	document.getElementById("front-signin-external-lang").innerHTML=DonaCadenaJSON({cat: "Identificació via federacions externes", spa: "Identificación vía federaciones externas", eng: "Login with external federations"});
 
-	document.getElementById("settings-tooltip-text").innerHTML=DonaCadenaJSON({cat: "Configuració", spa: "Configuración", eng: "Settings"});
+	//document.getElementById("settings-tooltip-text").innerHTML=DonaCadenaJSON({cat: "Configuració", spa: "Configuración", eng: "Settings"});
 	document.getElementById("settings-profile").innerHTML=DonaCadenaJSON({cat: "Perfil", spa: "Perfil", eng: "Profile"});
 	document.getElementById("settings-signout").innerHTML=DonaCadenaJSON(l_msg_Close_SignOut);
 
@@ -416,28 +475,34 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("href-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Hyperlink);
 	document.getElementById("poi-resource-type-value").innerHTML=DonaCadenaJSON(Msg_PoI);	
 	
-	document.getElementById("selector-owner-type_screen").innerHTML=DonaCadenaJSON(l_msg_Resources);
+	document.getElementById("selector-owner-type_screen").innerHTML=DonaCadenaJSON({cat: "Propietats:", spa: "Propiedades:", eng: "Properties:"});
 	document.getElementById("all-selector-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_Owned_and_shared_with_me);
 	document.getElementById("me-selector-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_Only_Owned);
 	document.getElementById("others-selector-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_Only_Shared_me);
 	document.getElementById("open-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_Only_Shared_everyone);
-		
-	document.getElementById("owner-type_screen").innerHTML=DonaCadenaJSON(l_msg_Resources);
+	
+	document.getElementById("owner-type_screen").innerHTML=DonaCadenaJSON({cat: "Propietats:", spa: "Propiedades:", eng: "Properties:"});
 	document.getElementById("all-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_Owned_and_shared_with_me);
 	document.getElementById("me-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_Only_Owned);
 	document.getElementById("others-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_Only_Shared_me);
 	document.getElementById("open-selector-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_Only_Shared_everyone);
+	
+	document.getElementById("selector-resource-type_screen").innerHTML=DonaCadenaJSON({cat: "Filtrar per tipus:", spa: "Filtrar por tipo:", eng: "Filter by type:"});
+	document.getElementById("all-selector-resource-type-value").innerHTML=DonaCadenaJSON(l_msg_All);
+	document.getElementById("feedback-selector-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Feedback);
+	document.getElementById("citation-selector-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Citation);
+	document.getElementById("publicat-selector-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Publication);
+	document.getElementById("individual-selector-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Individual);
+	document.getElementById("organism-selector-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Organism);
+	document.getElementById("href-selector-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Hyperlink);
+	document.getElementById("poi-selector-resource-type-value").innerHTML=DonaCadenaJSON(Msg_PoI);	
 
-	document.getElementById("newer-resources-tooltip-text").innerHTML=DonaCadenaJSON(l_msg_see_newer_resources);
-	document.getElementById("older-resources-tooltip-text").innerHTML=DonaCadenaJSON(l_msg_see_older_resources);
-	document.getElementById("newer-resource-selector-tooltip-text").innerHTML=DonaCadenaJSON(l_msg_see_newer_resources);
-	document.getElementById("older-resource-selector-tooltip-text").innerHTML=DonaCadenaJSON(l_msg_see_older_resources);
 	//document.getElementById("resources-hits-text").innerHTML="<small>"+DonaCadenaJSON(Msg_Use_New_button_to_create_resources)+"</small>"; -> ja es fa quan toca
 	document.getElementById("resource-selector-hits-text").innerHTML="";
 	
 	document.getElementById("left-pannel-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("left-pannel-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
-	document.getElementById("left-pannel-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+":<br>"+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("left-pannel-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+":<br>"+Client_Last_Updated+"</i>";	
 
 	for (var i=0; i<resources_per_page; i++)
 	{
@@ -449,10 +514,8 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 			document.getElementById("tag-resource-"+i).innerHTML=DonaCadenaJSON(Msg_Tag);
 	}
 	
-	document.getElementById("title-href-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
-	document.getElementById("title-href-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Rius de Catalunya", spa: "Ríos de Cataluña", eng: "Catalonia rivers"});
-	document.getElementById("href-href-resource_screen").innerHTML=DonaCadenaJSON(Msg_Hyperlink);
-	document.getElementById("href-href-resource_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"http://www.gencat.net/mediamb/sig/bases/rius.mmz";
+	document.getElementById("title-href-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+DonaCadenaJSON({cat: "Rius de Catalunya", spa: "Ríos de Cataluña", eng: "Catalonia rivers"});
+	document.getElementById("href-href-resource_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"http://www.gencat.net/mediamb/sig/bases/rius.mmz";
 	document.getElementById("mimetype-href-resource_screen").innerHTML=DonaCadenaJSON({cat: "Format", spa: "Formato", eng: "Format"});
 	document.getElementById("other-mimetype-href-resource_value").innerHTML=DonaCadenaJSON(l_msg_Other);
 	document.getElementById("mimetype-href-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Format del fitxer al qual apunta l'hiperenllaç", spa: "Formato del fichero al que apunta el hiperenlace", eng: "File format of the Hyperlink target"});
@@ -461,20 +524,28 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("href-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_Hyperlink);
 	document.getElementById("href-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
 	document.getElementById("href-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+	
+	document.getElementById("open-data-href-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
+	document.getElementById("open-data-href-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquest hiperenllaç amb tothom", spa: "Compartir este hiperenlace con todos", eng: "If check this hyperlink will be visible to everyone"});
 
 	document.getElementById("poi-gps-resource_btn").value=DonaCadenaJSON({cat: "Obtenir del dispositiu", spa: "Obtener del dispositivo", eng: "Get it from the device"});
 	document.getElementById("title-poi-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
-	document.getElementById("title-poi-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Aplec de la sardana", spa: "Feria de abril", eng: "Olympic games stadium"});
-	document.getElementById("long-poi-resource_screen").innerHTML=DonaCadenaJSON({cat: "Longitud", spa: "Longitud", eng: "Longitude"});
-	document.getElementById("long-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Longitud en graus", spa: "Longitud en grados", eng: "Longitude in degrees"})+". "+DonaCadenaJSON(l_msg_For_example_)+" "+"3.25656";
-	document.getElementById("lat-poi-resource_screen").innerHTML=DonaCadenaJSON({cat: "Latitud", spa: "Latitud", eng: "Latitude"});
-	document.getElementById("lat-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Latitud en graus", spa: "Latitud en grados", eng: "Latitude in degrees"})+". "+DonaCadenaJSON(l_msg_For_example_)+" "+"41.3389";
+	document.getElementById("title-poi-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+DonaCadenaJSON({cat: "Aplec de la sardana", spa: "Feria de abril", eng: "Olympic games stadium"});
+	//document.getElementById("long-poi-resource_screen").innerHTML=DonaCadenaJSON(Msg_PoI_Lon);
+	document.getElementById("long-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Longitud en graus", spa: "Longitud en grados", eng: "Longitude in degrees"})+". "+DonaCadenaJSON(Msg_For_example_)+" "+"3.25656";
+	//document.getElementById("lat-poi-resource_screen").innerHTML=DonaCadenaJSON(Msg_PoI_Lat);
+	
+	document.getElementById("lat-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Latitud en graus", spa: "Latitud en grados", eng: "Latitude in degrees"})+". "+DonaCadenaJSON(Msg_For_example_)+" "+"41.3389";
 	document.getElementById("pos-accur-poi-resource_screen").innerHTML=DonaCadenaJSON(Msg_Accuracy);
-	document.getElementById("pos-accur-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Exactitud posicional preferiblement en m", spa: "Exactitud posicional preferiblemente en m", eng: "Positional accuracy, if possible in m"})+". "+DonaCadenaJSON(l_msg_For_example_)+" "+"25m";
+	document.getElementById("pos-accur-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Exactitud posicional preferiblement en m", spa: "Exactitud posicional preferiblemente en m", eng: "Positional accuracy, if possible in m"})+". "+DonaCadenaJSON(Msg_For_example_)+" "+"25m";
 	document.getElementById("elevation-poi-resource_screen").innerHTML=DonaCadenaJSON({cat: "Elevació", spa: "Elevación", eng: "Elevation"});
-	document.getElementById("elevation-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Elevació en metres", spa: "Elevación en metros", eng: "Elevation in meters"})+". "+DonaCadenaJSON(l_msg_For_example_)+" "+"123.4";
+	document.getElementById("elevation-poi-resource_descrip").innerHTML=DonaCadenaJSON({cat: "Elevació en metres", spa: "Elevación en metros", eng: "Elevation in meters"})+". "+DonaCadenaJSON(Msg_For_example_)+" "+"123.4";
 	document.getElementById("reason-poi-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Motivation);
 	document.getElementById("reason-poi-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Reason_why);
+	
+	document.getElementById("open-data-poi-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
+	document.getElementById("open-data-poi-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquest punt d'interès amb tothom", spa: "Compartir este punto de interés con todos", eng: "If check this point of interest will be visible to everyone"});
+	
 	document.getElementById("poi-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_PoI);
 	document.getElementById("poi-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
 	document.getElementById("poi-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
@@ -486,8 +557,9 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 
 	//document.getElementById("title-feedback-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
 	//document.getElementById("title-feedback-resource_screen").innerHTML="Descriptor";//DonaCadenaJSON({cat: "Descriptor", spa: "Descriptor", eng: "Descriptor"}););
-	//document.getElementById("title-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Bon servidor de mapes", spa: "Buen servidor de mapas", eng: "Good map server"});
-	document.getElementById("abstract-feedback-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Abstract);
+	//document.getElementById("title-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+DonaCadenaJSON({cat: "Bon servidor de mapes", spa: "Buen servidor de mapas", eng: "Good map server"});
+	
+	//document.getElementById("abstract-feedback-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Abstract);
 	document.getElementById("abstract-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Descripció textual curta de la valoració", spa: "Descripción textual corta de la valoración", eng: "Brief narrative description of the feedback item"});
 	document.getElementById("reason-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Propòsit", spa: "Propósito", eng: "Purpose"});
 	document.getElementById("reason-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Propòsit", spa: "Propósito", eng: "Purpose"});
@@ -545,7 +617,7 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("response-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Resposta a les limitacions determinades per l'usuari", spa: "Respuesta a las limitaciones determinadas por el usuario", eng: "Response to the user-determined limitations"});	
 	document.getElementById("add-doc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Additional_documentation);
 	document.getElementById("add-doc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
-	document.getElementById("add-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_citation_not_shared);
+	document.getElementById("add-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(Msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(Msg_indicates_citation_not_shared);
 
 	document.getElementById("reprodUsage-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Ús reproduïble", spa: "Uso reproducible", eng: "Reproducible usage"});
 	document.getElementById("reprodUsage-code-resource_screen").innerHTML=DonaCadenaJSON({cat: "Codi o sentència d'execució (text)", spa: "Código o sentencia de ejecución (texto)", eng: "Code or execution sentence (text)"});	
@@ -587,21 +659,21 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("work-around-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Possible manera de solucionar el problema", spa: "Posible manera de solucionar el problema", eng: "Possible way to work around the problem"});
 	document.getElementById("ref-doc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Reference_documents);
 	document.getElementById("ref-doc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
-	document.getElementById("ref-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_publication)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_publication_not_shared);	
+	document.getElementById("ref-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(Msg_Press_select_choose_publication)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(Msg_indicates_publication_not_shared);	
 	document.getElementById("expected-fix-date-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Data esperada de solució", spa: "Fecha esperada de solución", eng: "Expected fix date"});	
 	document.getElementById("expected-fix-date-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Data prevista per la distribució d'una solució pel part del proveïdor del recurs", 
 			spa: "Fecha prevista para la distribución de una solución por parte del proveedor del recurso", eng: "Expected date for a solution to be released by the resource provider"});	
 	document.getElementById("fix-rsrc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Fixed_Resource);
 	document.getElementById("fix-rsrc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
-	document.getElementById("fix-rsrc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_citation_not_shared);
+	document.getElementById("fix-rsrc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(Msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(Msg_indicates_citation_not_shared);
 	document.getElementById("alt-rsrc-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Alternative_Resource);
 	document.getElementById("alt-rsrc-feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
-	document.getElementById("alt-rsrc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_citation_not_shared);
+	document.getElementById("alt-rsrc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(Msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(Msg_indicates_citation_not_shared);
 
 	document.getElementById("public-feedback-resource").innerHTML=DonaCadenaJSON(Msg_Related_Publications);
 	//document.getElementById("public_feedback-resource_compact_screen").innerHTML=DonaCadenaJSON({cat: "Publicació(ns)", spa: "Publicación(es)", eng: "Publication(s)"});
 	document.getElementById("public_feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
-	document.getElementById("public_feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(l_msg_Press_select_choose_publication)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(l_msg_indicates_publication_not_shared);
+	document.getElementById("public_feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(Msg_Press_select_choose_publication)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(Msg_indicates_publication_not_shared);
 
 	document.getElementById("open-data-feedback-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
  	document.getElementById("open-data-feedback-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquesta valoració (i els recursos associats) amb tothom", spa: "Compartir esta valoración (y los recursos asociados) con todos", eng: "If check this feedback (and related resources) will be visible to everyone"});
@@ -610,8 +682,14 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("feedback-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
 	document.getElementById("feedback-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
 
-	document.getElementById("title-citation-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
-	document.getElementById("title-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+DonaCadenaJSON({cat: "Mapa Cobertes del Sòl de Catalunya", spa: "Sistema de Información sobre Ocupación del Suelo de España", eng: "Corine Land Cover 2012"});
+	document.getElementById("scope-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_Scope);
+	document.getElementById("scope-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
+	document.getElementById("scope-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+	document.getElementById("scope_btn").value=DonaCadenaJSON(Msg_Save_changes);
+
+
+	//document.getElementById("title-citation-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+	document.getElementById("title-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+DonaCadenaJSON({cat: "Mapa Cobertes del Sòl de Catalunya", spa: "Sistema de Información sobre Ocupación del Suelo de España", eng: "Corine Land Cover 2012"});
 		
 	document.getElementById("edition-citation-resource").innerHTML=DonaCadenaJSON(l_msg_Resource_Edition);
 	document.getElementById("edition-citation-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Edition);
@@ -664,8 +742,8 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("citation-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
 	document.getElementById("citation-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
 
-	document.getElementById("title-publication-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
-	document.getElementById("title-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"Daytime urban heat islands from Landsat ETM+ and Corine land cover data: An application to major cities in Greece";
+	//document.getElementById("title-publication-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+	document.getElementById("title-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"Daytime urban heat islands from Landsat ETM+ and Corine land cover data: An application to major cities in Greece";
 	document.getElementById("edition-publication-resource").innerHTML=DonaCadenaJSON(l_msg_Resource_Edition);
 	document.getElementById("edition-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Edition);
 	document.getElementById("edition-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Version_of_the_resource);
@@ -709,7 +787,7 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("browsing-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["browsing"]);	
 	document.getElementById("fileAccess-url-function-publication-resource_value").innerHTML=DonaCadenaJSON(CI_OnLineFunctionCode["fileAccess"]);
 	document.getElementById("url-function-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_URL_function_eg_)+" "+DonaCadenaJSON({cat: "Informació", spa: "Información", eng: "Information"});
-	document.getElementById("abstract-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Abstract);
+	document.getElementById("abstract-publication-resource_screen").innerHTML=DonaCadenaJSON(Msg_Abstract);
 	document.getElementById("abstract-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Resum de la publicació", spa: "Resumen de la publicación", eng: "Abstract of the publication"});
 
 	document.getElementById("category-publication-resource_screen").innerHTML=DonaCadenaJSON({cat: "Categoria", spa: "Categoría", eng: "Category"});
@@ -738,8 +816,9 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("publication-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
 	document.getElementById("publication-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
 
-	document.getElementById("title-individual-resource_screen").innerHTML=DonaCadenaJSON({cat: "Nom de l'individu", spa: "Nombre del individuo", eng: "Individual name"});
-	document.getElementById("title-individual-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"Zabala Torres, Alaitz";
+	//document.getElementById("title-individual-resource_screen").innerHTML=DonaCadenaJSON({cat: "Nom de l'individu", spa: "Nombre del individuo", eng: "Individual name"});
+		
+	document.getElementById("title-individual-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"Zabala Torres, Alaitz";
 	document.getElementById("email-individual-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Email);
 	document.getElementById("email-individual-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Correu electrònic de l'individu", spa: "Correo electrónico del individuo", eng: "Individual email"});
 	document.getElementById("identifier-1-individual-resource").innerHTML=DonaCadenaJSON({cat: "Identificador de l'individu", spa: "Identificador del individuo", eng: "Individual identifier"})+" (1)";
@@ -762,19 +841,20 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("individual-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
 	document.getElementById("individual-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
 
-	document.getElementById("title-organism-resource_screen").innerHTML=DonaCadenaJSON({cat: "Nom de la organització", spa: "Nombre de la organización", eng: "Organism name"});
-	document.getElementById("title-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"Dept. Geografia. Universitat Autònoma de Barcelona";
+	//document.getElementById("title-organism-resource_screen").innerHTML=DonaCadenaJSON({cat: "Nom de la organització", spa: "Nombre de la organización", eng: "Organism name"});
+		
+	document.getElementById("title-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"Dept. Geografia. Universitat Autònoma de Barcelona";
 	document.getElementById("address-organism-resource").innerHTML=DonaCadenaJSON({cat: "Adreça de contacte", spa: "Dirección de contacto", eng: "Contact address"});
 	document.getElementById("delivery-point-organism-resource_screen").innerHTML=DonaCadenaJSON({cat: "Punt de lliurament", spa: "Punto de entrega", eng: "Delivery point"});
-	document.getElementById("delivery-point-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"Campus de Bellaterra, Edifici B, Carrer de la Fortuna, s/n";
+	document.getElementById("delivery-point-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"Campus de Bellaterra, Edifici B, Carrer de la Fortuna, s/n";
 	document.getElementById("city-organism-resource_screen").innerHTML=DonaCadenaJSON({cat: "Ciutat", spa: "Ciudad", eng: "City"});
-	document.getElementById("city-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"Cerdanyola del Vallès";
+	document.getElementById("city-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"Cerdanyola del Vallès";
 	document.getElementById("administrative-area-organism-resource_screen").innerHTML=DonaCadenaJSON({cat: "Àrea administrativa", spa: "Area administrativa", eng: "Administrative area"});
-	document.getElementById("administrative-area-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"Barcelona";
+	document.getElementById("administrative-area-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"Barcelona";
 	document.getElementById("postal-code-organism-resource_screen").innerHTML=DonaCadenaJSON({cat: "Codi postal", spa: "Código postal", eng: "Postal code"});
-	document.getElementById("postal-code-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"08193";
+	document.getElementById("postal-code-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"08193";
 	document.getElementById("country-organism-resource_screen").innerHTML=DonaCadenaJSON({cat: "País", spa: "País", eng: "Country"});
-	document.getElementById("country-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_For_example_)+" "+"Spain";
+	document.getElementById("country-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"Spain";
 	
 	document.getElementById("open-data-organism-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
  	document.getElementById("open-data-organism-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquest organisme (i els recursos associats) amb tothom", spa: "Compartir este organismo (y los recursos asociados) con todos", eng: "If check this organism (and related resources) will be visible to everyone"});
@@ -820,14 +900,16 @@ var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Emai
 	document.getElementById("current_share_descrip").innerHTML=DonaCadenaJSON({cat: "Fes clic a les creus per esborrar usuaris de la llista.", spa: "Haga clic a las cruces para borrar usuarios de la lista.", eng: "Click on the crosses to remove users from the list."});
 	document.getElementById("share-close_btn").value=DonaCadenaJSON(l_msg_Close_Tancar);
 
-	document.getElementById("feedback-title-text").innerHTML=DonaCadenaJSON({cat: "Valoracions", spa: "Valoraciones", eng: "Feedback items"});
+	//document.getElementById("feedback-title-text").innerHTML=DonaCadenaJSON({cat: "Valoracions", spa: "Valoraciones", eng: "Feedback items"});
+	document.getElementById("feedback-title-text").innerHTML=DonaCadenaJSON({cat: "Valoracions", spa: "Valoraciones", eng: "Feedback items"})+" "+'<a href="help/help.htm#_resource_feedback" target="NiMMbus_help"><img src="help_info20.png"></a>';
 	document.getElementById("feedback-subtitle-text").innerHTML=DonaCadenaJSON({cat: "Valoracions sobre el recurs:", spa: "Valoraciones sobre el recurso:", eng: "Feedback about the resource:"});
 	document.getElementById("feedback_target_compact_screen").innerHTML=DonaCadenaJSON({cat: "Recurs valorat", spa: "Recurso valorado", eng: "Target resource"});
 	document.getElementById("new_feedback_screen").innerHTML=DonaCadenaJSON(Msg_Feedback);
 	document.getElementById("new_feedback_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Afegir] per a crear una nova valoració sobre aquest recurs", spa: "Presione [Añadir] para crear una nueva valoración sobre este recurso", eng: "Press [Add] to create a new feedback item about this resource"});
 	document.getElementById("new_feedback_btn").value=DonaCadenaJSON(l_msg_Add);
 	document.getElementById("current_feedback_screen").innerHTML=DonaCadenaJSON({cat: "Llista de valoracions", spa: "Lista de valoraciones", eng: "Feedback list"});
-	document.getElementById("current_feedback_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Editar] per a veure, modificar o esborrar aquesta valoració", spa: "Presione [Editar] para ver, modificar o borrar esta valoración", eng: "Press [Edit] to view, modify or delete this feedback item"});
+	//document.getElementById("current_feedback_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Editar] per a veure, modificar o esborrar aquesta valoració", spa: "Presione [Editar] para ver, modificar o borrar esta valoración", eng: "Press [Edit] to view, modify or delete this feedback item"});
+	document.getElementById("current_feedback_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Editar] per a veure, modificar o esborrar valoracions", spa: "Presione [Editar] para ver, modificar o borrar valoraciones", eng: "Press [Edit] to view, modify or delete feedback items"});
 	document.getElementById("feedback-close_btn").value=DonaCadenaJSON(l_msg_Close_Tancar);
 
 	document.getElementById("reset-pass-title-text").innerHTML=DonaCadenaJSON({cat: "Restabliment de contrasenya", spa: "Restablecimiento de contraseña", eng: "Password reset"});
@@ -870,14 +952,14 @@ function ChangeLanguageIndexTOS(lang, expected_date_time)
 	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON(Msg_EO_everywhere_Share);		
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
-	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Client_Last_Updated+"</i>";
 	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
 	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
 	document.getElementById("front-temp-oos-lang").innerHTML=DonaCadenaJSON({cat: "Servei temporalment fora de servei", 
 		spa: "Servicio temporalmente fuera de servicio", eng: "Temporary Out of Service"});
 	document.getElementById("front-temp-bts-lang").innerHTML=DonaCadenaJSON({cat: "Data i hora prevista del restabliment del servei", 
-		spa: "Fecha y hora prevista de restablecimiento del servicio", eng: "Expected date and time for service restoration"})+": "+expected_date_time;
+		spa: "Fecha y hora prevista de restablecimiento del servicio", eng: "Expected date and time for service restoration"})+":<br> "+expected_date_time;
 }
 
 // Test New Feedback Page
@@ -893,7 +975,7 @@ function ChangeLanguageTestNewFeedback(lang)
 				eng: "Test to create feedback items about a resource (described by its title, identifier and namespace)"});
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
-	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Client_Last_Updated+"</i>";	
 	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
 	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
@@ -940,7 +1022,7 @@ function ChangeLanguageTestWidget(lang, is_custom)
 	}	
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
-	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Client_Last_Updated+"</i>";	
 	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
 	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang);
@@ -979,7 +1061,7 @@ function ChangeLanguageTestWidgetCorine(lang)
 				eng: "Example of JavaScrip API and NiMMbus widget integration in Corine Land Cover 2012 metadata"});
 	document.getElementById("welcome-terms_of_use").innerHTML=DonaCadenaJSON(Msg_Terms_use);
 	document.getElementById("welcome-privacy_statement").innerHTML=DonaCadenaJSON(Msg_Privacy_Statement);
-	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Terms_and_Privacy_Last_Updated+"</i>";	
+	document.getElementById("welcome-last_updated").innerHTML="<i>"+DonaCadenaJSON(Msg_Last_Update)+": "+Client_Last_Updated+"</i>";	
 	document.getElementById("welcome-access_policy").innerHTML=DonaCadenaJSON(Msg_Access_Policy);
 	document.getElementById("welcome-mail-contact").innerHTML=DonaCadenaJSON(Msg_Mail_contacte)+": ";
 	document.getElementById("front-language-lang").innerHTML=DonaCadenaJSON(Msg_small_Lang)

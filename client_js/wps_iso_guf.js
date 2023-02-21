@@ -69,6 +69,16 @@ function DonaTextDesDeGcoCharacterString(item)
 		return "";
 }
 
+function DonaTextDesDeGexPolygon(item)
+{
+	var elem=GetValueXMLElementByName(item, "gex", "polygon");
+	if (elem)
+		return elem;
+	else
+		return "";
+}
+
+
 function DonaTextDesDeGcoCharacterStringOGcxAnchor(item)
 {
 	var elem=DonaTextDesDeGcoCharacterString(item);
@@ -356,6 +366,16 @@ function DonaDataOTimeDesDeCadenaDateTime(item, tipus)
 	}
 }
 
+function DonaCoordenadaDesDeGcoDecimal(item)
+{
+	var elem=GetValueXMLElementByName(item, "gco", "Decimal");
+	//<gco:Decimal>1.462500</gco:Decimal>
+	if (elem)
+		return elem;
+	else
+		return "";
+}
+
 function DonaDataDesDeGcoDateTime(item)
 {
 	var elem=GetValueXMLElementByName(item, "gco", "DateTime");
@@ -604,7 +624,29 @@ var usage, usage_descr, discov_issue;
 												}
 											}
 										}
-										// hi podrien haver més coses com online resources
+									//OGscope
+									var scope;
+
+									scope=GetXMLElementByName(target_item, "guf", "scope");
+									if (scope && resource_ref)
+									{
+										var bbox=GetXMLElementByName(target_item, "gex", "EX_GeographicBoundingBox");
+										if (bbox)
+										{
+											guf.target[guf.target.length-1].minlong=DonaCoordenadaDesDeGcoDecimal(GetXMLElementByName(target_item, "gex", "westBoundLongitude"));
+											guf.target[guf.target.length-1].maxlong=DonaCoordenadaDesDeGcoDecimal(GetXMLElementByName(target_item, "gex", "eastBoundLongitude"));
+											guf.target[guf.target.length-1].minlat=DonaCoordenadaDesDeGcoDecimal(GetXMLElementByName(target_item, "gex", "southBoundLatitude"));
+											guf.target[guf.target.length-1].maxlat=DonaCoordenadaDesDeGcoDecimal(GetXMLElementByName(target_item, "gex", "northBoundLatitude"));
+										}
+										var gmlpol=GetXMLElementByName(target_item, "gex", "EX_BoundingPolygon");
+										if (gmlpol){
+											guf.target[guf.target.length-1].gmlpol=DonaTextDesDeGexPolygon(gmlpol);
+										}
+										guf.target[guf.target.length-1].scope=true;
+									}
+								
+									// hi podrien haver més coses com online resources
+
 									}
 								}
 							}

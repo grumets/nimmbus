@@ -49,7 +49,6 @@ var ServerGUF="https://www.nimmbus.cat/cgi-bin/nimmbus.cgi";
 var ClientGUF="https://www.nimmbus.cat/index.htm";
 
 var Opcions_GUFFeedbackWindow='toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=1500,height=1000';
-
 function GUFIncludeScript(url, late)   //https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file
 {
 	var script = document.createElement("script");  // create a script DOM node
@@ -117,6 +116,7 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 		
 	//decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara 
 	codespace = codespace.replace("https://","http://"); 
+
 	url+="&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + DonaCadenaPerValorDeFormulari(code) + 
 					"&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + encodeURI(codespace) + "&TRG_OPR_2=EQ";
 	
@@ -412,7 +412,8 @@ function ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(identifier, lang, es_id_fb_it
 			
 		if (text_html.indexOf("www.doi.org") >= 0 || text_html.indexOf("/doi.org") >= 0)
 			link_html="<span class=\"guf_key_2 user\">DOI</span>: <a class=\"guf_link user\" href=\""+text_html+"\" target=\"_blank\">"+identifier.code+"</a>. <br/>";
-		else if (text_html.indexOf("https://www.nimmbus.cat/resourceId") >= 0) //si codeSpace és https://www.nimmbus.cat/resourceId és que és un recurs NiMMbus, i per tant puc fer la consulta de retrieve
+else if (text_html.indexOf("https://www.nimmbus.cat/resourceId") >= 0) //si codeSpace és https://www.nimmbus.cat/resourceId és que és un recurs NiMMbus, i per tant puc fer la consulta de retrieve
+		//else if (text_html.indexOf("nimmbus/resourceId") >= 0) //si codeSpace és ***/nimmbus/resourceId és que és un recurs NiMMbus, i per tant puc fer la consulta de retrieve
 		{
 			if (es_id_fb_item)
 				link_html="<span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+lang+"&RESOURCE="+identifier.code+"\" target=\"_blank\">"+identifier.code+"</a><br/>";
@@ -816,6 +817,13 @@ var cdns=[];
 			{
 	  			for (var i_id=0; i_id<guf.target[i_target].identifier.length; i_id++)
 	  				cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.target[i_target].identifier[i_id], extra_param.lang, false));
+			}
+			if (guf.target[i_target].scope) //comprovem que a l'xml hi ha la secció scope
+			{
+				if (guf.target[i_target].minlong) //comprovem que hi ha dades de coordenades. No cal comprovar que hi siguin totes.
+					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Envolupant", "spa":"Envolvente", "eng":"Bounding box", "fre":"Extension géographique"}, extra_param.lang),":</span>"," ",guf.target[i_target].minlong,", ",guf.target[i_target].maxlong,", ",guf.target[i_target].minlat,", ",guf.target[i_target].maxlat,"<br>");
+				if (guf.target[i_target].gmlpol) //comprovem si tenim un poligon gml
+					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Polígon GML", "spa":"Polígono GML", "eng":"GML polygon", "fre":"GML polygone"}, extra_param.lang),":</span>"," ", GUFDonaCadenaLang({"cat":"definit", "spa":"definido", "eng":"defined", "fre":"défini"}),"<br>");
 			}
 			//cdns.push("</div><label for=\""+extra_param.div_id+"_"+i_target+"\"><i>Click to show/hide more information</i></label></input>");
 			//cdns.push("<br/>");

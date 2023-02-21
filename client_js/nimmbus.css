@@ -24,6 +24,13 @@
   padding: 4px;
 }
 
+.radio-input {
+  font-size: 13px;
+  font-family: "Gotham Narrow SSm",sans-serif;
+  line-height: 20px;
+  padding: 4px;
+}
+
 .submit_btn {
   border-radius: 4px;
   box-shadow: 0 1px 0 #FFFFFF;
@@ -55,10 +62,11 @@
 }
 
 .add_resource_btn {
-	vertical-align: bottom;
+  vertical-align: bottom;
   border-radius: 4px;
   border: 1px solid #55ACEE;
   padding: 4px 4px;
+  margin-top:4px;
 }
 
 .packet_paragraph {
@@ -86,23 +94,48 @@
   top: 0;
 }
 
+.front-welcome-frame{
+  width: 940px;
+  height:600px;
+  margin-top: 105px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.terms-welcome-front{
+  width: 940px;
+  height:30px;
+  margin-top:5px;
+  margin-left:auto;
+  margin-right:auto;
+
+  /*background-color:#FFFFFF;*/
+
+}
+
+.front-welcome-forms{
+  width: 366px;
+  height:600px;
+  float:right;
+}
+
 .front-welcome-text { 
-  bottom: 0;
-  color: #CCD6DD;
+  width: 500px;
+  background-color:#54A9EA;
+  float:left;
+  height: 520px;
+  color: #FFFFFF;
   font-size: 20px;
   font-weight: 300;
-  left: 10%;
-  top: 130px;
-  width: 33%;
-  height: 410px;
   line-height: 22px;
   padding: 20px;
-  position: absolute;
   text-align: left;
-  text-shadow: 0 1px 2px #000000;
+  text-shadow: 0 2px 3px #000000;
   font-family: "Gotham Narrow SSm",sans-serif;
-  /*background-color: #55EEAC;*/
-  background-color: #33AA77;
+  border-radius: 4px;
+  /* border: 1px solid #4FA0DD;*/
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
+  border: 1px solid #3B88C3;
 }
 
 .front-conditions-text { 
@@ -114,9 +147,9 @@
 }
 
 .front-conditions-text-left-pannel { 
-  color: #CCCCCC;
+  color: #999999;
   font-size: 11px;
-  line-height: 12px;
+  line-height: 15px;
   text-shadow: 0 0px 0px #000000;
 }
 
@@ -129,7 +162,7 @@
   width: 150px;
   height: 30px;
   line-height: 22px;
-  padding: 20px;
+  padding: 15px;
   position: absolute;
   text-align: left;
   font-family: "Gotham Narrow SSm",sans-serif;
@@ -143,7 +176,7 @@
   bottom: 0;
   color: #66757F;
   line-height: 22px;
-  padding: 20px;
+  padding: 15px;
   position: absolute;
   text-align: left;
   font-family: "Gotham Narrow SSm",sans-serif;
@@ -315,14 +348,14 @@
 }
 
 .white-area-li-shadow {
-  font-size: 11px;
+  /*font-size: 11px;*/
   color: #CCCCCC;
   position: relative;
-  left: 30; 
+  left: 30px; 
 }
 
 .white-area-li-shadow:hover {
-  font-size: 11px;
+  /*font-size: 11px;*/
   color: #66757F;
 }
 
@@ -352,6 +385,12 @@
     top: 0;
     width: 100%;
     z-index: 98;
+}
+
+.mandatory_txt {
+    font-family: "Gotham Narrow SSm",sans-serif;	
+	font-size: 12px;
+	color:#DA0000;
 }
 
 .note-inner {
@@ -391,7 +430,7 @@
   background: none repeat scroll 0 0 #FFFFFF;
   top: 0px;
   left: 0px;
-  color: #CCD6DD;
+  color: #808080;
   font-size: 14px;
   font-weight: 300;
   width: 100%;

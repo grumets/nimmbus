@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -751,6 +751,7 @@ var kvp="";
 					"code_space": (query["TARGET_CODESPACE"+sufix] ? query["TARGET_CODESPACE"+sufix].replace("https://","http://") : ""), 
 					"role": (query["TARGET_ROLE"+sufix] ? query["TARGET_ROLE"+sufix] : "primary"), 
 					"share_borrower_1": share_borrower_1});				
+
 	
 			i++;
 			sufix="_"+i;
@@ -1216,6 +1217,7 @@ function HandleGoogleApiLibrary()
 			// clientId & scope is provided => automatically initializes auth2 library
 			gapi.client.init({
 		    	apiKey: 'AIzaSyBSTYA3cOVJ1fuVGBrJXT8gsrRvFjp74x8',
+		    	//discoveryDocs: ['https://people.googleapis.com/$discovery/rest'],
 		    	clientId: '281597821362-tkj1tngjiiuul47m6dkhrorrsdqomahu.apps.googleusercontent.com',
 		    	scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me'
 			}).then(
@@ -1260,9 +1262,10 @@ function OmpleHelloAccessTokenIType(access_token_type)
 			var jwt = parseJwt(authResponse.id_token);
 	
 			// https://github.com/kjur/jsrsasign/wiki/Tutorial-for-JWT-verification
+	
 			//if (access_token_type=="nextgeoss") -> antic SSO nextgeoos tornava el user_name en UTF8, ara ja no cal
 				//document.sign_in.user.value=decode_utf8(jwt.user_name);
-	
+			
 			if (jwt.user_name)
 				document.sign_in.user.value=jwt.user_name;
 			else if (jwt.name)
@@ -1271,6 +1274,7 @@ function OmpleHelloAccessTokenIType(access_token_type)
 				document.sign_in.user.value=jwt.preferred_username;
 			else
 				document.sign_in.user.value=jwt.sub; //subject
+				
 			AccessToken = authResponse.access_token;
 			AccessTokenType = access_token_type;
 		}
@@ -1316,7 +1320,7 @@ function ValidaSSO(popup, f_callback, pending_ajax_req)
 	{
 		ValidaSSOWQeMS(popup, f_callback, pending_ajax_req);
 		return;
-}
+	}
 }
 
 // Click on login button
@@ -1391,6 +1395,7 @@ function ValidaSSOWQeMS(popup, f_callback, pending_ajax_req)
 		}
 	);
 }
+
 
 // Click on login button
 function ValidaSSODebug()
@@ -1786,6 +1791,169 @@ function AfegeixAddDocOfAFeedback(id_citation, open_data)
 	return;	
 }
 
+
+function ModificaScopeOfAFeedback(item) //aquest item és el que ens diu en quin element de l'array TargetsOfAFeedback estem
+{
+
+	RecuperaCanvisARolesATargetsOfAFeedback();
+	OmpleRecursTargetsDesDeTargetsOfAFeedback(true);
+	TargetsOfAFeedbackHaveChanged=true;
+	MostraScopeOfAFeedback(item);
+	return;
+}
+
+var Scope_puc_modificar=true;
+var nTargetOfAFeedback;
+
+function MostraScopeOfAFeedback(item)
+{
+//item ens diu a quin element de l'array TargetsOfAFeedback estem
+
+ChangePannel("scope", true);
+nTargetOfAFeedback=item;
+
+	//per saber que no hi ha dades prèvies comprovem si alguna de les coordenades és nul·la (no cal comprovar-les totes pq si estiguéssin malament no s'haurien pogut enviar) o si l'atribut gmlpol és nul.
+	if (TargetsOfAFeedback[item].minlong==null && TargetsOfAFeedback[item].gmlpol==null)
+	{
+		//estem introduint un scope nou
+		document.getElementById("scope-title-text").innerHTML=DonaCadenaJSON(Msg_New_Scope)+" "+'<a href="help/help.htm#Res_hyperlink" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		
+		document.getElementById("scope-resource-exit_btn").style.display='none';
+		document.getElementById("scope-resource-close_btn").style.display='inline';
+		
+		document.getElementById("min-long-scope_screen_value").value="";
+		document.getElementById("max-long-scope_screen_value").value="";
+		document.getElementById("min-lat-scope_screen_value").value="";
+		document.getElementById("max-lat-scope_screen_value").value="";
+		document.getElementById("GMLpolygon-scope_screen_value").value="";
+		
+	}
+	else
+	{
+		//estem consultant un scope existent. Omplim els camps que toqui tenint en compte els permisos per si cal bloquejar les finestres.
+		document.getElementById("scope-title-text").innerHTML=DonaCadenaJSON(Msg_Scope)+" "+'<a href="help/help.htm#Res_hyperlink" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		
+		
+		document.getElementById("scope_btn").style.display=Scope_puc_modificar ? 'inline' : 'none';
+		document.getElementById("scope-resource-delete_btn").style.display=Scope_puc_modificar ? 'inline' : 'none';
+		document.getElementById("scope-resource-close_btn").style.display=Scope_puc_modificar ? 'inline' : 'none';
+		document.getElementById("scope-resource-exit_btn").style.display=Scope_puc_modificar ? 'none' : 'inline';
+			
+		document.getElementById("max-lat-scope_screen_value").disabled=Scope_puc_modificar ? false : true;
+		document.getElementById("max-long-scope_screen_value").disabled=Scope_puc_modificar ? false : true;
+		document.getElementById("min-long-scope_screen_value").disabled=Scope_puc_modificar ? false : true;
+		document.getElementById("min-lat-scope_screen_value").disabled=Scope_puc_modificar ? false : true;
+		document.getElementById("GMLpolygon-scope_screen_value").disabled=Scope_puc_modificar ? false : true;	
+		
+		if (TargetsOfAFeedback[item].minlong)
+		{
+			document.getElementById("min-long-scope_screen_value").value=TargetsOfAFeedback[item].minlong;
+			document.getElementById("max-long-scope_screen_value").value=TargetsOfAFeedback[item].maxlong;
+			document.getElementById("min-lat-scope_screen_value").value=TargetsOfAFeedback[item].minlat;
+			document.getElementById("max-lat-scope_screen_value").value=TargetsOfAFeedback[item].maxlat;
+		}
+		else // cal fer aquest else pq si estem en un cas que tenim bbox però no gml i venim de visitar un scope amb toes les dades, encara es visualitzaria el gml de l'scope anteriorment visitat
+		{
+			document.getElementById("min-long-scope_screen_value").value="";
+			document.getElementById("max-long-scope_screen_value").value="";
+			document.getElementById("min-lat-scope_screen_value").value="";
+			document.getElementById("max-lat-scope_screen_value").value="";
+		}
+		if (TargetsOfAFeedback[item].gmlpol)
+			document.getElementById("GMLpolygon-scope_screen_value").value=TargetsOfAFeedback[item].gmlpol;
+		else //igual que el cas anterior però amb el GMLpol
+			document.getElementById("GMLpolygon-scope_screen_value").value="";
+		
+	}
+return;
+
+}
+
+
+function RecuperaCanvisAScope(avis)
+{
+	if (avis==true) //salvem l'scope introduït per l'usuari
+	{
+		
+		//bbox
+		var xmin_t=document.getElementById("min-long-scope_screen_value").value;
+		var xmax_t=document.getElementById("max-long-scope_screen_value").value;
+		var ymin_t=document.getElementById("min-lat-scope_screen_value").value;
+		var ymax_t=document.getElementById("max-lat-scope_screen_value").value;
+		
+		//comprovem que les coordenades introduïdes són números
+		if (isNaN(xmin_t)!=false || isNaN(xmax_t)!=false || isNaN(ymin_t)!=false || isNaN(ymax_t)!=false)
+		{
+			alert(DonaCadenaJSON({cat: "Format de les coordenades incorrecte", spa: "Formato de la coordenadas incorrecto", eng: "Incorrect coordinate format"}));
+			return false;
+		}
+		else //necessito guardar-les com un float pq sinó en les comparacions tracta les coordenades com strings.
+		{
+			var xmin=parseFloat(xmin_t);
+			var xmax=parseFloat(xmax_t);
+			var ymin=parseFloat(ymin_t);
+			var ymax=parseFloat(ymax_t);	
+		}
+		//comprovem que les coordenades tenen sentit
+		if ((xmin >= xmax) || (ymin >= ymax))
+		{
+			alert(DonaCadenaJSON({cat: "Envolupant incoherent", spa: "Envolvente incoherente", eng: "Incoherent bounding box "}));
+			return false;
+		}
+		
+		//si tot està ok ho afegim a TargetsOfAFeedback
+		TargetsOfAFeedback[nTargetOfAFeedback].minlong=xmin;
+		TargetsOfAFeedback[nTargetOfAFeedback].maxlong=xmax;
+		TargetsOfAFeedback[nTargetOfAFeedback].minlat=ymin;
+		TargetsOfAFeedback[nTargetOfAFeedback].maxlat=ymax;
+		var s=document.getElementById("GMLpolygon-scope_screen_value").value;
+		
+		//en el cas del GML pol ens assegurem que no hi ha espais en blanc ni salts de línia
+		s=s.replace(/^\s+|\s+$/gm,'');
+		TargetsOfAFeedback[nTargetOfAFeedback].gmlpol=s.replace(/[\n\r]/g, '');
+		
+		//marquem que existeix scope
+		TargetsOfAFeedback[nTargetOfAFeedback].scope=true;
+	}
+	else //estem rebent un false, és a dir que volem esborrar-ho tot.
+	{
+		if (confirm(DonaCadenaJSON(Msg_Sure_completely_delete_)) == false)
+		{ 
+			return false;
+		} 
+		else 
+		{
+			TargetsOfAFeedback[nTargetOfAFeedback].minlong="";
+			TargetsOfAFeedback[nTargetOfAFeedback].maxlong="";
+			TargetsOfAFeedback[nTargetOfAFeedback].minlat="";
+			TargetsOfAFeedback[nTargetOfAFeedback].maxlat="";
+			TargetsOfAFeedback[nTargetOfAFeedback].gmlpol="";
+		}
+
+	}
+	document.getElementById("min-long-scope_screen_value").value="";
+	document.getElementById("max-long-scope_screen_value").value="";
+	document.getElementById("min-lat-scope_screen_value").value="";
+	document.getElementById("max-lat-scope_screen_value").value="";
+	document.getElementById("GMLpolygon-scope_screen_value").value="";
+	//modifiquem temporalment la taula de compact feedback resource
+	var id_tr="compact-resource_table_hidden_br"+nTargetOfAFeedback
+	var s=document.getElementById(id_tr).innerHTML;
+	var s2=s.split("<br>",3)[0]+"<br>"+s.split("<br>",3)[1]+"<br>"+s.split("<br>",3)[2];
+	if (TargetsOfAFeedback[nTargetOfAFeedback].minlong!="")
+		s2+="<br>"+ DonaCadenaJSON({cat: "envolupant: ", spa: "envolvente: ", eng: "bounding box: "})+TargetsOfAFeedback[nTargetOfAFeedback].minlong+", "+TargetsOfAFeedback[nTargetOfAFeedback].maxlong+", "+TargetsOfAFeedback[nTargetOfAFeedback].minlat+", "+TargetsOfAFeedback[nTargetOfAFeedback].maxlat;
+	
+	if (TargetsOfAFeedback[nTargetOfAFeedback].gmlpol!="")
+		s2+="<br>"+DonaCadenaJSON({cat: "polígon GML: definit", spa: "polígono GML: definido", eng: "GML polygon: defined"});
+	
+	document.getElementById(id_tr).innerHTML=s2;
+	
+	nTargetOfAFeedback="";
+	Scope_puc_modificar=true;
+	history.back();
+	return;
+}
+
 function EliminaTargetOfAFeedback(del_item)
 {
 	RecuperaCanvisARolesATargetsOfAFeedback();		
@@ -1828,7 +1996,7 @@ function AfegeixResponsibleOfACitation(id_responsible, open_data)
 	if (id_responsible==null)  //S'ha cancel·lat d'afegir res.
 		;
 	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no té sentit que se seleccioni.
-		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again $$$ ));*/
+		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again ));*/
 	else
 	{
 		RecuperaCanvisARolesAResponsiblesOfACitation();		
@@ -1856,7 +2024,7 @@ function AfegeixResponsibleOfAPublication(id_responsible, open_data)
 	if (id_responsible==null)  //S'ha cancel·lat d'afegir res.
 		;
 	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no té sentit que se seleccioni.
-		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again $$$ ));*/
+		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again ));*/
 	else
 	{
 		RecuperaCanvisARolesAResponsiblesOfAPublication();		
@@ -1941,11 +2109,11 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 				}
 				else if (identifier.childNodes[0].nodeValue=="individu") 
 				{
-					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme $$
+					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme
 				}
 				else if (identifier.childNodes[0].nodeValue=="organism") 
 				{
-					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme $$
+					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme
 				}
 				else if (identifier.childNodes[0].nodeValue=="href")
 					href=OmpleInputDesDeWPSLiteralOutput(output.item(item));
@@ -1968,17 +2136,54 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 		else //creo un element img també amb src="", perquè així el ID existeix sempre
 			s_table+="<img src=\"\" id=\""+compact_element_item+"_shared\"></td>"; 
 		
-		s_table+="<td>"+title;		
+		//s_table+="<td>"+title;
+		s_table+='<td id="compact-resource_table_hidden_br'+ dades.item +'">'+title; //utilitzaré aquest id desde function RecuperaCanvisAScope(avis) per dibuixar una taula temporal
 		if ((type=="CITATION" || type=="PUBLICAT") && code)
-			s_table+="<br>code: " + code + ", code_space: " + (code_space ? code_space : "");
+		{
+			s_table+="<br>" + DonaCadenaJSON({cat: "codi: ", spa: "código: ", eng: "code: "}) + code;
+			s_table+="<br>" +DonaCadenaJSON({cat: "espai de noms: ", spa: "espacio de nombres: ", eng: "code space: "}) + (code_space ? code_space : "");
+			if (dades.scope)
+			{
+				if (TargetsOfAFeedback[dades.item].minlong) // comprovem si hi ha cooredenades
+					s_table+="<br>"+ DonaCadenaJSON({cat: "envolupant: ", spa: "envolvente: ", eng: "bounding box: "}) + TargetsOfAFeedback[dades.item].minlong + ", " + TargetsOfAFeedback[dades.item].maxlong + ", " + TargetsOfAFeedback[dades.item].minlat + ", " + TargetsOfAFeedback[dades.item].maxlat;
+				if (TargetsOfAFeedback[dades.item].gmlpol)
+					s_table+="<br>" + DonaCadenaJSON({cat: "polígon GML: definit", spa: "polígono GML: definido", eng: "GML polygon: defined"});
+			}
+		}
 		else if (type=="HREF" && href)
 			s_table+="<br><a href=\"" + href + "\">" + href + "</a>";			
 		else if (type=="POI" && position)
 			s_table+="<br>lat/long: " + position;		
-		//else if	(type=="INDIVIDU" && (email || organisme)) $$
-		//else if	(type=="ORGANISM" && (adreça)) $$
+		//else if	(type=="INDIVIDU" && (email || organisme)) 
+		//else if	(type=="ORGANISM" && (adreça))
 		s_table+="</td>"
 	
+
+		if (dades.is_target_public_or_none==1) //només aplica si és un Target
+		{
+			if (type=="CITATION") //OGscope l'scope només té sentit sobre feedbacks a citacions
+			{
+				var p;
+				s_table+="<td>";
+				if (dades.scope)
+				{				
+					if (dades.select_role=="") //tenim dades scope però no podem seleccionar un rol. Això vol dir que estem en un context de només lectura
+						p=DonaCadenaJSON({cat: "Veure àmbit", spa: "Ver ámibto", eng: "View scope"});
+					else
+						p=DonaCadenaJSON({cat: "Editar àmbit", spa: "Editar ámibto", eng: "Edit scope"});
+						//s_table+=s.scope;						
+				}
+				else
+				{
+					p=DonaCadenaJSON({cat: "Definir àmbit", spa: "Definir ámibto", eng: "Define scope"});
+				}
+				if (dades.scope_function)
+					s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ p +"\" onClick=\""+dades.scope_function+"("+(dades.del_item-1)+")\"/>";
+				if (!dades.scope_function && dades.select_role=="")
+					s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ p +"\" onClick=\""+ "MostraScopeOfAFeedback("+ dades.item +")\"/>";
+				s_table+="</td>";
+			}
+		}
 		if (dades.role || (dades.del_item && dades.del_function))
 		{
 			if (dades.role && dades.del_item && dades.del_function) //hi haurà informació del role i també botó esborrar
@@ -2054,6 +2259,7 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 function AvaluaRespostaRetrieveResourceHref(doc, id)
 {
 var root, output, identifier;
+var new_format;
 
 	root=DonaRootXML(doc, document);
 	if (!root)
@@ -2066,7 +2272,7 @@ var root, output, identifier;
 		RemoveInfo("permanent");
 		return;
 	}
-
+	
 	output=GetXMLElementCollectionByName(root, "wps", "Output");
 
 	if (output && output.length)
@@ -2076,7 +2282,7 @@ var root, output, identifier;
 		document.href_resource_form.reason.value="";
 		//Valor per defecte de mimetype és "Other" que es marca amb CadenaBuida
 		SeleccionaSelectDesDeValor(document.href_resource_form.mimetype, "");
-				
+
 		for (var item=0; item<output.length; item++)
 		{
 			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
@@ -2087,9 +2293,20 @@ var root, output, identifier;
 				else if (identifier.childNodes[0].nodeValue=="href")
 					document.href_resource_form.href.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="mimetype")
-				{					
-					SeleccionaSelectDesDeValor(document.href_resource_form.mimetype, 
-							OmpleInputDesDeWPSLiteralOutput(output.item(item)));
+				{
+
+					var f_type=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+									
+					if (MostraFinestraAltresFormats(f_type)==true)
+					{
+						document.href_resource_form.mimetype.value='';
+						document.getElementById("format_name").value=f_type;
+						new_format=true;
+						
+					} else {
+					SeleccionaSelectDesDeValor(document.href_resource_form.mimetype, OmpleInputDesDeWPSLiteralOutput(output.item(item)));		
+					}
+							
 				}
 				else if (identifier.childNodes[0].nodeValue=="reason")
 					document.href_resource_form.reason.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
@@ -2106,10 +2323,27 @@ var root, output, identifier;
 					document.getElementById("href-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("href-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
 					document.getElementById("href-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
-					document.getElementById("href-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';					
+					document.getElementById("href-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+
+					//OG: block inputs
+					document.getElementById("title-href-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("href-href-resource_screen_value").disabled=puc_modificar ? false : true;
+		
+					//OG: disable selectors
+					document.getElementById("mimetype-href-resource_screen_value").disabled=puc_modificar ? false : true;
+					
+					//OG: block text areas
+					document.getElementById("reason-href-resource_screen_value").disabled=puc_modificar ? false : true;
+					
 				}				
 			}
 		}
+		
+		//OG: block inputs -- nou format
+		if (new_format == true){
+		document.getElementById("format_name").disabled=puc_modificar ? false : true;
+		}
+		
 		RemoveInfo("permanent");
 		IdResourceToSaveChanges=id;		
 		UpdateLastServer();
@@ -2198,6 +2432,16 @@ var root, output, identifier, s, georss;
 					document.getElementById("poi-gps-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("poi-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("poi-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+					
+					//OG: block inputs
+					document.getElementById("title-poi-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("long-poi-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("lat-poi-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("pos_accur-poi-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("elevation-poi-resource_screen_value").disabled=puc_modificar ? false : true;
+					
+					//OG: block text areas
+					document.getElementById("reason-poi-resource_screen_value").disabled=puc_modificar ? false : true;
 				}
 			}
 		}
@@ -2265,7 +2509,18 @@ var root, output, identifier, s, feedback_item, user_comment;
   			{
   				if (guf.target[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
   				{	//Aquí encara no sé si es open data o no, però ja ho "ompliré" quan faci el retrieve de l'element
-  					TargetsOfAFeedback[item]={"id_target": guf.target[item].identifier[item2].code, "role": guf.target[item].role};  					
+  					TargetsOfAFeedback[item]={"id_target": guf.target[item].identifier[item2].code, "role": guf.target[item].role};
+					if (guf.target[item].scope)
+						TargetsOfAFeedback[item].scope=guf.target[item].scope;
+					if (guf.target[item].gmlpol) 
+						TargetsOfAFeedback[item].gmlpol=guf.target[item].gmlpol;
+					if (guf.target[item].minlong)
+					{
+						TargetsOfAFeedback[item].minlong=guf.target[item].minlong;
+						TargetsOfAFeedback[item].maxlong=guf.target[item].maxlong;
+						TargetsOfAFeedback[item].minlat=guf.target[item].minlat;
+						TargetsOfAFeedback[item].maxlat=guf.target[item].maxlat;
+					}
   					break;
   				}
   			}
@@ -2733,15 +2988,74 @@ var root, output, identifier, s, feedback_item, user_comment;
 		{
 			puc_modificar=false;
 			document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_FB_item_detailed_description_no_modification);
-		}			
-		document.getElementById("feedback-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+		}
+		Scope_puc_modificar=puc_modificar;
+		
+		document.getElementById("feedback-resource_btn").style.display=puc_modificar ? 'inline' : 'none';			
 		document.getElementById("feedback-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
 		document.getElementById("target_feedback-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';
 		document.getElementById("target_feedback-resource_compact_add_descrip").style.display=puc_modificar ? 'inline' : 'none';
 		document.getElementById("public_feedback-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';
 		document.getElementById("public_feedback-resource_compact_add_descrip").style.display=puc_modificar ? 'inline' : 'none';
 		document.getElementById("feedback-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
-		document.getElementById("feedback-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';		
+		document.getElementById("feedback-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+		
+		//OG: block text areas
+		document.getElementById("abstract-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reason-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("comment-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("specific-usage-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("user-determined-limitations-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("response-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reprodUsage-code-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reprodUsage-diagram-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("known-problem-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("work-around-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		
+		//OG: block inputs
+		document.getElementById("reprodUsage-codeLink-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reprodUsage-platform-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reprodUsage-version-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reprodUsage-schema-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reprodUsage-suggApp-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reprodUsage-diagramLink-resource_screen_value").disabled=puc_modificar ? false : true;
+		
+		//date
+		document.getElementById("usage-date-feedback-resource_screen_value").readOnly=puc_modificar ? false : true;
+		document.getElementById("problem-date-feedback-resource_screen_value").readOnly=puc_modificar ? false : true;
+		document.getElementById("expected-fix-date-feedback-resource_screen_value").readOnly=puc_modificar ? false : true;
+		
+		//time
+		document.getElementById("usage-time-feedback-resource_screen_value").readOnly=puc_modificar ? false : true;
+		document.getElementById("proble-time-feedback-resource_screen_value").readOnly=puc_modificar ? false : true;
+		
+		//OG: disable selectors
+		document.getElementById("contactRole-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("comment-motiv-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reprodUsage-mimetype-resource_screen_value").disabled=puc_modificar ? false : true;
+		document.getElementById("reprodUsage-diagram-mimetype-resource_screen_value").disabled=puc_modificar ? false : true;
+		
+		//OG: Hide buttons
+		document.getElementById("add-doc-feedback-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';			
+		document.getElementById("ref-doc-feedback-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';			
+		document.getElementById("fix-rsrc-feedback-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';			
+		document.getElementById("alt-rsrc-feedback-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';			
+		
+		//hide text related to the above buttons
+		if (puc_modificar == false) {
+			document.getElementById("add-doc-feedback-resource_compact_add_descrip").innerHTML="";
+			document.getElementById("ref-doc-feedback-resource_compact_add_descrip").innerHTML="";
+			document.getElementById("fix-rsrc-feedback-resource_compact_add_descrip").innerHTML="";
+			document.getElementById("alt-rsrc-feedback-resource_compact_add_descrip").innerHTML="";
+		}
+		
+		//OG: disable checkbox
+		document.getElementById("reportAspect-feedback-usage").disabled=puc_modificar ? false : true;
+		document.getElementById("reportAspect-feedback-fitness-for-purpose").disabled=puc_modificar ? false : true;
+		document.getElementById("reportAspect-feedback-limitation").disabled=puc_modificar ? false : true;
+		document.getElementById("reportAspect-feedback-alternative").disabled=puc_modificar ? false : true;
+		document.getElementById("reportAspect-feedback-problem").disabled=puc_modificar ? false : true;
+
 	}
 	RemoveInfo("permanent");
 	IdResourceToSaveChanges=id;	
@@ -2951,6 +3265,7 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 					{
 						puc_modificar=false;
 						document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Citation_detailed_description_no_modification);
+						
 					}					
 					else
 						puc_modificar=true;
@@ -2959,7 +3274,26 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 					document.getElementById("citation-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("responsible-citation-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("responsible-citation-resource_compact_add_descrip").style.display=puc_modificar ? 'inline' : 'none';
-					document.getElementById("citation-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';					
+					document.getElementById("citation-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+					
+					//OG: block inputs
+					document.getElementById("title-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("edition-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-code-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-namespace-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("series-name-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("series-issue-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("series-page-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("other-cit-details-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("url-link-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("url-descrip-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					
+					//date
+					document.getElementById("edition-date-citation-resource_screen_value").readOnly=puc_modificar ? false : true;
+					
+					//OG: disable selectors
+					document.getElementById("url-function-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					
 				}
 			}
 		}		
@@ -3202,6 +3536,33 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 					document.getElementById("responsible-publication-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("responsible-publication-resource_compact_add_descrip").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("publication-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';					
+					
+					
+					//OG: block inputs
+					document.getElementById("title-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("edition-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-code-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-namespace-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("series-name-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("series-issue-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("series-page-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("other-cit-details-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("url-link-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("url-descrip-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					
+					//date
+					document.getElementById("edition-date-publication-resource_screen_value").readOnly=puc_modificar ? false : true;
+					
+					//OG: disable selectors
+					document.getElementById("url-function-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("category-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					
+					//OG: block text areas
+					document.getElementById("abstract-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					
+					//OG: disable checkbox
+					document.getElementById("open-data-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					
 				}
 			}
 		}
@@ -3343,6 +3704,16 @@ var root, output, identifier, s, elem, individual, contact, partyIdentifier, md_
 					document.getElementById("individual-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
 					document.getElementById("individual-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("individual-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+					
+					//OG: block inputs
+					document.getElementById("title-individual-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("email-individual-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("url-link-individual-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-code-1-individual-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-namespace-1-individual-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-code-2-individual-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-namespace-2-individual-resource_screen_value").disabled=puc_modificar ? false : true;
+					
 				}
 			}
 		}
@@ -3446,6 +3817,14 @@ function AvaluaRespostaRetrieveResourceOrganism(doc, id)
 					document.getElementById("organism-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
 					document.getElementById("organism-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("organism-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+					
+					//OG: block inputs
+					document.getElementById("title-organism-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("delivery-point-organism-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("city-organism-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("administrative-area-organism-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("postal-code-organism-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("country-organism-resource_screen_value").disabled=puc_modificar ? false : true;
 				}
 			}
 		}
@@ -3462,7 +3841,7 @@ function AvaluaRespostaRetrieveResourceOrganism(doc, id)
 	return;
 }
 
-function PopulateCompactDescriptionResource(id, compact_element, role, select_role, del_item, del_function, open_data, is_target_public_or_none)
+function PopulateCompactDescriptionResource(id, compact_element, role, select_role, del_item, del_function, open_data, is_target_public_or_none, scope, scope_function, item)
 {
 	ajaxExecuteNB=new Ajax();
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -3470,7 +3849,8 @@ function PopulateCompactDescriptionResource(id, compact_element, role, select_ro
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
 				+"&RESOURCE="+id, AvaluaRespostaRetrieveResourceCompacte, "text/xml", 
 				{"compact_element": compact_element, "role": role, "select_role": select_role, "del_item": del_item, "del_function": del_function, "open_data": open_data, 
-				"is_target_public_or_none": is_target_public_or_none});
+				//"is_target_public_or_none": is_target_public_or_none});
+				"is_target_public_or_none": is_target_public_or_none, "scope": scope, "scope_function" : scope_function, "item": item});
         ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
 }
 
@@ -3996,13 +4376,13 @@ var root, s, type;
 	      if (dades.type_enum=="resources")
 	      {
 					s+="<br/><span class=\"white-area-li-shadow\"> ";
-					s+="<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\');\">"+DonaCadenaJSON(Msg_Feedback)+"</a>&nbsp;&nbsp;&nbsp; ";
-	    	                  		
+					s+="&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Feedback)+'" '+'src="feedback15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
+					
 					if (owc.features[i].properties.rights && owc.features[i].properties.rights.indexOf("S")!=-1)
-						s+="<a class=\"white-area-li-shadow-link\" id=\"share-resource-"+i+"\" onClick=\"MostraShareResource(event, \'"+owc.features[i].id+"\', \'"+type+"\');\">"+DonaCadenaJSON(Msg_Share)+"</a>&nbsp;&nbsp;&nbsp; ";
+						s+="<a class=\"white-area-li-shadow-link\" id=\"share-resource-"+i+"\" onClick=\"MostraShareResource(event, \'"+owc.features[i].id+"\', \'"+type+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Share)+'" '+' src="share15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
 						
-					s+="<a class=\"white-area-li-shadow-link\" id=\"tag-resource-"+i+"\" onClick=\"MostraTagResource(event, \'"+owc.features[i].id+"\');\">"+DonaCadenaJSON(Msg_Tag)+"</a>&nbsp;&nbsp;&nbsp; ";
-					s+="<a class=\"white-area-li-shadow-link\" id=\"delete-resource-"+i+"\" onClick=\"SendResourceDelete(event, \'"+owc.features[i].id+"\', \'"+type+"\', false);\">"+DonaCadenaJSON(Msg_Delete)+"</a></span>"
+					s+="<a class=\"white-area-li-shadow-link\" id=\"tag-resource-"+i+"\" onClick=\"MostraTagResource(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Tag)+'" '+' src="tag15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
+					s+="<a class=\"white-area-li-shadow-link\" id=\"delete-resource-"+i+"\" onClick=\"SendResourceDelete(event, \'"+owc.features[i].id+"\', \'"+type+"\', false);\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Delete)+'" '+' src="remove15.png">'+"</a></span>";
 				}		
 				else if (dades.type_enum=="resource-selector")			
 				{
@@ -4074,6 +4454,10 @@ function EnumerateResources(start_index, dades)
 		if (document.getElementById("selector-owner-type_screen_value").selectedIndex>0)
 		//miro el que hi ha seleccionat a la dropdown-list owner-type de la pàgina de resource-selector. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
 			s=s+"&OWNER="+document.getElementById("selector-owner-type_screen_value").options[document.getElementById("selector-owner-type_screen_value").selectedIndex].value;	
+			
+		if (document.getElementById("selector-resource-type_screen_value").selectedIndex>0)
+		//miro el que hi ha seleccionat a la dropdown-list resource-type de la pàgina resource-selector. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
+		s="&TYPE="+document.getElementById("selector-resource-type_screen_value").options[document.getElementById("selector-resource-type_screen_value").selectedIndex].value;
 	}
 	else //if (dades.type_enum=="resources")
 	{ 
@@ -4192,7 +4576,8 @@ var i_pannel,
 		{"id": "resources", "parent": "main-page", "title": Msg_NiMMbus_Resources}, 
 		{"id": "resource-selector", "parent": "main-page", "title": Msg_NiMMbus_ResourcesSelector}, 
 		{"id": "feedback", "parent": "main-page", "title": Msg_NiMMbus_Feedbacks}, 
-		{"id": "share", "parent": "main-page", "title": Msg_NiMMbus_Share}
+		{"id": "share", "parent": "main-page", "title": Msg_NiMMbus_Share},
+		{"id": "scope", "parent": "main-page", "title": Msg_NiMMbus_Scope} 
 		/*, {"id": "tag", "parent": "main-page", "title": Msg_NiMMbus} */];
 
 	if (add_hash)
@@ -4296,21 +4681,52 @@ function MostraHRefResource(id)
 {
 	ChangePannel("href-resource", true);
 	IdResourceToSaveChanges=id;
-
 	document.getElementById("href-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
-		document.getElementById("href-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_Hyperlink);
+		//OG: enviem el format per defecte per que no es pinti la finestra de nous formats
+		MostraFinestraAltresFormats("application/x-mmz");
+		
+		document.getElementById("href-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_Hyperlink)+" "+'<a href="help/help.htm#Res_hyperlink" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("href-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_hyperlink_characteristics);
 		document.getElementById("href-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("href-resource-delete_btn").style.display='none';
+		
+		document.getElementById("title-href-resource_screen").innerHTML = DonaCadenaJSON(Msg_Title) + DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("href-href-resource_screen").innerHTML = DonaCadenaJSON(Msg_Hyperlink) + DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("href_mandatory_txt").innerHTML = DonaCadenaJSON(Msg_mandatory_elements);
+		
+		
+		document.getElementById("open-data-href-resource_screen_value").disabled=false;
+		document.getElementById("open-data-href-resource_screen_value").checked=true; //un href nou el marco compartit amb anònim per defecte
+		
+		//OG: unblock inputs
+		document.getElementById("title-href-resource_screen_value").disabled=false;
+		document.getElementById("href-href-resource_screen_value").disabled=false;
+		
+		//OG: enable selectors
+		document.getElementById("mimetype-href-resource_screen_value").disabled=false;
+		//document.getElementById("mimetype-href-resource_screen_value").style.pointerEvents='auto';
+		
+		//OG: unblock text areas
+		document.getElementById("reason-href-resource_screen_value").disabled=false;
+		
+		//OG: enable buttons
+		document.getElementById("href-resource_btn").style.display='inline';
+		document.getElementById("href-resource-close_btn").style.display='inline';
 	}
 	else
 	{
-		document.getElementById("href-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Hyperlink);
+		document.getElementById("href-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Hyperlink)+" "+'<a href="help/help.htm#Res_hyperlink" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("href-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_hyperlink_characteristics);
 		document.getElementById("href-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("href-resource-delete_btn").style.display='inline';
+		
+		document.getElementById("open-data-href-resource_screen_value").disabled=true;
+		
+		document.getElementById("title-href-resource_screen").innerHTML = DonaCadenaJSON(Msg_Title);
+		document.getElementById("href-href-resource_screen").innerHTML = DonaCadenaJSON(Msg_Hyperlink);
+		document.getElementById("href_mandatory_txt").innerHTML = "";
 	}
 }
 
@@ -4326,17 +4742,48 @@ function MostraPoiResource(id)
 	document.getElementById("poi-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
-		document.getElementById("poi-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_PoI);
+		document.getElementById("poi-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_PoI)+" "+'<a href="help/help.htm#Res_PoI" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("poi-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_PoI_characteristics);
 		document.getElementById("poi-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("poi-resource-delete_btn").style.display='none';
+		
+		document.getElementById("open-data-poi-resource_screen_value").disabled=false;
+		document.getElementById("open-data-poi-resource_screen_value").checked=true; //un poi nou el marco compartit amb anònim per defecte
+		
+		document.getElementById("title-poi-resource_screen").innerHTML = DonaCadenaJSON(Msg_Title) + DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("long-poi-resource_screen").innerHTML = DonaCadenaJSON(Msg_PoI_Lon) + DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("lat-poi-resource_screen").innerHTML = DonaCadenaJSON(Msg_PoI_Lat) + DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("poi_mandatory_txt").innerHTML = DonaCadenaJSON(Msg_mandatory_elements);
+		
+		//OG: unblock inputs
+		document.getElementById("title-poi-resource_screen_value").disabled=false;
+		document.getElementById("long-poi-resource_screen_value").disabled=false;
+		document.getElementById("lat-poi-resource_screen_value").disabled=false;
+		document.getElementById("pos_accur-poi-resource_screen_value").disabled=false;
+		document.getElementById("elevation-poi-resource_screen_value").disabled=false;
+		
+		//OG: unblock text areas
+		document.getElementById("reason-poi-resource_screen_value").disabled=false;
+
+		//OG: unblock buttons
+		document.getElementById("poi-resource_btn").style.display='inline';
+		document.getElementById("poi-resource-close_btn").style.display='inline';
+		document.getElementById("poi-gps-resource_btn").style.display='inline';
+		
 	}
 	else
 	{
-		document.getElementById("poi-resource-title-text").innerHTML=DonaCadenaJSON(Msg_PoI);
+		document.getElementById("poi-resource-title-text").innerHTML=DonaCadenaJSON(Msg_PoI)+" "+'<a href="help/help.htm#Res_PoI" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("poi-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_PoI_characteristics);
 		document.getElementById("poi-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("poi-resource-delete_btn").style.display='inline';
+		
+		document.getElementById("open-data-poi-resource_screen_value").disabled=true;
+		
+		document.getElementById("title-poi-resource_screen").innerHTML = DonaCadenaJSON(Msg_Title);
+		document.getElementById("long-poi-resource_screen").innerHTML = DonaCadenaJSON(Msg_PoI_Lon);
+		document.getElementById("lat-poi-resource_screen").innerHTML = DonaCadenaJSON(Msg_PoI_Lat);
+		document.getElementById("poi_mandatory_txt").innerHTML = "";
 	}
 }
 
@@ -4431,8 +4878,10 @@ function OmpleRecursTargetsDesDeTargetsOfAFeedback(puc_editar)
 	for (var item=0; item<TargetsOfAFeedback.length; item++)
 	{
 		document.getElementById("target_feedback-resource_compact_list").innerHTML+="<div id=\""+"target_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		
 		PopulateCompactDescriptionResource(TargetsOfAFeedback[item].id_target, "target_feedback-resource_compact_list", TargetsOfAFeedback[item].role,  puc_editar ? "targetRole" : "", 
-			(item+1), puc_editar ? "EliminaTargetOfAFeedback" : "", document.feedback_resource_form.open_data.checked, 1 /*is_target*/);
+			(item+1), puc_editar ? "EliminaTargetOfAFeedback" : "", document.feedback_resource_form.open_data.checked, 1, TargetsOfAFeedback[item].scope, 
+			puc_editar ? "ModificaScopeOfAFeedback" : "", item);
 	}
 	return;
 }
@@ -4450,7 +4899,7 @@ function OmpleRecursPublicsDesDePublicsOfAFeedback(puc_editar)
 	{
 		document.getElementById("public_feedback-resource_compact_list").innerHTML+="<div id=\""+"public_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(PublicsOfAFeedback[item].id_public, "public_feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaPublicOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 2 /*is_public*/);
+			document.feedback_resource_form.open_data.checked, 2 /*is_public*/, item);
 	}
 	return;
 }
@@ -4468,7 +4917,7 @@ function OmpleRecursRefDocsDesDeRefDocsOfAFeedback(puc_editar)
 	{
 		document.getElementById("ref-doc-feedback-resource_compact_list").innerHTML+="<div id=\""+"ref-doc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(RefDocsOfAFeedback[item].id_public, "ref-doc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaRefDocOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 5 /*is_ref_doc*/);
+			document.feedback_resource_form.open_data.checked, 5 /*is_ref_doc*/, item);
 	}
 	return;
 }
@@ -4486,7 +4935,7 @@ function OmpleRecursAddDocsDesDeAddDocsOfAFeedback(puc_editar)
 	{
 		document.getElementById("add-doc-feedback-resource_compact_list").innerHTML+="<div id=\""+"add-doc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(AddDocsOfAFeedback[item].id_citation, "add-doc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaAddDocOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 6 /*is_add_doc*/);
+			document.feedback_resource_form.open_data.checked, 6 /*is_add_doc*/, item);
 	}
 	return;
 }
@@ -4504,7 +4953,7 @@ function OmpleRecursAltRsrcsDesDeAltRsrcsOfAFeedback(puc_editar)
 	{
 		document.getElementById("alt-rsrc-feedback-resource_compact_list").innerHTML+="<div id=\""+"alt-rsrc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(AltRsrcsOfAFeedback[item].id_citation, "alt-rsrc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaAltRsrcOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 7 /*is_alt_rsrc*/);
+			document.feedback_resource_form.open_data.checked, 7 /*is_alt_rsrc*/, item);
 	}
 	return;
 }
@@ -4522,7 +4971,7 @@ function OmpleRecursFixRsrcsDesDeFixRsrcsOfAFeedback(puc_editar)
 	{
 		document.getElementById("fix-rsrc-feedback-resource_compact_list").innerHTML+="<div id=\""+"fix-rsrc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(FixRsrcsOfAFeedback[item].id_citation, "fix-rsrc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaFixRsrcOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 8 /*is_fix_rsrc*/);
+			document.feedback_resource_form.open_data.checked, 8 /*is_fix_rsrc*/, item);
 	}
 	return;
 }
@@ -4651,6 +5100,7 @@ function BuidaPlegaFeedbackElements()
 	OmpleRecursPublicsDesDePublicsOfAFeedback(true);	
 }
 
+/* Còpia de NiMMbus.cat 20121215 abans de simplificar les proteccions a id i target
 //function MostraFeedbackResource(id, target, target_role, i_target)
 function MostraFeedbackResource(id, target)
 {	
@@ -4671,13 +5121,13 @@ function MostraFeedbackResource(id, target)
 	{
 		if (IdTargetResourceToSaveChanges) /* Estic mirant els FB existents d'un cert recurs al client "normal", per tant he passat per la pàgina de FB_list 
 				i he demanat això en aquest context NO PUC usar IdResourceToSaveChanges perquè si des de la pàgina de FB_list en creava un de nou, 
-				després entrava a editar-lo, i després en volia crear un altre, el segon q creava tenia de target el primer!!!*/
+				després entrava a editar-lo, i després en volia crear un altre, el segon q creava tenia de target el primer!!! * /
 			TargetsOfAFeedback[0]={"id_target": IdTargetResourceToSaveChanges, "role": "primary"};				
 		/*else -> En aquest segon cas, estic en un context de creació de FB a un target seleccionat per la via de ADDFEEDBACK (p.ex. des de CKAN o un navegador
 				de mapes, etc), i per tant NO he entrat per la via de FB_list i IdTargetResourceToSaveChanges és blanc, però IdResourceToSaveChanges és el que vull.
 			ABANS es feia aquí usant IdResourceToSaveChanges, però ara es fa a on s'omplia IdResourceToSaveChanges per permetre N targets si cal)
 				TargetsOfAFeedback[0]={"id_target": IdResourceToSaveChanges, "role": "primary"};
-			però ara ja no cal fer res perquè ja està fet */
+			però ara ja no cal fer res perquè ja està fet * /
 		TargetsOfAFeedbackHaveChanged=true; //Si no no s'enviarà el text "TARGET_1=... en el CREATE
 	}
 	else
@@ -4714,6 +5164,121 @@ function MostraFeedbackResource(id, target)
 		document.getElementById("open-data-feedback-resource_screen_value").disabled=true;
 		document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("feedback-resource-delete_btn").style.display='inline';
+	}
+}
+*/
+
+//function MostraFeedbackResource(id, target, target_role, i_target)
+function MostraFeedbackResource(id, target)
+{	
+	TargetsOfAFeedbackHaveChanged=false;
+	if (id=='')
+	{
+		if (IdTargetResourceToSaveChanges) /* Estic mirant els FB existents d'un cert recurs al client "normal", per tant he passat per la pàgina de FB_list 
+				i he demanat això en aquest context NO PUC usar IdResourceToSaveChanges perquè si des de la pàgina de FB_list en creava un de nou, 
+				després entrava a editar-lo, i després en volia crear un altre, el segon q creava tenia de target el primer!!!*/
+			TargetsOfAFeedback[0]={"id_target": IdTargetResourceToSaveChanges, "role": "primary"};				
+		else 
+			OmpleElementsOfAFeedback();
+		/*-> En (else anterior) aquest segon cas, estic en un context de creació de FB a un target seleccionat per la via de ADDFEEDBACK (p.ex. des de CKAN o un navegador de mapes, etc), i per tant NO he entrat per la via de FB_list i IdTargetResourceToSaveChanges és blanc, però IdResourceToSaveChanges és el que vull.	ABANS es feia aquí usant IdResourceToSaveChanges, però ara es fa a on s'omplia IdResourceToSaveChanges per permetre N targets si cal)	 TargetsOfAFeedback[0]={"id_target": IdResourceToSaveChanges, "role": "primary"}; però ara ja no cal fer res perquè ja està fet */
+
+		TargetsOfAFeedbackHaveChanged=true; //Si no no s'enviarà el text "TARGET_1=... en el CREATE
+		OmpleRecursTargetsDesDeTargetsOfAFeedback(true);
+	}
+	ChangePannel("feedback-resource", true);
+
+	IdResourceToSaveChanges=id;
+	IdFeedbackResourceToSaveChanges=id; //perquè si des de la pàgina de FB acabo creant una publicació, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	
+	document.getElementById("feedback-resource-exit_btn").style.display='none';
+	
+	if (id=="")
+	{		
+		//document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_feedback);
+		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_feedback)+" "+'<a href="help/help.htm#Res_feedback_item" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_feedback_characteristics);
+		//document.getElementById("open-data-feedback-resource_fieldset").style.display='inline';
+		document.getElementById("open-data-feedback-resource_screen_value").disabled=false;
+		//fet abans -> document.getElementById("open-data-feedback-resource_screen_value").checked=true; //una valoració nova la marco compartida amb anònim per defecte		
+		document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Create);
+		document.getElementById("feedback-resource-delete_btn").style.display='none';		
+		
+		document.getElementById("abstract-feedback-resource_screen").innerHTML=DonaCadenaJSON(Msg_Abstract)+ DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("feedback_mandatory_txt").innerHTML = DonaCadenaJSON(Msg_mandatory_elements);
+		
+		//OG: unblock text areas
+		document.getElementById("abstract-feedback-resource_screen_value").disabled=false;
+		document.getElementById("reason-feedback-resource_screen_value").disabled=false;
+		document.getElementById("comment-feedback-resource_screen_value").disabled=false;
+		document.getElementById("specific-usage-feedback-resource_screen_value").disabled=false;
+		document.getElementById("user-determined-limitations-feedback-resource_screen_value").disabled=false;
+		document.getElementById("response-feedback-resource_screen_value").disabled=false;
+		document.getElementById("reprodUsage-code-resource_screen_value").disabled=false;
+		document.getElementById("reprodUsage-diagram-resource_screen_value").disabled=false;
+		document.getElementById("known-problem-feedback-resource_screen_value").disabled=false;
+		document.getElementById("work-around-feedback-resource_screen_value").disabled=false;
+		
+		//OG: unblock inputs
+		document.getElementById("reprodUsage-codeLink-resource_screen_value").disabled=false;
+		document.getElementById("reprodUsage-platform-resource_screen_value").disabled=false;
+		document.getElementById("reprodUsage-version-resource_screen_value").disabled=false;
+		document.getElementById("reprodUsage-schema-resource_screen_value").disabled=false;
+		document.getElementById("reprodUsage-suggApp-resource_screen_value").disabled=false;
+		document.getElementById("reprodUsage-diagramLink-resource_screen_value").disabled=false;
+		
+		//date
+		document.getElementById("usage-date-feedback-resource_screen_value").readOnly=false;
+		document.getElementById("problem-date-feedback-resource_screen_value").readOnly=false;
+		document.getElementById("expected-fix-date-feedback-resource_screen_value").readOnly=false;
+		
+		//time
+		document.getElementById("usage-time-feedback-resource_screen_value").readOnly=false;
+		document.getElementById("proble-time-feedback-resource_screen_value").readOnly=false;
+		
+		//OG: enable selectors
+		document.getElementById("contactRole-feedback-resource_screen_value").disabled=false;
+		document.getElementById("comment-motiv-feedback-resource_screen_value").disabled=false;
+		document.getElementById("reprodUsage-mimetype-resource_screen_value").disabled=false;
+		document.getElementById("reprodUsage-diagram-mimetype-resource_screen_value").disabled=false;
+		
+		//OG: show buttons
+		document.getElementById("add-doc-feedback-resource_compact_add_btn").style.display='inline';
+		document.getElementById("ref-doc-feedback-resource_compact_add_btn").style.display='inline';
+		document.getElementById("fix-rsrc-feedback-resource_compact_add_btn").style.display='inline';
+		document.getElementById("alt-rsrc-feedback-resource_compact_add_btn").style.display='inline';
+		document.getElementById("feedback-resource_btn").style.display='inline';
+		document.getElementById("feedback-resource-close_btn").style.display='inline';
+		
+		//OG: show text related to the above buttons
+		document.getElementById("add-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(Msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(Msg_indicates_citation_not_shared);
+		document.getElementById("ref-doc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(Msg_Press_select_choose_publication)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(Msg_indicates_publication_not_shared);
+		document.getElementById("fix-rsrc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(Msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(Msg_indicates_citation_not_shared);	
+		document.getElementById("alt-rsrc-feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON(Msg_Press_select_choose_citation)+" <img src=\"ExclamationMark20.png\"> "+DonaCadenaJSON(Msg_indicates_citation_not_shared);	
+		
+		//OG: enable checkbox
+		document.getElementById("reportAspect-feedback-usage").disabled=false;
+		document.getElementById("reportAspect-feedback-fitness-for-purpose").disabled=false;
+		document.getElementById("reportAspect-feedback-limitation").disabled=false;
+		document.getElementById("reportAspect-feedback-alternative").disabled=false;
+		document.getElementById("reportAspect-feedback-problem").disabled=false;
+
+		document.getElementById("feedback-resource_btn").style.display='inline';			
+		document.getElementById("feedback-resource-close_btn").style.display='inline';
+		
+		BuidaPlegaFeedbackElements();		
+	}
+	else
+	{
+		//document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Feedback);
+		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Feedback)+" "+'<a href="help/help.htm#Res_feedback_item" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_feedback_characteristics);
+		//document.getElementById("open-data-feedback-resource_fieldset").style.display='none';
+		document.getElementById("open-data-feedback-resource_screen_value").disabled=true;
+		document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
+		document.getElementById("feedback-resource-delete_btn").style.display='inline';
+		
+		document.getElementById("abstract-feedback-resource_screen").innerHTML=DonaCadenaJSON(Msg_Abstract);
+		document.getElementById("feedback_mandatory_txt").innerHTML = "";
 	}
 }
 
@@ -4827,7 +5392,7 @@ function OmpleRecursResponsiblesDesDeResponsiblesOfACitation(puc_editar)
 	{
 		document.getElementById("responsible-citation-resource_compact_list").innerHTML+="<div id=\""+"responsible-citation-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(ResponsiblesOfACitation[item].id_responsible, "responsible-citation-resource_compact_list", ResponsiblesOfACitation[item].role, puc_editar ? "responsibleRole" : "", 
-			(item+1), puc_editar ? "EliminaResponsibleOfACitation" : "", document.citation_resource_form.open_data.checked, 3 /*is_party_a_citation*/);
+			(item+1), puc_editar ? "EliminaResponsibleOfACitation" : "", document.citation_resource_form.open_data.checked, 3 /*is_party_a_citation*/, item);
 	}
 	return;
 }
@@ -4842,7 +5407,7 @@ function OmpleRecursResponsiblesDesDeResponsiblesOfAPublication(puc_editar)
 	{
 		document.getElementById("responsible-publication-resource_compact_list").innerHTML+="<div id=\""+"responsible-publication-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(ResponsiblesOfAPublication[item].id_responsible, "responsible-publication-resource_compact_list", ResponsiblesOfAPublication[item].role, puc_editar ? "responsibleRole" : "", 
-			(item+1), puc_editar ? "EliminaResponsibleOfAPublication" : "", document.citation_resource_form.open_data.checked, 4 /*is_party_a_publication*/);
+			(item+1), puc_editar ? "EliminaResponsibleOfAPublication" : "", document.citation_resource_form.open_data.checked, 4 /*is_party_a_publication*/, item);
 	}
 	return;
 }
@@ -4858,6 +5423,7 @@ function MostraOAmagaExclamacioDeShareAResponsiblesOfACitation()
 	}
 }
 
+
 function MostraCitationResource(id)
 {
 	ChangePannel("citation-resource", true);
@@ -4867,22 +5433,51 @@ function MostraCitationResource(id)
 	document.getElementById("citation-resource-exit_btn").style.display='none';
 	if (id=="") //estic creant una cita nova
 	{
-		document.getElementById("citation-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_citation);
+		document.getElementById("citation-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_citation)+" "+'<a href="help/help.htm#Citation" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_citation_characteristics);
 		//document.getElementById("open-data-citation-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-citation-resource_screen_value").disabled=false;
 		document.getElementById("open-data-citation-resource_screen_value").checked=true; //una publicació nova la marco compartida amb anònim per defecte		
 		document.getElementById("citation-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("citation-resource-delete_btn").style.display='none';
+		
+		document.getElementById("title-citation-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title)+ DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("citation_mandatory_txt").innerHTML = DonaCadenaJSON(Msg_mandatory_elements);
+		
+		//OG: unblock inputs
+		document.getElementById("title-citation-resource_screen_value").disabled=false;
+		document.getElementById("edition-citation-resource_screen_value").disabled=false;
+		document.getElementById("id-code-citation-resource_screen_value").disabled=false;
+		document.getElementById("id-namespace-citation-resource_screen_value").disabled=false;
+		document.getElementById("series-name-citation-resource_screen_value").disabled=false;
+		document.getElementById("series-issue-citation-resource_screen_value").disabled=false;
+		document.getElementById("series-page-citation-resource_screen_value").disabled=false;
+		document.getElementById("other-cit-details-citation-resource_screen_value").disabled=false;
+		document.getElementById("url-link-citation-resource_screen_value").disabled=false;
+		document.getElementById("url-descrip-citation-resource_screen_value").disabled=false;
+		
+		//date
+		document.getElementById("edition-date-citation-resource_screen_value").readOnly=false;
+		
+		//OG: enable selectors
+		document.getElementById("url-function-citation-resource_screen_value").disabled=false;
+		//document.getElementById("url-function-citation-resource_screen_value").style.pointerEvents='auto';
+		
+		//OG: enable buttons
+		document.getElementById("citation-resource_btn").style.display='inline';
+		document.getElementById("citation-resource-close_btn").style.display='inline';
 	}
 	else
 	{
-		document.getElementById("citation-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Citation);
+		document.getElementById("citation-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Citation)+" "+'<a href="help/help.htm#Citation" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_citation_characteristics);
 		//document.getElementById("open-data-citation-resource_fieldset").style.display='none';
 		document.getElementById("open-data-citation-resource_screen_value").disabled=true;
 		document.getElementById("citation-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("citation-resource-delete_btn").style.display='inline';
+		
+		document.getElementById("title-citation-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+		document.getElementById("citation_mandatory_txt").innerHTML = "";
 	}
 }
 
@@ -4906,22 +5501,57 @@ function MostraPublicationResource(id)
 	document.getElementById("publication-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
-		document.getElementById("publication-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_publication);
+		document.getElementById("publication-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_publication)+" "+'<a href="help/help.htm#Publication" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("publication-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_publication_characteristics);
 		//document.getElementById("open-data-publication-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-publication-resource_screen_value").disabled=false;
 		document.getElementById("open-data-publication-resource_screen_value").checked=true; //una publicació nova la marco compartida amb anònim per defecte		
 		document.getElementById("publication-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("publication-resource-delete_btn").style.display='none';
+		
+		document.getElementById("title-publication-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title)+ DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("publication_mandatory_txt").innerHTML = DonaCadenaJSON(Msg_mandatory_elements);
+		
+		//OG: unblock inputs
+		document.getElementById("title-publication-resource_screen_value").disabled=false;
+		document.getElementById("edition-publication-resource_screen_value").disabled=false;
+		document.getElementById("id-code-publication-resource_screen_value").disabled=false;
+		document.getElementById("id-namespace-publication-resource_screen_value").disabled=false;
+		document.getElementById("series-name-publication-resource_screen_value").disabled=false;
+		document.getElementById("series-issue-publication-resource_screen_value").disabled=false;
+		document.getElementById("series-page-publication-resource_screen_value").disabled=false;
+		document.getElementById("other-cit-details-publication-resource_screen_value").disabled=false;
+		document.getElementById("url-link-publication-resource_screen_value").disabled=false;
+		document.getElementById("url-descrip-publication-resource_screen_value").disabled=false;
+		
+		//date
+		document.getElementById("edition-date-publication-resource_screen_value").readOnly=false;
+		
+		//OG: enable selectors
+		document.getElementById("url-function-publication-resource_screen_value").disabled=false;
+		document.getElementById("category-publication-resource_screen_value").disabled=false;
+		
+		//OG: unblock text areas
+		document.getElementById("abstract-publication-resource_screen_value").disabled=false;
+		
+		//OG: enable checkbox
+		document.getElementById("open-data-publication-resource_screen_value").disabled=false;
+		
+		//OG: enable buttons
+		document.getElementById("publication-resource_btn").style.display='inline';
+		document.getElementById("publication-resource-close_btn").style.display='inline';
 	}
 	else
 	{
-		document.getElementById("publication-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Publication);
+		document.getElementById("publication-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Publication)+" "+'<a href="help/help.htm#Publication" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("publication-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_publication_characteristics);
 		//document.getElementById("open-data-publication-resource_fieldset").style.display='none';
 		document.getElementById("open-data-publication-resource_screen_value").disabled=true;
 		document.getElementById("publication-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("publication-resource-delete_btn").style.display='inline';
+		
+		document.getElementById("title-publication-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+		document.getElementById("publication_mandatory_txt").innerHTML = "";
 	}
 }
 
@@ -4933,22 +5563,41 @@ function MostraIndividualResource(id)
 	document.getElementById("individual-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
-		document.getElementById("individual-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_individual);
+		document.getElementById("individual-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_individual)+" "+'<a href="help/help.htm#Res_responsible_party" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("individual-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_individual_characteristics);
 		//document.getElementById("open-data-individual-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-individual-resource_screen_value").disabled=false;
 		document.getElementById("open-data-individual-resource_screen_value").checked=true; //un individu nou el marco compartit amb anònim per defecte		
 		document.getElementById("individual-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("individual-resource-delete_btn").style.display='none';
+		
+		document.getElementById("title-individual-resource_screen").innerHTML=DonaCadenaJSON(Msg_Individual_Name)+ DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("individual_mandatory_txt").innerHTML = DonaCadenaJSON(Msg_mandatory_elements);
+		
+		//OG: enable inputs
+		document.getElementById("title-individual-resource_screen_value").disabled=false;
+		document.getElementById("email-individual-resource_screen_value").disabled=false;
+		document.getElementById("url-link-individual-resource_screen_value").disabled=false;
+		document.getElementById("id-code-1-individual-resource_screen_value").disabled=false;
+		document.getElementById("id-namespace-1-individual-resource_screen_value").disabled=false;
+		document.getElementById("id-code-2-individual-resource_screen_value").disabled=false;
+		document.getElementById("id-namespace-2-individual-resource_screen_value").disabled=false;
+		
+		//OG: enable buttons
+		document.getElementById("individual-resource_btn").style.display='inline';
+		document.getElementById("individual-resource-close_btn").style.display='inline';
 	}
 	else
 	{
-		document.getElementById("individual-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Individual);
+		document.getElementById("individual-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Individual)+" "+'<a href="help/help.htm#Res_responsible_party" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("individual-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_individual_characteristics);
 		//document.getElementById("open-data-individual-resource_fieldset").style.display='none';
 		document.getElementById("open-data-individual-resource_screen_value").disabled=true;
 		document.getElementById("individual-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("individual-resource-delete_btn").style.display='inline';
+		
+		document.getElementById("title-individual-resource_screen").innerHTML=DonaCadenaJSON(Msg_Individual_Name);
+		document.getElementById("individual_mandatory_txt").innerHTML = "";
 	}
 }
 
@@ -4961,22 +5610,40 @@ function MostraOrganismResource(id)
 	document.getElementById("organism-resource-exit_btn").style.display='none';
 	if (id=="")
 	{
-		document.getElementById("organism-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_organism);
+		document.getElementById("organism-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_organism)+" "+'<a href="help/help.htm#Res_responsible_party" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("organism-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_organism_characteristics);
 		//document.getElementById("open-data-organism-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-organism-resource_screen_value").disabled=false;
 		document.getElementById("open-data-organism-resource_screen_value").checked=true; //un organisme nou el marco compartit amb anònim per defecte		
 		document.getElementById("organism-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("organism-resource-delete_btn").style.display='none';
+		
+		document.getElementById("title-organism-resource_screen").innerHTML=DonaCadenaJSON(Msg_Org_Name)+ DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("organism_mandatory_txt").innerHTML = DonaCadenaJSON(Msg_mandatory_elements);
+		
+		//OG: unblock inputs
+		document.getElementById("title-organism-resource_screen_value").disabled=false;
+		document.getElementById("delivery-point-organism-resource_screen_value").disabled=false;
+		document.getElementById("city-organism-resource_screen_value").disabled=false;
+		document.getElementById("administrative-area-organism-resource_screen_value").disabled=false;
+		document.getElementById("postal-code-organism-resource_screen_value").disabled=false;
+		document.getElementById("country-organism-resource_screen_value").disabled=false;
+		
+		//OG: enable buttons
+		document.getElementById("organism-resource_btn").style.display='inline';
+		document.getElementById("organism-resource-close_btn").style.display='inline';
 	}
 	else
 	{
-		document.getElementById("organism-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Organism);
+		document.getElementById("organism-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Organism)+" "+'<a href="help/help.htm#Res_responsible_party" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		document.getElementById("organism-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_organism_characteristics);
 		//document.getElementById("open-data-organism-resource_fieldset").style.display='none';
 		document.getElementById("open-data-organism-resource_screen_value").disabled=true;
 		document.getElementById("organism-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
 		document.getElementById("organism-resource-delete_btn").style.display='inline';
+		
+		document.getElementById("title-organism-resource_screen").innerHTML=DonaCadenaJSON(Msg_Org_Name);
+		document.getElementById("organism_mandatory_txt").innerHTML = "";
 	}
 }
 
@@ -5011,7 +5678,7 @@ var id;
 
 	EnumerateFeedbackResource(id);
 	document.getElementById("feedback_target_compact_descrip").innerHTML="";		
-	PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null, false, 0 /*is_none*/);
+	PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null, false, 0 /*is_none*/, null);
 }
 
 function MostraTagResource(event, query)
@@ -5130,13 +5797,26 @@ var root, text_current_feedback_list;
 	text_current_feedback_list="";
 	if (owc.features)
 	{
+		text_current_feedback_list+='<ol>';
 		for (var i=0; i<owc.features.length; i++)
 		{
 			//We are supposing that all the returned objects are of the same type: FEEDBACK
-			text_current_feedback_list+=owc.features[i].properties.title;
-			text_current_feedback_list+=" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Edit) +"\" onClick=\"EditResource(\'"+owc.features[i].id+"\', \'FEEDBACK\')\"/>";
-			text_current_feedback_list+="<br/>";			
+			//OG: Numerem la llista de feedbacks d'un recurs i hi afegim l'autor i la data.
+
+			var fb_date = new Date (owc.features[i].properties.updated);
+			
+			text_current_feedback_list+='<table style="width:100%"><tr>';
+			text_current_feedback_list+='<td style="width:75%"><b><li>'+owc.features[i].properties.authors[0].name+":</b> "+fb_date.toLocaleString() +'</td>';
+			text_current_feedback_list+='<td style="width:25%">';
+			text_current_feedback_list+="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Edit) +"\" onClick=\"EditResource(\'"+owc.features[i].id+"\', \'FEEDBACK\')\"/>";
+			text_current_feedback_list+='</td>';	
+			text_current_feedback_list+='</tr><tr>';
+			text_current_feedback_list+='<td style="width:75%">'+ owc.features[i].properties.title+"</td>";
+			text_current_feedback_list+=' <td style="width:25%"></td>';
+			text_current_feedback_list+='</tr></table>';
+		
 		}
+		text_current_feedback_list+="</ol>";
 	}
 	document.getElementById("current_feedback_list").innerHTML=text_current_feedback_list;
 
@@ -5308,6 +5988,8 @@ function SelectionShareAuthorizedList()
 function SendHRefResourceChanges()
 {
 var s,s2;
+var mime_list = ["application/andrew-inset", "application/applixware", "application/atom+xml", "application/atomcat+xml", "application/atomsvc+xml", "application/ccxml+xml", "application/cu-seeme", "application/davmount+xml","application/ecmascript", "application/ecmascript", "application/emma+xml", "application/epub+zip", "application/font-tdpfr", "application/gzip", "application/gzip", "application/hyperstudio","application/java-archive", "application/javascript", "application/java-serialized-object", "application/java-vm", "application/json", "application/lost+xml", "application/mac-binhex40","application/mac-compactpro", "application/marc", "application/mathematica", "application/mathml+xml", "application/mathml+xml", "application/mbox", "application/mediaservercontrol+xml","application/mp4", "application/msword", "application/mxf", "application/octet-stream", "application/oda", "application/oebps-package+xml", "application/ogg", "application/onenote","application/patch-ops-error+xml", "application/pdf", "application/pgp-encrypted", "application/pgp-signature", "application/pics-rules", "application/pkcs10", "application/pkcs7-mime","application/pkcs7-signature", "application/pkix-cert", "application/pkixcmp", "application/pkix-crl", "application/pkix-pkipath", "application/pls+xml", "application/postscript", "application/prs.cww","application/rdf+xml", "application/reginfo+xml", "application/relax-ng-compact-syntax", "application/resource-lists+xml", "application/resource-lists-diff+xml", "application/rls-services+xml","application/rsd+xml", "application/rss+xml", "application/rtf", "application/sbml+xml", "application/scvp-cv-request", "application/scvp-cv-response", "application/scvp-vp-request","application/scvp-vp-response", "application/sdp", "application/set-payment-initiation", "application/set-registration-initiation", "application/shf+xml", "application/smil+xml","application/sparql-query", "application/sparql-results+xml", "application/srgs", "application/srgs+xml", "application/ssml+xml", "application/vnd.3gpp.pic-bw-large", "application/vnd.3gpp.pic-bw-small","application/vnd.3gpp.pic-bw-var", "application/vnd.3gpp2.tcap", "application/vnd.3m.post-it-notes", "application/vnd.accpac.simply.aso", "application/vnd.accpac.simply.imp","application/vnd.acucobol", "application/vnd.acucorp", "application/vnd.adobe.air-application-installer-package+zip", "application/vnd.adobe.xdp+xml", "application/vnd.adobe.xfdf","application/vnd.airzip.filesecure.azf", "application/vnd.airzip.filesecure.azs", "application/vnd.amazon.ebook", "application/vnd.americandynamics.acc", "application/vnd.amiga.ami", "application/vnd.android.package-archive", "application/vnd.anser-web-certificate-issue-initiation", "application/vnd.anser-web-funds-transfer-initiation", "application/vnd.antix.game-component","application/vnd.apple.installer+xml", "application/vnd.arastra.swi", "application/vnd.audiograph", "application/vnd.blueice.multipass", "application/vnd.bmi","application/vnd.businessobjects", "application/vnd.chemdraw+xml", "application/vnd.chipnuts.karaoke-mmd", "application/vnd.cinderella", "application/vnd.claymore", "application/vnd.clonk.c4group", "application/vnd.commonspace", "application/vnd.contact.cmsg", "application/vnd.cosmocaller", "application/vnd.crick.clicker", "application/vnd.crick.clicker.keyboard", "application/vnd.crick.clicker.palette", "application/vnd.crick.clicker.template", "application/vnd.crick.clicker.wordbank", "application/vnd.criticaltools.wbs+xml", "application/vnd.ctc-posml", "application/vnd.cups-ppd", "application/vnd.curl.car", "application/vnd.curl.pcurl", "application/vnd.data-vision.rdz", "application/vnd.debian.binary-package", "application/vnd.denovo.fcselayout-link", "application/vnd.dna", "application/vnd.dolby.mlp", "application/vnd.dpgraph", "application/vnd.dreamfactory", "application/vnd.dynageo", "application/vnd.ecowin.chart", "application/vnd.enliven", "application/vnd.epson.esf", "application/vnd.epson.msf", "application/vnd.epson.quickanime", "application/vnd.epson.salt", "application/vnd.epson.ssf", "application/vnd.eszigno3+xml", "application/vnd.ezpix-album", "application/vnd.ezpix-package", "application/vnd.fdf", "application/vnd.fdsn.mseed", "application/vnd.fdsn.seed", "application/vnd.flographit", "application/vnd.fluxtime.clip", "application/vnd.framemaker", "application/vnd.frogans.fnc", "application/vnd.frogans.ltf", "application/vnd.fsc.weblaunch", "application/vnd.fujitsu.oasys", "application/vnd.fujitsu.oasys2", "application/vnd.fujitsu.oasys3", "application/vnd.fujitsu.oasysgp", "application/vnd.fujitsu.oasysprs", "application/vnd.fujixerox.ddd", "application/vnd.fujixerox.docuworks", "application/vnd.fujixerox.docuworks.binder", "application/vnd.fuzzysheet", "application/vnd.genomatix.tuxedo", "application/vnd.geogebra.file", "application/vnd.geogebra.tool", "application/vnd.geometry-explorer", "application/vnd.gmx", "application/vnd.google-earth.kml+xml", "application/vnd.google-earth.kmz", "application/vnd.grafeq", "application/vnd.groove-account", "application/vnd.groove-help", "application/vnd.groove-identity-message", "application/vnd.groove-injector", "application/vnd.groove-tool-message", "application/vnd.groove-tool-template", "application/vnd.groove-vcard", "application/vnd.handheld-entertainment+xml", "application/vnd.hbci", "application/vnd.hhe.lesson-player", "application/vnd.hp-hpgl", "application/vnd.hp-hpid", "application/vnd.hp-hps", "application/vnd.hp-jlyt", "application/vnd.hp-pcl", "application/vnd.hp-pclxl", "application/vnd.hydrostatix.sof-data", "application/vnd.hzn-3d-crossword", "application/vnd.ibm.minipay", "application/vnd.ibm.modcap", "application/vnd.ibm.rights-management", "application/vnd.ibm.secure-container", "application/vnd.iccprofile", "application/vnd.igloader", "application/vnd.immervision-ivp", "application/vnd.immervision-ivu", "application/vnd.intercon.formnet", "application/vnd.intu.qbo", "application/vnd.intu.qfx", "application/vnd.ipunplugged.rcprofile", "application/vnd.irepository.package+xml", "application/vnd.is-xpr", "application/vnd.jam", "application/vnd.jcp.javame.midlet-rms", "application/vnd.jisp", "application/vnd.joost.joda-archive", "application/vnd.kahootz", "application/vnd.kde.karbon", "application/vnd.kde.kchart", "application/vnd.kde.kformula", "application/vnd.kde.kivio", "application/vnd.kde.kontour", "application/vnd.kde.kpresenter", "application/vnd.kde.kspread", "application/vnd.kde.kword", "application/vnd.kenameaapp", "application/vnd.kidspiration", "application/vnd.kinar", "application/vnd.koan", "application/vnd.kodak-descriptor", "application/vnd.llamagraphics.life-balance.desktop", "application/vnd.llamagraphics.life-balance.exchange+xml", "application/vnd.lotus-1-2-3", "application/vnd.lotus-approach", "application/vnd.lotus-freelance", "application/vnd.lotus-notes", "application/vnd.lotus-organizer", "application/vnd.lotus-screencam", "application/vnd.lotus-wordpro", "application/vnd.macports.portpkg", "application/vnd.mcd", "application/vnd.medcalcdata", "application/vnd.mediastation.cdkey", "application/vnd.mfer", "application/vnd.mfmp", "application/vnd.micrografx.flo", "application/vnd.micrografx.igx", "application/vnd.mif", "application/vnd.mobius.daf", "application/vnd.mobius.dis", "application/vnd.mobius.mbk", "application/vnd.mobius.mqy", "application/vnd.mobius.msl", "application/vnd.mobius.plc", "application/vnd.mobius.txf", "application/vnd.mophun.application", "application/vnd.mophun.certificate", "application/vnd.mozilla.xul+xml", "application/vnd.ms-artgalry", "application/vnd.ms-cab-compressed", "application/vnd.mseq", "application/vnd.ms-excel", "application/vnd.ms-excel.addin.macroenabled.12", "application/vnd.ms-excel.sheet.binary.macroenabled.12", "application/vnd.ms-excel.sheet.macroenabled.12", "application/vnd.ms-excel.template.macroenabled.12", "application/vnd.ms-fontobject", "application/vnd.ms-htmlhelp", "application/vnd.ms-ims", "application/vnd.ms-lrm", "application/vnd.ms-pki.seccat", "application/vnd.ms-pki.stl", "application/vnd.ms-powerpoint", "application/vnd.ms-powerpoint.addin.macroenabled.12", "application/vnd.ms-powerpoint.presentation.macroenabled.12", "application/vnd.ms-powerpoint.slide.macroenabled.12", "application/vnd.ms-powerpoint.slideshow.macroenabled.12", "application/vnd.ms-powerpoint.template.macroenabled.12", "application/vnd.ms-project", "application/vnd.ms-word.document.macroenabled.12", "application/vnd.ms-word.template.macroenabled.12", "application/vnd.ms-works", "application/vnd.ms-wpl", "application/vnd.ms-xpsdocument", "application/vnd.musician", "application/vnd.muvee.style", "application/vnd.neurolanguage.nlu", "application/vnd.noblenet-directory", "application/vnd.noblenet-sealer", "application/vnd.noblenet-web", "application/vnd.nokia.n-gage.data", "application/vnd.nokia.n-gage.symbian.install", "application/vnd.nokia.radio-preset", "application/vnd.nokia.radio-presets", "application/vnd.novadigm.edm", "application/vnd.novadigm.edx", "application/vnd.novadigm.ext", "application/vnd.oasis.opendocument.chart", "application/vnd.oasis.opendocument.chart-template", "application/vnd.oasis.opendocument.database", "application/vnd.oasis.opendocument.formula", "application/vnd.oasis.opendocument.formula-template", "application/vnd.oasis.opendocument.graphics", "application/vnd.oasis.opendocument.graphics-template", "application/vnd.oasis.opendocument.image", "application/vnd.oasis.opendocument.image-template", "application/vnd.oasis.opendocument.presentation", "application/vnd.oasis.opendocument.presentation-template", "application/vnd.oasis.opendocument.spreadsheet","application/vnd.oasis.opendocument.spreadsheet-template", "application/vnd.oasis.opendocument.text", "application/vnd.oasis.opendocument.text-master", "application/vnd.oasis.opendocument.text-template", "application/vnd.oasis.opendocument.text-web", "application/vnd.olpc-sugar", "application/vnd.oma.dd2+xml", "application/vnd.openofficeorg.extension", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.openxmlformats-officedocument.presentationml.slide", "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "application/vnd.openxmlformats-officedocument.presentationml.template", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "application/vnd.osgi.dp", "application/vnd.palm", "application/vnd.pg.format", "application/vnd.pg.osasli", "application/vnd.picsel", "application/vnd.pocketlearn", "application/vnd.powerbuilder6", "application/vnd.previewsystems.box", "application/vnd.proteus.magazine", "application/vnd.publishare-delta-tree", "application/vnd.pvi.ptid1", "application/vnd.quark.quarkxpress", "application/vnd.recordare.musicxml", "application/vnd.recordare.musicxml+xml", "application/vnd.rim.cod", "application/vnd.rn-realmedia", "application/vnd.route66.link66+xml", "application/vnd.seemail", "application/vnd.sema", "application/vnd.semd", "application/vnd.semf", "application/vnd.shana.informed.formdata", "application/vnd.shana.informed.formtemplate", "application/vnd.shana.informed.interchange", "application/vnd.shana.informed.package", "application/vnd.simtech-mindmapper", "application/vnd.smaf", "application/vnd.smart.teacher", "application/vnd.solent.sdkm+xml", "application/vnd.spotfire.dxp", "application/vnd.spotfire.sfs", "application/vnd.sqlite3", "application/vnd.stardivision.calc", "application/vnd.stardivision.draw", "application/vnd.stardivision.impress", "application/vnd.stardivision.math", "application/vnd.stardivision.writer", "application/vnd.stardivision.writer-global", "application/vnd.sun.xml.calc", "application/vnd.sun.xml.calc.template", "application/vnd.sun.xml.draw", "application/vnd.sun.xml.draw.template", "application/vnd.sun.xml.impress", "application/vnd.sun.xml.impress.template", "application/vnd.sun.xml.math", "application/vnd.sun.xml.writer", "application/vnd.sun.xml.writer.global", "application/vnd.sun.xml.writer.template", "application/vnd.sus-calendar", "application/vnd.svd", "application/vnd.symbian.install", "application/vnd.syncml.dm+wbxml", "application/vnd.syncml.dm+xml", "application/vnd.syncml+xml", "application/vnd.tao.intent-module-archive", "application/vnd.tmobile-livetv", "application/vnd.trid.tpt", "application/vnd.triscape.mxs", "application/vnd.trueapp", "application/vnd.ufdl", "application/vnd.uiq.theme", "application/vnd.umajin", "application/vnd.unity", "application/vnd.uoml+xml", "application/vnd.vcx", "application/vnd.visio", "application/vnd.visionary", "application/vnd.vsf", "application/vnd.wap.sic", "application/vnd.wap.slc", "application/vnd.wap.wbxml", "application/vnd.wap.wmlc", "application/vnd.wap.wmlscriptc", "application/vnd.webturbo", "application/vnd.wordperfect", "application/vnd.wqd", "application/vnd.wt.stf", "application/vnd.xara", "application/vnd.xfdl", "application/vnd.yamaha.hv-dic", "application/vnd.yamaha.hv-script", "application/vnd.yamaha.hv-voice", "application/vnd.yamaha.openscoreformat", "application/vnd.yamaha.openscoreformat.osfpvg+xml", "application/vnd.yamaha.smaf-audio", "application/vnd.yamaha.smaf-phrase", "application/vnd.yellowriver-custom-menu", "application/vnd.zul", "application/vnd.zzazz.deck+xml", "application/voicexml+xml", "application/winhlp", "application/wsdl+xml", "application/wspolicy+xml", "application/x-7z-compressed", "application/x-abiword", "application/x-ace-compressed", "application/x-authorware-bin", "application/x-authorware-map", "application/x-authorware-seg", "application/x-bcpio", "application/x-bittorrent", "application/x-bzip", "application/x-bzip2", "application/x-cdlink", "application/x-chat", "application/x-chess-pgn", "application/x-cpio", "application/x-csh", "application/x-debian-package", "application/x-director", "application/x-doom", "application/x-dtbncx+xml", "application/x-dtbook+xml", "application/x-dtbresource+xml", "application/x-dvi", "application/x-ecmascript", "application/xenc+xml", "application/x-font-bdf", "application/x-font-ghostscript", "application/x-font-linux-psf", "application/x-font-otf", "application/x-font-otf", "application/x-font-pcf", "application/x-font-snf", "application/x-font-ttf", "application/x-font-type1", "application/x-futuresplash", "application/x-gnumeric", "application/x-gtar", "application/x-gzip", "application/x-gzip", "application/x-hdf", "application/xhtml+xml", "application/x-java-jnlp-file", "application/x-javascript", "application/x-killustrator", "application/x-krita", "application/x-latex", "application/xml", "application/xml-dtd", "application/x-mobipocket-ebook", "application/x-msaccess", "application/x-ms-application", "application/x-msbinder", "application/x-mscardfile", "application/x-msclip", "application/x-msdownload", "application/x-msmediaview", "application/x-msmetafile", "application/x-msmoney", "application/x-mspublisher", "application/x-msschedule", "application/x-msterminal", "application/x-ms-wmd", "application/x-ms-wmz", "application/x-mswrite", "application/x-ms-xbap", "application/x-netcdf", "application/xop+xml", "application/x-pdf", "application/x-perl", "application/x-pkcs12", "application/x-pkcs7-certificates", "application/x-pkcs7-certificates", "application/x-pkcs7-certreqresp", "application/x-python-code", "application/x-redhat-package-manager", "application/x-rpm", "application/x-sh", "application/x-shar", "application/x-shellscript", "application/x-shockwave-flash", "application/x-silverlight-app", "application/xslt+xml", "application/xspf+xml", "application/x-sqlite3", "application/x-stuffit", "application/x-stuffitx", "application/x-sv4cpio", "application/x-sv4crc", "application/x-tar", "application/x-tcl", "application/x-tex", "application/x-texinfo", "application/x-tex-tfm", "application/x-trash", "application/x-ustar", "application/xv+xml", "application/x-wais-source", "application/x-x509-ca-cert", "application/x-xfig", "application/x-xpinstall", "application/x-zip-compressed", "application/zip", "application/zip-compressed", "audio/3gpp", "audio/3gpp", "audio/3gpp2", "audio/3gpp2", "audio/adpcm", "audio/aiff", "audio/basic", "audio/flac", "audio/midi", "audio/mp3", "audio/mp4", "audio/mpeg", "audio/mpeg3", "audio/ogg", "audio/opus", "audio/vnd.digital-winds", "audio/vnd.dts", "audio/vnd.dts.hd", "audio/vnd.lucent.voice", "audio/vnd.ms-playready.media.pya", "audio/vnd.nuera.ecelp4800", "audio/vnd.nuera.ecelp7470", "audio/vnd.nuera.ecelp9600", "audio/wav", "audio/webm", "audio/x-aac", "audio/x-aiff", "audio/x-aiff", "audio/x-flac", "audio/x-matroska", "audio/x-mpeg-3", "audio/x-mpegurl", "audio/x-ms-wax", "audio/x-ms-wma", "audio/x-pn-realaudio", "audio/x-pn-realaudio-plugin", "audio/x-wav", "chemical/x-cdx", "chemical/x-cif", "chemical/x-cmdf", "chemical/x-cml", "chemical/x-csml", "chemical/x-xyz", "font/otf", "font/otf", "font/woff", "font/woff2", "image/avif", "image/bmp", "image/cgm", "image/g3fax", "image/gif", "image/heic", "image/ief", "image/jpeg", "image/pjpeg", "image/png", "image/prs.btif", "image/svg+xml", "image/tiff", "image/vnd.adobe.photoshop", "image/vnd.djvu", "image/vnd.dwg", "image/vnd.dxf", "image/vnd.fastbidsheet", "image/vnd.fpx", "image/vnd.fst", "image/vnd.fujixerox.edmics-mmr" , "image/vnd.fujixerox.edmics-rlc", "image/vnd.mozilla.apng", "image/vnd.ms-modi", "image/vnd.net-fpx", "image/vnd.wap.wbmp", "image/vnd.xiff", "image/webp", "image/x-adobe-dng", "image/x-canon-cr2", "image/x-canon-crw", "image/x-cmu-raster", "image/x-cmx", "image/x-epson-erf", "image/x-freehand", "image/x-fuji-raf", "image/x-icon", "image/x-kodak-dcr", "image/x-kodak-k25", "image/x-kodak-kdc", "image/x-minolta-mrw", "image/x-nikon-nef", "image/x-olympus-orf", "image/x-panasonic-raw", "image/x-pcx", "image/x-pentax-pef", "image/x-pict", "image/x-png", "image/x-portable-anymap", "image/x-portable-bitmap", "image/x-portable-graymap", "image/x-portable-pixmap", "image/x-rgb", "image/x-sigma-x3f", "image/x-sony-arw", "image/x-sony-sr2", "image/x-sony-srf", "image/x-xbitmap", "image/x-xpixmap", "image/x-xwindowdump", "message/rfc822", "model/iges", "model/mesh", "model/vnd.dwf", "model/vnd.gdl", "model/vnd.gtw", "model/vnd.mts", "model/vnd.vtu", "model/vrml", "text/calendar", "text/css", "text/csv", "text/ecmascript", "text/html", "text/javascript", "text/javascript1.0", "text/javascript1.1", "text/javascript1.2", "text/javascript1.3", "text/javascript1.4", "text/javascript1.5", "text/jscript", "text/json", "text/livescript", "text/markdown", "text/mathml", "text/mathml", "text/plain", "text/prs.lines.tag", "text/richtext", "text/sgml", "text/tab-separated-values", "text/troff", "text/uri-list", "text/vnd.curl", "text/vnd.curl.dcurl", "text/vnd.curl.mcurl", "text/vnd.curl.scurl", "text/vnd.fly", "text/vnd.fmi.flexstor", "text/vnd.graphviz", "text/vnd.in3d.3dml", "text/vnd.in3d.spot", "text/vnd.sun.j2me.app-descriptor", "text/vnd.wap.si", "text/vnd.wap.sl", "text/vnd.wap.wml", "text/vnd.wap.wmlscript", "text/x.gcode", "text/x-asm", "text/x-c", "text/x-ecmascript", "text/x-fortran", "text/x-gcode", "text/x-javascript", "text/x-java-source", "text/x-markdown", "text/x-pascal", "text/x-python", "text/x-setext", "text/x-uuencode", "text/x-vcalendar", "text/x-vcard", "video/3gpp", "video/3gpp", "video/3gpp2", "video/3gpp2", "video/h261", "video/h263", "video/h264", "video/jpeg", "video/jpm", "video/mj2", "video/mp4", "video/mpeg", "video/ogg", "video/quicktime", "video/vnd.fvt", "video/vnd.mpegurl", "video/vnd.ms-playready.media.pyv", "video/vnd.vivo", "video/webm", "video/x-f4v", "video/x-fli", "video/x-flv", "video/x-m4v", "video/x-matroska", "video/x-ms-asf", "video/x-msvideo", "video/x-ms-wm", "video/x-ms-wmv", "video/x-ms-wmx", "video/x-ms-wvx", "video/x-sgi-movie", "x-conference/x-cooltalk", "application/x-mmzx", "application/x-mmz"];
+
 	if (document.href_resource_form.href.value=="")
 	{
 		ShowInfo("long", DonaCadenaIdNoPotSerBuit("href-href-resource_screen"));
@@ -5322,23 +6004,55 @@ var s,s2;
 	if (IdResourceToSaveChanges=="")
 	{
 		s="CREATE";
-		s2="";
-	 	ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
+		s2=(document.href_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
+	 	
 	 	
 	 	// En una creació els elements buits no s'han d'enviar
 		if (document.href_resource_form.mimetype.value!="")
 			s2+="&MIMETYPE="+document.href_resource_form.mimetype.value;					
+		//OGhref: Crear Nou enllaç a format no definit prèviament
+		if (document.href_resource_form.mimetype.value=="")
+			// Es comprova si el mime introduït per l'usuari és connegut. En cas contrari se l'avisa i se li demana confirmació.
+			if (mime_list.indexOf(document.getElementById("format_name").value)!=-1) 
+			{
+				s2+="&MIMETYPE="+document.getElementById("format_name").value;
+			}
+			else if (confirm(DonaCadenaJSON(Msg_Confirma_Mime)) == false)
+			{ 
+				return false;
+			}
+					
 		if (document.href_resource_form.reason.value!="")
-			s2+="&REASON="+DonaCadenaPerValorDeFormulari(document.href_resource_form.reason.value);			
+			s2+="&REASON="+DonaCadenaPerValorDeFormulari(document.href_resource_form.reason.value);
+
+		ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 	}
 	else
 	{
 		s="MODIFY";
 		s2="&RESOURCE="+IdResourceToSaveChanges;
-	  ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));	  
+	  	  
 	  
 	  // En una modificació els elements buits SI que s'han d'enviar
+		if (document.href_resource_form.mimetype.value=="") 
+		{
+			if (mime_list.indexOf(document.getElementById("format_name").value)!=-1) 
+			{
+				s2+="&MIMETYPE="+document.getElementById("format_name").value+"&REASON="+	DonaCadenaPerValorDeFormulari(document.href_resource_form.reason.value);
+			}
+			else 
+			{
+				if (confirm(DonaCadenaJSON(Msg_Confirma_Mime)) == false)
+					return false;
+				
+				s2+="&MIMETYPE="+document.getElementById("format_name").value+"&REASON="+	DonaCadenaPerValorDeFormulari(document.href_resource_form.reason.value);
+			}	
+			ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
+	  }
+	  else
+	  {
 	  s2+="&MIMETYPE="+document.href_resource_form.mimetype.value+"&REASON="+DonaCadenaPerValorDeFormulari(document.href_resource_form.reason.value);
+	  }
 	}
 	
 	ajaxExecuteNB=new Ajax();
@@ -5368,11 +6082,17 @@ var s,s2;
 		ShowInfo("long", DonaCadenaIdNoPotSerBuit("title-poi-resource_screen"));
 		return false;
 	}
+	if (isNaN(document.poi_resource_form.long.value)!=false || isNaN(document.poi_resource_form.lat.value)!=false)
+	{
+		alert(DonaCadenaJSON({cat: "Format de les coordenades incorrecte", spa: "Formato de la coordenadas incorrecto", eng: "Incorrect coordinate format"}));
+		return false;
+	}
+	
 	RemoveInfo("long");
 	if (IdResourceToSaveChanges=="")
 	{
 		s="CREATE";
-		s2="";
+		s2=(document.poi_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 	  
 	  // En una creació els elements buits no s'han d'enviar
@@ -5411,6 +6131,12 @@ function RecuperaCanvisARolesATargetsOfAFeedback()
 			if (TargetsOfAFeedback[item].role!=role_temp)
 			{
 				TargetsOfAFeedback[item].role=role_temp;
+				TargetsOfAFeedbackHaveChanged=true;
+			}
+			
+			//mirem si hi ha dades a scope
+			if (TargetsOfAFeedback[item].minlong!=undefined || TargetsOfAFeedback[item].gmlpol!=undefined)
+			{
 				TargetsOfAFeedbackHaveChanged=true;
 			}
 		}	
@@ -5627,7 +6353,21 @@ var s,s2;
 		if (TargetsOfAFeedback.length)
 		{
 			for (var item=0; item<TargetsOfAFeedback.length; item++)
-					s2+="&TARGET_"+(item+1)+"="+TargetsOfAFeedback[item].id_target+"&TARGET_ROLE_"+(item+1)+"="+TargetsOfAFeedback[item].role;
+			{
+				s2+="&TARGET_"+(item+1)+"="+TargetsOfAFeedback[item].id_target+"&TARGET_ROLE_"+(item+1)+"="+TargetsOfAFeedback[item].role;
+				
+				if (TargetsOfAFeedback[item].minlong!=null)
+				{
+					if (TargetsOfAFeedback[item].minlong=="")
+						s2+="&TARGET_GEO_BBOX_"+(item+1)+"=";
+					else	
+						s2+="&TARGET_GEO_BBOX_"+(item+1)+"="+TargetsOfAFeedback[item].minlong+","+TargetsOfAFeedback[item].maxlong+","+TargetsOfAFeedback[item].minlat+","+TargetsOfAFeedback[item].maxlat;
+				}
+				if (TargetsOfAFeedback[item].gmlpol!=null)
+				{
+						s2+="&TARGET_BND_POL_"+(item+1)+"="+TargetsOfAFeedback[item].gmlpol;
+				}
+			}
 		}
 		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoració, s'esborraran
 			s2+="&TARGET_1=";
@@ -5687,7 +6427,7 @@ var s,s2;
 		else //abans n'hi havia i ara no, escriure ALT_RSRC_1 implica que si hi havia recursos alternatius d'aquesta valoració, s'esborraràn
 			s2+="&FIX_RSRC_1=";
 	}
-		
+	
 	ajaxExecuteNB=new Ajax();	
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);		
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
@@ -5789,6 +6529,8 @@ var s,s2;
 			}
 		}
 	}
+	TargetsOfAFeedback=[];
+	Scope_puc_modificar=true;
 	return false;
 }
 
@@ -6148,6 +6890,9 @@ function SendResourceDelete(event, query, type, cal_history_back)
 				+"&RESOURCE="+IdResourceToSaveChanges,
 				AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceDeleteCallBack\", params: \""+type+"\"}");				 
   ShowInfo("permanent", DonaCadenaJSON(Msg_Request_sent));
+  
+  Scope_puc_modificar=true;
+  TargetsOfAFeedback=[];
 	return false;
 }
 
@@ -6159,6 +6904,7 @@ function SurtDeQualsevolResourceChanges(avis)
 			return false;
 	}
 	//ChangePannel("resources", true);
+	nTargetOfAFeedback="";
 	history.back();
 }
 
@@ -6316,6 +7062,9 @@ function SurtDeFeedbackResourceChangesIRecarregaResources(avis)
 	SurtDeFeedbackResourceChanges(avis);
 	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources"});
+	
+	Scope_puc_modificar=true;
+	TargetsOfAFeedback=[];
 }
 
 function SurtDeCitationResourceChanges(avis)
@@ -6383,44 +7132,6 @@ function OmpleRecursosQueTocaSortintDeQualsevolResource(type)
 				ObreSelectorGeneral(false, type, "PUBLICAT");
 		}
 
-
-		//else //estic tornant a pàgina selector de recursos, per tant he de tornar amb la darrera combinació que hi havia arribat pàgina de selected
-
-
-			//ObreSelectorGeneral(false, resource_selector_form.resource_type.value, resource_selector_form.resource_origin.value, document.resource_selector_form.element_origin.value);		
-		/* if (type=="PUBLICAT")
-		{	//aquí, de moment, sempre vinc de FB, però el element_origin pot ser un o un altre	
-			ObreSelectorGeneral(false, type, "FEEDBACK", document.resource_selector_form.element_origin.value);
-			//resource_selector_form.resource_type
-			//resource_selector_form.resource_origin
-			//document.resource_selector_form.element_origin
-			/*$$$$ no se a quin form etàs element_origin, però el necessito per diferenciar
-			ObreSelectorGeneral(true, 'PUBLICAT', 'FEEDBACK', 'REF_DOC');">
-			ObreSelectorGeneral(true, 'PUBLICAT', 'FEEDBACK', 'PUBLICAT');* /
-		
-		}
-		else if (type=="CITATION")
-		{
-			ObreSelectorGeneral(false, type, "FEEDBACK", "CITATION", document.resource_selector_form.element_origin.value);
-			/*no entenc les crides antigues u noves aqui, no estenc el citation de la linea de dalt, crec que estacva així per analogia amb el d'abans, però que no s'usava mai, i ara si que caldra posar els 3 de sota
-			$$$$ no se a quin form etàs element_origin, però el necessito per diferenciar
-			ObreSelectorGeneral(true, 'CITATION', 'FEEDBACK', 'ADD_DOC');">
-			ObreSelectorGeneral(true, 'CITATION', 'FEEDBACK', 'FIX_RSRC');">
-			ObreSelectorGeneral(true, 'CITATION', 'FEEDBACK', 'ALT_RSRC');">* /
-
-		}
-		else if (type=="PARTY")
-		{	//aquí potser venia de citation o de publication!	
-			ObreSelectorGeneral(false, resource_selector_form.resource_typen.value, resource_selector_form.resource_origin.value, document.resource_selector_form.element_origin.value);
-			//if (document.organism_resource_form.resource_origin.value=="CITATION") -> això està malament perquè pot ser indiv!?
-			//if (document.resource_selector_form.resource_origin.value=="CITATION")
-			//	ObreSelectorGeneral(false, type, "CITATION", ""); //element_origin no cal
-			//else //PUBLICAT
-			//	ObreSelectorGeneral(false, type, "PUBLICAT", ""); //element_origin no cal
-			//else //FEEDBACK -> en el moment que obri la porta a triar PARTY des d'algun element fill
-			//de FB, problablement ja em caldrà element_origin per distingir per quins dels de dins 
-			//de FB estic escollint responsibles (p.ex.user details dins contact; usercontactinfo dins usage; processors dins procesStep a additionallineage o a usage_extès,
-		}*/
 	}
 }
 
@@ -6496,6 +7207,8 @@ function EntraANimmbus(es_nou)
 	document.getElementById("dropdown-settings").style.display= es_nou ? "none" : "inline";
 	document.getElementById("main-left-pannel-title-text").innerHTML=document.sign_in.user.value;  //This is going to be replaced by the name and surname latter.
 	document.getElementById("main-left-pannel-subtitle-text").innerHTML=document.sign_in.user.value;
+	//OG: canvia el logo de la barra superior en funció de l'origen del log-in (per defecte Eiffel)
+	CanviaLogoBarraSup();
 }
 
 function EntraANimmbusMain()
@@ -6503,6 +7216,8 @@ function EntraANimmbusMain()
 	EntraANimmbus(false);
 	RetrieveUserMinPreferences();
 	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
+	//OG: canvia el logo de la barra superior en funció de l'origen del log-in (per defecte Eiffel)
+	CanviaLogoBarraSup();	
 }
 
 function EntraAResetPassword()
@@ -6940,6 +7655,63 @@ function AnalitzaMessage(event)
 		AnalitzarParametresURL(event.data);		
 }
 
+//OGhref: Crear Nou enllaç a format no definit prèviament
+function MostraFinestraAltresFormats(type)
+{
+		var f_type=type;
+		
+		if (f_type==null){
+			f_type=document.href_resource_form.mimetype.value
+		}
+	
+		var s
+			if (f_type != 'application/x-mmzx' && f_type != 'application/x-mmz' && f_type != 'application/x-zip-compressed'&& f_type != 'image/jpeg' && f_type != 'image/png')
+			{
+				s='<br><form><label class="control-label" for="format_name">'+DonaCadenaJSON({cat: "MIME del format", spa: "MIME del formato", eng: "Format MIME"})+'</label><div id="other_formats" class="controls"><p><input class="text-input" type="text" id="format_name" name="f_name" style="width: 80%;" maxlength="254" class="text-input"></input></p><p id="mimetype-href-resource_descrip" class="white-area-screen-descrip-text"></p></div></form>'
+				document.getElementById("other_format_fieldset").innerHTML=s;
+				//forcem que el valor en el desplegable sigui el triat
+				document.getElementById("mimetype-href-resource_screen_value").value=f_type;
+				
+				document.getElementById("mimetype-href-resource_descrip").innerHTML=DonaCadenaJSON(Msg_Mimetype_types)+". "+'<a href="https://mimetype.io/all-types/" target="_blank">'+DonaCadenaJSON(Msg_Mimetype_list)+'</a>';
+				
+				
+				return true;
+			}
+			else
+			{
+				s=""
+				document.getElementById("other_format_fieldset").innerHTML=s;
+				//forcem que el valor en el desplegable sigui el triat o el valor per defecte
+				document.getElementById("mimetype-href-resource_screen_value").value=f_type;
+				return false;
+			}
+}
+
+//OG: Canvia logo de la barra superior de la pàgina principal segons el tipus de log-in realitzat. Per defecte Eiffel.
+function CanviaLogoBarraSup()
+{
+	if (AccessTokenType === 'nextgeoss')
+	{
+		document.getElementById("bar_logo_href").href="https://nextgeoss.eu/";
+		document.getElementById("bar_logo_img").src="nextgeoss30.png";
+		document.getElementById("bar_logo_img").height="35";
+	}
+	else if (AccessTokenType === 'wqems')
+	{
+		document.getElementById("bar_logo_href").href="https://wqems.eu/";
+		document.getElementById("bar_logo_img").src="logowqems2.png";
+		document.getElementById("bar_logo_img").height="35";
+	}
+	else
+	{
+		document.getElementById("bar_logo_href").href="https://www.eiffel4climate.eu/";
+		document.getElementById("bar_logo_img").src="Eiffel_logo_color_v1.png";
+		document.getElementById("bar_logo_img").height="35";
+}
+return;
+}
+
+
 </script>
 
 <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
@@ -6950,323 +7722,360 @@ function AnalitzaMessage(event)
 <body onLoad="InitFrontPage();" onMessage="AnalitzaMessage(event);">
 
 <div class="long-note-outer">
-<div id="long-note" class="note-inner"></div>
+	<div id="long-note" class="note-inner"></div>
 </div>
 
 <div class="short-note-outer">
-<div id="short-note" class="note-inner"></div>
+	<div id="short-note" class="note-inner"></div>
 </div>
 
 <!-- *** IDENTIFICATION FRONT PAGE *** -->
 
 <div id="front-page">
 
-<div class="front-bg">
-<img src="topoorto.jpg" style="display: block;">
-</div>
+	<div class="front-bg">
+		<img src="cloudbackgroud.jpg" style="display: block;">
+	</div>
 
+	<div class="front-welcome-frame">
+		<div class="front-welcome-text">
+			<h1 id="front-welcome-text-title" style="line-height: normal; margin: 10px;">Benvinguts al NiMMbus.</h1>
+			<p id="front-welcome-text-subtitle" style="margin: 10px"></p>
+			<br>
+			<table style="width: 90%; margin-top: 8%">
+				<tr>
+					<td style="text-align: center;"><a href="https://www.nimmbus.cat/"><img src="NiMMbus.png"></a></td>
+					<td style="text-align: center;"><a href="https://www.ogc.org/docs/is/"><img src="OGC_WPS_GUF.png" width="100"></a></td>
+				</tr>
+			</table>
 
-<div class="front-welcome-text">
-<h1 id="front-welcome-text-title" style="line-height: normal; margin: 0px">Benvinguts al NiMMbus.</h1>
-<p id="front-welcome-text-subtitle" style="margin: 10px"></p>
-<br>
-<!--img src="NiMMbus.png" style="display: block;">
-<table><tr><td><img src="nextgeoss36.png" style="display: block;"><img src="prj730329.png" style="display: block;"></td><td><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr></table-->
-<table style="width: 100%">
-	<tr><td align="center"><img src="NiMMbus.png" style="display: block;"><br><!--img src="nextgeoss36.png" style="display: block;"--></td><td align="center"><img src="OGC_WPS_GUF.png" width="100" style="display: block;"></td></tr>
-	<tr><td align="center"><a href="https://www.eiffel4climate.eu/"><img src="Eiffel_logo_color_v1.png" width="200" style="display: block;"></a></td><td align="center"><a href="https://nextgeoss.eu/"><img src="nextgeoss36.png" style="display: block;"></a></td><td align="center"><a href="https://wqems.eu/"><img src="logowqems2.png" width="100" style="display: block;"></a></td><td align="center" width="80"></td></tr></table>
-<br>
-<table style="width: 100%">
-	<tr>
-	<td style="text-align: left; width: 26%"><p class="front-conditions-text"><a id="welcome-terms_of_use" href="TermsOfUse.htm" style="color: #CCD6DD">Terms_of_use</a></p></td>
-	<td style="text-align: center; width: 39%"><p class="front-conditions-text"><a id="welcome-privacy_statement" href="PrivacyStatement.htm" style="color: #CCD6DD">Privacy_Statement</a></p></td>
-	<td style="text-align: right; width: 35%""><p class="front-conditions-text" id="welcome-mail-contact">contact</p></td>
-	</tr>
-	<tr>
-	<td style="text-align: left; width: 26%"><p class="front-conditions-text"><a id="welcome-access_policy" href="AccessPolicy.htm" style="color: #CCD6DD">Access_Policy</a></p></td>
-	<td style="text-align: center; width: 39%"><p id="welcome-last_updated" class="front-conditions-text"><i>Last_updated_October_2_2018</i></p></td>
-	<td style="text-align: right; width: 35%"><p class="front-conditions-text"><a href="mailto:contacte@miramon.uab.cat" style="color: #CCD6DD">contacte@miramon.uab.cat</a></p></td>
-	</tr></table>
-</div>
+			<table style="width: 100%; margin-top: 15%">
+				<tr>
+					<td style="text-align: center;"><a href="https://www.eiffel4climate.eu/"><img src="Eiffel_logo_color_v1.png" width="160"></a></td>
+					<td style="text-align: center;"><a href="https://nextgeoss.eu/"><img src="nextgeoss36.png"></a></td>
+					<td style="text-align: center;"><a href="https://wqems.eu/"><img src="logowqems2.png" width="100"></a></td>
+				</tr>
+			</table>		
+		</div>
+		
+		<div class="front-welcome-forms">
+			<div class="white-area" style="top: 105px; width: 326px;">
+				<h2 id="front-signin-external-lang" class="white-area-title"></h2>
+				<button id="nextgeoss-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);">NextGEOSS</button>
+				<button id="authenix-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOAuthenix(true, SignInNBAuthenix, null);">Authenix</button>
+				<br>
+				<button id="wqems-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOWQeMS(true, SignInNBWQeMS, null);">WQeMS</button>
+				<button id="google-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOGoogle();">Google</button>
+				<button id="sso-debug-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSODebug();" style="display: none;">Debug</button>
+			</div>
+		
+			<div class="white-area" style="top: 254px; width: 326px; height: 80px;">
+				<form id="sign_in" name="sign_in" class="packet_paragraph" method="get" onSubmit="return SignInNB();">
+					<h2 id="front-signin-nimmbus-lang" class="white-area-title"></h2>
+					<p class="packet_paragraph"><input id="sign_in_user" type="text" size="80" maxlength="79" class="text-input" style="width: 296px;" name="user" value="" placeholder="Username" autocomplete="on"></p>
+					<p class="packet_paragraph"><input id="sign_in_pass" type="password" size="50" maxlength="39" class="text-input" name="pass" value="" style="width: 140px;" placeholder="Password">
+					<input id="sign_in_btn" class="submit_btn" type="submit" value="Sign in"></p>
+					<p class="packet_paragraph"><a id="sign_in_forgot" class="text_button" onClick="EntraAResetPassword();">Forgot password?</a></p>
+				</form>
+			</div>
+			
+			<div class="white-area" style="top: 438px; width: 326px; height: 130px;">
+				<form id="sign_up" name="sign_up" class="packet_paragraph" method="get" onSubmit='return SignUpNB("EntraAAccountCallBack");'>
+					<h2 id="front-signup-lang" class="white-area-title">New to NiMMbus? Sign up:</h2>
+					<p id="sign_up_user_alert" class="packet_paragraph" style="display: none;"></p>
+					<p class="packet_paragraph"><input id="sign_up_user" type="text" size="80" maxlength="79" class="text-input" style="width: 296px;" name="user" value="" placeholder="Username" onkeyup="SignUpUserInputChange();" onpaste="SignUpUserInputChange();" oninput="SignUpUserInputChange();"></p>
+					<p id="sign_up_pass_alert" class="packet_paragraph" style="display: none;"></p>
+					<p class="packet_paragraph"><input id="sign_up_pass" type="password" size="80" maxlength="39" class="text-input" style="width: 296px;" name="pass" value="" placeholder="Password" onkeyup="SignUpPassInputChange();" onpaste="SignUpPassInputChange();" oninput="SignUpPassInputChange();"></p>
+					<p id="sign_up_pass_valid_alert" class="packet_paragraph" style="display: none;"></p>
+					<p class="packet_paragraph"><input id="sign_up_pass_valid" type="password" size="80" maxlength="39" class="text-input" style="width: 296px;" name="pass_valid" value="" placeholder="Password" onkeyup="SignUpPassValidInputChange();" onpaste="SignUpPassValidInputChange();" oninput="SignUpPassValidInputChange();"></p>
+					<p class="packet_paragraph"><input id="sign_up_btn" class="submit_btn" type="submit" style="margin-top:4px;" value="Sign up for NiMMbus"></p>
+				</form>
+			</div>
+	
+		</div>
+	</div>
 
-<div class="front-language">
-<a class="dropdown-language" id="dropdown-language" onClick="SwitchDropDownList('dropdown-language', 'front-language-list');">
-<span id="front-language-lang">
-Language: English
-</span>
-<b class="caret"></b>
-</a>
-</div>
-
-<div id="front-language-list" class="dropdown-list" style="left: 85%; top: 70px; width: 70px; height: 70px;">
-<div class="dropdown-caret">
-<span class="caret-outer"></span>
-<span class="caret-inner"></span>
-</div>
-<a class="dropdown-list_active" onClick="ChangeLanguage(0, ResourcesPerPage);SwitchDropDownList('dropdown-language', 'front-language-list');">
-Català</a>
-<a class="dropdown-list_active" onClick="ChangeLanguage(1, ResourcesPerPage);SwitchDropDownList('dropdown-language', 'front-language-list');">
-Español</a>
-<a class="dropdown-list_active" onClick="ChangeLanguage(2, ResourcesPerPage);SwitchDropDownList('dropdown-language', 'front-language-list');">
-English</a>
-</div>
-
-<div class="white-area" style="left: 50%; top: 275px; width: 306px; height: 80px;">
-<form id="sign_in" name="sign_in" class="packet_paragraph" method="get" onSubmit="return SignInNB();">
-<h2 id="front-signin-nimmbus-lang" class="white-area-title"></h2>
-<p class="packet_paragraph"><input id="sign_in_user" type="text" size="80" maxlength="79" class="text-input" style="width: 296px;" name="user" value="" placeholder="Username" autocomplete="on"></p>
-<p class="packet_paragraph"><input id="sign_in_pass" type="password" size="50" maxlength="39" class="text-input" name="pass" value="" style="width: 140px;" placeholder="Password">
-<input id="sign_in_btn" class="submit_btn" type="submit" value="Sign in"></p>
-<p class="packet_paragraph"><a id="sign_in_forgot" class="text_button" onClick="EntraAResetPassword();">Forgot password?</a></p>
-</form>
-</div>
-
-<div class="white-area" style="left: 50%; top: 463px; width: 306px; height: 130px;">
-<form id="sign_up" name="sign_up" class="packet_paragraph" method="get" onSubmit='return SignUpNB("EntraAAccountCallBack");'>
-<h2 id="front-signup-lang" class="white-area-title">New to NiMMbus? Sign up:</h2>
-<p id="sign_up_user_alert" class="packet_paragraph" style="display: none;"></p>
-<p class="packet_paragraph"><input id="sign_up_user" type="text" size="80" maxlength="79" class="text-input" style="width: 296px;" name="user" value="" placeholder="Username" onkeyup="SignUpUserInputChange();" onpaste="SignUpUserInputChange();" oninput="SignUpUserInputChange();"></p>
-<p id="sign_up_pass_alert" class="packet_paragraph" style="display: none;"></p>
-<p class="packet_paragraph"><input id="sign_up_pass" type="password" size="80" maxlength="39" class="text-input" style="width: 296px;" name="pass" value="" placeholder="Password" onkeyup="SignUpPassInputChange();" onpaste="SignUpPassInputChange();" oninput="SignUpPassInputChange();"></p>
-<p id="sign_up_pass_valid_alert" class="packet_paragraph" style="display: none;"></p>
-<p class="packet_paragraph"><input id="sign_up_pass_valid" type="password" size="80" maxlength="39" class="text-input" style="width: 296px;" name="pass_valid" value="" placeholder="Password" onkeyup="SignUpPassValidInputChange();" onpaste="SignUpPassValidInputChange();" oninput="SignUpPassValidInputChange();"></p>
-<p class="packet_paragraph"><input id="sign_up_btn" class="submit_btn" type="submit" value="Sign up for NiMMbus"></p>
-</form>
-</div>
-
-<div class="white-area" style="left: 50%; top: 130px; width: 306px;">
-<h2 id="front-signin-external-lang" class="white-area-title"></h2>
-<button id="nextgeoss-button" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);">NextGEOSS</button>
-<button id="authenix-button" class="submit_btn" disabled onClick="ValidaSSOAuthenix(true, SignInNBAuthenix, null);">Authenix</button>
-<br>
-<button id="wqems-button" class="submit_btn" disabled onClick="ValidaSSOWQeMS(true, SignInNBWQeMS, null);">WQeMS</button>
-<button id="google-button" class="submit_btn" disabled onClick="ValidaSSOGoogle();">Google</button>
-<button id="sso-debug-button" class="submit_btn" disabled onClick="ValidaSSODebug();" style="display: none;">Debug</button>
-</div>
+	<div class="terms-welcome-front">
+		<table style="width: 100%">
+			<tr>
+				<td style="text-align: left; width: 12%"><p class="front-conditions-text"><a id="welcome-terms_of_use" href="TermsOfUse.htm" style="color: #999999;">Terms_of_use</a></p></td>
+				<td style="text-align: center; width: 18%"><p class="front-conditions-text"><a id="welcome-privacy_statement" href="PrivacyStatement.htm" style="color: #999999">Privacy_Statement</a></p></td>
+				<td style="text-align: center; width: 18%"><p class="front-conditions-text"><a id="welcome-access_policy" href="AccessPolicy.htm" style="color: #999999">Access_Policy</a></p></td>
+				<td style="text-align: center; width: 16%"><p class="front-conditions-text"><a id="welcome-mail-contact" href="mailto:contacte@miramon.uab.cat" style="color: #999999">contacte@miramon.uab.cat</a></p></td>
+				<td style="text-align: right; width: 18%;"><p id="welcome-last_updated" class="front-conditions-text" style="color: #999999"><i>Last_updated_October_2_2018</i></p></td>
+			</tr>
+		</table>
+		<br>
+	</div>
+	
+	
+	<div id="front-language-list" class="dropdown-list" style="left: 85%; top: 70px; width: 70px; height: 70px;">
+		<div class="dropdown-caret">
+			<span class="caret-outer"></span>
+			<span class="caret-inner"></span>
+		</div>
+		<a class="dropdown-list_active" onClick="ChangeLanguage(0, ResourcesPerPage);SwitchDropDownList('dropdown-language', 'front-language-list');">
+		Català</a>
+		<a class="dropdown-list_active" onClick="ChangeLanguage(1, ResourcesPerPage);SwitchDropDownList('dropdown-language', 'front-language-list');">
+		Español</a>
+		<a class="dropdown-list_active" onClick="ChangeLanguage(2, ResourcesPerPage);SwitchDropDownList('dropdown-language', 'front-language-list');">
+		English</a>
+	</div>
+	
+	<div class="front-language">
+		<a class="dropdown-language" id="dropdown-language" onClick="SwitchDropDownList('dropdown-language', 'front-language-list');">
+		<span id="front-language-lang">
+		Language: English
+		</span>
+		<b class="caret"></b>
+		</a>
+	</div>
 
 </div>  <!--End of id="front-page" -->
 
 
 <!-- *** MAIN PAGE *** -->
 <div id="main-page" style="visibility: hidden;">
-
-<div class="front-bg" style="top: 40px;">
-<img src="cloudbackgroud.jpg" style="display: block;">
-</div>
+	<div class="front-bg" style="top: 40px;">
+		<img src="cloudbackgroud.jpg" style="display: block;">
+	</div>
 
 <!-- *** MAIN PAGE TOP BAR *** -->
+	<div class="main-page-bar">
+		<span style="left: 100px; top:0px; position: absolute;">
+			<a href="#resources"><img src="nimmbus_icon.png" style="margin-top:2px"/></a> <sup style="font-size: 20px;">NiMMbus</sup> &nbsp;&nbsp; <a id="bar_logo_href" target="_blank"><img id="bar_logo_img" style="margin-top:2px"/></a>
+		</span>
 
-<div class="main-page-bar">
-<span style="left: 100px; top:0px; position: absolute; font-size: 20px;">
-<img src="nimmbus_icon.png" style="vertical-align: bottom;"/> NiMMbus<sup>Beta</sup> &nbsp;&nbsp; <img src="nextgeoss30.png" style="vertical-align: bottom;"/>
-</span>
+		<span style="right: 100px; top:5px; position: absolute;">
+			<a id="NiMMbus_home" href="#resources" style="margin-right:3px"><img src="home30.png" style="vertical-align: bottom;" /></a>
+			<a id="NiMMbus_help" target="NiMMbus_help" href="help/help.htm" style="margin-right:2px"><img src="help.png" style="vertical-align: bottom;" /></a>
+			<a id="dropdown-settings" onClick="SwitchDropDownList('dropdown-settings', 'settings-list');" onMouseOver="document.getElementById('settings-tooltip').style.opacity='1';" onMouseOut="document.getElementById('settings-tooltip').style.opacity='0';"><img src="gear_icon.png" style="vertical-align: bottom;"/></a>
+		</span>
 
-<span style="left: 85%; top:5px; position: absolute;">
-<a target="NiMMbus_help" href="help/help.htm"><img src="help.png" style="vertical-align: bottom;" /></a>
-<a id="dropdown-settings" onClick="SwitchDropDownList('dropdown-settings', 'settings-list');" onMouseOver="document.getElementById('settings-tooltip').style.opacity='1';" onMouseOut="document.getElementById('settings-tooltip').style.opacity='0';">
-<img src="gear_icon.png" style="vertical-align: bottom;" />
-</a>
-</span>
+		<span id="settings-tooltip" class="tooltip" style="left: 87%; top:34px;">
+			<!--<b class="tooltip-caret"></b><br>-->
+			<!--<span id="settings-tooltip-text" class="tooltip-text">Settings</span>-->
+		</span>
 
-<span id="settings-tooltip" class="tooltip" style="left: 87%; top:34px;">
-<b class="tooltip-caret"></b><br>
-<span id="settings-tooltip-text" class="tooltip-text">Settings</span>
-</span>
-
-<div id="settings-list" class="dropdown-list" style="left: 86%; top: 40px; width: 70px; height: 70px;">
-<div class="dropdown-caret">
-<span class="caret-outer"></span>
-<span class="caret-inner"></span>
-</div>
-<a id="settings-profile" class="dropdown-list_active" onClick="SwitchDropDownList('dropdown-settings', 'settings-list');MostraAccount(false);">
-Profile</a>
-<a id="settings-signout" class="dropdown-list_active" onClick="SwitchDropDownList('dropdown-settings', 'settings-list');SurtDeNimmbus();">
-Sign out</a>
-</div>  <!--End of id="settings-list" -->
-</div>  <!--End of class="main-page-bar" -->
+		<div id="settings-list" class="dropdown-list" style="right: 37px; top: 50px; width: 70px; height: 40px;">
+			<div class="dropdown-caret">
+				<span class="caret-outer"></span>
+				<span class="caret-inner"></span>
+			</div>
+			<a id="settings-profile" class="dropdown-list_active" onClick="SwitchDropDownList('dropdown-settings', 'settings-list');MostraAccount(false);">Profile</a>
+			<a id="settings-signout" class="dropdown-list_active" onClick="SwitchDropDownList('dropdown-settings', 'settings-list');SurtDeNimmbus();">Sign out</a>
+		</div>  <!--End of id="settings-list" -->
+	</div>  <!--End of class="main-page-bar" -->
 
 <!-- *** MAIN PAGE LEFT PANNEL *** -->
 
-<div id="main-left-pannel" class="white-area" style="left: 3%; top: 45px; width: 18%; height: 200px;">
+	<div id="main-left-pannel" class="white-area" style="left: 7%; top: 50px; width: 18%; height: 200px;">
 
-<h2 id="main-left-pannel-title-text" class="white-area-title">User</h2>
-<p id="main-left-pannel-subtitle-text" class="packet_paragraph">
-<p class="packet_paragraph"><span id="main-left-pannel-since-text"></span>: <span id="main-left-pannel-date-text"></span></p>
+		<h2 id="main-left-pannel-title-text" class="white-area-title">User</h2>
+		<p id="main-left-pannel-subtitle-text" class="packet_paragraph">
+		<p class="packet_paragraph"><span id="main-left-pannel-since-text"></span>: <span id="main-left-pannel-date-text"></span></p>
 
-<div id="new-resource">
-<form id="main-left-pannel_form" name="main_left_pannel_form" method="get" onSubmit="return false">
+		<div id="new-resource">
+			<form id="main-left-pannel_form" name="main_left_pannel_form" method="get" onSubmit="return false">
+				<br>
+				<span id="main-left-pannel-create-resources-text"></span>:
+				<br>
+				<input id="new-resource-href" class="add_resource_btn" type="image" alt="new href" src="link_add20.png" onClick="MostraHRefResource('')"/>
+				<input id="new-resource-poi" class="add_resource_btn" type="image" alt="new poi" src="point_add20.png" onClick="MostraPoiResource('')"/>
+				<input id="new-resource-citation" class="add_resource_btn" type="image" alt="new citation" src="citation_add20.png" onClick="MostraCitationResource('')"/>
+				<input id="new-resource-publication" class="add_resource_btn" type="image" alt="new publication" src="publication_add20.png" onClick="MostraPublicationResource('')"/>
+				<input id="new-resource-individual" class="add_resource_btn" type="image" alt="new individual" src="indv_add20.png" onClick="MostraIndividualResource('')"/>
+				<input id="new-resource-organism" class="add_resource_btn" type="image" alt="new organism" src="org_add20.png" onClick="MostraOrganismResource('')"/>
+			</form>
+		</div>  <!--End of id="new-resource" -->
 
-<br><span id="main-left-pannel-create-resources-text"></span>:<br>
-<input id="new-resource-href" class="add_resource_btn" type="image" alt="new href" src="link_add20.png" onClick="MostraHRefResource('')"/>
-<input id="new-resource-poi" class="add_resource_btn" type="image" alt="new href" src="point_add20.png" onClick="MostraPoiResource('')"/>
-<input id="new-resource-citation" class="add_resource_btn" type="image" alt="new href" src="citation_add20.png" onClick="MostraCitationResource('')"/>
-<input id="new-resource-publication" class="add_resource_btn" type="image" alt="new href" src="publication_add20.png" onClick="MostraPublicationResource('')"/>
-<input id="new-resource-individual" class="add_resource_btn" type="image" alt="new href" src="indv_add20.png" onClick="MostraIndividualResource('')"/>
-<input id="new-resource-organism" class="add_resource_btn" type="image" alt="new href" src="org_add20.png" onClick="MostraOrganismResource('')"/>
-</form>
-</div>  <!--End of id="new-resource" -->
-
-<br>
-<!--div id="conditions-left-pannel" style="display: inline;"-->
-<table class="front-conditions-text-left-pannel" style="width: 100%;"><tr><td style="text-align: left; width: 50%"><a id="left-pannel-terms_of_use" target="_blank" href="TermsOfUse.htm" style="color: #CCCCCC">Terms_of_use</a>
-	<br><a id="left-pannel-privacy_statement" target="_blank" href="PrivacyStatement.htm" style="color: #CCCCCC">Privacy_Statement</a></td>
-	<td style="text-align: right"><a id="left-pannel-last_updated"><i>Last_updated<br>October_2_2018</i></a></td></tr></table>
-<!--/div-->
-</div>  <!--End of id="main-left-pannel" -->
-
+		<br>
+		<!--div id="conditions-left-pannel" style="display: inline;"-->
+		<table class="front-conditions-text-left-pannel" style="width: 100%;">
+			<tr>
+				<td style="text-align: left; width: 50%">
+					<a id="left-pannel-terms_of_use" target="_blank" href="TermsOfUse.htm" style="color: #999999">Terms_of_use</a>
+					<br>
+					<a id="left-pannel-privacy_statement" target="_blank" href="PrivacyStatement.htm" style="color: #999999">Privacy_Statement</a>
+				</td>
+				<td style="text-align: right">
+					<a id="left-pannel-last_updated"><i>Last_updated<br>October_2_2018</i></a>
+				</td>
+			</tr>
+		</table>
+		<!--/div-->
+	</div>  <!--End of id="main-left-pannel" -->
+	
 <!-- *** RESOURCES RIGHT PANNEL *** -->
 
-<div id="resources" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto;">
-<h2 id="resources-title-text" class="white-area-title">Resources</h2>
-<form id="resources_form" name="resources_form" method="get" onSubmit="return false">
+	<div id="resources" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto;">
+		<h2 id="resources-title-text" class="white-area-title">Resources</h2>
+		<form id="resources_form" name="resources_form" method="get" onSubmit="return false">
 
-<table style="width: 100%;"><tr><td id="resources-subtitle-text">List of resources.</td>
-<td align="left">
-	<label class="control-label" id="resource-type_screen" for="resource-type_screen_value"></label>
-	<select class="text-input" id="resource-type_screen_value" name="resource-type" onchange="EnumerateResources(1, {'type_enum':'resources', 'make_pannel_visible':true})">
-	<option value="ALL" id="all-resource-type-value"></option>
-	<option value="FEEDBACK" id="feedback-resource-type-value"></option>
-	<option value="CITATION" id="citation-resource-type-value"></option>
-	<option value="PUBLICAT" id="publicat-resource-type-value"></option>
-	<option value="INDIVIDU" id="individual-resource-type-value"></option>
-	<option value="ORGANISM" id="organism-resource-type-value"></option>
-	<option value="HREF" id="href-resource-type-value"></option>
-	<option value="POI" id="poi-resource-type-value"></option>
-	</select>
-</td>
-<td align="left">
-	<label class="control-label" id="owner-type_screen" for="owner-type_screen_value"></label>
-	<select class="text-input" id="owner-type_screen_value" name="owner-type" onchange="EnumerateResources(1, {'type_enum':'resources', 'make_pannel_visible':true})">
-	<option value="ALL" id="all-owner-type-value"></option>
-	<option value="ME" id="me-owner-type-value"></option>
-	<option value="OTHERS" id="others-owner-type-value"></option>
-	<option value="OPEN" id="open-owner-type-value"></option>
-	</select>
-</td>
-<td align="right"><span id="resources-hits-text">1-100 of 123</span> 
-<span style="white-space: nowrap;">
-<input id="newer-resources_btn" class="submit_btn" type="button" value="<" onMouseOver="document.getElementById('newer-resources-tooltip').style.opacity='1';" onMouseOut="document.getElementById('newer-resources-tooltip').style.opacity='0';">
-<input id="older-resources_btn" class="submit_btn" type="button" value=">" onMouseOver="document.getElementById('older-resources-tooltip').style.opacity='1';" onMouseOut="document.getElementById('older-resources-tooltip').style.opacity='0';">
-</span>
-<span id="newer-resources-tooltip" class="tooltip" style="right: 40px; top:86px;">
-<b class="tooltip-caret"></b><br>
-<span id="newer-resources-tooltip-text" class="tooltip-text">Newer</span>
-</span>
-
-<span id="older-resources-tooltip" class="tooltip" style="right: 0px; top:86px;">
-<b class="tooltip-caret"></b><br>
-<span id="older-resources-tooltip-text" class="tooltip-text">Older</span>
-</span>
-
-</td></tr></table>
-</form>
-
-<div id="resources-list" style="border-top: 1px solid #e1e8ed;"></div>
-</div>  <!--End of id="resources" -->
+			<table style="width: 100%;">
+				<tr>
+					<td id="resources-subtitle-text">List of resources.</td>
+					<td align="left">
+						<label class="control-label" id="resource-type_screen" for="resource-type_screen_value"></label>
+						<select class="text-input" id="resource-type_screen_value" name="resource-type" onchange="EnumerateResources(1, {'type_enum':'resources', 'make_pannel_visible':true})">
+							<option value="ALL" id="all-resource-type-value"></option>
+							<option value="FEEDBACK" id="feedback-resource-type-value"></option>
+							<option value="CITATION" id="citation-resource-type-value"></option>
+							<option value="PUBLICAT" id="publicat-resource-type-value"></option>
+							<option value="INDIVIDU" id="individual-resource-type-value"></option>
+							<option value="ORGANISM" id="organism-resource-type-value"></option>
+							<option value="HREF" id="href-resource-type-value"></option>
+							<option value="POI" id="poi-resource-type-value"></option>
+						</select>
+					</td>
+					<td align="left">
+						<label class="control-label" id="owner-type_screen" for="owner-type_screen_value"></label>
+						<select class="text-input" id="owner-type_screen_value" name="owner-type" onchange="EnumerateResources(1, {'type_enum':'resources', 'make_pannel_visible':true})">
+							<option value="ALL" id="all-owner-type-value"></option>
+							<option value="ME" id="me-owner-type-value"></option>
+							<option value="OTHERS" id="others-owner-type-value"></option>
+							<option value="OPEN" id="open-owner-type-value"></option>
+						</select>
+					</td>
+					<td align="right">
+						<span id="resources-hits-text">1-100 of 123</span> 
+						<span style="white-space: nowrap;">
+						<input id="newer-resources_btn" class="submit_btn" type="button" value="<">
+						<input id="older-resources_btn" class="submit_btn" type="button" value=">">
+					</td>
+				</tr>
+			</table>
+		</form>
+		<div id="resources-list" style="border-top: 1px solid #e1e8ed;"></div>
+	</div>  <!--End of id="resources" -->
 
 <!-- *** RESOURCE SELECTOR *** -->
 
-<div id="resource-selector" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
-<h2 id="resource-selector-title-text" class="white-area-title">Resources selector</h2>
-<form id="resource_selector_form" name="resource_selector_form" method="get" onSubmit="return false">
-
-<table style="width: 100%;"><tr><td id="resource-selector-subtitle-text">List of resources to be selected</td>
-<input type="text" class="text-input" name="resource_type" maxlength="10" style="display: none;"/>
-<input type="text" class="text-input" name="resource_origin" maxlength="10" style="display: none;"/>
-<input type="text" class="text-input" name="element_origin" maxlength="10" style="display: none;"/>
-<td align="left">
-	<label class="control-label" id="selector-owner-type_screen" for="owner-type_screen_value"></label>
-	<select class="text-input" id="selector-owner-type_screen_value" name="owner-type" onchange="EnumeraResourcesQueTocaASelector()">
-	<option value="ALL" id="all-selector-owner-type-value"></option>
-	<option value="ME" id="me-selector-owner-type-value"></option>
-	<option value="OTHERS" id="others-selector-owner-type-value"></option>
-	<option value="OPEN" id="open-selector-owner-type-value"></option>
-	</select>
-</td-->	
-<td align="right"><span id="resource-selector-hits-text">1-10 of 12</span> 
-
-<input id="newer-resource-selector_btn" class="submit_btn" type="button" value="<" onMouseOver="document.getElementById('newer-resource-selector-tooltip').style.opacity='1';" onMouseOut="document.getElementById('newer-resource-selector-tooltip').style.opacity='0';">
-<input id="older-resource-selector_btn" class="submit_btn" type="button" value=">" onMouseOver="document.getElementById('older-resource-selector-tooltip').style.opacity='1';" onMouseOut="document.getElementById('older-resource-selector-tooltip').style.opacity='0';">
-
-<span id="newer-resource-selector-tooltip" class="tooltip" style="right: 40px; top:86px;">
-<b class="tooltip-caret"></b><br>
-<span id="newer-resource-selector-tooltip-text" class="tooltip-text">Newer</span>
-</span>
-
-<span id="older-resource-selector-tooltip" class="tooltip" style="right: 0px; top:86px;">
-<b class="tooltip-caret"></b><br>
-<span id="older-resource-selector-tooltip-text" class="tooltip-text">Older</span>
-</span>
-
-</td></tr></table>
-</form>
-
-<div id="resource-selector-list" style="border-top: 1px solid #e1e8ed;"></div>
-</div>  <!--End of id="resource-selector" -->
+	<div id="resource-selector" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
+		<h2 id="resource-selector-title-text" class="white-area-title">Resources selector</h2>
+		<form id="resource_selector_form" name="resource_selector_form" method="get" onSubmit="return false">
+			<table style="width: 100%;">
+				<tr>
+					<td id="resource-selector-subtitle-text">List of resources to be selected</td>
+					<input type="text" class="text-input" name="resource_type" maxlength="10" style="display: none;"/>
+					<input type="text" class="text-input" name="resource_origin" maxlength="10" style="display: none;"/>
+					<input type="text" class="text-input" name="element_origin" maxlength="10" style="display: none;"/>
+					
+					<td align="left">
+						
+						<label class="control-label" id="selector-resource-type_screen" for="resource-type_screen_value"></label>
+						<select class="text-input" id="selector-resource-type_screen_value" name="resource-type" onchange="EnumeraResourcesQueTocaASelector()">
+							<option value="ALL" id="all-selector-resource-type-value"></option>
+							<option value="FEEDBACK" id="feedback-selector-resource-type-value"></option>
+							<option value="CITATION" id="citation-selector-resource-type-value"></option>
+							<option value="PUBLICAT" id="publicat-selector-resource-type-value"></option>
+							<option value="INDIVIDU" id="individual-selector-resource-type-value"></option>
+							<option value="ORGANISM" id="organism-selector-resource-type-value"></option>
+							<option value="HREF" id="href-selector-resource-type-value"></option>
+							<option value="POI" id="poi-selector-resource-type-value"></option>
+						</select>
+					</td>
+					
+					<td align="left">
+						<label class="control-label" id="selector-owner-type_screen" for="owner-type_screen_value"></label>
+						<select class="text-input" id="selector-owner-type_screen_value" name="owner-type" onchange="EnumeraResourcesQueTocaASelector()">
+							<option value="ALL" id="all-selector-owner-type-value"></option>
+							<option value="ME" id="me-selector-owner-type-value"></option>
+							<option value="OTHERS" id="others-selector-owner-type-value"></option>
+							<option value="OPEN" id="open-selector-owner-type-value"></option>
+						</select>
+					</td>
+					
+					<td align="right"><span id="resource-selector-hits-text">1-10 of 12</span> 
+						<input id="newer-resource-selector_btn" class="submit_btn" type="button" value="<">
+						<input id="older-resource-selector_btn" class="submit_btn" type="button" value=">">
+					</td>
+				</tr>
+			</table>
+		</form>
+		<div id="resource-selector-list" style="border-top: 1px solid #e1e8ed;"></div>
+	</div>  <!--End of id="resource-selector" -->
 
 
 <!-- *** HREF DLG *** -->
 
-<div id="href-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
-<h2 id="href-resource-title-text" class="white-area-title">Resource</h2>
-<p id="href-resource-subtitle-text">Change your basic resource and language settings.</p>
+	<div id="href-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 
-<form id="href-resource_form" name="href_resource_form" method="get" autocomplete="off" onSubmit="return SendHRefResourceChanges();">
+		<h2 id="href-resource-title-text" class="white-area-title">Resource</h2>
+		<p id="href-resource-subtitle-text">Change your basic resource and language settings.</p>
 
-<div id="title-href-resource_fieldset" class="control-group">
-<label class="control-label" id="title-href-resource_screen" for="title-href-resource_screen_value"></label>
-<div class="controls">
-<input type="text" class="text-input" value="" id="title-href-resource_screen_value" name="title" style="width: 80%;" maxlength="254"/>
-<p id="title-href-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="title-href-resource_fieldset" -->
 
-<div id="href-href-resource_fieldset" class="control-group">
-<label class="control-label" id="href-href-resource_screen" for="href-href-resource_screen_value"></label>
-<div class="controls">
-<p><input type="text" class="text-input" value="" id="href-href-resource_screen_value" name="href" maxlength="1999" style="width: 80%;"/></p>
-<p id="href-href-resource_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="href-href-resource_fieldset" -->
+		<form id="href-resource_form" name="href_resource_form" method="get" autocomplete="off" onSubmit="return SendHRefResourceChanges();">
+			<div id="title-href-resource_fieldset" class="control-group">
+				<label class="control-label" id="title-href-resource_screen" for="title-href-resource_screen_value"></label>
+				<div class="controls">
+					<input type="text" class="text-input" value="" id="title-href-resource_screen_value" name="title" style="width: 80%;" maxlength="254"/>
+					<p id="title-href-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+				</div>
+			</div>  <!--End of id="title-href-resource_fieldset" -->
 
-<div id="mimetype-href-resource_fieldset" class="control-group">
-<label class="control-label" id="mimetype-href-resource_screen" for="mimetype-href-resource_screen_value"></label>
-<div class="controls">
-<select class="text-input" id="mimetype-href-resource_screen_value" name="mimetype">
-<option value="application/x-mmzx">MMZX</option>
-<option value="application/x-mmz" selected="selected">MMZ</option>
-<option value="application/x-zip-compressed">ZIP</option>
-<option value="image/jpeg">JPEG</option>
-<option value="image/png">PNG</option>
-<option value="" id="other-mimetype-href-resource_value"></option>
-</select>
-<p id="mimetype-href-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="mimetype-href-resource_fieldset" -->
+			<div id="href-href-resource_fieldset" class="control-group">
+				<label class="control-label" id="href-href-resource_screen" for="href-href-resource_screen_value"></label>
+				<div class="controls">
+					<p><input type="text" class="text-input" value="" id="href-href-resource_screen_value" name="href" maxlength="1999" style="width: 80%;"/></p>
+					<p id="href-href-resource_descrip" class="white-area-screen-descrip-text"></p>
+				</div>
+			</div>  <!--End of id="href-href-resource_fieldset" -->
 
-<div id="reason-href-resource_fieldset" class="control-group">
-<label class="control-label" id="reason-href-resource_screen" for="reason-href-resource_screen_value"></label>
-<div class="controls">
-<textarea class="text-input" id="reason-href-resource_screen_value" name="reason" maxlength="1999" style="width: 80%; height: 60px;"></textarea>
-<p id="reason-href-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
-</div>
-</div>  <!--End of id="reason-href-resource_fieldset" -->
+			<div id="mimetype-href-resource_fieldset" class="control-group">
+				<label class="control-label" id="mimetype-href-resource_screen" for="mimetype-href-resource_screen_value"></label>
+				<div class="controls">
+					<!--<select class="text-input" id="mimetype-href-resource_screen_value" name="mimetype">-->
+					<select class="text-input" id="mimetype-href-resource_screen_value" name="mimetype" onChange="MostraFinestraAltresFormats();">
+						<option value="application/x-mmzx">MMZX</option>
+						<option value="application/x-mmz" selected="selected">MMZ</option>
+						<option value="application/x-zip-compressed">ZIP</option>
+						<option value="image/jpeg">JPEG</option>
+						<option value="image/png">PNG</option>
+						<option value="" id="other-mimetype-href-resource_value"></option>
+					</select>
+					<p id="mimetype-href-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+				</div>
+				<!--Crear Nou enllaç a format no definit prèviament-->
+			<div id="other_format_fieldset" class="control-group"> <!--En cas que el format triat sigui "Other", en aquest div es fa apareèixer una caixa de text d'entrada del format-->
+			</div>
+			
+			</div>  <!--End of id="mimetype-href-resource_fieldset" -->
 
-<div class="form-actions">
-<input id="href-resource_btn" class="submit_btn" type="submit" value="Save changes" />
-<input id="href-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'HREF', true);" />
-<input id="href-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(true);" />
-<input id="href-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(false);" />
-</div>
+			<div id="reason-href-resource_fieldset" class="control-group">
+				<label class="control-label" id="reason-href-resource_screen" for="reason-href-resource_screen_value"></label>
+				<div class="controls">
+					<textarea class="text-input" id="reason-href-resource_screen_value" name="reason" maxlength="1999" style="width: 80%; height: 60px;"></textarea>
+					<p id="reason-href-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+				</div>
+			</div>  <!--End of id="reason-href-resource_fieldset" -->
+			
+<div id="open-data-href-resource_fieldset" class="control-group">
+	<label class="control-label" id="open-data-href-resource_screen" for="open-data-href-resource_screen_value"></label>
+	<div class="controls">
+		<p id="open-data-href-resource_alert" style="display: none;"></p>
+		<input type="checkbox" id="open-data-href-resource_screen_value" name="open_data" checked="checked"/>
+		<p id="open-data-href-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+	</div>
+</div>  <!--End of id="open-data-href-resource_fieldset" -->
 
-</form>
+<div id="href_mandatory_txt" class="mandatory_txt" style="padding-left: 140px;"></div>
 
-</div>  <!--End of id="href-resource" -->
+			<div class="form-actions">
+				<input id="href-resource_btn" class="submit_btn" type="submit" value="Save changes" />
+				<input id="href-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'HREF', true);" />
+				<input id="href-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(true);" />
+				<input id="href-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(false);" />
+			</div>
+
+		</form>
+
+	</div>  <!--End of id="href-resource" -->
 
 
 <!-- *** POI DLG *** -->
 
-<div id="poi-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<div id="poi-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="poi-resource-title-text" class="white-area-title"></h2>
 <p id="poi-resource-subtitle-text"></p>
 
@@ -7324,6 +8133,17 @@ Sign out</a>
 </div>
 </div>  <!--End of id="reason-poi-resource_fieldset" -->
 
+<div id="open-data-poi-resource_fieldset" class="control-group">
+<label class="control-label" id="open-data-poi-resource_screen" for="open-data-poi-resource_screen_value"></label>
+<div class="controls">
+<p id="open-data-poi-resource_alert" style="display: none;"></p>
+<input type="checkbox" id="open-data-poi-resource_screen_value" name="open_data" checked="checked"/>
+<p id="open-data-poi-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+</div>
+</div>  <!--End of id="open-data-poi-resource_fieldset" -->
+
+<div id="poi_mandatory_txt" class="mandatory_txt" style="padding-left: 140px;"></div>
+
 <div class="form-actions">
 <input id="poi-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="poi-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'POI', true);" />
@@ -7337,7 +8157,7 @@ Sign out</a>
 
 <!-- *** FEEDBACK RESOURCE DLG *** -->
 
-<div id="feedback-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<div id="feedback-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="feedback-resource-title-text" class="white-area-title"></h2>
 <p id="feedback-resource-subtitle-text"></p>
 
@@ -7402,14 +8222,6 @@ Sign out</a>
 <div id="rating-feedback-resource_fieldset" class="control-group">
 <label class="control-label" id="rating-feedback-resource_screen" for="rating-feedback-resource_screen_value"></label>
 <div class="controls">
-<!--select class="text-input" id="rating-feedback-resource_screen_value" name="rating">
-<option value="" id="undefined-rating-feedback-resource_value" selected="selected"></option>
-<option value="1" id="oneStar-rating-feedback-resource_value"></option>
-<option value="2" id="twoStars-rating-feedback-resource_value"></option>
-<option value="3" id="threeStars-rating-feedback-resource_value"></option>
-<option value="4" id="fourStars-rating-feedback-resource_value"></option>
-<option value="5" id="fiveStars-rating-feedback-resource_value"></option>
-</select-->
       <span class="starRating">
         <input id="rating-feedback-resource_value5" type="radio" name="rating" value="5">
         <label for="rating-feedback-resource_value5">5</label>
@@ -7749,6 +8561,8 @@ Sign out</a>
 </div>
 </div>  <!--End of id="open-data-feedback-resource_fieldset" -->
 
+<div id="feedback_mandatory_txt" class="mandatory_txt" style="padding-left: 140px;"></div>
+
 <div class="form-actions">
 <input id="feedback-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="feedback-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'FEEDBACK', true);" />
@@ -7761,7 +8575,7 @@ Sign out</a>
 </div>  <!--End of id="feedback-resource" -->
 
 <!-- *** CITATION RESOURCE DLG *** -->
-<div id="citation-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<div id="citation-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="citation-resource-title-text" class="white-area-title"></h2>
 <p id="citation-resource-subtitle-text"></p>
 
@@ -7920,6 +8734,8 @@ Sign out</a>
 </div>
 </div>  <!--End of id="open-data-citation-resource_fieldset" -->
 
+<div id="citation_mandatory_txt" class="mandatory_txt" style="padding-left: 140px;"></div>
+
 <div class="form-actions">
 <input id="citation-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="citation-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'CITATION', true);" />
@@ -7935,7 +8751,7 @@ Sign out</a>
 
 <!-- *** PUBLICAT RESOURCE DLG *** -->
 
-<div id="publication-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<div id="publication-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="publication-resource-title-text" class="white-area-title"></h2>
 <p id="publication-resource-subtitle-text"></p>
 
@@ -8129,6 +8945,8 @@ Sign out</a>
 </div>
 </div>  <!--End of id="open-data-publication-resource_fieldset" -->
 
+<div id="publication_mandatory_txt" class="mandatory_txt" style="padding-left: 140px;"></div>
+
 <div class="form-actions">
 <input id="publication-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="publication-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'PUBLICAT', true);" />
@@ -8145,7 +8963,7 @@ Sign out</a>
 
 
 <!-- *** INDIVIDUAL RESOURCE DLG *** -->
-<div id="individual-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<div id="individual-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="individual-resource-title-text" class="white-area-title"></h2>
 <p id="individual-resource-subtitle-text"></p>
 
@@ -8229,6 +9047,8 @@ Sign out</a>
 </div>
 </div>  <!--End of id="open-data-individual-resource_fieldset" -->
 
+<div id="individual_mandatory_txt" class="mandatory_txt" style="padding-left: 140px;"></div>
+
 <div class="form-actions">
 <input id="individual-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="individual-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'INDIVIDU', true);" />
@@ -8242,7 +9062,7 @@ Sign out</a>
 
 
 <!-- *** ORGANISM RESOURCE DLG *** -->
-<div id="organism-resource" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<div id="organism-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="organism-resource-title-text" class="white-area-title"></h2>
 <p id="organism-resource-subtitle-text"></p>
 
@@ -8314,6 +9134,8 @@ Sign out</a>
 </div>
 </div>  <!--End of id="open-data-organism-resource_fieldset" -->
 
+<div id="organism_mandatory_txt" class="mandatory_txt" style="padding-left: 140px;"></div>
+
 <div class="form-actions">
 <input id="organism-resource_btn" class="submit_btn" type="submit" value="Save changes" />
 <input id="organism-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'ORGANISM', true);" />
@@ -8325,10 +9147,111 @@ Sign out</a>
 
 </div>  <!--End of id="organism-resource" -->
 
+<!-- *** SCOPE DLG *** -->
+
+<div id="scope" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
+	<h2 id="scope-title-text" class="white-area-title"></h2>
+	<p id="scope-subtitle-text"></p>
+
+	<form id="scope_form" name="scope_form" method="get" autocomplete="off">
+	
+	<!-- OGscope -->
+	
+		<div id="scope_bbox" class="control-group">
+			<label class="control-label" id="bbox-scope_screen" for="bbox-scope_screen_value">bbox</label>
+			<div class="controls">
+				<table id="scope_bbox_table" style="border-collapse: collapse;">
+						
+					<tr>
+						<td style="padding-bottom:12px;"></td>
+						<td style="padding-bottom:12px;"></td>
+						<td style="padding-bottom:12px;"></td>
+						<td style="width:15%; text-align:right; padding-bottom:12px;">
+							<input type="text" class="text-input" value="" id="max-lat-scope_screen_value" name="max-lat" maxlength="20" size="10"/>
+						</td>
+						<td style="padding-bottom:12px; padding-left:12px;">
+							<label class="control-label" id="max-lat-scope_screen" for="max-lat-scope_screen_value" style="text-align:left;">Max_Lat</label>
+						</td>
+						<td style="padding-bottom:12px;"></td>
+					</tr>
+						
+					<tr>
+						<td></td>
+						<td></td>
+						<td colspan="2" rowspan="3" style="width:15%; border: 1px solid #8899A6;"></td>
+						<td style="text-align:left; padding-left:12px;">
+							<input type="text" class="text-input" value="" id="max-long-scope_screen_value" name="max-long" maxlength="20" size="10";/>
+						</td>
+						<td>
+							<label class="control-label" id="max-long-scope_screen" for="max-long-scope_screen_value" style="text-align:left;">Msg_Max_Lon</label>
+						</td>
+					</tr>
+						
+					<tr>
+						<td style="padding: 20px;"></td>
+						<td style="padding: 20px;"></td>
+						<td style="padding: 20px;"></td>
+						<td style="padding: 20px;"></td>
+					</tr>
+						
+					<tr>
+						<td style="text-align:right;">
+							<label class="control-label" id="min-long-scope_screen" for="min-long-scope_screen_value" style="text-align:right;">Msg_Min_Lon</label>
+						</td>
+						<td style="text-align:right; padding-right:12px;">
+							<input type="text" class="text-input" value="" id="min-long-scope_screen_value" name="min-long" maxlength="20" size="10";/>
+						</td>
+						<td></td>
+						<td></td>
+					</tr>
+						
+					<tr>
+						<td style="padding-top:12px;"></td>
+						<td style="text-align:right; padding-top:12px; padding-right:12px;">
+							<label class="control-label" id="min-lat-scope_screen" for="min-lat-scope_screen_value" style="text-align:right;">Msg_Min_Lat</label>
+						</td>
+						<td style="width:15%; padding-top:12px;">
+						<input type="text" class="text-input" value="" id="min-lat-scope_screen_value" name="min-lat" maxlength="20" size="10" />
+						</td>
+						<td style="padding-top:12px;"></td>
+						<td style="padding-top:12px;"></td>
+						<td style="padding-top:12px;"></td>
+					</tr>
+			
+				</table>
+				<br>
+				<p id="bbox-scope_descrip" class="white-area-screen-descrip-text">Coordinates in degrees.
+				</p>
+			</div>
+		</div>
+		<br>
+		<div id="GMLpolygon-scope_fieldset" class="control-group">
+			<label class="control-label" id="GMLpol-scope_screen" for="bbox-scope_screen_value">GMLpol</label>
+			<div class="controls">
+				<textarea class="text-input" id="GMLpolygon-scope_screen_value" name="GMLpolygon" maxlength="1999" style="width: 80%; height: 60px;"></textarea>
+				<p id="GMLpolygon-scope_screen_descrip" class="white-area-screen-descrip-text">For example:</p>
+			</div>
+		</div>
+		
+		
+		<div id="GMLpolygon-scope_fieldset" class="control-group">
+		</div>  <!--End of id="GMLpolygon-scope_fieldset" -->
+		
+		<div class="form-actions">
+			<input id="scope_btn" class="submit_btn" type="button" value="Save changes" onclick="RecuperaCanvisAScope(true);">
+			<input id="scope-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="RecuperaCanvisAScope(false);">
+			<input id="scope-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(true);">
+			<input id="scope-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(false);">
+		</div>
+	
+	</form>
+
+</div>  <!--End of id="scope" -->
+
 
 <!-- *** ACCOUNT DLG *** -->
 
-<div id="account" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<div id="account" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="account-title-text" class="white-area-title">Account</h2>
 <p id="account-subtitle-text">Change your basic account and language settings.</p>
 
@@ -8417,7 +9340,7 @@ Sign out</a>
 
 <!-- *** SHARE DLG *** -->
 
-<div id="share" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<div id="share" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="share-title-text" class="white-area-title"></h2>
 <p id="share-subtitle-text"></p>
 
@@ -8462,7 +9385,7 @@ Sign out</a>
 
 <!-- *** FEEDBACK DLG *** -->
 
-<div id="feedback" class="white-area" style="left: 25%; top: 45px; width: 60%; height: auto; visibility: hidden;">
+<div id="feedback" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="feedback-title-text" class="white-area-title"></h2>
 <p id="feedback-subtitle-text"></p>
 
