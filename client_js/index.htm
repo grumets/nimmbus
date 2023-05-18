@@ -52,24 +52,24 @@
 
     Copyright 2014, 2022 Xavier Pons
 
-    Aquest codi JavaScript ha estat idea de Joan MasÛ Pau (joan maso at uab cat) 
+    Aquest codi JavaScript ha estat idea de Joan Mas√≥ Pau (joan maso at uab cat) 
     amb l'ajut de l'Alaitz Zabala (alaitz zabala at uab cat)
-    dins del grup del MiraMon. MiraMon Ès un projecte del 
-    CREAF que elabora programari de Sistema d'InformaciÛ Geogr‡fica 
-    i de TeledetecciÛ per a la visualitzaciÛ, consulta, ediciÛ i an‡lisi 
-    de mapes r‡sters i vectorials. Aquest progamari programari inclou
-    aplicacions d'escriptori i tambÈ servidors i clients per Internet.
-    No tots aquests productes sÛn gratuÔts o de codi obert. 
+    dins del grup del MiraMon. MiraMon √©s un projecte del 
+    CREAF que elabora programari de Sistema d'Informaci√≥ Geogr√†fica 
+    i de Teledetecci√≥ per a la visualitzaci√≥, consulta, edici√≥ i an√†lisi 
+    de mapes r√†sters i vectorials. Aquest progamari programari inclou
+    aplicacions d'escriptori i tamb√© servidors i clients per Internet.
+    No tots aquests productes s√≥n gratu√Øts o de codi obert. 
     
     En particular, el client JavaScript del NiMMbus es distribueix sota 
-    els termes de la llicËncia GNU Affero General Public License, 
+    els termes de la llic√®ncia GNU Affero General Public License, 
     mireu https://www.gnu.org/licenses/licenses.html#AGPL.
     
     El client JavaScript del NiMMbus es pot actualitzar des de 
     https://github.com/grumets/NiMMbus.
 */
 
-//∑$∑ "use strict" --> si ho fem caldr‡ passar molt temps recorrent tots els botons etc per estar segurs que no hi ha res no declarat!!
+//¬∑$¬∑ "use strict" --> si ho fem caldr√† passar molt temps recorrent tots els botons etc per estar segurs que no hi ha res no declarat!!
 
 function CollapseFieldset(elem, state)
 /* "state" can be:
@@ -118,9 +118,9 @@ function decode_utf8(s) {
   return decodeURIComponent(escape(s));
 }
 
-//DesprÈs de intentar fer servir l'objecte link() sense exit he hagut de fer aixÚ.
-//En realitat el que s'hauria de fer servir Ès el constructor new URL().
-// A aquesta funciÛ se li pot passar el path absolut o un path relatiu seguit d'una adreÁa base. 
+//Despr√©s de intentar fer servir l'objecte link() sense exit he hagut de fer aix√≤.
+//En realitat el que s'hauria de fer servir √©s el constructor new URL().
+// A aquesta funci√≥ se li pot passar el path absolut o un path relatiu seguit d'una adre√ßa base. 
 //Returns the hostname and port number of a URL
 function DonaHost(s)
 {
@@ -194,18 +194,18 @@ var s_host;
 		s_host=DonaHost(servers[i]);		
 		if (s_host.toLowerCase()=="localhost" && location.host.toLowerCase()!="localhost")
 		{
-			alert("Error en pujar la versiÛ als servidors. ServersNB[] encara diu \"localhost\"!");
+			alert("Error en pujar la versi√≥ als servidors. ServersNB[] encara diu \"localhost\"!");
 			break;
 		}
 
 		s_host=DonaHrefOrigin(servers[i]);
 		if (s_host.toLowerCase()!=location.origin.toLowerCase())
 		{
-			//Canvio l'arrel del servidor local per l'arrel de la plana del navegador per estar segur que l'ajax funcionar‡ sense "cross server vulnerability".
+			//Canvio l'arrel del servidor local per l'arrel de la plana del navegador per estar segur que l'ajax funcionar√† sense "cross server vulnerability".
 			//var pos_host=(-1!=servers[i].indexOf("//")) ? servers[i].indexOf("//")+2 : 0;
 			//servers[i]=servers[i].substring(0,pos_host)+location.host+servers[i].substring(pos_host+s_host.length, servers[i].length);
 
-			//Canvio l'arrel de la plana del navegador per l'arrel del servidor local, per estar segur que l'ajax funcionar‡ sense "cross server vulnerability" i que els servidors d'autentificaciÛ rebran el nom de domini que tenen registrat (assumint que servers est‡ bÈ).
+			//Canvio l'arrel de la plana del navegador per l'arrel del servidor local, per estar segur que l'ajax funcionar√† sense "cross server vulnerability" i que els servidors d'autentificaci√≥ rebran el nom de domini que tenen registrat (assumint que servers est√† b√©).
 			location.replace(s_host+location.href.substring(location.origin.length, location.href.length));
 		}
 	}
@@ -221,18 +221,18 @@ function RevisaProtocolServersNB(servers)
 {
 var s_protocol, pos_protocol;
 	
-	//En aquest cas mirem nomÈs el primer perquË haurien de ser tots iguals i perquË sovint aixÚ est‡ nomÈs a un servidor
-	//Volem mirar que el protocol de la plana amb el protocol del servidor i, si no Ès igual, forÁar el del servidor
-	//(i.e. si em demanen http:// i Ès un https:// el canvio
+	//En aquest cas mirem nom√©s el primer perqu√® haurien de ser tots iguals i perqu√® sovint aix√≤ est√† nom√©s a un servidor
+	//Volem mirar que el protocol de la plana amb el protocol del servidor i, si no √©s igual, for√ßar el del servidor
+	//(i.e. si em demanen http:// i √©s un https:// el canvio
 	
 	s_protocol=DonaProtocol(servers[0]);
 	
 	if (s_protocol.toLowerCase()!=location.protocol.toLowerCase())
 	{
-		//Canvio l'indicador de protocol de la plana per la que tÈ el servidor
+		//Canvio l'indicador de protocol de la plana per la que t√© el servidor
 		pos_protocol=(-1!=location.href.indexOf("//")) ? location.href.indexOf("//")+2 : 0;		
 		location.replace(s_protocol+"//"+location.href.substring(pos_protocol,location.href.length));
-		//Canvio l'arrel del servidor local per l'arrel de la plana del navegador per estar segur que l'ajax funcionar‡ sense "cross server vulnerability".
+		//Canvio l'arrel del servidor local per l'arrel de la plana del navegador per estar segur que l'ajax funcionar√† sense "cross server vulnerability".
 		pos_host=(-1!=servers[i].indexOf("//")) ? servers[i].indexOf("//")+2 : 0;
 		servers[i]=servers[i].substring(0,pos_host)+location.host+servers[i].substring(pos_host+s_host.length, servers[i].length);
 
@@ -326,7 +326,7 @@ function DonaCadenaIdNoPotSerBuit(id)
 }
 
 
-// FunciÛ inspirada en una de SitePoint Pty. Ltd, www.sitepoint.com
+// Funci√≥ inspirada en una de SitePoint Pty. Ltd, www.sitepoint.com
 function Ajax() 
 {
 	this.req = null;
@@ -341,7 +341,7 @@ function Ajax()
 	this.responseXML = null;
 	this.handleResp = null;
 	this.responseFormat = 'text/plain', // 'text/plain', 'text/xml', 'object'
-	this.requestFormat = 'application/x-www-form-urlencoded'  //nomÈs per POST
+	this.requestFormat = 'application/x-www-form-urlencoded'  //nom√©s per POST
 	this.structResp=null;
 	this.mimeType = null;  
 	//this.headers = [];
@@ -407,7 +407,7 @@ function Ajax()
 					ShowInfo("long", DonaCadenaJSON(Msg_Revalidating_authentication) +": "+ Math.floor(expires-currentTime+3) + DonaCadenaJSON(Msg_seconds)+".");
 					setTimeout(ValidaSSO, (expires-currentTime+3)*1000, true, null, this);
 				}
-				return;  //this.doReqAutenticated es fa desprÈs de fer altres coses.
+				return;  //this.doReqAutenticated es fa despr√©s de fer altres coses.
 			}
 		}
 		this.doReqAutenticated();
@@ -613,12 +613,12 @@ var clau=clau_a_buscar.toUpperCase()+"=";
 
 function DonaCadenaDataPerValorDeFormulari(str_data)
 {
-	//Els recursos data i hora usats no deixen enviar el formulari si no est‡ complert, per tant cap problema de dates o hores "a mitges"
-	//He comprovat que el recurs data (al Chrome com a mÌnim) et pot tornar aixÚ "19777-08-03"
-	//No cal usar DonaCadenaPerValorDeFormulari perquË els car‡cters que aquesta funciÛ substitueix no estan presents a aquest recurs segur		
+	//Els recursos data i hora usats no deixen enviar el formulari si no est√† complert, per tant cap problema de dates o hores "a mitges"
+	//He comprovat que el recurs data (al Chrome com a m√≠nim) et pot tornar aix√≤ "19777-08-03"
+	//No cal usar DonaCadenaPerValorDeFormulari perqu√® els car√†cters que aquesta funci√≥ substitueix no estan presents a aquest recurs segur		
 	var pos = str_data.indexOf("-");
-	if (pos == -1 || pos < 4) //No tÈ cap guiÛ (tambÈ si Ès buida!) o anys escrit amb menys de 4 digits
-	{	//No hauria de passar, i el recurs sembla no permetre-ho, perÚ per si de cas si passa aixÚ entenc que est‡ malament i retorno ""
+	if (pos == -1 || pos < 4) //No t√© cap gui√≥ (tamb√© si √©s buida!) o anys escrit amb menys de 4 digits
+	{	//No hauria de passar, i el recurs sembla no permetre-ho, per√≤ per si de cas si passa aix√≤ entenc que est√† malament i retorno ""
 		var s="";	
 		return s;
 	}
@@ -626,7 +626,7 @@ function DonaCadenaDataPerValorDeFormulari(str_data)
 	if (pos == 4) //tinc any de 4 digits: ####-[...] -> tot ok
 		return str_data;
 	
-	//any escrit amb mÈs de quatre dÌgits, que he comprovat que aixÚ amb el recurs sÌ que pot passar	
+	//any escrit amb m√©s de quatre d√≠gits, que he comprovat que aix√≤ amb el recurs s√≠ que pot passar	
 		return str_data.substring(0,4)+str_data.substring(pos);
 }
 
@@ -634,16 +634,16 @@ function DonaCadenaDataHoraPerValorDeFormulari(str_data, str_hora)
 {
 var s="";
 
-	//Els recursos data i hora usats no deixen enviar el formulari si no est‡ complert, per tant cap problema de dates o hores "a mitges"
-	//El que si que pot passar Ès que alg˙ defineixi l'hora i no la data, perÚ aixÚ ja ho controlo jo aquÌ sota :)
-	//No cal usar DonaCadenaPerValorDeFormulari perquË els car‡cters que aquesta funciÛ substitueix no estan presents a aquest recurs segur		
+	//Els recursos data i hora usats no deixen enviar el formulari si no est√† complert, per tant cap problema de dates o hores "a mitges"
+	//El que si que pot passar √©s que alg√∫ defineixi l'hora i no la data, per√≤ aix√≤ ja ho controlo jo aqu√≠ sota :)
+	//No cal usar DonaCadenaPerValorDeFormulari perqu√® els car√†cters que aquesta funci√≥ substitueix no estan presents a aquest recurs segur		
 	s=DonaCadenaDataPerValorDeFormulari(str_data);
 	if (s=="")
 		return s;
 
 	if (str_hora=="")
 		return s;		
-	//Per que els XML validin, la data hora hora ha de ser fins els segons i amb Z (o altres indicadors de fus, perÚ ara no ens liem amb aixÚ)
+	//Per que els XML validin, la data hora hora ha de ser fins els segons i amb Z (o altres indicadors de fus, per√≤ ara no ens liem amb aix√≤)
 	s+="T"+str_hora+":00Z";
 	
 	return s;
@@ -863,7 +863,7 @@ var kvp="";
 			EntraANimmbusMain();
 		else if (ParamsQuery.newpage=="ADDFEEDBACK")
 		{
-			if (ParamsQuery.llista_targets.length==0) //no he detectat cap target v‡lid
+			if (ParamsQuery.llista_targets.length==0) //no he detectat cap target v√†lid
 			{
 				ShowInfo("long", DonaCadenaJSON(Msg_TARGET_TILE_and_CODE_needed));
 				return;
@@ -879,7 +879,7 @@ var kvp="";
 function NotifyOpenerIAmReady(url)
 {
 	if (window.opener)
-		window.opener.postMessage("I'm ready", url); //"el primer par‡metre no l'usem per res perÚ podria servir per dir alguna cosa al opener"
+		window.opener.postMessage("I'm ready", url); //"el primer par√†metre no l'usem per res per√≤ podria servir per dir alguna cosa al opener"
 }
 
 function InitFrontPage()
@@ -983,7 +983,7 @@ var process, metadata, title;
 }
 
 //En alguns casos poso un msg_id i msg_desc per comunicar coses.
-//p.ex un NB_RESOURCE:CREATE pot dir que el recurs no es crea perquË ja existeix.
+//p.ex un NB_RESOURCE:CREATE pot dir que el recurs no es crea perqu√® ja existeix.
 function MostraMissatgeDesDeRootProcesXML(root)
 {
 var process_succeeded, process, metadata, title;
@@ -1056,7 +1056,7 @@ var exception_error;
 		UpdateLastServer();
 		return true;
 	}
-	//Si no trobo text, potser encara trobarÈ el codi
+	//Si no trobo text, potser encara trobar√© el codi
 	exception_error=GetXMLElementByName(root, "ows", "Exception");
 	if (exception_error)
 	{
@@ -1093,7 +1093,7 @@ var root, id_proces, id_obj;
 		return;
 	}
 
-	id_obj=DonaIDRecursDesDeRootXML(root);  //La execuciÛ de NB_RESOURCE:CREATE dona l'ID de recurs que s'est‡ en procÈs de crear.
+	id_obj=DonaIDRecursDesDeRootXML(root);  //La execuci√≥ de NB_RESOURCE:CREATE dona l'ID de recurs que s'est√† en proc√©s de crear.
 	if (id_obj!="")
 	{
 		//Exploro si pot ser que hi hagi un missatge de resposta immediata
@@ -1187,7 +1187,7 @@ var root, output, process_succeeded, identifier;
 function InitHello()
 {
 	hello.init({
-		//google: '281597821362-tkj1tngjiiuul47m6dkhrorrsdqomahu.apps.googleusercontent.com', -> fet abans sense usar funcions hello. es podria canviar, perÚ com est‡ ara funciona
+		//google: '281597821362-tkj1tngjiiuul47m6dkhrorrsdqomahu.apps.googleusercontent.com', -> fet abans sense usar funcions hello. es podria canviar, per√≤ com est√† ara funciona
 		//landsense: '920b7ffa-1d18-b836-8ff3-514042772543@as.landsense.eu',
 		authenix: '54a136e7-a1af-3fa6-a3f0-d20d99aef14d',
 		//nextgeoss: '@!27B7.E085.07A1.6DE7!0001!F5E4.0B8E!0008!7BBE.671A.BD2B.6459'
@@ -1438,7 +1438,7 @@ function ValidaSSOGoogle()
 					AccessTokenType = "google";
 					//console.log("ID Token: " + AccessToken);
 
-					//$("#google-button").hide();  No cal aixÌ si retrocedeixo funciona.
+					//$("#google-button").hide();  No cal aix√≠ si retrocedeixo funciona.
 					document.getElementById("google-button").disabled=false;
 
 					SignInNB();
@@ -1521,14 +1521,14 @@ var fn;
 						RemoveInfo("permanent");
 						ShowInfo("short", DonaCadenaJSON(Msg_Ok));
 						UpdateLastServer();
-						//uso el truco seg¸ent: http://www.sitepoint.com/call-javascript-function-string-without-using-eval
+						//uso el truco seg√ºent: http://www.sitepoint.com/call-javascript-function-string-without-using-eval
 						fn=window[nom_funcio_i_params.nom_funcio]
 						if (typeof fn === "function")
 						{
 							if (typeof nom_funcio_i_params.params === "string" && nom_funcio_i_params.params[0]==="{")
-							//en algun context params contÈ un JSON en string (p.ex "{"targets":[{"title":"Sentinel 2 L2A Collection","code":"Sentinel2Level...")
+							//en algun context params cont√© un JSON en string (p.ex "{"targets":[{"title":"Sentinel 2 L2A Collection","code":"Sentinel2Level...")
 								fn(JSON.parse(nom_funcio_i_params.params));
-							else //i en altres nomÈs una cadena normal "FEEDBACK"
+							else //i en altres nom√©s una cadena normal "FEEDBACK"
 								fn(nom_funcio_i_params.params);
 						}
 						else 
@@ -1607,7 +1607,7 @@ var root, output, identifier;
 								ChangeLanguage(i, ResourcesPerPage);
 								ShowInfo("short", DonaCadenaJSON(Msg_Language_changed_preferences));
 								if (location.hash=="#feedback-resource" && ActionAfterSignIn==TancaFinestraNimmbus)
-								{ //he entrat directament a p‡gina de valoraciÛ des de ADDFEEDBACK
+								{ //he entrat directament a p√†gina de valoraci√≥ des de ADDFEEDBACK
 									document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_feedback);
 									document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_feedback_characteristics);
 									document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Create);									
@@ -1820,7 +1820,7 @@ function AfegeixAddDocOfAFeedback(id_citation, open_data)
 }
 
 
-function ModificaScopeOfAFeedback(item) //aquest item Ès el que ens diu en quin element de l'array TargetsOfAFeedback estem
+function ModificaScopeOfAFeedback(item) //aquest item √©s el que ens diu en quin element de l'array TargetsOfAFeedback estem
 {
 
 	RecuperaCanvisARolesATargetsOfAFeedback();
@@ -1840,7 +1840,7 @@ function MostraScopeOfAFeedback(item)
 ChangePannel("scope", true);
 nTargetOfAFeedback=item;
 
-	//per saber que no hi ha dades prËvies comprovem si alguna de les coordenades Ès nul∑la (no cal comprovar-les totes pq si estiguÈssin malament no s'haurien pogut enviar) o si l'atribut gmlpol Ès nul.
+	//per saber que no hi ha dades pr√®vies comprovem si alguna de les coordenades √©s nul¬∑la (no cal comprovar-les totes pq si estigu√©ssin malament no s'haurien pogut enviar) o si l'atribut gmlpol √©s nul.
 	if (TargetsOfAFeedback[item].minlong==null && TargetsOfAFeedback[item].gmlpol==null)
 	{
 		//estem introduint un scope nou
@@ -1880,7 +1880,7 @@ nTargetOfAFeedback=item;
 			document.getElementById("min-lat-scope_screen_value").value=TargetsOfAFeedback[item].minlat;
 			document.getElementById("max-lat-scope_screen_value").value=TargetsOfAFeedback[item].maxlat;
 		}
-		else // cal fer aquest else pq si estem en un cas que tenim bbox perÚ no gml i venim de visitar un scope amb toes les dades, encara es visualitzaria el gml de l'scope anteriorment visitat
+		else // cal fer aquest else pq si estem en un cas que tenim bbox per√≤ no gml i venim de visitar un scope amb toes les dades, encara es visualitzaria el gml de l'scope anteriorment visitat
 		{
 			document.getElementById("min-long-scope_screen_value").value="";
 			document.getElementById("max-long-scope_screen_value").value="";
@@ -1889,7 +1889,7 @@ nTargetOfAFeedback=item;
 		}
 		if (TargetsOfAFeedback[item].gmlpol)
 			document.getElementById("GMLpolygon-scope_screen_value").value=TargetsOfAFeedback[item].gmlpol;
-		else //igual que el cas anterior perÚ amb el GMLpol
+		else //igual que el cas anterior per√≤ amb el GMLpol
 			document.getElementById("GMLpolygon-scope_screen_value").value="";
 		
 	}
@@ -1900,7 +1900,7 @@ return;
 
 function RecuperaCanvisAScope(avis)
 {
-	if (avis==true) //salvem l'scope introduÔt per l'usuari
+	if (avis==true) //salvem l'scope introdu√Øt per l'usuari
 	{
 		
 		//bbox
@@ -1909,13 +1909,13 @@ function RecuperaCanvisAScope(avis)
 		var ymin_t=document.getElementById("min-lat-scope_screen_value").value;
 		var ymax_t=document.getElementById("max-lat-scope_screen_value").value;
 		
-		//comprovem que les coordenades introduÔdes sÛn n˙meros
+		//comprovem que les coordenades introdu√Ødes s√≥n n√∫meros
 		if (isNaN(xmin_t)!=false || isNaN(xmax_t)!=false || isNaN(ymin_t)!=false || isNaN(ymax_t)!=false)
 		{
 			alert(DonaCadenaJSON({cat: "Format de les coordenades incorrecte", spa: "Formato de la coordenadas incorrecto", eng: "Incorrect coordinate format"}));
 			return false;
 		}
-		else //necessito guardar-les com un float pq sinÛ en les comparacions tracta les coordenades com strings.
+		else //necessito guardar-les com un float pq sin√≥ en les comparacions tracta les coordenades com strings.
 		{
 			var xmin=parseFloat(xmin_t);
 			var xmax=parseFloat(xmax_t);
@@ -1929,21 +1929,21 @@ function RecuperaCanvisAScope(avis)
 			return false;
 		}
 		
-		//si tot est‡ ok ho afegim a TargetsOfAFeedback
+		//si tot est√† ok ho afegim a TargetsOfAFeedback
 		TargetsOfAFeedback[nTargetOfAFeedback].minlong=xmin;
 		TargetsOfAFeedback[nTargetOfAFeedback].maxlong=xmax;
 		TargetsOfAFeedback[nTargetOfAFeedback].minlat=ymin;
 		TargetsOfAFeedback[nTargetOfAFeedback].maxlat=ymax;
 		var s=document.getElementById("GMLpolygon-scope_screen_value").value;
 		
-		//en el cas del GML pol ens assegurem que no hi ha espais en blanc ni salts de lÌnia
+		//en el cas del GML pol ens assegurem que no hi ha espais en blanc ni salts de l√≠nia
 		s=s.replace(/^\s+|\s+$/gm,'');
 		TargetsOfAFeedback[nTargetOfAFeedback].gmlpol=s.replace(/[\n\r]/g, '');
 		
 		//marquem que existeix scope
 		TargetsOfAFeedback[nTargetOfAFeedback].scope=true;
 	}
-	else //estem rebent un false, Ès a dir que volem esborrar-ho tot.
+	else //estem rebent un false, √©s a dir que volem esborrar-ho tot.
 	{
 		if (confirm(DonaCadenaJSON(Msg_Sure_completely_delete_)) == false)
 		{ 
@@ -1972,7 +1972,7 @@ function RecuperaCanvisAScope(avis)
 		s2+="<br>"+ DonaCadenaJSON({cat: "envolupant: ", spa: "envolvente: ", eng: "bounding box: "})+TargetsOfAFeedback[nTargetOfAFeedback].minlong+", "+TargetsOfAFeedback[nTargetOfAFeedback].maxlong+", "+TargetsOfAFeedback[nTargetOfAFeedback].minlat+", "+TargetsOfAFeedback[nTargetOfAFeedback].maxlat;
 	
 	if (TargetsOfAFeedback[nTargetOfAFeedback].gmlpol!="")
-		s2+="<br>"+DonaCadenaJSON({cat: "polÌgon GML: definit", spa: "polÌgono GML: definido", eng: "GML polygon: defined"});
+		s2+="<br>"+DonaCadenaJSON({cat: "pol√≠gon GML: definit", spa: "pol√≠gono GML: definido", eng: "GML polygon: defined"});
 	
 	document.getElementById(id_tr).innerHTML=s2;
 	
@@ -1993,9 +1993,9 @@ function EliminaTargetOfAFeedback(del_item)
 
 function AfegeixTargetOfAFeedback(id_target, open_data)
 {
-	if (id_target==null)  //S'ha cancel∑lat d'afegir res.
+	if (id_target==null)  //S'ha cancel¬∑lat d'afegir res.
 		;
-	/*else if (id_target=='') //S'ha seleccionat un recurs que no tÈ sentit que se seleccioni.
+	/*else if (id_target=='') //S'ha seleccionat un recurs que no t√© sentit que se seleccioni.
 		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again));*/
 	else
 	{
@@ -2021,9 +2021,9 @@ function EliminaResponsibleOfACitation(del_item)
 
 function AfegeixResponsibleOfACitation(id_responsible, open_data)
 {
-	if (id_responsible==null)  //S'ha cancel∑lat d'afegir res.
+	if (id_responsible==null)  //S'ha cancel¬∑lat d'afegir res.
 		;
-	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no tÈ sentit que se seleccioni.
+	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no t√© sentit que se seleccioni.
 		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again ));*/
 	else
 	{
@@ -2049,9 +2049,9 @@ function EliminaResponsibleOfAPublication(del_item)
 
 function AfegeixResponsibleOfAPublication(id_responsible, open_data)
 {
-	if (id_responsible==null)  //S'ha cancel∑lat d'afegir res.
+	if (id_responsible==null)  //S'ha cancel¬∑lat d'afegir res.
 		;
-	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no tÈ sentit que se seleccioni.
+	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no t√© sentit que se seleccioni.
 		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again ));*/
 	else
 	{
@@ -2096,28 +2096,28 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 				else if (identifier.childNodes[0].nodeValue=="openData")
 				{
 					open_data=TornaBooleaDesDeWPSLiteralOutput(output.item(item));
-					if (dades.is_target_public_or_none==1) //aquest item Ès un dels arrays de targets de FB
+					if (dades.is_target_public_or_none==1) //aquest item √©s un dels arrays de targets de FB
 						TargetsOfAFeedback[dades.del_item-1].open_data=open_data;
-					else if (dades.is_target_public_or_none==2)  //aquest item Ès un dels arrays de publics de FB
+					else if (dades.is_target_public_or_none==2)  //aquest item √©s un dels arrays de publics de FB
 						PublicsOfAFeedback[dades.del_item-1].open_data=open_data;
-					else if (dades.is_target_public_or_none==3)  //aquest item Ès un dels arrays de responsibles de Citation
+					else if (dades.is_target_public_or_none==3)  //aquest item √©s un dels arrays de responsibles de Citation
 						ResponsiblesOfACitation[dades.del_item-1].open_data=open_data;
-					else if (dades.is_target_public_or_none==4)  //aquest item Ès un dels arrays de responsibles de Publication
+					else if (dades.is_target_public_or_none==4)  //aquest item √©s un dels arrays de responsibles de Publication
 						ResponsiblesOfAPublication[dades.del_item-1].open_data=open_data;
-					else if (dades.is_target_public_or_none==5)	//aquest item Ès un dels arrays de RefDocs (publics) de FB
+					else if (dades.is_target_public_or_none==5)	//aquest item √©s un dels arrays de RefDocs (publics) de FB
 						RefDocsOfAFeedback[dades.del_item-1].open_data=open_data;
-					else if (dades.is_target_public_or_none==6)	//aquest item Ès un dels arrays de AddDocs (citations) de FB
+					else if (dades.is_target_public_or_none==6)	//aquest item √©s un dels arrays de AddDocs (citations) de FB
 						AddDocsOfAFeedback[dades.del_item-1].open_data=open_data;
-					else if (dades.is_target_public_or_none==7)	//aquest item Ès un dels arrays de AltRsrc (citations) de FB
+					else if (dades.is_target_public_or_none==7)	//aquest item √©s un dels arrays de AltRsrc (citations) de FB
 						AltRsrcsOfAFeedback[dades.del_item-1].open_data=open_data;
-					else if (dades.is_target_public_or_none==8)	//aquest item Ès un dels arrays de FixRsrc (citations) de FB
+					else if (dades.is_target_public_or_none==8)	//aquest item √©s un dels arrays de FixRsrc (citations) de FB
 						FixRsrcsOfAFeedback[dades.del_item-1].open_data=open_data;
 					//else if (dades.is_target_public_or_none==0)	
 				}
 				else if (identifier.childNodes[0].nodeValue=="type")
 					type=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="citation" || identifier.childNodes[0].nodeValue=="publication")
-				{	//els puc fer junts perquË nomÈs miro els elements de la part comuna				
+				{	//els puc fer junts perqu√® nom√©s miro els elements de la part comuna				
 					citation=OmpleInputDesDeWPSComplexOutput(output.item(item));
 					if (citation)
 					{ 
@@ -2137,11 +2137,11 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 				}
 				else if (identifier.childNodes[0].nodeValue=="individu") 
 				{
-					;	//de moment no recupero res particular, potser mÈs endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme
+					;	//de moment no recupero res particular, potser m√©s endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme
 				}
 				else if (identifier.childNodes[0].nodeValue=="organism") 
 				{
-					;	//de moment no recupero res particular, potser mÈs endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme
+					;	//de moment no recupero res particular, potser m√©s endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme
 				}
 				else if (identifier.childNodes[0].nodeValue=="href")
 					href=OmpleInputDesDeWPSLiteralOutput(output.item(item));
@@ -2155,27 +2155,27 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 		}
 		RemoveInfo("permanent");		
 		compact_element_item=(dades.del_item ? dades.compact_element+"_"+dades.del_item : dades.compact_element);
-		//document.getElementById(compact_element_item).innerHTML="<table width=\"80%\">"; -> si faig aixÚ posa el table i el /table :( -> ho construeixo sobre s_table i desprÈs ho assigno
+		//document.getElementById(compact_element_item).innerHTML="<table width=\"80%\">"; -> si faig aix√≤ posa el table i el /table :( -> ho construeixo sobre s_table i despr√©s ho assigno
 		s_table="<table width=\"100%\">";
 		s_table+="<tr><td width=\"80\" align=\"center\"><img src=\""+DonaNomImgTipusRecurs(type, true)+"\">";
 
 		if (dades.open_data && !open_data)
 			s_table+="<img src=\"ExclamationMark36.png\" id=\""+compact_element_item+"_shared\"></td>";
-		else //creo un element img tambÈ amb src="", perquË aixÌ el ID existeix sempre
+		else //creo un element img tamb√© amb src="", perqu√® aix√≠ el ID existeix sempre
 			s_table+="<img src=\"\" id=\""+compact_element_item+"_shared\"></td>"; 
 		
 		//s_table+="<td>"+title;
-		s_table+='<td id="compact-resource_table_hidden_br'+ dades.item +'">'+title; //utilitzarÈ aquest id desde function RecuperaCanvisAScope(avis) per dibuixar una taula temporal
+		s_table+='<td id="compact-resource_table_hidden_br'+ dades.item +'">'+title; //utilitzar√© aquest id desde function RecuperaCanvisAScope(avis) per dibuixar una taula temporal
 		if ((type=="CITATION" || type=="PUBLICAT") && code)
 		{
-			s_table+="<br>" + DonaCadenaJSON({cat: "codi: ", spa: "cÛdigo: ", eng: "code: "}) + code;
+			s_table+="<br>" + DonaCadenaJSON({cat: "codi: ", spa: "c√≥digo: ", eng: "code: "}) + code;
 			s_table+="<br>" +DonaCadenaJSON({cat: "espai de noms: ", spa: "espacio de nombres: ", eng: "code space: "}) + (code_space ? code_space : "");
 			if (dades.scope)
 			{
 				if (TargetsOfAFeedback[dades.item].minlong) // comprovem si hi ha cooredenades
 					s_table+="<br>"+ DonaCadenaJSON({cat: "envolupant: ", spa: "envolvente: ", eng: "bounding box: "}) + TargetsOfAFeedback[dades.item].minlong + ", " + TargetsOfAFeedback[dades.item].maxlong + ", " + TargetsOfAFeedback[dades.item].minlat + ", " + TargetsOfAFeedback[dades.item].maxlat;
 				if (TargetsOfAFeedback[dades.item].gmlpol)
-					s_table+="<br>" + DonaCadenaJSON({cat: "polÌgon GML: definit", spa: "polÌgono GML: definido", eng: "GML polygon: defined"});
+					s_table+="<br>" + DonaCadenaJSON({cat: "pol√≠gon GML: definit", spa: "pol√≠gono GML: definido", eng: "GML polygon: defined"});
 			}
 		}
 		else if (type=="HREF" && href)
@@ -2183,27 +2183,27 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 		else if (type=="POI" && position)
 			s_table+="<br>lat/long: " + position;		
 		//else if	(type=="INDIVIDU" && (email || organisme)) 
-		//else if	(type=="ORGANISM" && (adreÁa))
+		//else if	(type=="ORGANISM" && (adre√ßa))
 		s_table+="</td>"
 	
 
-		if (dades.is_target_public_or_none==1) //nomÈs aplica si Ès un Target
+		if (dades.is_target_public_or_none==1) //nom√©s aplica si √©s un Target
 		{
-			if (type=="CITATION") //OGscope l'scope nomÈs tÈ sentit sobre feedbacks a citacions
+			if (type=="CITATION") //OGscope l'scope nom√©s t√© sentit sobre feedbacks a citacions
 			{
 				var p;
 				s_table+="<td>";
 				if (dades.scope)
 				{				
-					if (dades.select_role=="") //tenim dades scope perÚ no podem seleccionar un rol. AixÚ vol dir que estem en un context de nomÈs lectura
-						p=DonaCadenaJSON({cat: "Veure ‡mbit", spa: "Ver ·mibto", eng: "View scope"});
+					if (dades.select_role=="") //tenim dades scope per√≤ no podem seleccionar un rol. Aix√≤ vol dir que estem en un context de nom√©s lectura
+						p=DonaCadenaJSON({cat: "Veure √†mbit", spa: "Ver √°mibto", eng: "View scope"});
 					else
-						p=DonaCadenaJSON({cat: "Editar ‡mbit", spa: "Editar ·mibto", eng: "Edit scope"});
+						p=DonaCadenaJSON({cat: "Editar √†mbit", spa: "Editar √°mibto", eng: "Edit scope"});
 						//s_table+=s.scope;						
 				}
 				else
 				{
-					p=DonaCadenaJSON({cat: "Definir ‡mbit", spa: "Definir ·mibto", eng: "Define scope"});
+					p=DonaCadenaJSON({cat: "Definir √†mbit", spa: "Definir √°mibto", eng: "Define scope"});
 				}
 				if (dades.scope_function)
 					s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ p +"\" onClick=\""+dades.scope_function+"("+(dades.del_item-1)+")\"/>";
@@ -2214,14 +2214,14 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 		}
 		if (dades.role || (dades.del_item && dades.del_function))
 		{
-			if (dades.role && dades.del_item && dades.del_function) //hi haur‡ informaciÛ del role i tambÈ botÛ esborrar
+			if (dades.role && dades.del_item && dades.del_function) //hi haur√† informaci√≥ del role i tamb√© bot√≥ esborrar
 			{
 				if (dades.select_role=="targetRole")
 					s_table+="<td width=\"240\" align=\"right\">";
-				else //responsibleRole cal mÈs espai
+				else //responsibleRole cal m√©s espai
 					s_table+="<td width=\"280\" align=\"right\">";
 			}
-			else //nomÈs hi ha una de les dues coses
+			else //nom√©s hi ha una de les dues coses
 				s_table+="<td width=\"120\" align=\"right\">";
 				
 			if (dades.role)
@@ -2251,7 +2251,7 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 					}								
 					s_table+="</select>";							
 				}
-				else //tinc un valor de "role" perÚ no tinc un select_role a crear, perquË estic en un context de nomÈs lectura -> ho poso com un text
+				else //tinc un valor de "role" per√≤ no tinc un select_role a crear, perqu√® estic en un context de nom√©s lectura -> ho poso com un text
 				{
 					if (typeof CI_RoleCode[dades.role] === "undefined")
 					{
@@ -2308,7 +2308,7 @@ var new_format;
 		document.href_resource_form.title.value="";
 		document.href_resource_form.href.value="";
 		document.href_resource_form.reason.value="";
-		//Valor per defecte de mimetype Ès "Other" que es marca amb CadenaBuida
+		//Valor per defecte de mimetype √©s "Other" que es marca amb CadenaBuida
 		SeleccionaSelectDesDeValor(document.href_resource_form.mimetype, "");
 
 		for (var item=0; item<output.length; item++)
@@ -2536,7 +2536,7 @@ var root, output, identifier, s, feedback_item, user_comment;
   			for (var item2=0; item2<guf.target[item].identifier.length; item2++)
   			{
   				if (guf.target[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
-  				{	//AquÌ encara no sÈ si es open data o no, perÚ ja ho "omplirÈ" quan faci el retrieve de l'element
+  				{	//Aqu√≠ encara no s√© si es open data o no, per√≤ ja ho "omplir√©" quan faci el retrieve de l'element
   					TargetsOfAFeedback[item]={"id_target": guf.target[item].identifier[item2].code, "role": guf.target[item].role};
 					if (guf.target[item].scope)
 						TargetsOfAFeedback[item].scope=guf.target[item].scope;
@@ -2579,7 +2579,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 	}
 	if (guf.contactRole)
 		SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, guf.contactRole);
-	else //--> en aquest desplegable no hi ha un indefinit perquË Ès obligatori, valor per defecte el posem a publicGeneral
+	else //--> en aquest desplegable no hi ha un indefinit perqu√® √©s obligatori, valor per defecte el posem a publicGeneral
 		SeleccionaSelectDesDeValor(document.feedback_resource_form.contactRole, "generalPublic");
 	
 	if (guf.user_comment)
@@ -2590,7 +2590,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 			document.feedback_resource_form.comment.value="";
 		if (guf.user_comment.motivation)
 			SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, guf.user_comment.motivation);
-		else //Valor per defecte Ès undefined, que es marca amb CadenaBuida
+		else //Valor per defecte √©s undefined, que es marca amb CadenaBuida
 			SeleccionaSelectDesDeValor(document.feedback_resource_form.motivation, "undefined");
 	}
 	else
@@ -2600,11 +2600,11 @@ var root, output, identifier, s, feedback_item, user_comment;
 	}	
 	CollapseFieldset(document.getElementById("user-comment-feedback-resource"), "block"); //default is not collapsed so shown even if empty
 		
-	//if (guf.rating) -> dins la funciÛ ja es mira i, si no, es marca tot a indefinit! (sino veuria "la darrera" puntuaciÛ!)
+	//if (guf.rating) -> dins la funci√≥ ja es mira i, si no, es marca tot a indefinit! (sino veuria "la darrera" puntuaci√≥!)
 	SeleccionaRadioDesDeValor(document.feedback_resource_form.rating, guf.rating);
-	/* Ara sempre que entrem a CREAR un nou FB, el rating est‡ indefinit (encara que el darrer cop haguÈs vist un element
+	/* Ara sempre que entrem a CREAR un nou FB, el rating est√† indefinit (encara que el darrer cop hagu√©s vist un element
 	que si tenia rating. El que encara NO es pot fer es posar un altre cop a indefinit un rating d'un FB pel que si havia definit
-	un valor, perÚ aixÚ Ès estrany de voler fer, per tant ho deixem aixÌ. */
+	un valor, per√≤ aix√≤ √©s estrany de voler fer, per tant ho deixem aix√≠. */
 
 	//usage
 	document.getElementById("reportAspect-feedback-usage").checked = false;
@@ -2680,7 +2680,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 		  			for (var item2=0; item2<guf.usage.usage_descr.add_doc[item].identifier.length; item2++)
 		  			{		  				
 		  				if (guf.usage.usage_descr.add_doc[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
-		  				{ //AquÌ encara no sÈ si es open data o no, perÚ ja ho "omplirÈ" quan faci el retrieve de l'element
+		  				{ //Aqu√≠ encara no s√© si es open data o no, per√≤ ja ho "omplir√©" quan faci el retrieve de l'element
 		  					AddDocsOfAFeedback[item]={"id_citation": guf.usage.usage_descr.add_doc[item].identifier[item2].code};
 		  					break;
 		  				}
@@ -2706,7 +2706,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 					document.feedback_resource_form.code.value=guf.usage.usage_descr.code;
 				else
 					document.feedback_resource_form.code.value="";				
-				//if (guf.usage.usage_descr.codeLink) -> ara Ès un onlineResource que potser tÈ de tot perÚ de moment nomÈs usem el linkage
+				//if (guf.usage.usage_descr.codeLink) -> ara √©s un onlineResource que potser t√© de tot per√≤ de moment nom√©s usem el linkage
 				if (guf.usage.usage_descr.codeLink.linkage)
 					document.feedback_resource_form.codeLink.value=guf.usage.usage_descr.codeLink.linkage;
 				else
@@ -2735,7 +2735,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 					document.feedback_resource_form.diagram.value=guf.usage.usage_descr.diagram;
 				else
 					document.feedback_resource_form.diagram.value="";
-				//if (guf.usage.usage_descr.diagramLink) -> ara Ès un onlineResource que potser tÈ de tot perÚ de moment nomÈs usem el linkage
+				//if (guf.usage.usage_descr.diagramLink) -> ara √©s un onlineResource que potser t√© de tot per√≤ de moment nom√©s usem el linkage
 				if (guf.usage.usage_descr.diagramLink.linkage)
 					document.feedback_resource_form.diagramLink.value=guf.usage.usage_descr.diagramLink.linkage;
 				else
@@ -2745,10 +2745,10 @@ var root, output, identifier, s, feedback_item, user_comment;
 				else
 					SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"
 
-				//Si tÈ content ho farÈ gran
+				//Si t√© content ho far√© gran
 				CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "block");
 			}
-			else //Si no tÈ content ho farÈ petit
+			else //Si no t√© content ho far√© petit
 			{
 				document.feedback_resource_form.code.value="";
 				document.feedback_resource_form.codeLink.value="";
@@ -2831,7 +2831,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 		  			for (var item2=0; item2<guf.usage.discov_issue.ref_doc[item].identifier.length; item2++)
 		  			{		  				
 		  				if (guf.usage.discov_issue.ref_doc[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
-		  				{ //AquÌ encara no sÈ si es open data o no, perÚ ja ho "omplirÈ" quan faci el retrieve de l'element
+		  				{ //Aqu√≠ encara no s√© si es open data o no, per√≤ ja ho "omplir√©" quan faci el retrieve de l'element
 		  					RefDocsOfAFeedback[item]={"id_public": guf.usage.discov_issue.ref_doc[item].identifier[item2].code};
 		  					break;
 		  				}
@@ -2865,7 +2865,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 		  			for (var item2=0; item2<guf.usage.discov_issue.fix_rsrc[item].identifier.length; item2++)
 		  			{		  				
 		  				if (guf.usage.discov_issue.fix_rsrc[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
-		  				{ //AquÌ encara no sÈ si es open data o no, perÚ ja ho "omplirÈ" quan faci el retrieve de l'element
+		  				{ //Aqu√≠ encara no s√© si es open data o no, per√≤ ja ho "omplir√©" quan faci el retrieve de l'element
 		  					FixRsrcsOfAFeedback[item]={"id_citation": guf.usage.discov_issue.fix_rsrc[item].identifier[item2].code};
 		  					break;
 		  				}
@@ -2894,7 +2894,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 		  			for (var item2=0; item2<guf.usage.discov_issue.alt_rsrc[item].identifier.length; item2++)
 		  			{		  				
 		  				if (guf.usage.discov_issue.alt_rsrc[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
-		  				{ //AquÌ encara no sÈ si es open data o no, perÚ ja ho "omplirÈ" quan faci el retrieve de l'element
+		  				{ //Aqu√≠ encara no s√© si es open data o no, per√≤ ja ho "omplir√©" quan faci el retrieve de l'element
 		  					AltRsrcsOfAFeedback[item]={"id_citation": guf.usage.discov_issue.alt_rsrc[item].identifier[item2].code};
 		  					break;
 		  				}
@@ -2989,7 +2989,7 @@ var root, output, identifier, s, feedback_item, user_comment;
   			for (var item2=0; item2<guf.public[item].identifier.length; item2++)
   			{
   				if (guf.public[item].identifier[item2].codeSpace=="https://www.nimmbus.cat/resourceId")
-  				{ //AquÌ encara no sÈ si es open data o no, perÚ ja ho "omplirÈ" quan faci el retrieve de l'element
+  				{ //Aqu√≠ encara no s√© si es open data o no, per√≤ ja ho "omplir√©" quan faci el retrieve de l'element
   					PublicsOfAFeedback[item]={"id_public": guf.public[item].identifier[item2].code};
   					break;
   				}
@@ -3153,7 +3153,7 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 						if (elem)
 							document.citation_resource_form.edition_date.value=DonaDataDesDeGcoDateTime(elem);				
 						
-						//identifier -> n'hi pot haver mÈs d'un, de fet sempre hi ha el de NiMMbus i potser altres. En teoria pot ser n, nosaltres mostrem 1 (a banda del de NiMbus que no es veu)
+						//identifier -> n'hi pot haver m√©s d'un, de fet sempre hi ha el de NiMMbus i potser altres. En teoria pot ser n, nosaltres mostrem 1 (a banda del de NiMbus que no es veu)
 						output_2=GetXMLElementCollectionByName(citation, "mcc", "MD_Identifier");
 						if (output_2 && output_2.length)							
 						{	
@@ -3173,10 +3173,10 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 									if (code)
 									{
 										if (namespace=="https://www.nimmbus.cat/resourceId")
-										//aquest Ès el IdNiMMbus, no el vull mostrar!
+										//aquest √©s el IdNiMMbus, no el vull mostrar!
 											continue;
 										
-										//si arribo aquÌ Ès que tinc un codi amb un namespace que NO Ès el de NiMMbus (p.ex. Ès blanc) --> per tant el mostro i plego pq nomÈs en mostro un.										
+										//si arribo aqu√≠ √©s que tinc un codi amb un namespace que NO √©s el de NiMMbus (p.ex. √©s blanc) --> per tant el mostro i plego pq nom√©s en mostro un.										
 										document.citation_resource_form.id_namespace.value=namespace;									
 										document.citation_resource_form.id_code.value=code;
 										break;										
@@ -3190,7 +3190,7 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 							//puc tenir diversos citedResponsibleParty, cada un amb un rol								
 							if (output_2 && output_2.length)							
 							{	
-								i_resp=0; //anirÈ anotant quants vaig carregant
+								i_resp=0; //anir√© anotant quants vaig carregant
 								for (var item_2=0; item_2<output_2.length; item_2++)
 								{
 									//role									
@@ -3201,10 +3201,10 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 										role="";
 									
 									output_3=GetXMLElementCollectionByName(output_2.item(item_2), "cit", "party");
-									//puc tenir diversos party a dins del mateix citedResponsibleParty, que sÛn diversos individus o organitzacions amb igual rol
+									//puc tenir diversos party a dins del mateix citedResponsibleParty, que s√≥n diversos individus o organitzacions amb igual rol
 									if (output_3 && output_3.length)							
 									{			
-										//per cada party, tant si Ès de tipus Individual o de tipus Organisation puc tenir un o mÈs partyIdentifier, un dels quals Ès el IdNiMMbus 										
+										//per cada party, tant si √©s de tipus Individual o de tipus Organisation puc tenir un o m√©s partyIdentifier, un dels quals √©s el IdNiMMbus 										
 										for (var item_3=0; item_3<output_3.length; item_3++)
 										{
 											output_4=GetXMLElementCollectionByName(output_3.item(item_3), "cit", "partyIdentifier");
@@ -3226,7 +3226,7 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 															code_space="";
 														
 														if (p_code && p_codeSpace && code_space=="https://www.nimmbus.cat/resourceId")
-														{ //aquest Ès el IdNiMMbus d'aquesta party
+														{ //aquest √©s el IdNiMMbus d'aquesta party
 															ResponsiblesOfACitation[i_resp]={"id_responsible": DonaTextDesDeGcoCharacterString(p_code), "role": role};
 															i_resp++;															
 															break
@@ -3403,7 +3403,7 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 						if (elem)
 							document.publication_resource_form.edition_date.value=DonaDataDesDeGcoDateTime(elem);
 						
-						//identifier -> n'hi pot haver mÈs d'un, de fet sempre hi ha el de NiMMbus i potser altres. En teoria pot ser n, nosaltres mostrem 1 (a banda del de NiMbus que no es veu)
+						//identifier -> n'hi pot haver m√©s d'un, de fet sempre hi ha el de NiMMbus i potser altres. En teoria pot ser n, nosaltres mostrem 1 (a banda del de NiMbus que no es veu)
 						output_2=GetXMLElementCollectionByName(publication, "mcc", "MD_Identifier");
 						if (output_2 && output_2.length)							
 						{	
@@ -3423,10 +3423,10 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 									if (code)
 									{
 										if (namespace=="https://www.nimmbus.cat/resourceId")
-										//aquest Ès el IdNiMMbus, no el vull mostrar!
+										//aquest √©s el IdNiMMbus, no el vull mostrar!
 											continue;
 										
-										//si arribo aquÌ Ès que tinc un codi amb un namespace que NO Ès el de NiMMbus (p.ex. Ès blanc) --> per tant el mostro i plego pq nomÈs en mostro un.										
+										//si arribo aqu√≠ √©s que tinc un codi amb un namespace que NO √©s el de NiMMbus (p.ex. √©s blanc) --> per tant el mostro i plego pq nom√©s en mostro un.										
 										document.publication_resource_form.id_namespace.value=namespace;									
 										document.publication_resource_form.id_code.value=code;
 										break;										
@@ -3439,7 +3439,7 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 						//puc tenir diversos citedResponsibleParty, cada un amb un rol								
 						if (output_2 && output_2.length)							
 						{	
-							i_resp=0; //anirÈ anotant quants vaig carregant
+							i_resp=0; //anir√© anotant quants vaig carregant
 							for (var item_2=0; item_2<output_2.length; item_2++)
 							{
 								//role									
@@ -3450,10 +3450,10 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 									role="";
 								
 								output_3=GetXMLElementCollectionByName(output_2.item(item_2), "cit", "party");
-								//puc tenir diversos party a dins del mateix citedResponsibleParty, que sÛn diversos individus o organitzacions amb igual rol
+								//puc tenir diversos party a dins del mateix citedResponsibleParty, que s√≥n diversos individus o organitzacions amb igual rol
 								if (output_3 && output_3.length)							
 								{			
-									//per cada party, tant si Ès de tipus Individual o de tipus Organisation puc tenir un o mÈs partyIdentifier, un dels quals Ès el IdNiMMbus 										
+									//per cada party, tant si √©s de tipus Individual o de tipus Organisation puc tenir un o m√©s partyIdentifier, un dels quals √©s el IdNiMMbus 										
 									for (var item_3=0; item_3<output_3.length; item_3++)
 									{
 										output_4=GetXMLElementCollectionByName(output_3.item(item_3), "cit", "partyIdentifier");
@@ -3475,7 +3475,7 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 														code_space="";
 													
 													if (p_code && p_codeSpace && code_space=="https://www.nimmbus.cat/resourceId")
-													{ //aquest Ès el IdNiMMbus d'aquesta party
+													{ //aquest √©s el IdNiMMbus d'aquesta party
 														ResponsiblesOfAPublication[i_resp]={"id_responsible": DonaTextDesDeGcoCharacterString(p_code), "role": role};
 														i_resp++;															
 														break
@@ -3655,12 +3655,12 @@ var root, output, identifier, s, elem, individual, contact, partyIdentifier, md_
 						contact=GetXMLElementByName(individual, "cit", "contactInfo");
 						if (contact)
 						{
-							//email, demano un i si n'hi ha mÈs em quedo el primer
+							//email, demano un i si n'hi ha m√©s em quedo el primer
 							elem=GetXMLElementByName(contact, "cit", "electronicMailAddress");
 							if (elem)							
 								document.individual_resource_form.email.value=DonaTextDesDeGcoCharacterString(elem);
 							
-							//online_resource, demano directament el cit_linkage i s'hi ha mÈs... tambÈ el primer
+							//online_resource, demano directament el cit_linkage i s'hi ha m√©s... tamb√© el primer
 							elem=GetXMLElementByName(contact, "cit", "linkage");
 							if (elem)
 								document.individual_resource_form.url_link.value=DonaTextDesDeGcoCharacterString(elem);
@@ -3672,7 +3672,7 @@ var root, output, identifier, s, elem, individual, contact, partyIdentifier, md_
 						{
 							for (var item_2=item_ple=0; item_2<partyIdentifier.length; item_2++)
 							{
-								if (item_ple==2) //nomÈs tinc lloc al form per mostrar el 0 i el 1
+								if (item_ple==2) //nom√©s tinc lloc al form per mostrar el 0 i el 1
 									break;
 								
 								//item_ple el pujo si l'acabo enviant. el id intern de nimmbus no el mostro 	
@@ -3800,7 +3800,7 @@ function AvaluaRespostaRetrieveResourceOrganism(doc, id)
 					organism=OmpleInputDesDeWPSComplexOutput(output.item(item));
 					if (organism)
 					{
-						//AdreÁa <cit:contactInfo>
+						//Adre√ßa <cit:contactInfo>
 						contact=GetXMLElementByName(organism, "cit", "contactInfo");
 						if (contact)
 						{
@@ -3980,7 +3980,7 @@ function DonaNomImgTipusRecurs(type, small)
 	return "";
 }
 
-var ResourcesPerPage=10;  //soluciÛ provisional a l'espera de que sigui configurable per usuari
+var ResourcesPerPage=10;  //soluci√≥ provisional a l'espera de que sigui configurable per usuari
 
 function BuidaLlistatResource(type_enum, resource_type, resource_origin, element_origin)
 {
@@ -4017,7 +4017,7 @@ function BuidaLlistatResource(type_enum, resource_type, resource_origin, element
 							" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixRefDocOfAFeedback(null, false)\"/ >  ";						
 				}
 			}
-			else //nomÈs queda CITATION
+			else //nom√©s queda CITATION
 			{
 				if (resource_origin=="FEEDBACK")
 				{
@@ -4054,7 +4054,7 @@ var root, s, type;
 		return;
 	var owc=ParseOWSContextAtom(root);
 
-	if (dades.make_pannel_visible) //nomÈs es passa a true quan estem "anant endavant"
+	if (dades.make_pannel_visible) //nom√©s es passa a true quan estem "anant endavant"
 		ChangePannel(dades.type_enum, true);
 
 	if (dades.type_enum=="resource-selector")
@@ -4088,7 +4088,7 @@ var root, s, type;
 
 			document.getElementById(dades.type_enum+"-subtitle-text").innerHTML=DonaCadenaJSON(Msg_List_available_citations);
 		}
-	}//else if (type_enum=="resources") no cal fer res perquË els textos ja sÛn posats
+	}//else if (type_enum=="resources") no cal fer res perqu√® els textos ja s√≥n posats
 	
 	if (owc.properties.totalResults==0)
 		BuidaLlistatResource(dades.type_enum, dades.resource_type, dades.resource_origin, dades.element_origin);
@@ -4103,7 +4103,7 @@ var root, s, type;
 			if (dades.resource_type=="") //he entrat a resource-selector per escollir targets de valoracions
 				document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixTargetOfAFeedback(null, false)\"/> ";	
 			else if (dades.resource_type=="PARTY")
-			{	//El llistat de individus el puc haver demanat des de dos orÌgens: "resource_origin": "CITATION" o "resource_origin": "PUBLICAT"
+			{	//El llistat de individus el puc haver demanat des de dos or√≠gens: "resource_origin": "CITATION" o "resource_origin": "PUBLICAT"
 				if (dades.resource_origin=="CITATION")	
 				{
 					document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn\" type=\"image\" alt=\"new href\" src=\"indv_add20.png\" onClick=\"MostraIndividualResource('')\"/>"+
@@ -4131,7 +4131,7 @@ var root, s, type;
 						document.getElementById(dades.type_enum+"-hits-text").innerHTML="<input class=\"add_resource_btn\" type=\"image\" alt=\"new href\" src=\"publication_add20.png\" onClick=\"MostraPublicationResource('')\"/>"
 							+" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixRefDocOfAFeedback(null, false)\"/ >  ";						
 				}
-				//si algun dia algun altre resource_origen diferent de FB pot tenir publics, aleshores caldr‡ crear element ocult de resource_origin a citation_form (explicaciÛ com a NOTA_AZ_20190517 a sota)
+				//si algun dia algun altre resource_origen diferent de FB pot tenir publics, aleshores caldr√† crear element ocult de resource_origin a citation_form (explicaci√≥ com a NOTA_AZ_20190517 a sota)
 			}
 			else //queda el CITATION
 			{
@@ -4149,11 +4149,11 @@ var root, s, type;
 							+" <input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Cancel) +"\" onClick=\"AfegeixAddDocOfAFeedback(null, false)\"/ >  ";
 				}
 				//else (dades.resource_origin=="PUBLICAT") --> NOTA_AZ_20190517:
-				//dades.element_origin:	REL_RSRC	NOU AfegeixRelatedResourceOfAPublication N)) --> quan faci aixÚ, dincs el form de CITATION m'he de posar tambÈ el 
-				//element ocult de resource_origin perquË en aquest moment podr‡ valdre no nomÈs FB si no tambÈ publicat. Ara no el tinc pq dades.resource_origin sempre es "FEEDBACK" quan dades.resource_type=CITATION
+				//dades.element_origin:	REL_RSRC	NOU AfegeixRelatedResourceOfAPublication N)) --> quan faci aix√≤, dincs el form de CITATION m'he de posar tamb√© el 
+				//element ocult de resource_origin perqu√® en aquest moment podr√† valdre no nom√©s FB si no tamb√© publicat. Ara no el tinc pq dades.resource_origin sempre es "FEEDBACK" quan dades.resource_type=CITATION
 			}
 		}
-		else //poso en blanc per no anar acumunat 1de10 en anar passant de p‡gina!
+		else //poso en blanc per no anar acumunat 1de10 en anar passant de p√†gina!
 		{
 			document.resource_selector_form.resource_type.value=""; 
 			document.resource_selector_form.resource_origin.value="";		
@@ -4201,17 +4201,17 @@ var root, s, type;
 				type=GetNimmbusTypeOfAOWCFeature(owc.features[i]);
 	
 				var object_id=owc.features[i].id.slice(owc.features[i].id.indexOf("RESOURCE=")+9);
-				object_id.slice(0,object_id.indexOf("&")); // si darrera de RESOURCE hi ha algun par‡metre mÈs, que comenÁa sempre amb "&", ho elimino. Si no ho ha trobat indexOf torna -1 i slice no fa res.
+				object_id.slice(0,object_id.indexOf("&")); // si darrera de RESOURCE hi ha algun par√†metre m√©s, que comen√ßa sempre amb "&", ho elimino. Si no ho ha trobat indexOf torna -1 i slice no fa res.
 				ja_seleccionat=false;
 				es_ell_mateix=false;
 				es_un_target=false;
 	
-				//Color de fons segons si sÛn meus, compartits directament amb mi o "nomÈs" publics?
-				if (owc.features[i].properties.rights.indexOf("O")!=-1) //en sÛc el propietari -> fons blanc
+				//Color de fons segons si s√≥n meus, compartits directament amb mi o "nom√©s" publics?
+				if (owc.features[i].properties.rights.indexOf("O")!=-1) //en s√≥c el propietari -> fons blanc
 					p_color="";								
-				else if (owc.features[i].properties.rights.indexOf("W")!=-1 || owc.features[i].properties.rights.indexOf("S")!=-1) //si el puc escriure o compartir Ès que me l'ahn compartit directament -> fons blau cel
+				else if (owc.features[i].properties.rights.indexOf("W")!=-1 || owc.features[i].properties.rights.indexOf("S")!=-1) //si el puc escriure o compartir √©s que me l'ahn compartit directament -> fons blau cel
 					p_color="#e6f7ff";								
-				else //si nomÈs puc R escric que Ès openData, perquË NO PUC diferenciar si me l'han compartit a mi com a nomÈs lectura, o si el veig "nomÈs" perquË Ès openData -> gris clar
+				else //si nom√©s puc R escric que √©s openData, perqu√® NO PUC diferenciar si me l'han compartit a mi com a nom√©s lectura, o si el veig "nom√©s" perqu√® √©s openData -> gris clar
 					p_color="#f2f2f2";
 				
 					s+="<div class=\"white-area-li\" style=\"background-color:"+p_color+"\"><li class=\"white-area-li-text\"";
@@ -4220,7 +4220,7 @@ var root, s, type;
 				else if (dades.type_enum=="resource-selector")
 				{	
 					if (dades.resource_type=="") //he entrat a resource-selector per escollir targets de valoracions
-					{	//comprovo si aquest target ja forma part de la valoraciÛ o si Ès ell mateix, i en cas que sÌ ho indico i no l'afegeixo onclick
+					{	//comprovo si aquest target ja forma part de la valoraci√≥ o si √©s ell mateix, i en cas que s√≠ ho indico i no l'afegeixo onclick
 						for (var item=0; item<TargetsOfAFeedback.length; item++)
 						{
 							if (TargetsOfAFeedback[item].id_target==object_id)
@@ -4228,8 +4228,8 @@ var root, s, type;
 								ja_seleccionat=true;
 								break;
 							}
-							if (IdFeedbackResourceToSaveChanges==object_id) //abans estava IdResourceToSaveChanges i ara Ès equivalent perquË en aquest context no deixem crear recursos,
-							{	//perÚ per si de cas obrir aquest porta algun dia, comparant amb IdFeedbackResourceToSaveChanges sempre anir‡ bÈ, tot i que IdResourceToSaveChanges pugui haver canviat si hem creat un nou recurs
+							if (IdFeedbackResourceToSaveChanges==object_id) //abans estava IdResourceToSaveChanges i ara √©s equivalent perqu√® en aquest context no deixem crear recursos,
+							{	//per√≤ per si de cas obrir aquest porta algun dia, comparant amb IdFeedbackResourceToSaveChanges sempre anir√† b√©, tot i que IdResourceToSaveChanges pugui haver canviat si hem creat un nou recurs
 								es_ell_mateix=true;
 								break;
 							}						
@@ -4240,7 +4240,7 @@ var root, s, type;
 							s+=" onClick=\"AfegeixTargetOfAFeedback(\'"+object_id+"\', "+owc.features[i].properties.openData+");\"";
 					}
 					else if (dades.resource_type=="PARTY")
-					{	//comprovo si aquest individu/organisme ja forma est‡ relacionat amb la citaciÛ/publicaciÛ, i en cas que sÌ ho indico i no l'afegeixo onclick				
+					{	//comprovo si aquest individu/organisme ja forma est√† relacionat amb la citaci√≥/publicaci√≥, i en cas que s√≠ ho indico i no l'afegeixo onclick				
 						if (dades.resource_origin=="CITATION")	
 						{
 							for (var item=0; item<ResponsiblesOfACitation.length; item++)
@@ -4271,13 +4271,13 @@ var root, s, type;
 							else
 								s+=" onClick=\"AfegeixResponsibleOfAPublication(\'"+object_id+"\', "+owc.features[i].properties.openData+");\"";
 						}
-						//si algun dia deixo triar party relacionades amb un dades.resource_origin==FEEDBACK , haurÈ de vigilar que aquella party no sigui target -> buscar ˙s de es_un_target						 
+						//si algun dia deixo triar party relacionades amb un dades.resource_origin==FEEDBACK , haur√© de vigilar que aquella party no sigui target -> buscar √∫s de es_un_target						 
 					}
 					else if (dades.resource_type=="PUBLICAT")
 					{
 						if (dades.resource_origin=="FEEDBACK")	
 						{
-							//Primer comprovo si el recurs que tinc als dits Ès un dels elements seleccionats com a targets, perquË aleshores no pot ser triat com a publicaciÛ/ref_doc/alt_rsrc/etc
+							//Primer comprovo si el recurs que tinc als dits √©s un dels elements seleccionats com a targets, perqu√® aleshores no pot ser triat com a publicaci√≥/ref_doc/alt_rsrc/etc
 							for (var item=0; item<TargetsOfAFeedback.length; item++)
 							{
 								if (TargetsOfAFeedback[item].id_target==object_id)
@@ -4289,7 +4289,7 @@ var root, s, type;
 							
 							if (dades.element_origin=="PUBLICAT")	
 							{
-								//comprovo si aquesta public ja forma part de la valoraciÛ, i en cas que sÌ ho indico i no l'afegeixo onclick
+								//comprovo si aquesta public ja forma part de la valoraci√≥, i en cas que s√≠ ho indico i no l'afegeixo onclick
 								for (var item=0; item<PublicsOfAFeedback.length; item++)
 								{
 									if (PublicsOfAFeedback[item].id_public==object_id)
@@ -4305,7 +4305,7 @@ var root, s, type;
 							}
 							else //dades.element_origin:	REF_DOC
 							{
-									//comprovo si aquesta public ja forma part dels reference_docs de la valoraciÛ, i en cas que sÌ ho indico i no l'afegeixo onclick
+									//comprovo si aquesta public ja forma part dels reference_docs de la valoraci√≥, i en cas que s√≠ ho indico i no l'afegeixo onclick
 									for (var item=0; item<RefDocsOfAFeedback.length; item++)
 									{
 										if (RefDocsOfAFeedback[item].id_public==object_id)
@@ -4325,7 +4325,7 @@ var root, s, type;
 					{
 						if (dades.resource_origin=="FEEDBACK")
 						{
-							//Primer comprovo si el recurs que tinc als dits Ès un dels elements seleccionats com a targets, perquË aleshores no pot ser triat com a publicaciÛ/ref_doc/alt_rsrc/etc
+							//Primer comprovo si el recurs que tinc als dits √©s un dels elements seleccionats com a targets, perqu√® aleshores no pot ser triat com a publicaci√≥/ref_doc/alt_rsrc/etc
 							for (var item=0; item<TargetsOfAFeedback.length; item++)
 							{
 								if (TargetsOfAFeedback[item].id_target==object_id)
@@ -4337,7 +4337,7 @@ var root, s, type;
 
 							if (dades.element_origin=="FIX_RSRC")
 							{
-									//comprovo si aquesta citation ja forma part dels fixed_resources de la valoraciÛ, i en cas que sÌ ho indico i no l'afegeixo onclick
+									//comprovo si aquesta citation ja forma part dels fixed_resources de la valoraci√≥, i en cas que s√≠ ho indico i no l'afegeixo onclick
 									for (var item=0; item<FixRsrcsOfAFeedback.length; item++)
 									{
 										if (FixRsrcsOfAFeedback[item].id_citation==object_id)
@@ -4353,7 +4353,7 @@ var root, s, type;
 							}
 							else if (dades.element_origin=="ALT_RSRC")
 							{
-									//comprovo si aquesta citation ja forma part dels alt_rsrc de la valoraciÛ, i en cas que sÌ ho indico i no l'afegeixo onclick
+									//comprovo si aquesta citation ja forma part dels alt_rsrc de la valoraci√≥, i en cas que s√≠ ho indico i no l'afegeixo onclick
 									for (var item=0; item<AltRsrcsOfAFeedback.length; item++)
 									{
 										if (AltRsrcsOfAFeedback[item].id_citation==object_id)
@@ -4369,7 +4369,7 @@ var root, s, type;
 							}
 							else //if (dades.element_origin=="ADD_DOC")
 							{
-									//comprovo si aquesta citation ja forma part dels add_doc de la valoraciÛ, i en cas que sÌ ho indico i no l'afegeixo onclick
+									//comprovo si aquesta citation ja forma part dels add_doc de la valoraci√≥, i en cas que s√≠ ho indico i no l'afegeixo onclick
 									for (var item=0; item<AddDocsOfAFeedback.length; item++)
 									{
 										if (AddDocsOfAFeedback[item].id_citation==object_id)
@@ -4411,7 +4411,7 @@ var root, s, type;
 						
 					s+="<a class=\"white-area-li-shadow-link\" id=\"tag-resource-"+i+"\" onClick=\"MostraTagResource(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Tag)+'" '+' src="tag15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
 					if (owc.features[i].properties.rights && owc.features[i].properties.rights.indexOf("O")!=-1)
-					//OG: nomÈs podem eliminar un recurs si en som propietaris
+					//OG: nom√©s podem eliminar un recurs si en som propietaris
 					s+="<a class=\"white-area-li-shadow-link\" id=\"delete-resource-"+i+"\" onClick=\"SendResourceDelete(event, \'"+owc.features[i].id+"\', \'"+type+"\', false);\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Delete)+'" '+' src="remove15.png">'+"</a></span>";
 				}		
 				else if (dades.type_enum=="resource-selector")			
@@ -4427,12 +4427,12 @@ var root, s, type;
 						else //queda "CITATION"
 							s+="<br/><i>"+DonaCadenaJSON(Msg_Citation_already_related)+"</i>";					
 					}
-					else if (es_ell_mateix) //nomÈs pot passar als targets que no es trii a ell, per les publics/ref_docs/add_doc/etc d'un feedback o pels responsibles de citations/publics el enumerate nomÈs mostra pubs/cits/indv/org i per tant mai Ès ell mateix
+					else if (es_ell_mateix) //nom√©s pot passar als targets que no es trii a ell, per les publics/ref_docs/add_doc/etc d'un feedback o pels responsibles de citations/publics el enumerate nom√©s mostra pubs/cits/indv/org i per tant mai √©s ell mateix
 						s+="<br/><i>"+DonaCadenaJSON(Msg_Feedback_item_selecting_targets_for)+"</i>";
 					else if (es_un_target)
 					{
 						s+="<br/><i>"+DonaCadenaJSON(Msg_Resource_is_a_target)+" "+DonaCadenaJSON(Msg_Cant_be_selected)+".</i>";
-						/* ja no cal l'aclariment aqui perquË ho diu al tÌtol de la p‡gina
+						/* ja no cal l'aclariment aqui perqu√® ho diu al t√≠tol de la p√†gina
 						if (dades.element_origin=="PUBLICAT")
 							s+=": "+DonaCadenaJSON(Msg_Related_Publications);
 						else if (dades.element_origin=="REF_DOC")
@@ -4460,7 +4460,7 @@ var root, s, type;
 
 function EnumeraResourcesQueTocaASelector()
 {	
-	//Quan crido a aquesta funciÛ ja he entrat ni que sigui una vegada a EnumerateResources de Resources-Selector, aixÌ que tinc el type i el origin apuntat	
+	//Quan crido a aquesta funci√≥ ja he entrat ni que sigui una vegada a EnumerateResources de Resources-Selector, aix√≠ que tinc el type i el origin apuntat	
 	EnumerateResources(1, {"type_enum":"resource-selector", "make_pannel_visible":false, 
 		"resource_type": document.resource_selector_form.resource_type.value, 
 		"resource_origin": document.resource_selector_form.resource_origin.value});
@@ -4490,18 +4490,18 @@ function EnumerateResources(start_index, dades)
 		}
 		
 		if (document.getElementById("selector-owner-type_screen_value").selectedIndex>0)
-		//miro el que hi ha seleccionat a la dropdown-list owner-type de la p‡gina de resource-selector. NomÈs m'interessa si selectedIndex>1 perquË -1 indica que no hi ha selecciÛ i 0 Ès "Tots"
+		//miro el que hi ha seleccionat a la dropdown-list owner-type de la p√†gina de resource-selector. Nom√©s m'interessa si selectedIndex>1 perqu√® -1 indica que no hi ha selecci√≥ i 0 √©s "Tots"
 			s=s+"&OWNER="+document.getElementById("selector-owner-type_screen_value").options[document.getElementById("selector-owner-type_screen_value").selectedIndex].value;	
 			
 	}
 	else //if (dades.type_enum=="resources")
 	{ 
 		if (document.getElementById("resource-type_screen_value").selectedIndex>0)
-			//miro el que hi ha seleccionat a la dropdown-list resource-type. NomÈs m'interessa si selectedIndex>1 perquË -1 indica que no hi ha selecciÛ i 0 Ès "Tots"
+			//miro el que hi ha seleccionat a la dropdown-list resource-type. Nom√©s m'interessa si selectedIndex>1 perqu√® -1 indica que no hi ha selecci√≥ i 0 √©s "Tots"
 			s="&TYPE="+document.getElementById("resource-type_screen_value").options[document.getElementById("resource-type_screen_value").selectedIndex].value;	
 	
 		if (document.getElementById("owner-type_screen_value").selectedIndex>0)
-		//miro el que hi ha seleccionat a la dropdown-list owner-type de la p‡gina de resources. NomÈs m'interessa si selectedIndex>1 perquË -1 indica que no hi ha selecciÛ i 0 Ès "Tots"
+		//miro el que hi ha seleccionat a la dropdown-list owner-type de la p√†gina de resources. Nom√©s m'interessa si selectedIndex>1 perqu√® -1 indica que no hi ha selecci√≥ i 0 √©s "Tots"
 				s=s+"&OWNER="+document.getElementById("owner-type_screen_value").options[document.getElementById("owner-type_screen_value").selectedIndex].value;	
 	}
 
@@ -4598,7 +4598,7 @@ var i_pannel,
 		{"id": "new-pass-page", "parent": null, "title": Msg_NiMMbus_reset_pwd}, 
 		{"id": "new-user-page", "parent": null, "title": Msg_SignUp_NiMMbus},
 		{"id": "execute-token-page", "parent": null, "title": Msg_NiMMbus},
-		//{"id": "new-user-page", "parent": null, "title": {"cat": "Registra't al NiMMbus", "spa": "RegÌstrese en NiMMbus", "eng": "Sign up for NiMMbus"}},
+		//{"id": "new-user-page", "parent": null, "title": {"cat": "Registra't al NiMMbus", "spa": "Reg√≠strese en NiMMbus", "eng": "Sign up for NiMMbus"}},
 		{"id": "main-page", "parent": null, "title": Msg_NiMMbus},
 		{"id": "account", "parent": "main-page", "title": Msg_NiMMbus_account}, 
 		{"id": "href-resource", "parent": "main-page", "title": Msg_NiMMbus_Href}, 
@@ -4636,7 +4636,7 @@ var i_pannel,
 			else
 			{
 				document.getElementById(pannel[i].id).style.visibility='hidden';
-				if (pannel[i].parent && pannel[i].parent!=pannel[i_pannel].parent)  //Evito apagar el pare que Ès el mateix pare que l'escollit.
+				if (pannel[i].parent && pannel[i].parent!=pannel[i_pannel].parent)  //Evito apagar el pare que √©s el mateix pare que l'escollit.
 					document.getElementById(pannel[i].parent).style.visibility='hidden';
 			}
 		}
@@ -4734,7 +4734,7 @@ function MostraHRefResource(id)
 		
 		
 		document.getElementById("open-data-href-resource_screen_value").disabled=false;
-		document.getElementById("open-data-href-resource_screen_value").checked=true; //un href nou el marco compartit amb anÚnim per defecte
+		document.getElementById("open-data-href-resource_screen_value").checked=true; //un href nou el marco compartit amb an√≤nim per defecte
 		
 		//OG: unblock inputs
 		document.getElementById("title-href-resource_screen_value").disabled=false;
@@ -4785,7 +4785,7 @@ function MostraPoiResource(id)
 		document.getElementById("poi-resource-delete_btn").style.display='none';
 		
 		document.getElementById("open-data-poi-resource_screen_value").disabled=false;
-		document.getElementById("open-data-poi-resource_screen_value").checked=true; //un poi nou el marco compartit amb anÚnim per defecte
+		document.getElementById("open-data-poi-resource_screen_value").checked=true; //un poi nou el marco compartit amb an√≤nim per defecte
 		
 		document.getElementById("title-poi-resource_screen").innerHTML = DonaCadenaJSON(Msg_Title) + DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
 		document.getElementById("long-poi-resource_screen").innerHTML = DonaCadenaJSON(Msg_PoI_Lon) + DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
@@ -4825,15 +4825,15 @@ function MostraPoiResource(id)
 }
 
 function OmpleElementsOfAFeedback()
-{	//per a omplir la p‡gina de FB amb les info que han vingut per la URL
+{	//per a omplir la p√†gina de FB amb les info que han vingut per la URL
 	if (ElementsOfAFeedback)
-	{	//poso cada text en el recurs que toca, incl˙s la data actual, de manera similar com els llegeixo del XML
+	{	//poso cada text en el recurs que toca, incl√∫s la data actual, de manera similar com els llegeixo del XML
 		//Si estic en aquest context, esborro tot el que hi pugui haver
 		BuidaPlegaFeedbackElements();
 		if (ElementsOfAFeedback.abstract)
 			document.feedback_resource_form.abstract.value=ElementsOfAFeedback.abstract;			
 		if (ElementsOfAFeedback.report_aspect) 
-		{	//ara asumeixo que nomÈs m'arriba un, es podria fer millor
+		{	//ara asumeixo que nom√©s m'arriba un, es podria fer millor
 		 	if (ElementsOfAFeedback.report_aspect=="usage")
 		 		document.getElementById("reportAspect-feedback-usage").checked = true;
 		 	else if (ElementsOfAFeedback.report_aspect=="fitnessForPurpose")
@@ -4897,7 +4897,7 @@ function OmpleElementsOfAFeedback()
 			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "block"); //not collapsed if it has content	
 			CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "block");
 		}
-		ElementsOfAFeedback=null; //perquË un cop usat no es torni a usar mÈs
+		ElementsOfAFeedback=null; //perqu√® un cop usat no es torni a usar m√©s
 	}
 }
 
@@ -5066,12 +5066,12 @@ function MostraOAmagaExclamacioDeShareAElementsDeFeedback()
 
 function BuidaPlegaFeedbackElements()
 {
-	//Es fa des de fora pq Ès un tema que es gestiona sempre a banda
+	//Es fa des de fora pq √©s un tema que es gestiona sempre a banda
 	
 	//TargetsOfAFeedback.length=0;
 	//TargetsOfAFeedbackHaveChanged=false;
 	//OmpleRecursTargetsDesDeTargetsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
-	//TambÈ he de marcar-me que els recursos de selecciÛ "han canviat", si no si no els toco, quan envii dir‡ que no han canviat i no s'enviar‡ encara que jo ho estava veient!!!
+	//Tamb√© he de marcar-me que els recursos de selecci√≥ "han canviat", si no si no els toco, quan envii dir√† que no han canviat i no s'enviar√† encara que jo ho estava veient!!!
 	document.feedback_resource_form.abstract.value="";
 	document.feedback_resource_form.reason.value="";		
 	CollapseFieldset(document.getElementById("reason-feedback-resource"), "none"); //default is collapsed
@@ -5144,21 +5144,21 @@ function MostraFeedbackResource(id, target)
 	TargetsOfAFeedbackHaveChanged=false;
 	if (id=='')
 	{
-		if (IdTargetResourceToSaveChanges) /* Estic mirant els FB existents d'un cert recurs al client "normal", per tant he passat per la p‡gina de FB_list 
-				i he demanat aixÚ en aquest context NO PUC usar IdResourceToSaveChanges perquË si des de la p‡gina de FB_list en creava un de nou, 
-				desprÈs entrava a editar-lo, i desprÈs en volia crear un altre, el segon q creava tenia de target el primer!!!*/
+		if (IdTargetResourceToSaveChanges) /* Estic mirant els FB existents d'un cert recurs al client "normal", per tant he passat per la p√†gina de FB_list 
+				i he demanat aix√≤ en aquest context NO PUC usar IdResourceToSaveChanges perqu√® si des de la p√†gina de FB_list en creava un de nou, 
+				despr√©s entrava a editar-lo, i despr√©s en volia crear un altre, el segon q creava tenia de target el primer!!!*/
 			TargetsOfAFeedback[0]={"id_target": IdTargetResourceToSaveChanges, "role": "primary"};				
 		else 
 			OmpleElementsOfAFeedback();
-		/*-> En (else anterior) aquest segon cas, estic en un context de creaciÛ de FB a un target seleccionat per la via de ADDFEEDBACK (p.ex. des de CKAN o un navegador de mapes, etc), i per tant NO he entrat per la via de FB_list i IdTargetResourceToSaveChanges Ès blanc, perÚ IdResourceToSaveChanges Ès el que vull.	ABANS es feia aquÌ usant IdResourceToSaveChanges, perÚ ara es fa a on s'omplia IdResourceToSaveChanges per permetre N targets si cal)	 TargetsOfAFeedback[0]={"id_target": IdResourceToSaveChanges, "role": "primary"}; perÚ ara ja no cal fer res perquË ja est‡ fet */
+		/*-> En (else anterior) aquest segon cas, estic en un context de creaci√≥ de FB a un target seleccionat per la via de ADDFEEDBACK (p.ex. des de CKAN o un navegador de mapes, etc), i per tant NO he entrat per la via de FB_list i IdTargetResourceToSaveChanges √©s blanc, per√≤ IdResourceToSaveChanges √©s el que vull.	ABANS es feia aqu√≠ usant IdResourceToSaveChanges, per√≤ ara es fa a on s'omplia IdResourceToSaveChanges per permetre N targets si cal)	 TargetsOfAFeedback[0]={"id_target": IdResourceToSaveChanges, "role": "primary"}; per√≤ ara ja no cal fer res perqu√® ja est√† fet */
 
-		TargetsOfAFeedbackHaveChanged=true; //Si no no s'enviar‡ el text "TARGET_1=... en el CREATE
+		TargetsOfAFeedbackHaveChanged=true; //Si no no s'enviar√† el text "TARGET_1=... en el CREATE
 		OmpleRecursTargetsDesDeTargetsOfAFeedback(true);
 	}
 	ChangePannel("feedback-resource", true);
 
 	IdResourceToSaveChanges=id;
-	IdFeedbackResourceToSaveChanges=id; //perquË si des de la p‡gina de FB acabo creant una publicaciÛ, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdFeedbackResourceToSaveChanges=id; //perqu√® si des de la p√†gina de FB acabo creant una publicaci√≥, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 	
 	document.getElementById("feedback-resource-exit_btn").style.display='none';
 	
@@ -5169,7 +5169,7 @@ function MostraFeedbackResource(id, target)
 		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_feedback_characteristics);
 		//document.getElementById("open-data-feedback-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-feedback-resource_screen_value").disabled=false;
-		//fet abans -> document.getElementById("open-data-feedback-resource_screen_value").checked=true; //una valoraciÛ nova la marco compartida amb anÚnim per defecte		
+		//fet abans -> document.getElementById("open-data-feedback-resource_screen_value").checked=true; //una valoraci√≥ nova la marco compartida amb an√≤nim per defecte		
 		document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("feedback-resource-delete_btn").style.display='none';		
 		
@@ -5235,7 +5235,7 @@ function MostraFeedbackResource(id, target)
 		document.getElementById("feedback-resource_btn").style.display='inline';			
 		document.getElementById("feedback-resource-close_btn").style.display='inline';
 		
-		BuidaPlegaFeedbackElements();		
+		//BuidaPlegaFeedbackElements();		
 	}
 	else
 	{
@@ -5253,7 +5253,7 @@ function MostraFeedbackResource(id, target)
 }
 
 function SurtDeAddFeedbackCallBack(obj_amb_targets)
-/* obj_amb_targets.targets Ès en aquest moment un array amb 0 elements perquË ja s'han processat tots */
+/* obj_amb_targets.targets √©s en aquest moment un array amb 0 elements perqu√® ja s'han processat tots */
 {
 	//DetermineCitationID
 	/*ShowInfo("short", DonaCadenaJSON(Msg_Citation_created));*/
@@ -5261,9 +5261,9 @@ function SurtDeAddFeedbackCallBack(obj_amb_targets)
 
 	//En un context de ADDFEEDBACK:
 	document.getElementById("new-resource").style.display='none';
-	document.getElementById("settings-signout").style.display='none'; //trec la "signout" del menu de tools. Si se n'agefeixen mÈs pensar si les vull o no en aquest context
+	document.getElementById("settings-signout").style.display='none'; //trec la "signout" del menu de tools. Si se n'agefeixen m√©s pensar si les vull o no en aquest context
 
-	//if (location.hash=="#resources") --> caldr‡ fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
+	//if (location.hash=="#resources") --> caldr√† fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":false});	
 	MostraFeedbackResource('', null); 
 	//MostraFeedbackResource('', null, target_role, i_target);
@@ -5289,7 +5289,7 @@ var root, id_proces, id_obj;
 	process_succeeded=GetXMLElementByName(root, "wps", "ProcessSucceeded");
 	if (process_succeeded)
 	{
-		//Si ha retornat de manera immediata amb una ProcessSucceeded vol dir que no calia crear cap target. Es podria comprobar mÈs bÈ mirant is "msg_id:" Ès 99 perÚ no em cal.
+		//Si ha retornat de manera immediata amb una ProcessSucceeded vol dir que no calia crear cap target. Es podria comprobar m√©s b√© mirant is "msg_id:" √©s 99 per√≤ no em cal.
 		id_obj=DonaIDRecursDesDeRootXML(root);
 		RemoveInfo("permanent");
 		return id_obj;
@@ -5303,11 +5303,11 @@ var target_id;
 	
 	//Determina si la resposta ha estat "error" "ja existeix" i puc obtenir el target_id
 	target_id=AvaluaRespostaCreaTargetNoNecessari(doc);
-	if (target_id==null)  // El fitxer doc no Ès ni tant sols un xml que es pugui entendre.
+	if (target_id==null)  // El fitxer doc no √©s ni tant sols un xml que es pugui entendre.
 		return;
 	if (target_id=="")
 	{
-		AvaluaResposta(doc, nom_funcio_i_params, true);	//El recurs no existia i est‡ en procÈs de creaciÛ
+		AvaluaResposta(doc, nom_funcio_i_params, true);	//El recurs no existia i est√† en proc√©s de creaci√≥
 		ShowInfo("short", DonaCadenaJSON(Msg_Citation_created));
 	}
 	else
@@ -5323,11 +5323,11 @@ var target_id;
 	}
 }
 
-//FunciÛ inspirada en SendCitationResourceChanges() perÚ molt mÈs autom‡tica.
+//Funci√≥ inspirada en SendCitationResourceChanges() per√≤ molt m√©s autom√†tica.
 function EntraAAddFeedback(obj_amb_targets)
-//Quan s'arriba a la funciÛ per primera vegada obj_amb_targets nomÈs tÈ un array de N targets dins obj_amb_targets.targets
-//en les crides recursives obj_amb_targets.targets va contenint cada vegada la resta (els targets no processats), i tambÈ
-//contÈ el obj_amb_targets.current_role que Ès el role que vull pel target que estic gestionant
+//Quan s'arriba a la funci√≥ per primera vegada obj_amb_targets nom√©s t√© un array de N targets dins obj_amb_targets.targets
+//en les crides recursives obj_amb_targets.targets va contenint cada vegada la resta (els targets no processats), i tamb√©
+//cont√© el obj_amb_targets.current_role que √©s el role que vull pel target que estic gestionant
 {
 var resta_targets = obj_amb_targets.targets.slice();
 var params_str;
@@ -5399,7 +5399,7 @@ function MostraCitationResource(id)
 	ChangePannel("citation-resource", true);
 	BuidaCitationResource();
 	IdResourceToSaveChanges=id;
-	IdCitationResourceToSaveChanges=id; //perquË si des de la p‡gina de cita acabo creant un nou individual, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdCitationResourceToSaveChanges=id; //perqu√® si des de la p√†gina de cita acabo creant un nou individual, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 
 	document.getElementById("citation-resource-exit_btn").style.display='none';
 	if (id=="") //estic creant una cita nova
@@ -5408,7 +5408,7 @@ function MostraCitationResource(id)
 		document.getElementById("citation-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_citation_characteristics);
 		//document.getElementById("open-data-citation-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-citation-resource_screen_value").disabled=false;
-		document.getElementById("open-data-citation-resource_screen_value").checked=true; //una publicaciÛ nova la marco compartida amb anÚnim per defecte		
+		document.getElementById("open-data-citation-resource_screen_value").checked=true; //una publicaci√≥ nova la marco compartida amb an√≤nim per defecte		
 		document.getElementById("citation-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("citation-resource-delete_btn").style.display='none';
 		
@@ -5468,7 +5468,7 @@ function MostraPublicationResource(id)
 	ChangePannel("publication-resource", true);
 	BuidaPublicationResource();
 	IdResourceToSaveChanges=id;
-	IdPublicationResourceToSaveChanges=id; //perquË si des de la p‡gina de publicaciÛ acabo creant un nou individual, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdPublicationResourceToSaveChanges=id; //perqu√® si des de la p√†gina de publicaci√≥ acabo creant un nou individual, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 
 	document.getElementById("publication-resource-exit_btn").style.display='none';
 	if (id=="")
@@ -5477,7 +5477,7 @@ function MostraPublicationResource(id)
 		document.getElementById("publication-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_publication_characteristics);
 		//document.getElementById("open-data-publication-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-publication-resource_screen_value").disabled=false;
-		document.getElementById("open-data-publication-resource_screen_value").checked=true; //una publicaciÛ nova la marco compartida amb anÚnim per defecte		
+		document.getElementById("open-data-publication-resource_screen_value").checked=true; //una publicaci√≥ nova la marco compartida amb an√≤nim per defecte		
 		document.getElementById("publication-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("publication-resource-delete_btn").style.display='none';
 		
@@ -5540,7 +5540,7 @@ function MostraIndividualResource(id)
 		document.getElementById("individual-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_individual_characteristics);
 		//document.getElementById("open-data-individual-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-individual-resource_screen_value").disabled=false;
-		document.getElementById("open-data-individual-resource_screen_value").checked=true; //un individu nou el marco compartit amb anÚnim per defecte		
+		document.getElementById("open-data-individual-resource_screen_value").checked=true; //un individu nou el marco compartit amb an√≤nim per defecte		
 		document.getElementById("individual-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("individual-resource-delete_btn").style.display='none';
 		
@@ -5588,7 +5588,7 @@ function MostraOrganismResource(id)
 		document.getElementById("organism-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_organism_characteristics);
 		//document.getElementById("open-data-organism-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-organism-resource_screen_value").disabled=false;
-		document.getElementById("open-data-organism-resource_screen_value").checked=true; //un organisme nou el marco compartit amb anÚnim per defecte		
+		document.getElementById("open-data-organism-resource_screen_value").checked=true; //un organisme nou el marco compartit amb an√≤nim per defecte		
 		document.getElementById("organism-resource_btn").value=DonaCadenaJSON(Msg_Create);
 		document.getElementById("organism-resource-delete_btn").style.display='none';
 		
@@ -5622,7 +5622,7 @@ function MostraOrganismResource(id)
 }
 
 function MostraShareResource(event, query, type)
-{	//Ara per ara no cal patir per els hash perque mai canvia de p‡gina. si algun moment permitim entrar a llista de usuaris, p.ex, caldr‡ vigilar lo de ChangePannel, etc
+{	//Ara per ara no cal patir per els hash perque mai canvia de p√†gina. si algun moment permitim entrar a llista de usuaris, p.ex, caldr√† vigilar lo de ChangePannel, etc
 var id=DonaValorDeFormulari("RESOURCE", query, true);
 
 	StopPropagationClick(event);
@@ -5690,7 +5690,7 @@ var root, output, identifier, text_current_share_list, has_anonymous=false;
 
 	text_current_share_list="";
 
-	//Aquest Ès una mica especial donat que si no hi ha outputs tambÈ tÈ sentit la resposta.
+	//Aquest √©s una mica especial donat que si no hi ha outputs tamb√© t√© sentit la resposta.
 	for (var item=0; output && item<output.length; item++)
 	{
 		identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
@@ -5704,7 +5704,7 @@ var root, output, identifier, text_current_share_list, has_anonymous=false;
 				{
 					var rights=GetValueXMLElementByName(nb_user, "nb_share", "rights");
 					var user=GetValueXMLElementByName(nb_user, "nb_user", "user");
-					//La llista de share ara nomÈs mostra rights i user, perÚ ni name ni email
+					//La llista de share ara nom√©s mostra rights i user, per√≤ ni name ni email
 					//var name=GetValueXMLElementByName(nb_user, "nb_user", "name");
 					//var email=GetValueXMLElementByName(nb_user, "nb_user", "email");
 					if (user=="Anonymous")
@@ -5840,7 +5840,7 @@ var user, name, email;
 	while (document.share_form.new_share_select.options.length)
 		document.share_form.new_share_select.options[0]=null;
 
-	//Aquest Ès una mica especial donat que si no hi ha outputs tambÈ tÈ sentit la resposta.
+	//Aquest √©s una mica especial donat que si no hi ha outputs tamb√© t√© sentit la resposta.
 	for (var item=0; output && item<output.length; item++)
 	{
 		identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
@@ -5879,7 +5879,7 @@ function RetrieveShareAuthorizedList(type)
 function SurtDeAddShareCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Added));
-	//if (location.hash=="#resources") --> caldr‡ fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
+	//if (location.hash=="#resources") --> caldr√† fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateShareResource(IdResourceToSaveChanges);
 }
 
@@ -5921,7 +5921,7 @@ function AddShareResource(tothom)
 function SurtDeDeleteShareCallBack()
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Deleted));
-	//if (location.hash=="#resources") --> caldr‡ fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
+	//if (location.hash=="#resources") --> caldr√† fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateShareResource(IdResourceToSaveChanges);
 }
 
@@ -5981,12 +5981,12 @@ var mime_list = ["application/andrew-inset", "application/applixware", "applicat
 		s2=(document.href_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
 	 	
 	 	
-	 	// En una creaciÛ els elements buits no s'han d'enviar
+	 	// En una creaci√≥ els elements buits no s'han d'enviar
 		if (document.href_resource_form.mimetype.value!="")
 			s2+="&MIMETYPE="+document.href_resource_form.mimetype.value;					
-		//OGhref: Crear Nou enllaÁ a format no definit prËviament
+		//OGhref: Crear Nou enlla√ß a format no definit pr√®viament
 		if (document.href_resource_form.mimetype.value=="")
-			// Es comprova si el mime introduÔt per l'usuari Ès connegut. En cas contrari se l'avisa i se li demana confirmaciÛ.
+			// Es comprova si el mime introdu√Øt per l'usuari √©s connegut. En cas contrari se l'avisa i se li demana confirmaci√≥.
 			if (mime_list.indexOf(document.getElementById("format_name").value)!=-1) 
 			{
 				s2+="&MIMETYPE="+document.getElementById("format_name").value;
@@ -6007,7 +6007,7 @@ var mime_list = ["application/andrew-inset", "application/applixware", "applicat
 		s2="&RESOURCE="+IdResourceToSaveChanges;
 	  	  
 	  
-	  // En una modificaciÛ els elements buits SI que s'han d'enviar
+	  // En una modificaci√≥ els elements buits SI que s'han d'enviar
 		if (document.href_resource_form.mimetype.value=="") 
 		{
 			if (mime_list.indexOf(document.getElementById("format_name").value)!=-1) 
@@ -6069,7 +6069,7 @@ var s,s2;
 		s2=(document.poi_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 	  
-	  // En una creaciÛ els elements buits no s'han d'enviar
+	  // En una creaci√≥ els elements buits no s'han d'enviar
 	  if (document.poi_resource_form.reason.value!="")
 			s2+="&REASON="+DonaCadenaPerValorDeFormulari(document.poi_resource_form.reason.value);
 		if (document.poi_resource_form.pos_accur.value!="")
@@ -6081,7 +6081,7 @@ var s,s2;
 		s2="&RESOURCE="+IdResourceToSaveChanges;
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
 	  
-	  // En una modificaciÛ els elements buits SI que s'han d'enviar
+	  // En una modificaci√≥ els elements buits SI que s'han d'enviar
 	  s2+="&REASON="+DonaCadenaPerValorDeFormulari(document.poi_resource_form.reason.value)+"&POS_ACCURACY="+DonaCadenaPerValorDeFormulari(document.poi_resource_form.pos_accur.value);
 	}
 	ajaxExecuteNB=new Ajax();
@@ -6166,7 +6166,7 @@ var root, id_proces, id_obj;
 		return;
 	}
 
-	//en aquest cas si el add_share no s'ha fet bÈ doncs "no passa res" pq era secundari per fer-ho polit
+	//en aquest cas si el add_share no s'ha fet b√© doncs "no passa res" pq era secundari per fer-ho polit
 	RemoveInfo("permanent");
 	return;
 }
@@ -6227,7 +6227,7 @@ var s,s2;
 	}
 	RemoveInfo("long");
 	
-	IdResourceToSaveChanges=IdFeedbackResourceToSaveChanges; //perquË si des de la p‡gina de FB acabo creant una nova public, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdResourceToSaveChanges=IdFeedbackResourceToSaveChanges; //perqu√® si des de la p√†gina de FB acabo creant una nova public, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 	IdFeedbackResourceToSaveChanges=""; //faig "net"
 
 	if (IdResourceToSaveChanges=="")
@@ -6237,7 +6237,7 @@ var s,s2;
     ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
     
     var p;
- 		// En una creaciÛ els elements buits no s'han d'enviar
+ 		// En una creaci√≥ els elements buits no s'han d'enviar
 		if (document.feedback_resource_form.reason.value!="")
 			s2+="&REASON="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.reason.value);					
 		if ((p=DonaCadenaCodelistDeSelect(document.feedback_resource_form.contactRole))!="")
@@ -6293,7 +6293,7 @@ var s,s2;
 		s2="&RESOURCE="+IdResourceToSaveChanges;
     ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
     
-    // En una modificaciÛ els elements buits SI que s'han d'enviar
+    // En una modificaci√≥ els elements buits SI que s'han d'enviar
 		s2+="&REASON="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.reason.value)+
 			"&CONTACT_ROLE="+DonaCadenaCodelistDeSelect(document.feedback_resource_form.contactRole)+
 			"&RATING="+DonaCadenaCodelistDeRadio(document.feedback_resource_form.rating)+
@@ -6343,7 +6343,7 @@ var s,s2;
 				}
 			}
 		}
-		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoraciÛ, s'esborraran
+		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoraci√≥, s'esborraran
 			s2+="&TARGET_1=";
 	}
 	
@@ -6354,7 +6354,7 @@ var s,s2;
 			for (var item=0; item<PublicsOfAFeedback.length; item++)
 					s2+="&PUB_"+(item+1)+"="+PublicsOfAFeedback[item].id_public;
 		}
-		else //abans n'hi havia i ara no, escriure PUB_1 implica que si hi havia publicacions d'aquesta valoraciÛ, s'esborrar‡n
+		else //abans n'hi havia i ara no, escriure PUB_1 implica que si hi havia publicacions d'aquesta valoraci√≥, s'esborrar√†n
 			s2+="&PUB_1=";
 	}
 
@@ -6365,7 +6365,7 @@ var s,s2;
 			for (var item=0; item<RefDocsOfAFeedback.length; item++)
 					s2+="&REF_DOC_"+(item+1)+"="+RefDocsOfAFeedback[item].id_public;
 		}
-		else //abans n'hi havia i ara no, escriure REF_DOC_1 implica que si hi havia documents de referËncia d'aquesta valoraciÛ, s'esborrar‡n
+		else //abans n'hi havia i ara no, escriure REF_DOC_1 implica que si hi havia documents de refer√®ncia d'aquesta valoraci√≥, s'esborrar√†n
 			s2+="&REF_DOC_1=";
 	}
 	
@@ -6376,7 +6376,7 @@ var s,s2;
 			for (var item=0; item<AddDocsOfAFeedback.length; item++)
 					s2+="&ADD_DOC_"+(item+1)+"="+AddDocsOfAFeedback[item].id_citation;
 		}
-		else //abans n'hi havia i ara no, escriure ADD_DOC_1 implica que si hi havia documents addicionals d'aquesta valoraciÛ, s'esborrar‡n
+		else //abans n'hi havia i ara no, escriure ADD_DOC_1 implica que si hi havia documents addicionals d'aquesta valoraci√≥, s'esborrar√†n
 			s2+="&ADD_DOC_1=";
 	}
 	
@@ -6387,7 +6387,7 @@ var s,s2;
 			for (var item=0; item<AltRsrcsOfAFeedback.length; item++)
 					s2+="&ALT_RSRC_"+(item+1)+"="+AltRsrcsOfAFeedback[item].id_citation;
 		}
-		else //abans n'hi havia i ara no, escriure ALT_RSRC_1 implica que si hi havia recursos alternatius d'aquesta valoraciÛ, s'esborrar‡n
+		else //abans n'hi havia i ara no, escriure ALT_RSRC_1 implica que si hi havia recursos alternatius d'aquesta valoraci√≥, s'esborrar√†n
 			s2+="&ALT_RSRC_1=";
 	}
 
@@ -6398,7 +6398,7 @@ var s,s2;
 			for (var item=0; item<FixRsrcsOfAFeedback.length; item++)
 					s2+="&FIX_RSRC_"+(item+1)+"="+FixRsrcsOfAFeedback[item].id_citation;
 		}
-		else //abans n'hi havia i ara no, escriure ALT_RSRC_1 implica que si hi havia recursos alternatius d'aquesta valoraciÛ, s'esborrar‡n
+		else //abans n'hi havia i ara no, escriure ALT_RSRC_1 implica que si hi havia recursos alternatius d'aquesta valoraci√≥, s'esborrar√†n
 			s2+="&FIX_RSRC_1=";
 	}
 	
@@ -6407,17 +6407,17 @@ var s,s2;
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
 			//"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+
 			"&TYPE=FEEDBACK"+//"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.title.value)+ 
-			//-> eliminem abstract (per redundant) i l'antic abstract ser‡ el tÌtol. Pre compatibilitat i coherËncia amb altres recursos, en la sintaxi de resource CREATE/MODIFY es diu TITLE
+			//-> eliminem abstract (per redundant) i l'antic abstract ser√† el t√≠tol. Pre compatibilitat i coher√®ncia amb altres recursos, en la sintaxi de resource CREATE/MODIFY es diu TITLE
 			"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.abstract.value)+
 			s2, AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"FEEDBACK\"}");		
 
 	if (document.feedback_resource_form.open_data.checked)
-	{	//Si aquest FB item es compartit anÚnimament, m'asseguro que els elements relacionats amb ell tambÈ ho sÛn
-		if (TargetsOfAFeedback.length) // && TargetsOfAFeedbackHaveChanged -> cal sempre perquË ara pot passar que existeixi algun cas que no est‡ resolt i l'he de solucionar encara que no hi hagi canvis en els targets
+	{	//Si aquest FB item es compartit an√≤nimament, m'asseguro que els elements relacionats amb ell tamb√© ho s√≥n
+		if (TargetsOfAFeedback.length) // && TargetsOfAFeedbackHaveChanged -> cal sempre perqu√® ara pot passar que existeixi algun cas que no est√† resolt i l'he de solucionar encara que no hi hagi canvis en els targets
 		{
 			for (var item=0; item<TargetsOfAFeedback.length; item++)
 			{
-				if (!TargetsOfAFeedback[item].open_data) //si encara no Ès un recurs p˙blic ho demano
+				if (!TargetsOfAFeedback[item].open_data) //si encara no √©s un recurs p√∫blic ho demano
 				{
 					ajaxExecuteNB=new Ajax();
 					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -6428,11 +6428,11 @@ var s,s2;
 			}
 		}
 
-		if (RefDocsOfAFeedback.length) //&& RefDocsOfAFeedbackHaveChanged -> cal sempre perquË ara pot passar que existeixi algun cas que no est‡ resolt i l'he de solucionar encara que no hi hagi canvis en els ref_docs
+		if (RefDocsOfAFeedback.length) //&& RefDocsOfAFeedbackHaveChanged -> cal sempre perqu√® ara pot passar que existeixi algun cas que no est√† resolt i l'he de solucionar encara que no hi hagi canvis en els ref_docs
 		{
 			for (var item=0; item<RefDocsOfAFeedback.length; item++)
 			{	
-				if (!RefDocsOfAFeedback[item].open_data) //si encara no Ès un recurs p˙blic ho demano
+				if (!RefDocsOfAFeedback[item].open_data) //si encara no √©s un recurs p√∫blic ho demano
 				{
 					ajaxExecuteNB=new Ajax();
 					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -6443,11 +6443,11 @@ var s,s2;
 			}
 		}
 
-		if (AddDocsOfAFeedback.length) //&& AddDocsOfAFeedbackHaveChanged -> cal sempre perquË ara pot passar que existeixi algun cas que no est‡ resolt i l'he de solucionar encara que no hi hagi canvis en els add_docs
+		if (AddDocsOfAFeedback.length) //&& AddDocsOfAFeedbackHaveChanged -> cal sempre perqu√® ara pot passar que existeixi algun cas que no est√† resolt i l'he de solucionar encara que no hi hagi canvis en els add_docs
 		{
 			for (var item=0; item<AddDocsOfAFeedback.length; item++)
 			{	
-				if (!AddDocsOfAFeedback[item].open_data) //si encara no Ès un recurs p˙blic ho demano
+				if (!AddDocsOfAFeedback[item].open_data) //si encara no √©s un recurs p√∫blic ho demano
 				{
 					ajaxExecuteNB=new Ajax();
 					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -6458,11 +6458,11 @@ var s,s2;
 			}
 		}
 
-		if (AltRsrcsOfAFeedback.length) //&& AltRsrcsOfAFeedbackHaveChanged -> cal sempre perquË ara pot passar que existeixi algun cas que no est‡ resolt i l'he de solucionar encara que no hi hagi canvis en els alt_rsrcs
+		if (AltRsrcsOfAFeedback.length) //&& AltRsrcsOfAFeedbackHaveChanged -> cal sempre perqu√® ara pot passar que existeixi algun cas que no est√† resolt i l'he de solucionar encara que no hi hagi canvis en els alt_rsrcs
 		{
 			for (var item=0; item<AltRsrcsOfAFeedback.length; item++)
 			{	
-				if (!AltRsrcsOfAFeedback[item].open_data) //si encara no Ès un recurs p˙blic ho demano
+				if (!AltRsrcsOfAFeedback[item].open_data) //si encara no √©s un recurs p√∫blic ho demano
 				{
 					ajaxExecuteNB=new Ajax();
 					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -6473,11 +6473,11 @@ var s,s2;
 			}
 		}
 
-		if (FixRsrcsOfAFeedback.length) //&& FixRsrcsOfAFeedbackHaveChanged -> cal sempre perquË ara pot passar que existeixi algun cas que no est‡ resolt i l'he de solucionar encara que no hi hagi canvis en els fix_rsrcs
+		if (FixRsrcsOfAFeedback.length) //&& FixRsrcsOfAFeedbackHaveChanged -> cal sempre perqu√® ara pot passar que existeixi algun cas que no est√† resolt i l'he de solucionar encara que no hi hagi canvis en els fix_rsrcs
 		{
 			for (var item=0; item<FixRsrcsOfAFeedback.length; item++)
 			{	
-				if (!FixRsrcsOfAFeedback[item].open_data) //si encara no Ès un recurs p˙blic ho demano
+				if (!FixRsrcsOfAFeedback[item].open_data) //si encara no √©s un recurs p√∫blic ho demano
 				{
 					ajaxExecuteNB=new Ajax();
 					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -6488,11 +6488,11 @@ var s,s2;
 			}
 		}
 
-		if (PublicsOfAFeedback.length) //&& PublicsOfAFeedbackHaveChanged -> cal sempre perquË ara pot passar que existeixi algun cas que no est‡ resolt i l'he de solucionar encara que no hi hagi canvis en les publics
+		if (PublicsOfAFeedback.length) //&& PublicsOfAFeedbackHaveChanged -> cal sempre perqu√® ara pot passar que existeixi algun cas que no est√† resolt i l'he de solucionar encara que no hi hagi canvis en les publics
 		{
 			for (var item=0; item<PublicsOfAFeedback.length; item++)
 			{	
-				if (!PublicsOfAFeedback[item].open_data) //si encara no Ès un recurs p˙blic ho demano
+				if (!PublicsOfAFeedback[item].open_data) //si encara no √©s un recurs p√∫blic ho demano
 				{
 					ajaxExecuteNB=new Ajax();
 					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -6518,7 +6518,7 @@ var s,s2;
 	}
 	RemoveInfo("long");
 	
-	IdResourceToSaveChanges=IdCitationResourceToSaveChanges; //perquË si des de la p‡gina de Cita acabo creant un nou responsible, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdResourceToSaveChanges=IdCitationResourceToSaveChanges; //perqu√® si des de la p√†gina de Cita acabo creant un nou responsible, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 	IdCitationResourceToSaveChanges=""; //faig "net"
 	
 	if (IdResourceToSaveChanges=="")
@@ -6528,7 +6528,7 @@ var s,s2;
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 	  
 	  var p;
-	  // En una creaciÛ els elements buits no s'han d'enviar
+	  // En una creaci√≥ els elements buits no s'han d'enviar
 		if (document.citation_resource_form.edition.value!="")
 			s2+="&EDITION="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.edition.value);
 		if ((p=DonaCadenaDataPerValorDeFormulari(document.citation_resource_form.edition_date.value))!="")
@@ -6558,7 +6558,7 @@ var s,s2;
 		s2="&RESOURCE="+IdResourceToSaveChanges;
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
 	  
-	  // En una modificaciÛ els elements buits SI que s'han d'enviar
+	  // En una modificaci√≥ els elements buits SI que s'han d'enviar
 	  s2+="&EDITION="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.edition.value)+"&EDITION_DATE="+DonaCadenaDataPerValorDeFormulari(document.citation_resource_form.edition_date.value)+
 			"&ID_CODE="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.id_code.value)+"&ID_NAMESPACE="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.id_namespace.value)+
 			"&SERIES_NAME="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.series_name.value)+"&SERIES_ISSUE_ID="+DonaCadenaPerValorDeFormulari(document.citation_resource_form.series_issue.value)+
@@ -6576,7 +6576,7 @@ var s,s2;
 			for (var item=0; item<ResponsiblesOfACitation.length; item++)
 					s2+="&RESPONSIBLE_"+(item+1)+"="+ResponsiblesOfACitation[item].id_responsible+"&RESPONSIBLE_ROLE_"+(item+1)+"="+ResponsiblesOfACitation[item].role;
 		}
-		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoraciÛ, s'esborraran
+		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoraci√≥, s'esborraran
 			s2+="&RESPONSIBLE_1=";
 	}
 	
@@ -6588,12 +6588,12 @@ var s,s2;
 				s2, AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"CITATION\"}");
 				
 	if (document.citation_resource_form.open_data.checked)
-	{	//Si aquesta cita est‡ compartida anÚnimament, m'asseguro que els elements relacionats amb ella tambÈ ho sÛn
-		if (ResponsiblesOfACitation.length) // && ResponsiblesOfACitationHaveChanged -> cal sempre perquË ara pot passar que existeixi algun cas que no est‡ resolt i l'he de solucionar encara que no hi hagi canvis en els responsables
+	{	//Si aquesta cita est√† compartida an√≤nimament, m'asseguro que els elements relacionats amb ella tamb√© ho s√≥n
+		if (ResponsiblesOfACitation.length) // && ResponsiblesOfACitationHaveChanged -> cal sempre perqu√® ara pot passar que existeixi algun cas que no est√† resolt i l'he de solucionar encara que no hi hagi canvis en els responsables
 		{
 			for (var item=0; item<ResponsiblesOfACitation.length; item++)
 			{
-				if (!ResponsiblesOfACitation[item].open_data) //si encara no Ès un recurs p˙blic ho demano
+				if (!ResponsiblesOfACitation[item].open_data) //si encara no √©s un recurs p√∫blic ho demano
 				{
 					ajaxExecuteNB=new Ajax();
 					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -6617,7 +6617,7 @@ var s,s2;
 	}
 	RemoveInfo("long");
 	
-	IdResourceToSaveChanges=IdPublicationResourceToSaveChanges; //perquË si des de la p‡gina de Cita acabo creant un nou responsible, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	IdResourceToSaveChanges=IdPublicationResourceToSaveChanges; //perqu√® si des de la p√†gina de Cita acabo creant un nou responsible, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
 	IdPublicationResourceToSaveChanges=""; //faig "net"	
 
 	if (IdResourceToSaveChanges=="")
@@ -6627,7 +6627,7 @@ var s,s2;
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 	  
 	  var p;
-	  // En una creaciÛ els elements buits no s'han d'enviar
+	  // En una creaci√≥ els elements buits no s'han d'enviar
 	  if (document.publication_resource_form.edition.value!="")
 			s2+="&EDITION="+DonaCadenaPerValorDeFormulari(document.publication_resource_form.edition.value);
 		if ((p=DonaCadenaDataPerValorDeFormulari(document.publication_resource_form.edition_date.value))!="")
@@ -6661,7 +6661,7 @@ var s,s2;
 		s2="&RESOURCE="+IdResourceToSaveChanges;
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
 	  
-	  // En una modificaciÛ els elements buits SI que s'han d'enviar
+	  // En una modificaci√≥ els elements buits SI que s'han d'enviar
 	  s2+="&EDITION="+DonaCadenaPerValorDeFormulari(document.publication_resource_form.edition.value)+"&EDITION_DATE="+DonaCadenaDataPerValorDeFormulari(document.publication_resource_form.edition_date.value)+
 	  	"&ID_CODE="+DonaCadenaPerValorDeFormulari(document.publication_resource_form.id_code.value)+"&ID_NAMESPACE="+DonaCadenaPerValorDeFormulari(document.publication_resource_form.id_namespace.value)+
 			"&SERIES_NAME="+DonaCadenaPerValorDeFormulari(document.publication_resource_form.series_name.value)+"&SERIES_ISSUE_ID="+DonaCadenaPerValorDeFormulari(document.publication_resource_form.series_issue.value)+
@@ -6680,7 +6680,7 @@ var s,s2;
 			for (var item=0; item<ResponsiblesOfAPublication.length; item++)
 					s2+="&RESPONSIBLE_"+(item+1)+"="+ResponsiblesOfAPublication[item].id_responsible+"&RESPONSIBLE_ROLE_"+(item+1)+"="+ResponsiblesOfAPublication[item].role;
 		}
-		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoraciÛ, s'esborraran
+		else //abans n'hi havia i ara no, escriure TARGET_1 implica que si hi havia targets d'aquesta valoraci√≥, s'esborraran
 			s2+="&RESPONSIBLE_1=";
 	}
 
@@ -6692,12 +6692,12 @@ var s,s2;
 				s2, AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"PUBLICAT\"}");
 							
 	if (document.publication_resource_form.open_data.checked)
-	{	//Si aquesta publicaciÛ est‡ compartida anÚnimament, m'asseguro que els elements relacionats amb ella tambÈ ho sÛn
-		if (ResponsiblesOfAPublication.length) // && ResponsiblesOfAPublicationHaveChanged -> cal sempre perquË ara pot passar que existeixi algun cas que no est‡ resolt i l'he de solucionar encara que no hi hagi canvis en els responsables
+	{	//Si aquesta publicaci√≥ est√† compartida an√≤nimament, m'asseguro que els elements relacionats amb ella tamb√© ho s√≥n
+		if (ResponsiblesOfAPublication.length) // && ResponsiblesOfAPublicationHaveChanged -> cal sempre perqu√® ara pot passar que existeixi algun cas que no est√† resolt i l'he de solucionar encara que no hi hagi canvis en els responsables
 		{
 			for (var item=0; item<ResponsiblesOfAPublication.length; item++)
 			{
-				if (!ResponsiblesOfAPublication[item].open_data) //si encara no Ès un recurs p˙blic ho demano
+				if (!ResponsiblesOfAPublication[item].open_data) //si encara no √©s un recurs p√∫blic ho demano
 				{
 					ajaxExecuteNB=new Ajax();
 					AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -6727,7 +6727,7 @@ var s,s2;
 		s2=(document.individual_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 
-		// En una creaciÛ els elements buits no s'han d'enviar
+		// En una creaci√≥ els elements buits no s'han d'enviar
 		if (document.individual_resource_form.email.value!="")
 	  	s2+="&EMAIL="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.email.value);
 	  if (document.individual_resource_form.url_link.value!="")
@@ -6747,7 +6747,7 @@ var s,s2;
 		s2="&RESOURCE="+IdResourceToSaveChanges;
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
 	  
-	  // En una modificaciÛ els elements buits SI que s'han d'enviar
+	  // En una modificaci√≥ els elements buits SI que s'han d'enviar
 	  s2+="&EMAIL="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.email.value)+"&URL_LINK="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.url_link.value)+
 			"&ID_CODE_1="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.id_code_1.value)+"&ID_NAMESPACE_1="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.id_namespace_1.value)+
 			"&ID_CODE_2="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.id_code_2.value)+"&ID_NAMESPACE_2="+DonaCadenaPerValorDeFormulari(document.individual_resource_form.id_namespace_2.value);
@@ -6780,7 +6780,7 @@ var s,s2;
 		s2=(document.organism_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 	  
-	  // En una creaciÛ els elements buits no s'han d'enviar
+	  // En una creaci√≥ els elements buits no s'han d'enviar
 	  if (document.organism_resource_form.delivery_point.value!="")
 			s2+="&DELIVERY_POINT="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.delivery_point.value);
 		if (document.organism_resource_form.city.value!="")
@@ -6798,7 +6798,7 @@ var s,s2;
 		s2="&RESOURCE="+IdResourceToSaveChanges;
 	  ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
 	  
-	  // En una modificaciÛ els elements buits SI que s'han d'enviar
+	  // En una modificaci√≥ els elements buits SI que s'han d'enviar
 		s2+="&DELIVERY_POINT="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.delivery_point.value)+"&CITY="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.city.value)+
 			"&ADM_AREA="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.administrative_area.value)+"&POSTAL_CODE="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.postal_code.value)+
 			"&COUNTRY="+DonaCadenaPerValorDeFormulari(document.organism_resource_form.country.value);
@@ -6823,7 +6823,7 @@ function SendResourceDelete(event, query, type, cal_history_back)
 		var id=DonaValorDeFormulari("RESOURCE", query, true);
 		IdResourceToSaveChanges=id;
 	}
-	//else -> estic a dins la p‡gina d'un recurs i IdResourceToSaveChanges ja contÈ el que cal
+	//else -> estic a dins la p√†gina d'un recurs i IdResourceToSaveChanges ja cont√© el que cal
 
 	if (cal_history_back)
 		BackNeededAfterDelete=true;
@@ -6924,8 +6924,8 @@ var s;
 		if (type=="FEEDBACK")
 		{
 			SurtDeFeedbackResourceChanges(false);
-			//Si estic sortint d'un FB i venia de la p‡gina de FBList, em cal reescriure-la, per que el recurs esborrat desaparegui. 
-			//Si estic sortint del FB per anar a la llista general de recursos aixÚ tampoc no fa mal
+			//Si estic sortint d'un FB i venia de la p√†gina de FBList, em cal reescriure-la, per que el recurs esborrat desaparegui. 
+			//Si estic sortint del FB per anar a la llista general de recursos aix√≤ tampoc no fa mal
 			setTimeout("OmpleRecursosQueTocaSortintDeQualsevolResource(\""+type+"\");",100);
 		}
 		else if (type=="CITATION")
@@ -6935,7 +6935,7 @@ var s;
 		else //per la resta
 			SurtDeQualsevolResourceChanges(false);	
 	}
-	//if (location.hash=="#resources") --> caldr‡ fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100); 
+	//if (location.hash=="#resources") --> caldr√† fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100); 
 	EnumerateResources(1, {"type_enum":"resources"});
 }
 
@@ -7025,16 +7025,16 @@ function SurtDeFeedbackResourceChanges(avis)
 		ActionAfterSignIn(ParamActionAfterSignIn);
 	else
 	{
-		//Si vaig a recursos qui decideix repintar la llista desprÈs d'esborrar?
+		//Si vaig a recursos qui decideix repintar la llista despr√©s d'esborrar?
 		history.back();
 		//ChangePannel("resources", true);
 	}
 }
 
 function SurtDeFeedbackResourceChangesIRecarregaResources(avis)
-{	// Encara que surti de la p‡gina de FB sense desar (tancar/descartar) he de demanar que es repinti la p‡gina de recursos, perquË potser des de la p‡gina del FB he creat una publicaciÛ nova
+{	// Encara que surti de la p√†gina de FB sense desar (tancar/descartar) he de demanar que es repinti la p√†gina de recursos, perqu√® potser des de la p√†gina del FB he creat una publicaci√≥ nova
 	SurtDeFeedbackResourceChanges(avis);
-	//if (location.hash=="#resources") --> caldr‡ fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
+	//if (location.hash=="#resources") --> caldr√† fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources"});
 	
 	Scope_puc_modificar=true;
@@ -7056,9 +7056,9 @@ function SurtDeCitationResourceChanges(avis)
 }
 
 function SurtDeCitationResourceChangesIRecarregaResources(avis)
-{	// Encara que surti de la p‡gina de citation sense desar (tancar/descartar) he de demanar que es repinti la p‡gina de recursos, perquË potser des de la p‡gina de la citaciÛ he creat un responsible nou
+{	// Encara que surti de la p√†gina de citation sense desar (tancar/descartar) he de demanar que es repinti la p√†gina de recursos, perqu√® potser des de la p√†gina de la citaci√≥ he creat un responsible nou
 	SurtDeCitationResourceChanges(avis);
-	//if (location.hash=="#resources") --> caldr‡ fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
+	//if (location.hash=="#resources") --> caldr√† fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources"});
 }
 
@@ -7077,29 +7077,29 @@ function SurtDePublicationResourceChanges(avis)
 }
 
 function SurtDePublicationResourceChangesIRecarregaResources(avis)
-{	// Encara que surti de la p‡gina de publication sense desar (tancar/descartar) he de demanar que es repinti la p‡gina de recursos, perquË potser des de la p‡gina de la publicaciÛ he creat un responsible nou
+{	// Encara que surti de la p√†gina de publication sense desar (tancar/descartar) he de demanar que es repinti la p√†gina de recursos, perqu√® potser des de la p√†gina de la publicaci√≥ he creat un responsible nou
 	SurtDePublicationResourceChanges(avis);
-	//if (location.hash=="#resources") --> caldr‡ fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
+	//if (location.hash=="#resources") --> caldr√† fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources"});
 }
 
 function OmpleRecursosQueTocaSortintDeQualsevolResource(type)
 {
-	//En alguns casos sortint d'un recurs no he de tornar a la p‡gina general de recursos, 
-	//si no a una altra p‡gina
+	//En alguns casos sortint d'un recurs no he de tornar a la p√†gina general de recursos, 
+	//si no a una altra p√†gina
 	if (location.hash=="#resources")
 		EnumerateResources(1, {"type_enum":"resources"});
 	else
 	{	
-		if (type=="FEEDBACK") //Torno des de la p‡gina de creaciÛ d'un nou FB, a la p‡gina de llista de FB sobre un recurs
+		if (type=="FEEDBACK") //Torno des de la p√†gina de creaci√≥ d'un nou FB, a la p√†gina de llista de FB sobre un recurs
 			MostraFeedbackList(null, null, IdTargetResourceToSaveChanges);
 		else if (type=="PUBLICAT")
 			ObreSelectorGeneral(false, type, "FEEDBACK", document.publication_resource_form.element_origin.value);
 		else if (type=="CITATION")
 			ObreSelectorGeneral(false, type, "FEEDBACK", document.citation_resource_form.element_origin.value);
 		else if (type=="PARTY")
-		{	//aquÌ potser venia de citation o de publication!	
-			//Puc mirar organism_resource_form o indv_resource_form perquË els tinc sincronitzats
+		{	//aqu√≠ potser venia de citation o de publication!	
+			//Puc mirar organism_resource_form o indv_resource_form perqu√® els tinc sincronitzats
 			if (document.organism_resource_form.resource_origin.value=="CITATION")
 				ObreSelectorGeneral(false, type, "CITATION");
 			else //PUBLICAT
@@ -7180,7 +7180,7 @@ function EntraANimmbus(es_nou)
 	document.getElementById("dropdown-settings").style.display= es_nou ? "none" : "inline";
 	document.getElementById("main-left-pannel-title-text").innerHTML=document.sign_in.user.value;  //This is going to be replaced by the name and surname latter.
 	document.getElementById("main-left-pannel-subtitle-text").innerHTML=document.sign_in.user.value;
-	//OG: canvia el logo de la barra superior en funciÛ de l'origen del log-in (per defecte Eiffel)
+	//OG: canvia el logo de la barra superior en funci√≥ de l'origen del log-in (per defecte Eiffel)
 	CanviaLogoBarraSup();
 }
 
@@ -7189,7 +7189,7 @@ function EntraANimmbusMain()
 	EntraANimmbus(false);
 	RetrieveUserMinPreferences();
 	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":true});
-	//OG: canvia el logo de la barra superior en funciÛ de l'origen del log-in (per defecte Eiffel)
+	//OG: canvia el logo de la barra superior en funci√≥ de l'origen del log-in (per defecte Eiffel)
 	CanviaLogoBarraSup();	
 }
 
@@ -7287,7 +7287,7 @@ function SurtITornaEndarrera(recarrega_pagina_recursos, surto_de_fb_list)
 		IdTargetResourceToSaveChanges="";
 		
 	if (recarrega_pagina_recursos)
-	//he de recarregar la pagina de recursos perquË potser s'ha afegit un element nou, o s'ha modificat un dels existents
+	//he de recarregar la pagina de recursos perqu√® potser s'ha afegit un element nou, o s'ha modificat un dels existents
 		EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":false});	
 
 	return false;
@@ -7624,11 +7624,11 @@ function CurrentPassInputChange()
 
 function AnalitzaMessage(event)
 {
-	if (event && DonaHost(event.origin)==DonaHost(PendingPostMessage)) //PendingPostMessage contÈ la URL
+	if (event && DonaHost(event.origin)==DonaHost(PendingPostMessage)) //PendingPostMessage cont√© la URL
 		AnalitzarParametresURL(event.data);		
 }
 
-//OGhref: Crear Nou enllaÁ a format no definit prËviament
+//OGhref: Crear Nou enlla√ß a format no definit pr√®viament
 function MostraFinestraAltresFormats(type)
 {
 		var f_type=type;
@@ -7660,7 +7660,7 @@ function MostraFinestraAltresFormats(type)
 			}
 }
 
-//OG: Canvia logo de la barra superior de la p‡gina principal segons el tipus de log-in realitzat. Per defecte Eiffel.
+//OG: Canvia logo de la barra superior de la p√†gina principal segons el tipus de log-in realitzat. Per defecte Eiffel.
 function CanviaLogoBarraSup()
 {
 	if (AccessTokenType === 'nextgeoss')
@@ -7684,8 +7684,8 @@ function CanviaLogoBarraSup()
 return;
 }
 
-//Funcions Buida*Resource* --> per cada resource hi ha una funciÛ que deixa la plana en blanc.
-//En el cas dels Feedback hi ha una funciÛ anomenada BuidaPlegaFeedbackElements() en una secciÛ diferent de l'script.
+//Funcions Buida*Resource* --> per cada resource hi ha una funci√≥ que deixa la plana en blanc.
+//En el cas dels Feedback hi ha una funci√≥ anomenada BuidaPlegaFeedbackElements() en una secci√≥ diferent de l'script.
 
 /* Deixa en blanc tots els camps d'un resource tipus Organism*/
 function BuidaOrganismResource()
@@ -7886,9 +7886,9 @@ function BuidaHlinkResource()
 			<span class="caret-inner"></span>
 		</div>
 		<a class="dropdown-list_active" onClick="ChangeLanguage(0, ResourcesPerPage);SwitchDropDownList('dropdown-language', 'front-language-list');">
-		Catal‡</a>
+		Catal√†</a>
 		<a class="dropdown-list_active" onClick="ChangeLanguage(1, ResourcesPerPage);SwitchDropDownList('dropdown-language', 'front-language-list');">
-		EspaÒol</a>
+		Espa√±ol</a>
 		<a class="dropdown-list_active" onClick="ChangeLanguage(2, ResourcesPerPage);SwitchDropDownList('dropdown-language', 'front-language-list');">
 		English</a>
 	</div>
@@ -8099,8 +8099,8 @@ function BuidaHlinkResource()
 					</select>
 					<p id="mimetype-href-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 				</div>
-				<!--Crear Nou enllaÁ a format no definit prËviament-->
-			<div id="other_format_fieldset" class="control-group"> <!--En cas que el format triat sigui "Other", en aquest div es fa apareËixer una caixa de text d'entrada del format-->
+				<!--Crear Nou enlla√ß a format no definit pr√®viament-->
+			<div id="other_format_fieldset" class="control-group"> <!--En cas que el format triat sigui "Other", en aquest div es fa apare√®ixer una caixa de text d'entrada del format-->
 			</div>
 			
 			</div>  <!--End of id="mimetype-href-resource_fieldset" -->
@@ -8404,7 +8404,7 @@ function BuidaHlinkResource()
 			</div> <!-- for collapsible -->
 		</fieldset> <!--End of id="add-doc-feedback-resource" -->		
 		
-		<!-- identified-issues -> no ho posem a propÚsit perquË a dins GUF ha de ser discovered issues! -->
+		<!-- identified-issues -> no ho posem a prop√≤sit perqu√® a dins GUF ha de ser discovered issues! -->
 				
 		<fieldset id="f-reprodUsage-feedback-resource" class="control-fielset-group-level-2">
 			<legend id="reprodUsage-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>	
@@ -8530,7 +8530,7 @@ function BuidaHlinkResource()
 		<legend id="discovered-issue-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>	
 		<div style="display: none;"> <!-- for discvIssue collapsible -->
 			
-		<!-- aqui falta el target, que en aquest cas Ès el mateix de fb item i no el posem -->		
+		<!-- aqui falta el target, que en aquest cas √©s el mateix de fb item i no el posem -->		
 		<div id="known-problem-feedback-resource_fieldset" class="control-group">
 			<label class="control-label" id="known-problem-feedback-resource_screen" for="known-problem-feedback-resource_screen_value"></label>
 			<div class="controls">
@@ -9384,8 +9384,8 @@ function BuidaHlinkResource()
 <label class="control-label" id="language_screen" for="language_screen_value"></label>
 <div class="controls">
 <select class="text-input" id="language_screen_value" name="language">
-<option value="cat">Catal‡</option>
-<option value="spa">EspaÒol</option>
+<option value="cat">Catal√†</option>
+<option value="spa">Espa√±ol</option>
 <option value="eng">English</option>
 </select>
 <p id="language_screen_descrip" class="white-area-screen-descrip-text"></p>
@@ -9464,7 +9464,7 @@ function BuidaHlinkResource()
 <div class="control-group">
 <label class="control-label" id="new_feedback_screen" for="new_feedback_screen_value"></label>
 <div class="controls">
-<p><input id="new_feedback_btn" class="submit_btn" type="button" value="" onClick="MostraFeedbackResource('', null);"/></p>
+<p><input id="new_feedback_btn" class="submit_btn" type="button" value="" onClick="MostraFeedbackResource('', null);BuidaPlegaFeedbackElements();"/></p>
 <p id="new_feedback_descrip"></p>
 </div>
 </div>
