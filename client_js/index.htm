@@ -826,6 +826,18 @@ var kvp="";
 				ElementsOfAFeedback={};						
 			ElementsOfAFeedback.ru_sugg_app=query["RU_SUGG_APP"];
 		}
+		if (query["TARGET_GEO_BBOX"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};
+			ElementsOfAFeedback.bbox=query["TARGET_GEO_BBOX"];
+		}
+		if (query["TARGET_BND_POL"])
+		{
+			if (!ElementsOfAFeedback)
+				ElementsOfAFeedback={};						
+			ElementsOfAFeedback.gmlpol=query["TARGET_BND_POL"];
+		}
 		/*else
 			ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_key) +": \""+ valor+"\".");
 		break;*/
@@ -4896,6 +4908,28 @@ function OmpleElementsOfAFeedback()
 			CollapseFieldset(document.getElementById("usage-feedback-resource"), "block"); //not collapsed if it has content
 			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "block"); //not collapsed if it has content	
 			CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "block");
+		}
+		//$$OG: venim d'una URL, podríem tenir un cas de multitarget (per exemple en el cas de Sentinel), 
+		//però com està programat ara mateix tot, només es pot dibuixar un únic polígon per una capa concreta, que és el "primary target" i, 
+		//per tant, l'element [0] de TargetsOfAFeedback.
+		//En cas que algun dia puguin arribar per URL multitargets amb scopes independents s'haurà de repensar això i 
+		//la funció AnalitzarParametresURL(fragment) des del punt ParamsQuery.llista_targets.push i endavant.
+		if (ElementsOfAFeedback.bbox)
+		{
+			var str=ElementsOfAFeedback.bbox;
+			const str_array=str.split(",");
+			if (str_array.length==4)
+			{
+				TargetsOfAFeedback[0].minlong=str_array[0];
+				TargetsOfAFeedback[0].maxlong=str_array[1];
+				TargetsOfAFeedback[0].minlat=str_array[2];
+				TargetsOfAFeedback[0].maxlat=str_array[3];
+			}
+		}
+		if (ElementsOfAFeedback.gmlpol)
+		{
+			TargetsOfAFeedback[0].gmlpol=ElementsOfAFeedback.gmlpol;
+			TargetsOfAFeedback[0].scope=true;
 		}
 		ElementsOfAFeedback=null; //perquÃ¨ un cop usat no es torni a usar mÃ©s
 	}

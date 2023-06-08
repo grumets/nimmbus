@@ -22,19 +22,19 @@
     The NiMMbus JavaScript Client can be updated from
     https://github.com/grumets/NiMMbus.
 
-    Copyright 2014, 2022 Xavier Pons
+    Copyright 2014, 2023 Xavier Pons
 
-    Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
+    Aquest codi JavaScript ha estat idea de Joan MasÃ³ Pau (joan maso at uab cat) 
     amb l'ajut de l'Alaitz Zabala (alaitz zabala at uab cat)
-    dins del grup del MiraMon. MiraMon és un projecte del 
-    CREAF que elabora programari de Sistema d'Informació Geogràfica 
-    i de Teledetecció per a la visualització, consulta, edició i anàlisi 
-    de mapes ràsters i vectorials. Aquest programari inclou
-    aplicacions d'escriptori i també servidors i clients per Internet.
-    No tots aquests productes són gratuïts o de codi obert. 
+    dins del grup del MiraMon. MiraMon Ã©s un projecte del 
+    CREAF que elabora programari de Sistema d'InformaciÃ³ GeogrÃ fica 
+    i de TeledetecciÃ³ per a la visualitzaciÃ³, consulta, ediciÃ³ i anÃ lisi 
+    de mapes rÃ sters i vectorials. Aquest programari inclou
+    aplicacions d'escriptori i tambÃ© servidors i clients per Internet.
+    No tots aquests productes sÃ³n gratuÃ¯ts o de codi obert. 
     
     En particular, el client JavaScript del NiMMbus es distribueix sota 
-    els termes de la llicència GNU Affero General Public License, 
+    els termes de la llicÃ¨ncia GNU Affero General Public License, 
     mireu https://www.gnu.org/licenses/licenses.html#AGPL.
     
     El client JavaScript del NiMMbus es pot actualitzar des de 
@@ -76,7 +76,7 @@ function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, acc
 			targets[i].title = DonaCadenaPerValorDeFormulari(targets[i].title);
 		if (targets[i].code)
 			targets[i].code = DonaCadenaPerValorDeFormulari(targets[i].code);
-		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara
+		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per aixÃ² els posarem sense S sempre ara
 			targets[i].codespace = DonaCadenaPerValorDeFormulari(targets[i].codespace).replace("https://","http://"); 
 	}
 	if (reprod_usage.abstract)
@@ -114,7 +114,7 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 	if (lang)
 		url+="&LANGUAGE=" + lang;
 		
-	//decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara 
+	//decidim que els codespace han de ser independent del protocol i per aixÃ² els posarem sense S sempre ara 
 	codespace = codespace.replace("https://","http://"); 
 
 	url+="&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + DonaCadenaPerValorDeFormulari(code) + 
@@ -161,20 +161,20 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 	loadFile(url, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: seed_div_id, lang: lang, access_token_type: access_token_type, callback_function: callback_function, params_function: params_function, edit_button: false});
 }
 
-function GUFShowFeedbackInHTMLDiv(elem, seed_div_id, rsc_type, title, code, codespace, lang, access_token_type)
+function GUFShowFeedbackInHTMLDiv(elem, seed_div_id, rsc_type, title, code, codespace, lang, access_token_type, name_scope_function)
 {
 var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
-	return GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, targets, lang, access_token_type);
+	return GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, targets, lang, access_token_type, name_scope_function);
 }
 
-function GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, targets, lang, access_token_type)
+function GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, targets, lang, access_token_type, name_scope_function)
 {
 	for (var i=0; i<targets.length; i++)	
 	{
-		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara
+		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per aixÃ² els posarem sense S sempre ara
 			targets[i].codespace=targets[i].codespace.replace("https://","http://");
 	}
-	elem.innerHTML = GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(seed_div_id, rsc_type, targets, lang, access_token_type);
+	elem.innerHTML = GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(seed_div_id, rsc_type, targets, lang, access_token_type, name_scope_function);
 	//demano el fitxer atom de feedbacks previs
 	GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(seed_div_id, rsc_type, targets, lang, access_token_type);
 }
@@ -191,12 +191,12 @@ function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targe
 	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK";
 	var url2=url;
 	
-//ara assumeixo que tinc un primari segur i potser un secundari. Futur-> poden haver N de cada un dels TRES tipus, i per cada un farçe un quadradet, suposo
+//ara assumeixo que tinc un primari segur i potser un secundari. Futur-> poden haver N de cada un dels TRES tipus, i per cada un farÃ§e un quadradet, suposo
 
 	//busco el target primari i l'envio a la primera part de la finestra
 	for (var i=0; i<targets.length; i++)	
 	{
-		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara
+		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per aixÃ² els posarem sense S sempre ara
 			targets[i].codespace=targets[i].codespace.replace("https://","http://");
 	
 		if (targets[i].title && targets[i].code && targets[i].codespace && (typeof(targets[i].role)== "undefined" || targets[i].role=="primary"))
@@ -205,14 +205,14 @@ function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targe
 			break;
 		}
 	}
-	//l'espai de FB previs sobre el target primari el poso sempre, perquè sempre en tinc un	
+	//l'espai de FB previs sobre el target primari el poso sempre, perquÃ¨ sempre en tinc un	
 	loadFile(url, "text/xml", CarregaFeedbacksAnteriors, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: div_id+"Previ", rsc_type:rsc_type, lang: lang, access_token_type: access_token_type});
 
 	//busco el target secundari i l'envio a la segona part de la finestra
 	for (var i=0; i<targets.length; i++)	
 	{
 		if (targets[i].title && targets[i].code && targets[i].codespace && targets[i].role=="secondary")
-		{	//la peticio buscarà els que parlin del secondari d'ara, però només com a PRIMARI, per veure tb en el dataset els comentaris generals de la col·lecció (i no tornar a veure els secudaris d'questa o altres imatges!)
+		{	//la peticio buscarÃ  els que parlin del secondari d'ara, perÃ² nomÃ©s com a PRIMARI, per veure tb en el dataset els comentaris generals de la colÂ·lecciÃ³ (i no tornar a veure els secudaris d'questa o altres imatges!)
 			url2+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ" +
 						"&TRG_ROLE=primary";
 			tinc_target_secondary=true;
@@ -233,7 +233,7 @@ function GUFDonaCadenaLang(cadena_lang, lang)
 				return cadena_lang.cat;
 			case "spa":
 				return cadena_lang.spa;
-			default:     //Si no hi ha l'idioma solicitat faig que xerri en anglès
+			default:     //Si no hi ha l'idioma solicitat faig que xerri en anglÃ¨s
 			case "eng":
 				return cadena_lang.eng;
 			case "fre":
@@ -248,10 +248,10 @@ function GUFShaObertPopUp(wnd, lang)
 {
 	if (wnd==null)
 	{
-	    alert(GUFDonaCadenaLang({"cat":"Aquest navegador té les finestres emergents bloquejades. Canvia la configuració del teu navegador.\nEn algunes versions d'Internet Explorer, només cal fer un clic sobre la faixa groga superior.", 
-							  "spa":"Este navegador tiene las ventanas emergentes bloqueadas. Modifique la configuración de su navegador.\nEn algunas versiones de Internet Explorer, un clic sobre la banda amarilla superior es suficiente.", 
+	    alert(GUFDonaCadenaLang({"cat":"Aquest navegador tÃ© les finestres emergents bloquejades. Canvia la configuraciÃ³ del teu navegador.\nEn algunes versions d'Internet Explorer, nomÃ©s cal fer un clic sobre la faixa groga superior.", 
+							  "spa":"Este navegador tiene las ventanas emergentes bloqueadas. Modifique la configuraciÃ³n de su navegador.\nEn algunas versiones de Internet Explorer, un clic sobre la banda amarilla superior es suficiente.", 
 							  "eng":"Sorry, this browser has pop-up windows locked. Please change browser configuration.\nIn some Internet Explorer versions only a click on top yellow band will fix it.",
-							  "fre":"Ce navigateur a les fenêtres émergentes fermées. Changez la configuration de votre navigateur.\nDans certaines versions d'Internet Explorer, il suffit de cliquer sur la barre jaune supérieure."}, lang));
+							  "fre":"Ce navigateur a les fenÃªtres Ã©mergentes fermÃ©es. Changez la configuration de votre navigateur.\nDans certaines versions d'Internet Explorer, il suffit de cliquer sur la barre jaune supÃ©rieure."}, lang));
 	    return false;
 	}
 	return true;
@@ -268,7 +268,7 @@ var exception_error;
 		alert(url + ": "+ exception_error.childNodes[0].nodeValue);
 		return true;
 	}
-	//Si no trobo text, potser encara trovaré el codi
+	//Si no trobo text, potser encara trovarÃ© el codi
 	exception_error=GetXMLElementByName(root, "ows", "Exception");
 	if (exception_error)
 	{
@@ -311,7 +311,7 @@ var cdns=[];
 
 	if (!doc || !doc.documentElement)
 	{
-		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no és xml", "spa":"El retorno no es xml", "eng":"Return is not xml", "fre":"Le retour n'est pas xml"}, extra_param.lang));
+		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no Ã©s xml", "spa":"El retorno no es xml", "eng":"Return is not xml", "fre":"Le retour n'est pas xml"}, extra_param.lang));
 		return ;
 	}
 	var root=doc.documentElement;
@@ -322,8 +322,8 @@ var cdns=[];
 	var owc=ParseOWSContextAtom(root);
 	if (owc.properties.totalResults==0 || !owc.features)
 	{
-		cdns.push(GUFDonaCadenaLang({"cat":"No hi ha cap valoració prèvia", 
-					"spa":"No hay ninguna valoración previa", 
+		cdns.push(GUFDonaCadenaLang({"cat":"No hi ha cap valoraciÃ³ prÃ¨via", 
+					"spa":"No hay ninguna valoraciÃ³n previa", 
 					"eng":"There is no previous user feedback", 
 					"fre":"Il n'y a pas encore de commentaires des utilisateurs"}, extra_param.lang)); 
 
@@ -335,12 +335,21 @@ var cdns=[];
 						" ", extra_param.rsc_type, " ");
 
 		cdns.push(GUFDonaCadenaLang({"cat":"encara", 
-					"spa":"todavía", 
+					"spa":"todavÃ­a", 
 					"eng":"yet", 
 					"fre":"encore"}, extra_param.lang));
 		document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
 		return;
 	}
+	//OG: canviem de posiciÃ³ el botÃ³ edit, que inicialment estava al final de tot de la llista de FB
+	if (typeof extra_param.edit_button!=="undefined" && extra_param.edit_button==false)
+	; //si el param no existeix o diu que no vull botÃ³ no el poso
+	else
+		cdns.push("<div class=\"guf_edit user\"><input type=\"button\" class=\"guf_button user\" value=\"",
+			GUFDonaCadenaLang({"cat":"Edita", "spa":"Edita", "eng":"Edit", "fre":"Ã‰diter"}, extra_param.lang), "\"",
+			" onClick='GUFOpenNimmbus(\"", extra_param.lang, "\",\"", extra_param.access_token_type, "\");' /> ",
+			GUFDonaCadenaLang({"cat":"les teves entrades prÃ¨vies", "spa":"tus entradas previas", "eng":"your previous entries", "fre":"vos entrÃ©es prÃ©cÃ©dentes"}, extra_param.lang), "</div><!-- guf_edit -->"); 
+			//fi de  "</div><!-- guf_report -->");
 	var type;
 	//cdns.push("<div class=\"guf_report user\">");
 	for (var i=0; i<owc.features.length; i++)
@@ -357,7 +366,7 @@ var cdns=[];
 			cdns.push("<fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">", owc.features[i].properties.authors[0].name, ", ", DonaDataISOComAText(owc.features[i].properties.updated), 
 				"</legend>", 							
 				"<div class=\"guf_fb_id user\"><span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+extra_param.lang+"&RESOURCE="+str+"\" target=\"_blank\">"+str+"</a></div>",				
-				"<div class=\"guf_abstract user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Résumé"}, extra_param.lang), "</span>: ", owc.features[i].properties.title,
+				"<div class=\"guf_abstract user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"RÃ©sumÃ©"}, extra_param.lang), "</span>: ", owc.features[i].properties.title,
 				"</div><div id=\"", extra_param.div_id, "_",i , "\"></div>");
 								
 			if (typeof extra_param.callback_function!=="undefined" && extra_param.callback_function != "")
@@ -373,14 +382,6 @@ var cdns=[];
 			cdns.push("</fieldset>");		
 		}
 	}
-	if (typeof extra_param.edit_button!=="undefined" && extra_param.edit_button==false)
-		; //si el param no existeix o diu que no vull botó no el poso
-	else
-		cdns.push("<div class=\"guf_edit user\"><input type=\"button\" class=\"guf_button user\" value=\"",
-			GUFDonaCadenaLang({"cat":"Edita", "spa":"Edita", "eng":"Edit", "fre":"Éditer"}, extra_param.lang), "\"",
-			" onClick='GUFOpenNimmbus(\"", extra_param.lang, "\",\"", extra_param.access_token_type, "\");' /> ",
-			GUFDonaCadenaLang({"cat":"les teves entrades prèvies", "spa":"tus entradas previas", "eng":"your previous entries", "fre":"vos entrées précédentes"}, extra_param.lang), "</div><!-- guf_edit -->"); 
-	//fi de  "</div><!-- guf_report -->");
 	document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
 	for (var i=0; i<owc.features.length; i++)
 	{
@@ -412,8 +413,7 @@ function ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(identifier, lang, es_id_fb_it
 			
 		if (text_html.indexOf("www.doi.org") >= 0 || text_html.indexOf("/doi.org") >= 0)
 			link_html="<span class=\"guf_key_2 user\">DOI</span>: <a class=\"guf_link user\" href=\""+text_html+"\" target=\"_blank\">"+identifier.code+"</a>. <br/>";
-else if (text_html.indexOf("https://www.nimmbus.cat/resourceId") >= 0) //si codeSpace és https://www.nimmbus.cat/resourceId és que és un recurs NiMMbus, i per tant puc fer la consulta de retrieve
-		//else if (text_html.indexOf("nimmbus/resourceId") >= 0) //si codeSpace és ***/nimmbus/resourceId és que és un recurs NiMMbus, i per tant puc fer la consulta de retrieve
+		else if (text_html.indexOf("https://www.nimmbus.cat/resourceId") >= 0) //si codeSpace Ã©s https://www.nimmbus.cat/resourceId Ã©s que Ã©s un recurs NiMMbus, i per tant puc fer la consulta de retrieve
 		{
 			if (es_id_fb_item)
 				link_html="<span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+lang+"&RESOURCE="+identifier.code+"\" target=\"_blank\">"+identifier.code+"</a><br/>";
@@ -442,9 +442,9 @@ function ConstrueixCadenaDesdeCitationOPublication(cdns, cit_o_pub, i_cit_o_pub,
 		else
 		{
 			if (es_public)
-				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Publicació", "spa":"Publicación", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</span> ");
-			else //cas remot perquè mai em passi una citació sense text_titol, però per si de cas
-				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Citació", "spa":"Citación", "eng":"Citation", "fre":"Citation"}, extra_param.lang), ":</span> ");
+				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"PublicaciÃ³", "spa":"PublicaciÃ³n", "eng":"Publication", "fre":"Publication"}, extra_param.lang), ":</span> ");
+			else //cas remot perquÃ¨ mai em passi una citaciÃ³ sense text_titol, perÃ² per si de cas
+				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"CitaciÃ³", "spa":"CitaciÃ³n", "eng":"Citation", "fre":"Citation"}, extra_param.lang), ":</span> ");
 		}
 	}
 	cdns.push("<input type=\"checkbox\" id=\""+extra_param.div_id+"_"+prefix_div+"_"+i_cit_o_pub+"\" style=\"display:none;\">");
@@ -452,25 +452,25 @@ function ConstrueixCadenaDesdeCitationOPublication(cdns, cit_o_pub, i_cit_o_pub,
 	if (cit_o_pub.title)
 		cdns.push(cit_o_pub.title);
 					
-	cdns.push(" <div class=\"guf_folded user\">"); //L'espai cal perquè si no el "Shown ..." queda junt amb lo anterior quan està plegat
+	cdns.push(" <div class=\"guf_folded user\">"); //L'espai cal perquÃ¨ si no el "Shown ..." queda junt amb lo anterior quan estÃ  plegat
 		
 	if (cit_o_pub.edition || cit_o_pub.editionDate)
 	{
-		cdns.push("<div class=\"guf_cit_edition user\"><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat": "Edició", "spa": "Edición", "eng": "Edition", "fre":"Édition"}, extra_param.lang), ":</span> ");
+		cdns.push("<div class=\"guf_cit_edition user\"><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat": "EdiciÃ³", "spa": "EdiciÃ³n", "eng": "Edition", "fre":"Ã‰dition"}, extra_param.lang), ":</span> ");
 		if (cit_o_pub.edition)
 		{
 			cdns.push(cit_o_pub.edition);
 			if (cit_o_pub.editionDate)
 				cdns.push(", ", cit_o_pub.editionDate);
 		}
-		else //si no tinc edition és que tinc editionDate, si no no hauria entrat
+		else //si no tinc edition Ã©s que tinc editionDate, si no no hauria entrat
 			cdns.push(cit_o_pub.editionDate);
 		cdns.push("</div>");				
 	}
 	
 	if (cit_o_pub.series && cit_o_pub.series.name)
 	{
-		cdns.push("<div class=\"guf_cit_series user\"><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Sèrie", "spa":"Serie", "eng": "Series", "fre":"série"}, extra_param.lang), ":</span> ");
+		cdns.push("<div class=\"guf_cit_series user\"><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"SÃ¨rie", "spa":"Serie", "eng": "Series", "fre":"sÃ©rie"}, extra_param.lang), ":</span> ");
 		cdns.push("<i>", cit_o_pub.series.name, "</i>");
 		if (cit_o_pub.series.issueIdentification)
 		{
@@ -483,7 +483,7 @@ function ConstrueixCadenaDesdeCitationOPublication(cdns, cit_o_pub, i_cit_o_pub,
 	
 	if (cit_o_pub.otherCitationDetails)
 		cdns.push("<div class=\"guf_cit_other_citation user\"><span class=\"guf_key_2 user\">", 
-			GUFDonaCadenaLang({"cat": "Altres detalls de la citació", "spa": "Otros detalles de la cita", "eng": "Other citation details", "fre":"Autres détails de la citation"}, extra_param.lang), 
+			GUFDonaCadenaLang({"cat": "Altres detalls de la citaciÃ³", "spa": "Otros detalles de la cita", "eng": "Other citation details", "fre":"Autres dÃ©tails de la citation"}, extra_param.lang), 
 			":</span> ", cit_o_pub.otherCitationDetails, "</div>");				
 	
 	//citedResponsibleParty
@@ -530,9 +530,9 @@ function ConstrueixCadenaDesdeCitationOPublication(cdns, cit_o_pub, i_cit_o_pub,
 	}
 
 	if (es_public && cit_o_pub.abstract)
-		cdns.push("<div class=\"guf_pub_abstract user\"><span class=\"guf_key_2 user\">"+GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Résumé"},extra_param.lang)+"</span>: ", cit_o_pub.abstract,"</div>");				
+		cdns.push("<div class=\"guf_pub_abstract user\"><span class=\"guf_key_2 user\">"+GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"RÃ©sumÃ©"},extra_param.lang)+"</span>: ", cit_o_pub.abstract,"</div>");				
 		
-	cdns.push("</div><a class=\"guf_link user\" href=\"javascript:void(0);\"><label for=\""+extra_param.div_id+"_"+prefix_div+"_"+i_cit_o_pub+"\"><span class=\"guf_show_more user\">"+GUFDonaCadenaLang({"cat":"Mostrar/amagar més informació", "spa":"Mostrar/ocultar más información", "eng":"Show/hide more information", "fre":"Afficher/masquer plus d'informations"},extra_param.lang)+"</span></label></a></input>");
+	cdns.push("</div><a class=\"guf_link user\" href=\"javascript:void(0);\"><label for=\""+extra_param.div_id+"_"+prefix_div+"_"+i_cit_o_pub+"\"><span class=\"guf_show_more user\">"+GUFDonaCadenaLang({"cat":"Mostrar/amagar mÃ©s informaciÃ³", "spa":"Mostrar/ocultar mÃ¡s informaciÃ³n", "eng":"Show/hide more information", "fre":"Afficher/masquer plus d'informations"},extra_param.lang)+"</span></label></a></input>");
 
 	return;
 }
@@ -552,7 +552,7 @@ var cdns=[];
 
 	if (!doc || !doc.documentElement)
 	{
-		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no és xml", "spa":"El retorno no es xml", "eng":"Return is not xml", "fre":"Le retour n'est pas xml"}, extra_param.lang)); 
+		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no Ã©s xml", "spa":"El retorno no es xml", "eng":"Return is not xml", "fre":"Le retour n'est pas xml"}, extra_param.lang)); 
 		return ;
 	}
 	var root=doc.documentElement;
@@ -564,7 +564,7 @@ var cdns=[];
 
 	if (!guf)
 	{	
-		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no és un xml guf", "spa":"El retorno no es xml guf", "eng":"Return is not xml guf", "fre":"Le retour n'est pas xml guf"}, extra_param.lang)); 
+		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no Ã©s un xml guf", "spa":"El retorno no es xml guf", "eng":"Return is not xml guf", "fre":"Le retour n'est pas xml guf"}, extra_param.lang)); 
 		return;
 	}
 	
@@ -574,20 +574,20 @@ var cdns=[];
 		return;
 	}
 	
-	/* Ara l'he posat a fora perquè quedi més endreçat (Id, titol + resta)
+	/* Ara l'he posat a fora perquÃ¨ quedi mÃ©s endreÃ§at (Id, titol + resta)
 	if (guf.identifier)
 		cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.identifier, extra_param.lang, true));*/
 	
-	/*if (guf.abstract) ja no existeix pq és el feature.title que JA he posat)
+	/*if (guf.abstract) ja no existeix pq Ã©s el feature.title que JA he posat)
 		cdns.push("<div class=\"guf_abstract user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Abstrait"}, extra_param.lang), ":</span> ", guf.abstract, "</div>");*/
 
 	if (guf.purpose)
-		cdns.push("<div class=\"guf_purpose user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Propòsit", "spa":"Propósito", "eng":"Purpose", "fre":"Raison"}, extra_param.lang), ":</span> ", guf.purpose, "</div>");
+		cdns.push("<div class=\"guf_purpose user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"PropÃ²sit", "spa":"PropÃ³sito", "eng":"Purpose", "fre":"Raison"}, extra_param.lang), ":</span> ", guf.purpose, "</div>");
 
 	//if (guf.contact)
 	
 	if (guf.contactRole && GUF_UserRoleCode[guf.contactRole])
-		cdns.push("<div class=\"guf_contact_role user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Rol de l'usuari", "spa":"Rol del usuario", "eng":"User role", "fre":"Rôle de user"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_UserRoleCode[guf.contactRole], extra_param.lang), "</div>");
+		cdns.push("<div class=\"guf_contact_role user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Rol de l'usuari", "spa":"Rol del usuario", "eng":"User role", "fre":"RÃ´le de user"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_UserRoleCode[guf.contactRole], extra_param.lang), "</div>");
 
 	if (guf.dateInfo)
 	{
@@ -601,14 +601,14 @@ var cdns=[];
 	}	
 	
 	if (guf.rating)	
-		cdns.push("<div class=\"guf_rating user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Puntuació", "spa":"Puntuación", "eng":"Rating", "fre":"Évaluation"}, extra_param.lang), ":</span> ", guf.rating, "/5</div>");
+		cdns.push("<div class=\"guf_rating user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"PuntuaciÃ³", "spa":"PuntuaciÃ³n", "eng":"Rating", "fre":"Ã‰valuation"}, extra_param.lang), ":</span> ", guf.rating, "/5</div>");
 
 	if (guf.user_comment && guf.user_comment.comment)
 	{ 
 		cdns.push("<div class=\"guf_comment user\"><hr class=\"guf_solid user\">");
 		cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Comentari", "spa":"Comentario", "eng":"Comment", "fre":"Commentaire"}, extra_param.lang), ":</span> ", guf.user_comment.comment, "<br/>");
 		if (guf.user_comment.motivation && GUF_MotivationCode[guf.user_comment.motivation])
-			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Motivació del comentari", "spa":"Motivación del comentario", "eng":"Comment motivation", "fre":"Motivation du commentaire"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_MotivationCode[guf.user_comment.motivation], extra_param.lang));			
+			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"MotivaciÃ³ del comentari", "spa":"MotivaciÃ³n del comentario", "eng":"Comment motivation", "fre":"Motivation du commentaire"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_MotivationCode[guf.user_comment.motivation], extra_param.lang));			
 		cdns.push("</div><!-- guf_comment -->");
 	}
 
@@ -624,27 +624,27 @@ var cdns=[];
 					s+=", ";
 				s+=GUFDonaCadenaLang(GUF_ReportAspectCode[guf.usage.reportAspect[item]], extra_param.lang);
 			}
-			cdns.push("<div class=\"guf_aspect_reported user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Aspecte reportat", "spa": "Aspecto reportado", "eng": "Aspect reported", "fre":"Aspect rapporté"}, extra_param.lang), ":</span> ", s, "</div>");
+			cdns.push("<div class=\"guf_aspect_reported user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Aspecte reportat", "spa": "Aspecto reportado", "eng": "Aspect reported", "fre":"Aspect rapportÃ©"}, extra_param.lang), ":</span> ", s, "</div>");
 		}
 		
 		if (guf.usage.usage_descr)
 		{
 			cdns.push("<div class=\"guf_usage_description user\"><hr class=\"guf_dashed user\">");			
 			if (guf.usage.usage_descr.specific_usage)
-				cdns.push("<div class=\"guf_spec_usage_description user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Descripció de l'ús específic", "spa": "Descripción del uso específico", "eng": "Specific usage description", "fre":"Description d'utilisation spécifique"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.specific_usage, "</div>");				
+				cdns.push("<div class=\"guf_spec_usage_description user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "DescripciÃ³ de l'Ãºs especÃ­fic", "spa": "DescripciÃ³n del uso especÃ­fico", "eng": "Specific usage description", "fre":"Description d'utilisation spÃ©cifique"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.specific_usage, "</div>");				
 				
 			if (guf.usage.usage_descr.usage_dt)
 			{
 				var s=DonaCadenaDataHoraDesDeElementCompost(guf.usage.usage_descr.usage_dt);
 				if (s!="")
-					cdns.push("<div class=\"guf_usage_dt user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data i  hora de l'ús", "spa": "Fecha y hora del uso", "eng": "Usage date and time", "fre": "Date et heure d'utilisation"}, extra_param.lang), ":</span> ", s, "</div>");
+					cdns.push("<div class=\"guf_usage_dt user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data i  hora de l'Ãºs", "spa": "Fecha y hora del uso", "eng": "Usage date and time", "fre": "Date et heure d'utilisation"}, extra_param.lang), ":</span> ", s, "</div>");
 			}
 			
 			if (guf.usage.usage_descr.user_det_lim)
-				cdns.push("<div class=\"guf_user_deter_limits user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Limitacions determinades per l'usuari", "spa": "Limitaciones determinadas por el usuario", "eng": "User determined limitations", "fre":"Limites déterminées par l'utilisateur"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.user_det_lim, "</div>");				
+				cdns.push("<div class=\"guf_user_deter_limits user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Limitacions determinades per l'usuari", "spa": "Limitaciones determinadas por el usuario", "eng": "User determined limitations", "fre":"Limites dÃ©terminÃ©es par l'utilisateur"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.user_det_lim, "</div>");				
 				
 			if (guf.usage.usage_descr.response)
-				cdns.push("<div class=\"guf_response user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Resposta", "spa": "Respuesta", "eng": "Response", "fre":"Réponse"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.response, "</div>");				
+				cdns.push("<div class=\"guf_response user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Resposta", "spa": "Respuesta", "eng": "Response", "fre":"RÃ©ponse"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.response, "</div>");				
 				
 			if (guf.usage.usage_descr.add_doc)
 			{
@@ -653,7 +653,7 @@ var cdns=[];
 				{
 					cdns.push("<div>");
 					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.usage_descr.add_doc[item], item, 
-						GUFDonaCadenaLang({"cat": "Documentació addicional", "spa": "Documentación adicional", "eng": "Additional documentation", "fre":"Documentation complémentaire"}, extra_param.lang), 
+						GUFDonaCadenaLang({"cat": "DocumentaciÃ³ addicional", "spa": "DocumentaciÃ³n adicional", "eng": "Additional documentation", "fre":"Documentation complÃ©mentaire"}, extra_param.lang), 
 						"add_doc", extra_param, false);
 					cdns.push("</div>");
 				}
@@ -663,11 +663,11 @@ var cdns=[];
 			if (HiHaReprodUsage(guf.usage.usage_descr))
 			{
 				cdns.push("<div class=\"guf_reprodUsage user\">");
-				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Ús reproduïble", "spa":"Uso reproducible", "eng":"Reproducible usage", "fre":"Utilisation reproductible"}, extra_param.lang), ":</span>");								
+				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Ãšs reproduÃ¯ble", "spa":"Uso reproducible", "eng":"Reproducible usage", "fre":"Utilisation reproductible"}, extra_param.lang), ":</span>");								
 				if (guf.usage.usage_descr.code)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (text)", "spa":"Código (texto)", "eng":"Code (text)", "fre":"Code (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.code);
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (text)", "spa":"CÃ³digo (texto)", "eng":"Code (text)", "fre":"Code (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.code);
 				if (guf.usage.usage_descr.codeLink.linkage)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (adreça URL)", "spa":"Código (dirección URL)", "eng": "Code (URL link)", "fre":"Code (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.codeLink.linkage);												
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (adreÃ§a URL)", "spa":"CÃ³digo (direcciÃ³n URL)", "eng": "Code (URL link)", "fre":"Code (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.codeLink.linkage);												
 				if (guf.usage.usage_descr.codeMediaType && guf.usage.usage_descr.codeMediaType.length>0)
 				{
 					var s="";				
@@ -681,20 +681,20 @@ var cdns=[];
 						s=GUFDonaCadenaLang({"cat":"Contenidor docker", "spa":"Contenedor docker", "eng":"Docker container", "fre":"Conteneur Docker"}, extra_param.lang)+" ("+guf.usage.usage_descr.codeMediaType+")";
 					else
 						s=guf.usage.usage_descr.codeMediaType;
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Format del codi", "spa":"Formato del código", "eng": "Code format", "fre":"Format de code"}, extra_param.lang), "</span>: ", s);								
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Format del codi", "spa":"Formato del cÃ³digo", "eng": "Code format", "fre":"Format de code"}, extra_param.lang), "</span>: ", s);								
 				}	
 				if (guf.usage.usage_descr.platform)
 					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Plataforma", "spa":"Plataforma", "eng":"Platform", "fre":"Plateforme"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.platform);							
 				if (guf.usage.usage_descr.version)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Versió", "spa":"Versión", "eng": "Version", "fre":"Version"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.version);								
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"VersiÃ³", "spa":"VersiÃ³n", "eng": "Version", "fre":"Version"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.version);								
 				if (guf.usage.usage_descr.schema)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Esquema", "spa":"Esquema", "eng": "Schema", "fre":"Schème"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.schema);
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Esquema", "spa":"Esquema", "eng": "Schema", "fre":"SchÃ¨me"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.schema);
 				if (guf.usage.usage_descr.suggestedApplication)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Aplicació suggerida", "spa":"Aplicación sugerida", "eng":"Suggested application", "fre":"Application suggérée"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.suggestedApplication);							
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"AplicaciÃ³ suggerida", "spa":"AplicaciÃ³n sugerida", "eng":"Suggested application", "fre":"Application suggÃ©rÃ©e"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.suggestedApplication);							
 				if (guf.usage.usage_descr.diagram)
 					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (text)", "spa":"Diagrama (texto)", "eng": "Diagram (text)", "fre":"Diagramme (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagram);			
 				if (guf.usage.usage_descr.diagramLink.linkage)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (adreça URL)", "spa":"Diagrama (dirección URL)", "eng": "Diagram (URL link)", "fre":"Diagramme (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagramLink.linkage);			
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (adreÃ§a URL)", "spa":"Diagrama (direcciÃ³n URL)", "eng": "Diagram (URL link)", "fre":"Diagramme (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagramLink.linkage);			
 				if (guf.usage.usage_descr.diagramMediaType && guf.usage.usage_descr.diagramMediaType.length>0)
 				{
 					var s="";					
@@ -721,17 +721,17 @@ var cdns=[];
 			cdns.push("<div class=\"guf_discovered_issue user\"><hr class=\"guf_dashed user\">");
 			
 			if (guf.usage.discov_issue.known_problem)
-				cdns.push("<div class=\"guf_known_problem user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Problema conegut", "spa": "Problema conocido", "eng": "Known problem", "fre": "Problème connu"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.known_problem, "</div>");
+				cdns.push("<div class=\"guf_known_problem user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Problema conegut", "spa": "Problema conocido", "eng": "Known problem", "fre": "ProblÃ¨me connu"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.known_problem, "</div>");
 			
 			if (guf.usage.discov_issue.problem_dt)
 			{
 				var s=DonaCadenaDataHoraDesDeElementCompost(guf.usage.discov_issue.problem_dt);
 				if (s!="")
-					cdns.push("<div class=\"guf_known_problem_dt user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data i hora del problema conegut", "spa": "Fecha y hora del problema conocido", "eng": "Known problem date and time", "fre": "Problème connu date et heure"}, extra_param.lang), ":</span> ", s, "</div>");
+					cdns.push("<div class=\"guf_known_problem_dt user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data i hora del problema conegut", "spa": "Fecha y hora del problema conocido", "eng": "Known problem date and time", "fre": "ProblÃ¨me connu date et heure"}, extra_param.lang), ":</span> ", s, "</div>");
 			}	
 			
 			if (guf.usage.discov_issue.work_around)
-				cdns.push("<div class=\"guf_work_around user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Solució", "spa": "Solución", "eng": "Work around", "fre":"Solution"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.work_around, "</div>");		
+				cdns.push("<div class=\"guf_work_around user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "SoluciÃ³", "spa": "SoluciÃ³n", "eng": "Work around", "fre":"Solution"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.work_around, "</div>");		
 				
 			if (guf.usage.discov_issue.ref_doc)
 			{	
@@ -740,7 +740,7 @@ var cdns=[];
 				{
 					cdns.push("<div>");
 					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.discov_issue.ref_doc[item], item, 
-						GUFDonaCadenaLang({"cat": "Document de referencia", "spa": "Documento de referencia", "eng": "Reference document", "fre":"Document de référence"}, extra_param.lang), 
+						GUFDonaCadenaLang({"cat": "Document de referencia", "spa": "Documento de referencia", "eng": "Reference document", "fre":"Document de rÃ©fÃ©rence"}, extra_param.lang), 
 						"ref_doc", extra_param, true);
 					cdns.push("</div>");
 				}
@@ -748,8 +748,8 @@ var cdns=[];
 			}
 			
 			if (guf.usage.discov_issue.exp_fix_date)
-				cdns.push("<div class=\"guf_exp_solution_date user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data prevista per la distribució d'una solució", "spa": "Fecha prevista para la distribución de una solución", 
-					"eng": "Expected date for a solution to be released", "fre": "Date prévue pour la publication d'une solution"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.exp_fix_date, "</div>");;
+				cdns.push("<div class=\"guf_exp_solution_date user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data prevista per la distribuciÃ³ d'una soluciÃ³", "spa": "Fecha prevista para la distribuciÃ³n de una soluciÃ³n", 
+					"eng": "Expected date for a solution to be released", "fre": "Date prÃ©vue pour la publication d'une solution"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.exp_fix_date, "</div>");;
 			
 			if (guf.usage.discov_issue.fix_rsrc)
 			{					
@@ -801,7 +801,7 @@ var cdns=[];
 		cdns.push("<div class=\"guf_target user\"><hr class=\"guf_solid user\">");	
 		for (var i_target=0; i_target<guf.target.length; i_target++)
 		{	
-			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Recurs valorat", "spa":"Recurso valorado", "eng":"Target resource", "fre":"Ressource valorisée"}, extra_param.lang));
+			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Recurs valorat", "spa":"Recurso valorado", "eng":"Target resource", "fre":"Ressource valorisï¿½e"}, extra_param.lang));
 			
 			if (guf.target[i_target].role)
 				cdns.push(" (", GUFDonaCadenaLang(GUF_TargetRoleCode[guf.target[i_target].role],extra_param.lang),"):</span> ");
@@ -818,12 +818,12 @@ var cdns=[];
 	  			for (var i_id=0; i_id<guf.target[i_target].identifier.length; i_id++)
 	  				cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.target[i_target].identifier[i_id], extra_param.lang, false));
 			}
-			if (guf.target[i_target].scope) //comprovem que a l'xml hi ha la secció scope
+			if (guf.target[i_target].scope) //comprovem que a l'xml hi ha la secciï¿½ scope
 			{
 				if (guf.target[i_target].minlong) //comprovem que hi ha dades de coordenades. No cal comprovar que hi siguin totes.
-					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Envolupant", "spa":"Envolvente", "eng":"Bounding box", "fre":"Extension géographique"}, extra_param.lang),":</span>"," ",guf.target[i_target].minlong,", ",guf.target[i_target].maxlong,", ",guf.target[i_target].minlat,", ",guf.target[i_target].maxlat,"<br>");
+					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Envolupant", "spa":"Envolvente", "eng":"Bounding box", "fre":"Extension gï¿½ographique"}, extra_param.lang),":</span>"," ",guf.target[i_target].minlong,", ",guf.target[i_target].maxlong,", ",guf.target[i_target].minlat,", ",guf.target[i_target].maxlat,"<br>");
 				if (guf.target[i_target].gmlpol) //comprovem si tenim un poligon gml
-					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Polígon GML", "spa":"Polígono GML", "eng":"GML polygon", "fre":"GML polygone"}, extra_param.lang),":</span>"," ", GUFDonaCadenaLang({"cat":"definit", "spa":"definido", "eng":"defined", "fre":"défini"}),"<br>");
+					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Polï¿½gon GML", "spa":"Polï¿½gono GML", "eng":"GML polygon", "fre":"GML polygone"}, extra_param.lang),":</span>"," ", GUFDonaCadenaLang({"cat":"definit", "spa":"definido", "eng":"defined", "fre":"dï¿½fini"}),"<br>");
 			}
 			//cdns.push("</div><label for=\""+extra_param.div_id+"_"+i_target+"\"><i>Click to show/hide more information</i></label></input>");
 			//cdns.push("<br/>");
@@ -851,7 +851,7 @@ function GUFOpenNimmbus(lang, access_token_type)
 function GUFDonaNomFitxerAddFeedback(title, code, codespace, access_token_type, reprod_usage, lang)
 {
 var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
-//en versions previes no es passava lang, per això ho faig així:
+//en versions previes no es passava lang, per aixÃ² ho faig aixÃ­:
 	return GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang ? lang : "eng", access_token_type, reprod_usage);
 }
 
@@ -859,12 +859,12 @@ function GUFFragmentKVPSobreReproducibleUsage(reprod_usage)
 {
 	var url="";
 
-	if (reprod_usage.abstract!="") //típicament hi va el nom estil, p.ex.
+	if (reprod_usage.abstract!="") //tÃ­picament hi va el nom estil, p.ex.
 		url+="&ABSTRACT="+reprod_usage.abstract;					
 	url+="&REPORT_ASPECT="+"usage";
 	if (reprod_usage.specific_usage!="")
 		url+="&SPECIFIC_USAGE="+reprod_usage.specific_usage;
-	/*date time -> de moment es crearà amb l'actual en el nimmbus al darrer moment
+	/*date time -> de moment es crearÃ  amb l'actual en el nimmbus al darrer moment
 	if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.feedback_resource_form.usage_date.value,document.feedback_resource_form.usage_time.value))!="")
 		url+="&USAGE_DATE_TIME="+p;*/
 	if (reprod_usage.ru_code!="")
@@ -892,31 +892,36 @@ function GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_t
 	for (var i=0; i<targets.length; i++)	
 	{		
 		if (targets[i].title && targets[i].title!="" && targets[i].code && targets[i].code!="" && targets[i].codespace && targets[i].codespace!="")
-		{	//aquest target és vàlid
-			if (n_targets==0) //i és el primer
-				url+="?target_title=" + targets[i].title + "&target_code=" + targets[i].code + "&target_codespace=" + targets[i].codespace + (targets[i].role ? ("&target_role=" + targets[i].role) : ""); 	
+		{	//aquest target Ã©s vÃ lid
+			//OG: aquÃ­ afegim el bbox i el gml pol a la query que rebrÃ  el nimmbus
+			if (n_targets==0) //i Ã©s el primer
+				url+="?target_title=" + targets[i].title + "&target_code=" + targets[i].code + "&target_codespace=" + targets[i].codespace + (targets[i].role ? ("&target_role=" + targets[i].role) : "") +
+				 (targets[i].bbox ? ("&target_geo_bbox=" + targets[i].bbox.xmin+","+targets[i].bbox.xmax+","+targets[i].bbox.ymin+","+targets[i].bbox.ymax ): "")+
+				 (targets[i].gmlpol ? ("&target_bnd_pol=" + targets[i].gmlpol.gml) : ""); 	
 			else
 				url+="&target_title_" + (n_targets+1) + "=" + targets[i].title + "&target_code_" + (n_targets+1) + "=" + targets[i].code + 
 						"&target_codespace_" + (n_targets+1) + "=" + targets[i].codespace + 
-						(targets[i].role ? ("&target_role_" + (n_targets+1) + "=" + targets[i].role) : ""); 	
+						(targets[i].role ? ("&target_role_" + (n_targets+1) + "=" + targets[i].role) : "")+
+						(targets[i].bbox ? ("&target_geo_bbox_" + (n_targets+1) + "=" + targets[i].bbox.xmin+","+targets[i].bbox.xmax+","+targets[i].bbox.ymin+","+targets[i].bbox.ymax ): "") +
+				 		(targets[i].gmlpol ? ("&target_bnd_pol_"+ (n_targets+1) + "=" + targets[i].gmlpol.gml) : "")	; 	
 			n_targets++;
 		}		
 		
 		if (n_targets>2)
 		{
-	    alert(GUFDonaCadenaLang({"cat":"De moment només s'accepten dos recursos objectius de la valoració, la resta seran ignorats.", 
-							  "spa":"De momento sólo se aceptan dos recursos objetivos de la valoración, el resto serán ignorados.", 
+	    alert(GUFDonaCadenaLang({"cat":"De moment nomÃ©s s'accepten dos recursos objectius de la valoraciÃ³, la resta seran ignorats.", 
+							  "spa":"De momento sÃ³lo se aceptan dos recursos objetivos de la valoraciÃ³n, el resto serÃ¡n ignorados.", 
 							  "eng":"At the moment, only two target resources of the feedback item are accepted, the rest will be ignored.",
-							  "fre":"Pour le moment, seules deux ressources cibles de l'élément de rétroaction sont acceptées, le reste sera ignoré."}, lang));
+							  "fre":"Pour le moment, seules deux ressources cibles de l'Ã©lÃ©ment de rÃ©troaction sont acceptÃ©es, le reste sera ignorÃ©."}, lang));
 			break;
 		}
 	}
-	if (n_targets==0) //cap vàlid
+	if (n_targets==0) //cap vÃ lid
 	{
-	    alert(GUFDonaCadenaLang({"cat":"No hi ha cap recurs objectiu de la valoració.", 
-							  "spa":"No hay ningún recurso objetivo de la valoración.", 
+	    alert(GUFDonaCadenaLang({"cat":"No hi ha cap recurs objectiu de la valoraciÃ³.", 
+							  "spa":"No hay ningÃºn recurso objetivo de la valoraciÃ³n.", 
 							  "eng":"There is no target resources of the feedback item.",
-							  "fre":"Il n'y a pas de ressources cibles de l'élément de rétroaction."}, lang));	
+							  "fre":"Il n'y a pas de ressources cibles de l'Ã©lÃ©ment de rÃ©troaction."}, lang));	
 			return "";
 	}	
 	url+="&ACCESS_TOKEN_TYPE=" + access_token_type + "&page=ADDFEEDBACK&share_borrower_1=Anonymous"; 	
@@ -987,7 +992,7 @@ function TornaNTargetsSecundaris(targets)
 	return n_targets_secundaris;
 }
 
-function GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(div_id, rsc_type, targets, lang, access_token_type)
+function GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(div_id, rsc_type, targets, lang, access_token_type, name_scope_function) 
 {
 var cdns=[];
 var n_targets_secundaris=0;
@@ -996,16 +1001,23 @@ var n_targets_secundaris=0;
 	cdns.push("<div id=\"", div_id, "\" class=\"guf_widget user\" style=\"position:relative;left:10px;top:10px;width:95%\">");
 	if (rsc_type != "")
 		cdns.push("<div class=\"guf_add_fb user\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">", 
-			GUFDonaCadenaLang({"cat":"Afegir valoracions a", "spa":"Añadir valoraciones a", "eng":"Add user feedback to", "fre":"Ajouter rétroaction de l'utilisateur de"}, lang), 
+			GUFDonaCadenaLang({"cat":"Afegir valoracions a", "spa":"AÃ±adir valoraciones a", "eng":"Add user feedback to", "fre":"Ajouter rÃ©troaction de l'utilisateur de"}, lang), 
 			" ", rsc_type,
 			"</legend>");
 	else
 		cdns.push("<div class=\"guf_add_fb user\">");
 
 	cdns.push("<input type=\"button\" class=\"guf_button user\" value=\"",
-				  GUFDonaCadenaLang({"cat":"Afegir una valoració", "spa":"Añadir una valoración", "eng":"Add a user feedback", "fre":"Ajouter une rétroaction de l'utilisateur"}, lang), "\"",
+				  GUFDonaCadenaLang({"cat":"Afegir una valoraciÃ³", "spa":"AÃ±adir una valoraciÃ³n", "eng":"Add a user feedback", "fre":"Ajouter une rÃ©troaction de l'utilisateur"}, lang), "\"",
 				  " onClick='GUFAfegirFeedbackCapaMultipleTargets(\"", JSON.stringify(targets).replaceAll("\"","\\\""), "\", \"", lang, "\", \"", access_token_type, "\");' />");
 
+//$$OG: nou botÃ³ per afegir scope a un FB
+	if (name_scope_function)
+	{
+		cdns.push("<input type=\"button\" class=\"guf_button user\" value=\"",
+				  GUFDonaCadenaLang({"cat":"ValoraciÃ³ d'una Ã rea especÃ­fica", "spa":"ValoraciÃ³n de un Ã¡rea especÃ­fica", "eng":"Feedback of a specific area", "fre":"RÃ©troaction d'un domaine spÃ©cifique"}, lang), "\"",
+				  " onClick='"+name_scope_function+"(\"", JSON.stringify(targets).replaceAll("\"","\\\""), "\", \"", lang, "\", \"", access_token_type, "\");' />");
+	}
 	if (rsc_type != "")
 		cdns.push("</fieldset></div>");
 	else
@@ -1013,9 +1025,9 @@ var n_targets_secundaris=0;
 
 	cdns.push("<div class=\"guf_report user\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">"); 
 	if (rsc_type != "")
-		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prèvies a", "spa":"Valoraciones previas a", "eng":"Previous user feedback to", "fre":"Précédent rétroaction de l'utilisateur de"}, lang));
+		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prÃ¨vies a", "spa":"Valoraciones previas a", "eng":"Previous user feedback to", "fre":"PrÃ©cÃ©dent rÃ©troaction de l'utilisateur de"}, lang));
 	else
-		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prèvies", "spa":"Valoraciones previas", "eng":"Previous user feedback", "fre":"Précédent rétroaction de l'utilisateur"}, lang));
+		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prÃ¨vies", "spa":"Valoraciones previas", "eng":"Previous user feedback", "fre":"PrÃ©cÃ©dent rÃ©troaction de l'utilisateur"}, lang));
 	cdns.push(" ", rsc_type, "</legend>");
 	
 	cdns.push("<div id=\"",div_id,"Previ\" style=\"width:98%\">", "</div></fieldset>");
@@ -1028,9 +1040,9 @@ var n_targets_secundaris=0;
 			if (targets[i].role=="secondary")
 				break;
 		}
-		//caldria fer un bucle per els N secundaris, ara només uso el primer (pq com ara només permeto dos...)
+		//caldria fer un bucle per els N secundaris, ara nomÃ©s uso el primer (pq com ara nomÃ©s permeto dos...)
 		cdns.push("<fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">"); 
-		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prèvies a l'objectiu secundari", "spa":"Valoraciones previas al objectivo secundario", "eng":"Previous user feedback to secondary target", "fre":"Précédent rétroaction de l'utilisateur sur la cible secondaire"}, lang));
+		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prÃ¨vies a l'objectiu secundari", "spa":"Valoraciones previas al objectivo secundario", "eng":"Previous user feedback to secondary target", "fre":"PrÃ©cÃ©dent rÃ©troaction de l'utilisateur sur la cible secondaire"}, lang));
 		cdns.push(" ", targets[i].title ? ("\""+targets[i].title +"\""): "", "</legend>");		
 		cdns.push("<div id=\"",div_id,"Previ_secundari\" style=\"width:98%\">", "</div></fieldset>");
 	}
