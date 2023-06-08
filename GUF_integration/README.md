@@ -82,7 +82,8 @@ This function has the following parameters in sequence:
   * _codespace_: A "codespace" where the "code" is considered unique. A codespace should be a global identifier (e.g. a URI). If you do not use the concept of "codespace" or "namespace", we recommend that you use the URL of your web service as the "codespace".
   * _lang_: The language used in the HTML page. You can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
   * _access_token_type_: In case the portal including the widget is using one of the supported Single-Sign-On (SSO) systems, it can be described here to allow the desired credentials to be used, thus avoiding the log-in step. Supported systems are: "NextGEOSS", "LandSense", "Google" or "NiMMbus" (being the latter the default value).
-
+  * _name_scope_function_: Can be null. If added it refers to the name of the function to be defined in your map browser that will activate the tool to define the scope of a feedback. This function will receive as input parameters _targets_, _lang_ and _access_token_type_ of the layer to add feedback and it must add the attributes _.bbox_ and _.gmlpol_ to the target element. **_.bbox_** will contain the geographic coordinates in WGS84 of the bounding box following the format ```target[i].bbox={"xmin":minLon, "xmax":maxLon, "ymin": minLat, "ymax":maxLat}```. **_.gmlpol_** will contain a string with the gml codification of the area of interest selected by the user following the format ``` target[i].gmlpol={"gml":'<gml:Polygon srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">41.81 1.46 41.81 2.73 40.88 2.73 40.88 1.46 41.81 .46</gml:posList></gml:LinearRing> </gml:exterior></gml:Polygon>'}```). At the end of the process, _name_scope_function_ must invoke **_GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type)_**.
+	
 For example, a call to this function could be:
 
 ```js
@@ -93,7 +94,8 @@ For example, a call to this function could be:
 			"clc-2012",
 			"https://land.copernicus.eu",
 			"eng",
-      "NextGEOSS");
+      			"NextGEOSS",
+			"MostraFinestraFeedbackAmbScope");
 ```
 
 You can call the function directly or you can provide a button or link to "activate" the widget when the user requests it. This can be done with this code:
@@ -122,7 +124,8 @@ This function has the following parameters in sequence:
         *  _role_: The role of this target related to the feedback item that is being created. The available options are: "primary", "secondary" or "supplementary"
   * _lang_: As in the previous function,  the language used in the HTML page. You can select among "cat", "spa" or "eng" for Catalan, Spanish or English respectively.
   * _access_token_type_: As in the previous function, in case the portal including the widget is using one of the supported Single-Sign-On (SSO) systems, it can be described here to allow the desired credentials to be used, thus avoiding the log-in step. Supported systems are: "NextGEOSS", "LandSense", "Google" or "NiMMbus" (being the latter the default value).
-
+  * _name_scope_function_: Can be null. If added it refers to the name of the function to be defined in your map browser that will activate the tool to define the scope of a feedback. This function will receive as input parameters _targets_, _lang_ and _access_token_type_ of the layer to add feedback and it must add the attributes _.bbox_ and _.gmlpol_ to the target element. **_.bbox_** will contain the geographic coordinates in WGS84 of the bounding box following the format ```target[i].bbox={"xmin":minLon, "xmax":maxLon, "ymin": minLat, "ymax":maxLat}```. **_.gmlpol_** will contain a string with the gml codification of the area of interest selected by the user following the format ``` target[i].gmlpol={"gml":'<gml:Polygon srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">41.81 1.46 41.81 2.73 40.88 2.73 40.88 1.46 41.81 .46</gml:posList></gml:LinearRing> </gml:exterior></gml:Polygon>'}```). At the end of the process, _name_scope_function_ must invoke **_GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type)_**.
+	
 For example, a call to this function could be:
 
 ```js
@@ -134,7 +137,8 @@ For example, a call to this function could be:
 			"resource",
 			targets,
 			"eng",
-			"NextGEOSS");
+			"NextGEOSS",
+			"MostraFinestraFeedbackAmbScope");
 ```
 
 You can see a multiple targets example (using a button) here: [code](../client_js/test_widget_multitarget.htm) and [test_widget_multitarget](https://www.nimmbus.cat/test_widget_multitarget.htm). This test page for multitargets describes the same example than before: dataset as primary target and collection as secondary target.
