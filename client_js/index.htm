@@ -4909,11 +4909,11 @@ function OmpleElementsOfAFeedback()
 			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "block"); //not collapsed if it has content	
 			CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "block");
 		}
-		//$$OG: venim d'una URL, podríem tenir un cas de multitarget (per exemple en el cas de Sentinel), 
-		//però com està programat ara mateix tot, només es pot dibuixar un únic polígon per una capa concreta, que és el "primary target" i, 
+		//$$OG: venim d'una URL, podrÃ­em tenir un cas de multitarget (per exemple en el cas de Sentinel), 
+		//perÃ² com estÃ  programat ara mateix tot, nomÃ©s es pot dibuixar un Ãºnic polÃ­gon per una capa concreta, que Ã©s el "primary target" i, 
 		//per tant, l'element [0] de TargetsOfAFeedback.
-		//En cas que algun dia puguin arribar per URL multitargets amb scopes independents s'haurà de repensar això i 
-		//la funció AnalitzarParametresURL(fragment) des del punt ParamsQuery.llista_targets.push i endavant.
+		//En cas que algun dia puguin arribar per URL multitargets amb scopes independents s'haurÃ  de repensar aixÃ² i 
+		//la funciÃ³ AnalitzarParametresURL(fragment) des del punt ParamsQuery.llista_targets.push i endavant.
 		if (ElementsOfAFeedback.bbox)
 		{
 			var str=ElementsOfAFeedback.bbox;

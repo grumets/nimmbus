@@ -24,17 +24,17 @@
 
     Copyright 2014, 2022 Xavier Pons
 
-    Aquest codi JavaScript ha estat idea de Joan MasÛ Pau (joan maso at uab cat) 
+    Aquest codi JavaScript ha estat idea de Joan Mas√≥ Pau (joan maso at uab cat) 
     amb l'ajut de l'Alaitz Zabala (alaitz zabala at uab cat)
-    dins del grup del MiraMon. MiraMon Ès un projecte del 
-    CREAF que elabora programari de Sistema d'InformaciÛ Geogr‡fica 
-    i de TeledetecciÛ per a la visualitzaciÛ, consulta, ediciÛ i an‡lisi 
-    de mapes r‡sters i vectorials. Aquest programari inclou
-    aplicacions d'escriptori i tambÈ servidors i clients per Internet.
-    No tots aquests productes sÛn gratuÔts o de codi obert. 
+    dins del grup del MiraMon. MiraMon √©s un projecte del 
+    CREAF que elabora programari de Sistema d'Informaci√≥ Geogr√†fica 
+    i de Teledetecci√≥ per a la visualitzaci√≥, consulta, edici√≥ i an√†lisi 
+    de mapes r√†sters i vectorials. Aquest programari inclou
+    aplicacions d'escriptori i tamb√© servidors i clients per Internet.
+    No tots aquests productes s√≥n gratu√Øts o de codi obert. 
     
     En particular, el client JavaScript del NiMMbus es distribueix sota 
-    els termes de la llicËncia GNU Affero General Public License, 
+    els termes de la llic√®ncia GNU Affero General Public License, 
     mireu https://www.gnu.org/licenses/licenses.html#AGPL.
     
     El client JavaScript del NiMMbus es pot actualitzar des de 
@@ -43,8 +43,8 @@
 
 "use strict"
 
-/*Aquesta funciÛ fa un subconjunt del que fa encodeURIComponent(), que hem 
-  observat que remplaÁa les lletres accentuades per car‡cters unicode i aixÚ no va bÈ.*/
+/*Aquesta funci√≥ fa un subconjunt del que fa encodeURIComponent(), que hem 
+  observat que rempla√ßa les lletres accentuades per car√†cters unicode i aix√≤ no va b√©.*/
 function DonaCadenaPerValorDeFormulari(s)
 {
 	//("\\?", "%3F" > http://stackoverflow.com/questions/889957/escaping-question-mark-in-regex-javascript
@@ -126,7 +126,7 @@ function OmpleEstructuraOnlineResource(item)
 		elem=GetXMLElementByName(item, "cit", "function");
 		element_to_fill.function=DonaTextDesDeCodeList(elem, "cit", "CI_OnLineFunctionCode");										
 	
-		/*∑$∑ L'estructura Ès mÈs complexa perÚ nosaltres ara no tenim mÈs elements
+		/*¬∑$¬∑ L'estructura √©s m√©s complexa per√≤ nosaltres ara no tenim m√©s elements
 		ni pels onlineResources de les citations/publications, ni pels onlineResources 
 		del codeLinkage i el de diagramLinkage dins de ReproducibleUsage */
 		
@@ -211,13 +211,13 @@ var elem, output, item, output2, item2;
 				{																							
 					var role=DonaTextDesDeCodeList(elem, "cit", "CI_RoleCode");
 					if (role && role!="")
-					{	//si el codi de rol no Ès buit
+					{	//si el codi de rol no √©s buit
 						cit_o_public.resp_party.push({});
 						//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
 						cit_o_public.resp_party[cit_o_public.resp_party.length-1].role=role;													
 						cit_o_public.resp_party[cit_o_public.resp_party.length-1].party_name = [];																														
 							
-						//de moment nomÈs recupero tots els "name" de dintre, que podrien ser individuals o organizations, perÚ ara per ara com no recupero res mÈs amb aixÚ ja m'apanyo
+						//de moment nom√©s recupero tots els "name" de dintre, que podrien ser individuals o organizations, per√≤ ara per ara com no recupero res m√©s amb aix√≤ ja m'apanyo
 						output2=GetXMLElementCollectionByName(responsibility , "cit", "name");								
 						if (output2 && output2.length)
 						{
@@ -292,7 +292,7 @@ var elem, output, item, output2, item2;
 	else
 		cit_o_public.otherCitationDetails="";
 
-	//onlineResource (a NiMMbus nomÈs un)
+	//onlineResource (a NiMMbus nom√©s un)
 	elem=GetXMLElementByName(item_cit_o_pub, "cit", "onlineResource");
 	cit_o_public.onlineResource=OmpleEstructuraOnlineResource(elem); //if (elem) protegit dins
 	
@@ -353,7 +353,7 @@ function DonaDataOTimeDesDeCadenaDateTime(item, tipus)
 	else //time
 	{
 		if (s.indexOf("T")!=-1)
-		{ //T11:23:32.975Z -> la cadena que vull Ès 11:23:32.975, que no tingui ni la T ni la Z
+		{ //T11:23:32.975Z -> la cadena que vull √©s 11:23:32.975, que no tingui ni la T ni la Z
 			s2=s.substring(s.indexOf("T")+1);
 			if (s2.indexOf(":00Z")!=-1)
 				return s2.substring(0,s2.indexOf(":00Z"));		
@@ -410,7 +410,7 @@ function DonaDataDesDeTimeInstant(item)
 
 function DonaTimeDesDeTimeInstant(item)
 {	
-	//hi ha un pis TimeInstant que el "salto" (no el demano) perÚ ok
+	//hi ha un pis TimeInstant que el "salto" (no el demano) per√≤ ok
 	var elem=GetValueXMLElementByName(item, "gml", "timePosition");
 	//<gml:timePosition>2016-02-21T19:10:06.425678Z</gml:timePosition>
 	if (elem)
@@ -496,7 +496,7 @@ var usage, usage_descr, discov_issue;
 						if (elem)
 							guf.abstract=DonaTextDesDeGcoCharacterString(elem);
 
-						//guf.purpose -> l'he tret de wps:Output/reason. Ja est‡ a GUF!
+						//guf.purpose -> l'he tret de wps:Output/reason. Ja est√† a GUF!
 						
 						elem=GetXMLElementByName(feedback_item, "guf", "contactRole");
 						if (elem)
@@ -508,7 +508,7 @@ var usage, usage_descr, discov_issue;
 							guf.public = [];						
 							for (var item2=0; item2<output2.length; item2++)
 							{				
-								//suposem qcm:QCM_Publication tot. podria ser cit:CI_Citation perÚ per nimmbus no
+								//suposem qcm:QCM_Publication tot. podria ser cit:CI_Citation per√≤ per nimmbus no
 								var public_item=GetXMLElementByName(output2.item(item2), "qcm", "QCM_Publication");
 								if (public_item)
 								{
@@ -533,7 +533,7 @@ var usage, usage_descr, discov_issue;
 									if (date)
 									{
 										guf.dateInfo.push({});
-										//podria ser una Date enlloc de un DateTime perÚ a nimmbus sempre Ès datetime
+										//podria ser una Date enlloc de un DateTime per√≤ a nimmbus sempre √©s datetime
 										guf.dateInfo[guf.dateInfo.length-1].date=DonaDataDesDeGcoDateTime(date);
 																		
 										var date_type=GetXMLElementByName(elem, "cit", "dateType");
@@ -585,8 +585,8 @@ var usage, usage_descr, discov_issue;
 										//role
 										guf.target[guf.target.length-1].role=DonaTextDesDeCodeList(role, "guf", "GUF_TargetRoleCode");
 									
-										// resource_ref Ès de tipus CI_Citation o QCM_Publication, perÚ de moment miro les part comunnes dels dos
-										// mÈs endavant potser mirarem coses que nomÈs estan a QCM_Publication
+										// resource_ref √©s de tipus CI_Citation o QCM_Publication, per√≤ de moment miro les part comunnes dels dos
+										// m√©s endavant potser mirarem coses que nom√©s estan a QCM_Publication
 										//title
 										elem=GetXMLElementByName(resource_ref, "cit", "title");
 										if (elem)
@@ -645,14 +645,14 @@ var usage, usage_descr, discov_issue;
 										guf.target[guf.target.length-1].scope=true;
 									}
 								
-									// hi podrien haver mÈs coses com online resources
+									// hi podrien haver m√©s coses com online resources
 
 									}
 								}
 							}
 						}
 						
-						//guf.usage -> nosaltres n'acceptem de moment nomÈs un, i dins nomÈs un 
+						//guf.usage -> nosaltres n'acceptem de moment nom√©s un, i dins nom√©s un 
 						usage=GetXMLElementByName(feedback_item, "guf", "usage");
 						if (usage)
 						{

@@ -801,7 +801,7 @@ var cdns=[];
 		cdns.push("<div class=\"guf_target user\"><hr class=\"guf_solid user\">");	
 		for (var i_target=0; i_target<guf.target.length; i_target++)
 		{	
-			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Recurs valorat", "spa":"Recurso valorado", "eng":"Target resource", "fre":"Ressource valoris�e"}, extra_param.lang));
+			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Recurs valorat", "spa":"Recurso valorado", "eng":"Target resource", "fre":"Ressource valorisée"}, extra_param.lang));
 			
 			if (guf.target[i_target].role)
 				cdns.push(" (", GUFDonaCadenaLang(GUF_TargetRoleCode[guf.target[i_target].role],extra_param.lang),"):</span> ");
@@ -818,12 +818,12 @@ var cdns=[];
 	  			for (var i_id=0; i_id<guf.target[i_target].identifier.length; i_id++)
 	  				cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.target[i_target].identifier[i_id], extra_param.lang, false));
 			}
-			if (guf.target[i_target].scope) //comprovem que a l'xml hi ha la secci� scope
+			if (guf.target[i_target].scope) //comprovem que a l'xml hi ha la secció scope
 			{
 				if (guf.target[i_target].minlong) //comprovem que hi ha dades de coordenades. No cal comprovar que hi siguin totes.
-					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Envolupant", "spa":"Envolvente", "eng":"Bounding box", "fre":"Extension g�ographique"}, extra_param.lang),":</span>"," ",guf.target[i_target].minlong,", ",guf.target[i_target].maxlong,", ",guf.target[i_target].minlat,", ",guf.target[i_target].maxlat,"<br>");
+					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Envolupant", "spa":"Envolvente", "eng":"Bounding box", "fre":"Extension géographique"}, extra_param.lang),":</span>"," ",guf.target[i_target].minlong,", ",guf.target[i_target].maxlong,", ",guf.target[i_target].minlat,", ",guf.target[i_target].maxlat,"<br>");
 				if (guf.target[i_target].gmlpol) //comprovem si tenim un poligon gml
-					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Pol�gon GML", "spa":"Pol�gono GML", "eng":"GML polygon", "fre":"GML polygone"}, extra_param.lang),":</span>"," ", GUFDonaCadenaLang({"cat":"definit", "spa":"definido", "eng":"defined", "fre":"d�fini"}),"<br>");
+					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Polígon GML", "spa":"Polígono GML", "eng":"GML polygon", "fre":"GML polygone"}, extra_param.lang),":</span>"," ", GUFDonaCadenaLang({"cat":"definit", "spa":"definido", "eng":"defined", "fre":"défini"}),"<br>");
 			}
 			//cdns.push("</div><label for=\""+extra_param.div_id+"_"+i_target+"\"><i>Click to show/hide more information</i></label></input>");
 			//cdns.push("<br/>");

@@ -24,17 +24,17 @@
 
     Copyright 2014, 2022 Xavier Pons
 
-    Aquest codi JavaScript ha estat idea de Joan MasÛ Pau (joan maso at uab cat) 
+    Aquest codi JavaScript ha estat idea de Joan Mas√≥ Pau (joan maso at uab cat) 
     amb l'ajut de l'Alaitz Zabala (alaitz zabala at uab cat)
-    dins del grup del MiraMon. MiraMon Ès un projecte del 
-    CREAF que elabora programari de Sistema d'InformaciÛ Geogr‡fica 
-    i de TeledetecciÛ per a la visualitzaciÛ, consulta, ediciÛ i an‡lisi 
-    de mapes r‡sters i vectorials. Aquest programari inclou
-    aplicacions d'escriptori i tambÈ servidors i clients per Internet.
-    No tots aquests productes sÛn gratuÔts o de codi obert. 
+    dins del grup del MiraMon. MiraMon √©s un projecte del 
+    CREAF que elabora programari de Sistema d'Informaci√≥ Geogr√†fica 
+    i de Teledetecci√≥ per a la visualitzaci√≥, consulta, edici√≥ i an√†lisi 
+    de mapes r√†sters i vectorials. Aquest programari inclou
+    aplicacions d'escriptori i tamb√© servidors i clients per Internet.
+    No tots aquests productes s√≥n gratu√Øts o de codi obert. 
     
     En particular, el client JavaScript del NiMMbus es distribueix sota 
-    els termes de la llicËncia GNU Affero General Public License, 
+    els termes de la llic√®ncia GNU Affero General Public License, 
     mireu https://www.gnu.org/licenses/licenses.html#AGPL.
     
     El client JavaScript del NiMMbus es pot actualitzar des de 
