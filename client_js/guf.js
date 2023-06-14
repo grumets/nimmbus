@@ -823,7 +823,7 @@ var cdns=[];
 				if (guf.target[i_target].minlong) //comprovem que hi ha dades de coordenades. No cal comprovar que hi siguin totes.
 					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Envolupant", "spa":"Envolvente", "eng":"Bounding box", "fre":"Extension géographique"}, extra_param.lang),":</span>"," ",guf.target[i_target].minlong,", ",guf.target[i_target].maxlong,", ",guf.target[i_target].minlat,", ",guf.target[i_target].maxlat,"<br>");
 				if (guf.target[i_target].gmlpol) //comprovem si tenim un poligon gml
-					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Polígon GML", "spa":"Polígono GML", "eng":"GML polygon", "fre":"GML polygone"}, extra_param.lang),":</span>"," ", GUFDonaCadenaLang({"cat":"definit", "spa":"definido", "eng":"defined", "fre":"défini"}),"<br>");
+					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Polígon GML", "spa":"Polígono GML", "eng":"GML polygon", "fre":"GML polygone"}, extra_param.lang),":</span>"," ", GUFDonaCadenaLang({"cat":"definit", "spa":"definido", "eng":"defined", "fre":"défini"}, extra_param.lang),"<br>");
 			}
 			//cdns.push("</div><label for=\""+extra_param.div_id+"_"+i_target+"\"><i>Click to show/hide more information</i></label></input>");
 			//cdns.push("<br/>");
