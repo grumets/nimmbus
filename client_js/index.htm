@@ -1852,7 +1852,7 @@ function MostraScopeOfAFeedback(item)
 ChangePannel("scope", true);
 nTargetOfAFeedback=item;
 
-	//per saber que no hi ha dades prèvies comprovem si alguna de les coordenades és nul·la (no cal comprovar-les totes pq si estiguéssin malament no s'haurien pogut enviar) o si l'atribut gmlpol és nul.
+	//per saber que no hi ha dades prèvies comprovem si alguna de les coordenades és nul·la (no cal comprovar-les totes pq si estiguéssin malament no s'haurien pogut enviar) i si l'atribut gmlpol és nul.
 	if (TargetsOfAFeedback[item].minlong==null && TargetsOfAFeedback[item].gmlpol==null)
 	{
 		//estem introduint un scope nou
@@ -8134,7 +8134,7 @@ function BuidaHlinkResource()
 					<p id="mimetype-href-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 				</div>
 				<!--Crear Nou enllaç a format no definit prèviament-->
-			<div id="other_format_fieldset" class="control-group"> <!--En cas que el format triat sigui "Other", en aquest div es fa apareèixer una caixa de text d'entrada del format-->
+			<div id="other_format_fieldset" class="control-group"> <!--En cas que el format triat sigui "Other", en aquest div es fa aparèixer una caixa de text d'entrada del format-->
 			</div>
 			
 			</div>  <!--End of id="mimetype-href-resource_fieldset" -->

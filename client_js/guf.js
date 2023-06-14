@@ -1009,14 +1009,14 @@ var n_targets_secundaris=0;
 
 	cdns.push("<input type=\"button\" class=\"guf_button user\" value=\"",
 				  GUFDonaCadenaLang({"cat":"Afegir una valoració", "spa":"Añadir una valoración", "eng":"Add a user feedback", "fre":"Ajouter une rétroaction de l'utilisateur"}, lang), "\"",
-				  " onClick='GUFAfegirFeedbackCapaMultipleTargets(\"", JSON.stringify(targets).replaceAll("\"","\\\""), "\", \"", lang, "\", \"", access_token_type, "\");' />");
+				  " onClick='GUFAfegirFeedbackCapaMultipleTargets(\"", JSON.stringify(targets).replaceAll("\"","\\\"").replaceAll("'","%27"), "\", \"", lang, "\", \"", access_token_type, "\");' />");
 
-//$$OG: nou botó per afegir scope a un FB
+//OG: nou botó per afegir scope a un FB
 	if (name_scope_function)
 	{
 		cdns.push("<input type=\"button\" class=\"guf_button user\" value=\"",
 				  GUFDonaCadenaLang({"cat":"Valoració d'una àrea específica", "spa":"Valoración de un área específica", "eng":"Feedback of a specific area", "fre":"Rétroaction d'un domaine spécifique"}, lang), "\"",
-				  " onClick='"+name_scope_function+"(\"", JSON.stringify(targets).replaceAll("\"","\\\""), "\", \"", lang, "\", \"", access_token_type, "\");' />");
+				  " onClick='"+name_scope_function+"(\"", JSON.stringify(targets).replaceAll("\"","\\\"").replaceAll("'","%27"), "\", \"", lang, "\", \"", access_token_type, "\");' />");
 	}
 	if (rsc_type != "")
 		cdns.push("</fieldset></div>");
