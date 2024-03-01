@@ -730,7 +730,8 @@ var usage, usage_descr, discov_issue;
 																
 								elem=GetXMLElementByName(usage_descr, "qcm", "schema");
 								if (elem)
-									guf.usage.usage_descr.schema=decodeURI(DonaTextDesDeGcoCharacterString(elem));
+									//guf.usage.usage_descr.schema=decodeURI(DonaTextDesDeGcoCharacterString(elem));
+									guf.usage.usage_descr.schema=(DonaTextDesDeGcoCharacterString(elem));
 
 								elem=GetXMLElementByName(usage_descr, "qcm", "suggestedApplication");
 								if (elem)
