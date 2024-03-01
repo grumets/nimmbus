@@ -1,4 +1,4 @@
-﻿ <!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -2715,6 +2715,12 @@ var root, output, identifier, s, feedback_item, user_comment;
 			if (hi_ha_reprod_usage)
 			{
 				if (guf.usage.usage_descr.code)
+				if (document.feedback_resource_form.code.value=guf.usage.usage_descr.code.length>1999)
+				{
+					document.getElementById("reprodUsage-code-resource_screen_value").maxLength=guf.usage.usage_descr.code.length;
+					document.feedback_resource_form.code.value=guf.usage.usage_descr.code;
+				}
+				else
 					document.feedback_resource_form.code.value=guf.usage.usage_descr.code;
 				else
 					document.feedback_resource_form.code.value="";				
@@ -5164,6 +5170,7 @@ function BuidaPlegaFeedbackElements()
 	CollapseFieldset(document.getElementById("ref-doc-feedback-resource"), "none"); //default is collapsed
 	CollapseFieldset(document.getElementById("fix-rsrc-feedback-resource"), "none"); //default is collapsed
 	CollapseFieldset(document.getElementById("alt-rsrc-feedback-resource"), "none"); //default is collapsed		
+	document.getElementById("reprodUsage-code-resource_screen_value").maxLength=1999; //per defecte el ru_usage (ru_codeSnippet) son 2000 char.
 
 	PublicsOfAFeedback.length=0;
 	PublicsOfAFeedbackHaveChanged=false;
@@ -6438,12 +6445,22 @@ var s,s2;
 	
 	ajaxExecuteNB=new Ajax();	
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);		
-	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
+	/*ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
 			//"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+
 			"&TYPE=FEEDBACK"+//"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.title.value)+ 
 			//-> eliminem abstract (per redundant) i l'antic abstract serà el títol. Pre compatibilitat i coherència amb altres recursos, en la sintaxi de resource CREATE/MODIFY es diu TITLE
 			"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.abstract.value)+
 			s2, AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"FEEDBACK\"}");		
+	*/
+
+	var payload="SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
+			//"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)+
+			"&TYPE=FEEDBACK"+//"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.title.value)+ 
+			//-> eliminem abstract (per redundant) i l'antic abstract serà el títol. Pre compatibilitat i coherència amb altres recursos, en la sintaxi de resource CREATE/MODIFY es diu TITLE
+			"&TITLE="+DonaCadenaPerValorDeFormulari(document.feedback_resource_form.abstract.value)+
+			s2;
+
+	ajaxExecuteNB.doPost(ServersNB[LastServerNB], "application/x-www-form-urlencoded", payload, AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"FEEDBACK\"}");
 
 	if (document.feedback_resource_form.open_data.checked)
 	{	//Si aquest FB item es compartit anònimament, m'asseguro que els elements relacionats amb ell també ho són
@@ -8205,7 +8222,7 @@ function BuidaHlinkResource()
 </div>  <!--End of id="lat-poi-resource_fieldset" -->
 
 <div id="pos-accur-poi-resource_fieldset" class="control-group">
-<label class="control-label" id="pos-accur-poi-resource_screen" for="pos-accur-poi-resource_screen_value"></label>
+<label class="control-label" id="pos-accur-poi-resource_screen" for="pos_accur-poi-resource_screen_value"></label>
 <div class="controls">
 <p><input type="text" class="text-input" value="" id="pos_accur-poi-resource_screen_value" name="pos_accur" maxlength="10" style="width: 40%;"/></p>
 <p id="pos-accur-poi-resource_descrip" class="white-area-screen-descrip-text"></p>
@@ -8258,7 +8275,8 @@ function BuidaHlinkResource()
 <h2 id="feedback-resource-title-text" class="white-area-title"></h2>
 <p id="feedback-resource-subtitle-text"></p>
 
-<form id="feedback-resource_form" name="feedback_resource_form" method="get" autocomplete="off" onSubmit="return SendFeedbackResourceChanges();">
+<!--form id="feedback-resource_form" name="feedback_resource_form" method="get" autocomplete="off" onSubmit="return SendFeedbackResourceChanges();"-->
+<form id="feedback-resource_form" name="feedback_resource_form" method="post" autocomplete="off" onSubmit="return SendFeedbackResourceChanges();">
 
 <fieldset class="control-fielset-group">
 <legend id="target-feedback-resource"></legend>
@@ -8317,7 +8335,7 @@ function BuidaHlinkResource()
 
 <br>
 <div id="rating-feedback-resource_fieldset" class="control-group">
-<label class="control-label" id="rating-feedback-resource_screen" for="rating-feedback-resource_screen_value"></label>
+<label class="control-label" id="rating-feedback-resource_screen"></label>
 <div class="controls">
       <span class="starRating">
         <input id="rating-feedback-resource_value5" type="radio" name="rating" value="5">
@@ -8373,7 +8391,7 @@ function BuidaHlinkResource()
 <legend id="usage-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>
 <div style="display: none;">
 	<div id="reportAspect-feedback-resource_fieldset" class="control-group">
-	<label class="control-label" id="reportAspect-feedback-resource_screen" for="reportAspect-feedback-resource_screen_value"></label>
+	<label class="control-label" id="reportAspect-feedback-resource_screen"></label>
 	<div class="controls">
   	<input type="checkbox" id="reportAspect-feedback-usage" value="usage"><label id="reportAspect-feedback-usage-label" class="compact_descrip_in_FB"></label>
   	<input type="checkbox" id="reportAspect-feedback-fitness-for-purpose" value="fitnessForPurpose"><label id="reportAspect-feedback-fitness-for-purpose-label" class="compact_descrip_in_FB"></label>
@@ -8400,7 +8418,7 @@ function BuidaHlinkResource()
 		</div>  <!--End of id="specific-usage-feedback-resource_fieldset" -->
 		
 		<div id="usage-date-time-feedback-resource_fieldset" class="control-group">
-			<label class="control-label" id="usage-date-time-feedback-resource_screen" for="usage-date-time-feedback-resource_screen_value"></label>
+			<label class="control-label" id="usage-date-time-feedback-resource_screen"></label>
 			<div class="controls">
 			<input type="date" class="text-input" id="usage-date-feedback-resource_screen_value" name="usage_date" style="width:40%;"/>
 			<input type="time" class="text-input" id="usage-time-feedback-resource_screen_value" name="usage_time" style="width:40%;"/>
@@ -8575,7 +8593,7 @@ function BuidaHlinkResource()
 		</div>  <!--End of id="known-problem-feedback-resource_fieldset" -->
 		
 		<div id="problem-date-time-feedback-resource_fieldset" class="control-group">
-			<label class="control-label" id="problem-date-time-feedback-resource_screen" for="problem-date-time-feedback-resource_screen_value"></label>
+			<label class="control-label" id="problem-date-time-feedback-resource_screen"></label>
 			<div class="controls">
 			<input type="date" class="text-input" id="problem-date-feedback-resource_screen_value" name="problem_date" style="width:40%;"/>
 			<input type="time" class="text-input" id="proble-time-feedback-resource_screen_value" name="problem_time" style="width:40%;"/>
@@ -8770,7 +8788,7 @@ function BuidaHlinkResource()
 
 <br>
 <div id="other_cit_details-citation-resource_fieldset" class="control-group">
-<label class="control-label" id="other-cit-details-citation-resource_screen" for="other_cit_details-citation-resource_screen_value"></label>
+<label class="control-label" id="other-cit-details-citation-resource_screen" for="other-cit-details-citation-resource_screen_value"></label>
 <div class="controls">
 <p id="other_cit_details-citation-resource_alert" style="display: none;"></p>
 <input type="text" class="text-input" id="other-cit-details-citation-resource_screen_value" name="other_cit_details" maxlength="254" style="width: 80%;"/>
@@ -8947,7 +8965,7 @@ function BuidaHlinkResource()
 
 <br>
 <div id="other_cit_details-publication-resource_fieldset" class="control-group">
-<label class="control-label" id="other-cit-details-publication-resource_screen" for="other_cit_details-publication-resource_screen_value"></label>
+<label class="control-label" id="other-cit-details-publication-resource_screen" for="other-cit-details-publication-resource_screen_value"></label>
 <div class="controls">
 <p id="other_cit_details-publication-resource_alert" style="display: none;"></p>
 <input type="text" class="text-input" id="other-cit-details-publication-resource_screen_value" name="other_cit_details" maxlength="254" style="width: 80%;"/>
@@ -9255,7 +9273,7 @@ function BuidaHlinkResource()
 	<!-- OGscope -->
 	
 		<div id="scope_bbox" class="control-group">
-			<label class="control-label" id="bbox-scope_screen" for="bbox-scope_screen_value">bbox</label>
+			<label class="control-label" id="bbox-scope_screen">bbox</label>
 			<div class="controls">
 				<table id="scope_bbox_table" style="border-collapse: collapse;">
 						
@@ -9323,7 +9341,7 @@ function BuidaHlinkResource()
 		</div>
 		<br>
 		<div id="GMLpolygon-scope_fieldset" class="control-group">
-			<label class="control-label" id="GMLpol-scope_screen" for="bbox-scope_screen_value">GMLpol</label>
+			<label class="control-label" id="GMLpol-scope_screen" for="GMLpolygon-scope_screen_value">GMLpol</label>
 			<div class="controls">
 				<textarea class="text-input" id="GMLpolygon-scope_screen_value" name="GMLpolygon" maxlength="1999" style="width: 80%; height: 60px;"></textarea>
 				<p id="GMLpolygon-scope_screen_descrip" class="white-area-screen-descrip-text">For example:</p>
@@ -9446,7 +9464,7 @@ function BuidaHlinkResource()
 <div class="control-group">
 <label class="control-label" id="new_share_screen" for="new_share_screen_value"></label>
 <div class="controls">
-<p><input type="text" class="text-input" value="" id="new_share_screen_value" name="new_share" maxlength="79" onfocus="ShowShareAuthorizedList();" onblur="HideShareAuthorizedList();"/> <label id="new_share_rights_read_label" for="new_share_rights_read"></label><img src="check16.png" id="new_share_rights_read"/>, <label id="new_share_rights_write_label" for="new_share_rights_write"></label><input type="checkbox" id="new_share_rights_write" name="W" checked="checked"/>, <label id="new_share_rights_share_label" for="new_share_rights_share"></label><input type="checkbox" id="new_share_rights_share" name="S" checked="checked"/> <input id="new_share_btn" class="submit_btn" type="button" value="" onClick="AddShareResource(false);"/></p>
+<p><input type="text" class="text-input" value="" id="new_share_screen_value" name="new_share" maxlength="79" onfocus="ShowShareAuthorizedList();" onblur="HideShareAuthorizedList();"/> <label id="new_share_rights_read_label"></label><img src="check16.png" id="new_share_rights_read"/>, <label id="new_share_rights_write_label" for="new_share_rights_write"></label><input type="checkbox" id="new_share_rights_write" name="W" checked="checked"/>, <label id="new_share_rights_share_label" for="new_share_rights_share"></label><input type="checkbox" id="new_share_rights_share" name="S" checked="checked"/> <input id="new_share_btn" class="submit_btn" type="button" value="" onClick="AddShareResource(false);"/></p>
 <p id="new_share_select" style="display:none;position:absolute;">
 <select size=10 class="text-input" name="new_share_select" style="height:116px;width:250px;" onfocus="ShowShareAuthorizedList();" onblur="HideShareAuthorizedList();" onchange="SelectionShareAuthorizedList();HideShareAuthorizedList();">
 </select>
@@ -9458,7 +9476,7 @@ function BuidaHlinkResource()
 <div id="new_share_open_fieldset" class="control-group">
 <label class="control-label" id="new_share_open_screen"></label>
 <div class="controls">
-<p><label id="new_share_open_read_label" for="new_share_open_rights_read"></label> <input id="new_share_open_btn" class="submit_btn" type="button" value="" onClick="AddShareResource(true);"/></p>
+<p><label id="new_share_open_read_label"></label> <input id="new_share_open_btn" class="submit_btn" type="button" value="" onClick="AddShareResource(true);"/></p>
 <p id="new_share_open_descrip"></p>
 </div>
 </div>  <!--End of id="new_share_open_fieldset" -->
@@ -9489,14 +9507,14 @@ function BuidaHlinkResource()
 <form id="feedback_form" name="feedback_form" method="get" autocomplete="off" onSubmit="return SurtITornaEndarrera(true, true);">
 
 <div class="control-group">
-<label class="control-label" id="feedback_target_compact_screen" for="feedback_target_compact_value"></label>
+<label class="control-label" id="feedback_target_compact_screen"></label>
 <div class="controls">
 <p id="feedback_target_compact_descrip"></p>
 </div>
 </div>
 
 <div class="control-group">
-<label class="control-label" id="new_feedback_screen" for="new_feedback_screen_value"></label>
+<label class="control-label" id="new_feedback_screen"></label>
 <div class="controls">
 <p><input id="new_feedback_btn" class="submit_btn" type="button" value="" onClick="MostraFeedbackResource('', null);BuidaPlegaFeedbackElements();"/></p>
 <p id="new_feedback_descrip"></p>
@@ -9577,7 +9595,7 @@ function BuidaHlinkResource()
 <form id="new-user_form" name="new_user_form" method="get" autocomplete="off" onSubmit="return SendNewUserNB();">
 
 <div class="control-group">
-<label class="control-label" id="new-user_new_user_screen" for="new_user_screen_value"></label>
+<label class="control-label" id="new-user_new_user_screen" for="new-user_new_user_screen_value"></label>
 <div class="controls">
 <p id="new-user_new_user_alert" style="display: none;"></p>
 <p><input type="text" class="text-input" value="" id="new-user_new_user_screen_value" name="new_user" maxlength="79" onkeyup="NewUserUserInputChange();" onpaste="NewUserUserInputChange();" oninput="NewUserUserInputChange();"/>
