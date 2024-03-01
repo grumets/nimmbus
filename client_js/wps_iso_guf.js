@@ -45,11 +45,13 @@
 
 /*Aquesta funció fa un subconjunt del que fa encodeURIComponent(), que hem 
   observat que remplaça les lletres accentuades per caràcters unicode i això no va bé.*/
-function DonaCadenaPerValorDeFormulari(s)
-{
-	//("\\?", "%3F" > http://stackoverflow.com/questions/889957/escaping-question-mark-in-regex-javascript
-	return s.replaceAll("#", "%23").replaceAll("+", "%2B").replaceAll("&", "%26").replaceAll("=", "%3D").replaceAll("?", "%3F");  
-}
+  function DonaCadenaPerValorDeFormulari(s)
+  {
+	  //("\\?", "%3F" > http://stackoverflow.com/questions/889957/escaping-question-mark-in-regex-javascript
+	  //return s.replaceAll("#", "%23").replaceAll("+", "%2B").replaceAll("&", "%26").replaceAll("=", "%3D").replaceAll("?", "%3F"); 
+	  // es canvia d'estrategia per donar sortida a caràcters com "<" i ">" 
+	  return encodeURIComponent(s);
+  }
 
 function DonaTextDesDeNmsElement(item, namespace, element)
 {
