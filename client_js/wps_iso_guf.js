@@ -710,7 +710,8 @@ var usage, usage_descr, discov_issue;
 					 
 								elem=GetXMLElementByName(usage_descr, "qcm", "code");
 								if (elem)
-									guf.usage.usage_descr.code=decodeURI(DonaTextDesDeGcoCharacterString(elem));
+									//guf.usage.usage_descr.code=decodeURI(DonaTextDesDeGcoCharacterString(elem));
+									guf.usage.usage_descr.code=(DonaTextDesDeGcoCharacterString(elem));
 	
 								elem=GetXMLElementByName(usage_descr, "qcm", "codeLinkage");
 								guf.usage.usage_descr.codeLink=OmpleEstructuraOnlineResource(elem);	//if (elem) protegit dins
