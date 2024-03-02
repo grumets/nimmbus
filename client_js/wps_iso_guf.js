@@ -22,7 +22,7 @@
     The NiMMbus JavaScript Client can be updated from
     https://github.com/grumets/NiMMbus.
 
-    Copyright 2014, 2022 Xavier Pons
+    Copyright 2014, 2024 Xavier Pons
 
     Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
     amb l'ajut de l'Alaitz Zabala (alaitz zabala at uab cat)
@@ -79,7 +79,6 @@ function DonaTextDesDeGexPolygon(item)
 	else
 		return "";
 }
-
 
 function DonaTextDesDeGcoCharacterStringOGcxAnchor(item)
 {
@@ -181,7 +180,7 @@ var elem, output, item, output2, item2;
 				if (elem)
 				{
 					cit_o_public.identifier.push({});
-					//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
+					//en aquest moment el nou element de l'array ja s'ha creat i per tant length ja ha augmentat
 
 					//code
 					cit_o_public.identifier[cit_o_public.identifier.length-1].code=DonaTextDesDeGcoCharacterString(elem);
@@ -215,7 +214,7 @@ var elem, output, item, output2, item2;
 					if (role && role!="")
 					{	//si el codi de rol no és buit
 						cit_o_public.resp_party.push({});
-						//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
+						//en aquest moment el nou element de l'array ja s'ha creat i per tant length ja ha augmentat
 						cit_o_public.resp_party[cit_o_public.resp_party.length-1].role=role;													
 						cit_o_public.resp_party[cit_o_public.resp_party.length-1].party_name = [];																														
 							
@@ -582,7 +581,7 @@ var usage, usage_descr, discov_issue;
 									if (role && resource_ref)
 									{
 										guf.target.push({});										
-										//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
+										//en aquest moment el nou element de l'array ja s'ha creat i per tant length ja ha augmentat
 										
 										//role
 										guf.target[guf.target.length-1].role=DonaTextDesDeCodeList(role, "guf", "GUF_TargetRoleCode");
@@ -611,7 +610,7 @@ var usage, usage_descr, discov_issue;
 													if (elem)
 													{
 														guf.target[guf.target.length-1].identifier.push({});
-														//en aquest moment el nou element de l'array ja s'ha creat i per tant lenght ja ha augmentat
+														//en aquest moment el nou element de l'array ja s'ha creat i per tant length ja ha augmentat
 
 														//code
 														guf.target[guf.target.length-1].identifier[guf.target[guf.target.length-1].identifier.length-1].code=DonaTextDesDeGcoCharacterString(elem);

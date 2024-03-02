@@ -1,10 +1,10 @@
-﻿(function (hello) {
+(function (hello) {
 
 	hello.init({
 
 		"authenix": {
 
-			name: "Authenix",
+			name: "authenix",
 
 			oauth: {
 				version: 2,
@@ -13,41 +13,32 @@
 			},
 
 			scope: {
+				idp: "idp",
 				openid: "openid",
-				profile: "profile"
+				profile: "profile",
+				r: "citiobs.secd.eu%23read",
+				c: "citiobs.secd.eu%23create",
+				u: "citiobs.secd.eu%23update",
+				d: "citiobs.secd.eu%23delete"
 			},
 
 			login: function (p) {
-				p.qs.nonce = "12345";
+				p.qs.nonce = "390je0f3f3f2218d9j";
 				p.qs.response_type = "token id_token";
 			},
 
 			logout: function (callback, o) {
 
-				if (o.options.force) {
-					var token = (o.authResponse || {}).access_token;
-					var revokeUrl = "https://www.authenix.eu/oauth/tokenrevoke";
+                                var id_token = (o.authResponse || {}).id_token;
+                                var logoutUrl = "https://www.authenix.eu/openid/logout";
+				var post_logout_redirect_uri = "https://www.tapis.grumets.cat/";
 
-					var xhr = new XMLHttpRequest();
-					xhr.open("POST", revokeUrl, true);
+				logoutUrl += "?post_logout_redirect_uri=" + post_logout_redirect_uri + "&id_token_hint=" + id_token; 
 
-					// Send the proper header information along with the request
-					xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				window.location = logoutUrl;
+                        },
 
-					// Call a function when the state changes.
-					xhr.onreadystatechange = function () {
-						if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-							callback();
-						} else {
-							return false;
-						}
-					}
-
-					xhr.send("token=" + token); 
-				}
-			},
-
-			base: "https://www.authenix.eu/oauth/",
+			base: "https://www.authenix.eu/openid/",
 
 			get: {
 				me: "userinfo"
@@ -56,10 +47,12 @@
 			// Refresh the access_token once expired
 			refresh: true,
 
-			// OAuth2 standard defines SPACE as scope delimiter, hello.js defaults to ','
-			scope_delim: " ",
+			locale: 'es_ES',
 
-			// Changed according to: https://github.com/MrSwitch/hello.js/issues/167
+			// OAuth2 standard defines SPACE as scope delimiter, hello.js defaults to ','
+			scope_delim: " "/*,
+
+			//Changed according to: https://github.com/MrSwitch/hello.js/issues/167
 			xhr: function (p) {
 				var token = p.query.access_token;
 				delete p.query.access_token;
@@ -71,7 +64,7 @@
 				}
 
 				return true;
-			}
+			}*/
 		}
 	});
 
