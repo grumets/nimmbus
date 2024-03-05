@@ -211,7 +211,8 @@ var s_host;
 	}
 	if (location.host.toLowerCase()=="localhost")
 	{
-		document.getElementById("sso-debug-button").style.display="inline";
+		document.getElementById("sso-debug-button").style.display="none";
+		//document.getElementById("sso-debug-button").style.display="inline";
 		document.getElementById("sso-debug-button").disabled=false;
 	}
 }
@@ -1201,13 +1202,16 @@ function InitHello()
 	hello.init({
 		//google: '281597821362-tkj1tngjiiuul47m6dkhrorrsdqomahu.apps.googleusercontent.com', -> fet abans sense usar funcions hello. es podria canviar, però com està ara funciona
 		//landsense: '920b7ffa-1d18-b836-8ff3-514042772543@as.landsense.eu',
-		authenix: '54a136e7-a1af-3fa6-a3f0-d20d99aef14d',
+		authenix: '3145203b-5fc6-4855-ac79-54e581bb1193',
 		//nextgeoss: '@!27B7.E085.07A1.6DE7!0001!F5E4.0B8E!0008!7BBE.671A.BD2B.6459'
 		nextgeoss: 'e52394ef-57ff-4248-957c-6e51b672cae5',
 		wqems: 'wqems-miramon'
 	}, {redirect_uri: ((location.pathname.charAt(location.pathname.length-1)=='/') ? location.pathname.substring(0, location.pathname.length-1) : location.pathname), popup: {width: 800}});
 	document.getElementById("authenix-button").disabled=false;
+	//amaguem el botó nextgeoss i el desabilitem
+	document.getElementById("nextgeoss-button").style.display="none"; //si volem recuperar el botó, aquesta linia es pot eliminar
 	document.getElementById("nextgeoss-button").disabled=false;
+	//document.getElementById("nextgeoss-button").disabled=true;
 	document.getElementById("wqems-button").disabled=false;
 }
 
@@ -7885,13 +7889,14 @@ function BuidaHlinkResource()
 				<h2 id="front-signin-external-lang" class="white-area-title"></h2>
 				<button id="nextgeoss-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);">NextGEOSS</button>
 				<button id="authenix-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOAuthenix(true, SignInNBAuthenix, null);">Authenix</button>
-				<br>
+				<!--br-->
 				<button id="wqems-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOWQeMS(true, SignInNBWQeMS, null);">WQeMS</button>
 				<button id="google-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOGoogle();">Google</button>
 				<button id="sso-debug-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSODebug();" style="display: none;">Debug</button>
 			</div>
 		
-			<div class="white-area" style="top: 254px; width: 326px; height: 80px;">
+			<!--div class="white-area" style="top: 254px; width: 326px; height: 80px;"-->
+			<div class="white-area" style="top: 237px; width: 326px; height: 80px;">
 				<form id="sign_in" name="sign_in" class="packet_paragraph" method="get" onSubmit="return SignInNB();">
 					<h2 id="front-signin-nimmbus-lang" class="white-area-title"></h2>
 					<p class="packet_paragraph"><input id="sign_in_user" type="text" size="80" maxlength="79" class="text-input" style="width: 296px;" name="user" value="" placeholder="Username" autocomplete="on"></p>
@@ -8523,7 +8528,7 @@ function BuidaHlinkResource()
 				<label class="control-label" id="reprodUsage-schema-resource_screen" for="reprodUsage-schema-resource_screen_value"></label>
 					<div class="controls">
 						<p id="reprodUsage-schema-resource_alert" style="display: none;"></p>
-						<input type="text" class="text-input" value="" id="reprodUsage-schema-resource_screen_value" name="schema" style="width: 100%;" maxlength="79"/>
+						<input type="text" class="text-input" value="" id="reprodUsage-schema-resource_screen_value" name="schema" style="width: 100%;" maxlength="254"/>
 						<p id="reprodUsage-schema-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 					</div>
 				</div>  <!--End of id="reprodUsage-schema-resource_fieldset" -->
