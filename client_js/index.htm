@@ -211,10 +211,12 @@ var s_host;
 	}
 	if (location.host.toLowerCase()=="localhost")
 	{
-		document.getElementById("sso-debug-button").style.display="none";
 		//document.getElementById("sso-debug-button").style.display="inline";
-		document.getElementById("sso-debug-button").disabled=false;
+		document.getElementById("sso-debug-button").style.display="none"; //amaga botó
+		//document.getElementById("sso-debug-button").disabled=false;
 	}
+	else //amaga botó
+		document.getElementById("sso-debug-button").style.display="none"; //amaga botó
 }
 
 /*
@@ -1210,8 +1212,7 @@ function InitHello()
 	document.getElementById("authenix-button").disabled=false;
 	//amaguem el botó nextgeoss i el desabilitem
 	document.getElementById("nextgeoss-button").style.display="none"; //si volem recuperar el botó, aquesta linia es pot eliminar
-	document.getElementById("nextgeoss-button").disabled=false;
-	//document.getElementById("nextgeoss-button").disabled=true;
+	//document.getElementById("nextgeoss-button").disabled=false;
 	document.getElementById("wqems-button").disabled=false;
 }
 
@@ -1365,7 +1366,8 @@ function ValidaSSOAuthenix(popup, f_callback, pending_ajax_req)
 
 function ValidaSSONextGEOSS(popup, f_callback, pending_ajax_req)
 {
-	document.getElementById("nextgeoss-button").disabled=true;
+	//document.getElementById("nextgeoss-button").disabled=true;
+	document.getElementById("nextgeoss-button").style.display="none"; //amaga botó
 
 	/*The automatic regeneration of the token in the background happens every 10 minutes (wrong timing since token expires in 5 minutes only). 
 	To make the situation worse, the automatically generated new token does not work in the server side, so I have to force reauthentification using 
@@ -1380,12 +1382,14 @@ function ValidaSSONextGEOSS(popup, f_callback, pending_ajax_req)
 				f_callback();
 			if (pending_ajax_req)
 				pending_ajax_req.doReqAutenticated();
-			document.getElementById("nextgeoss-button").disabled=false;
+			//document.getElementById("nextgeoss-button").disabled=false;
+			document.getElementById("nextgeoss-button").style.display="none"; //amaga botó
 		},
 		// On error
 		function(error) {
 			alert(DonaCadenaJSON(Msg_NextGEOSS_login_failed) + " " + error.error.message);
-			document.getElementById("nextgeoss-button").disabled=false;
+			//document.getElementById("nextgeoss-button").disabled=false;
+			document.getElementById("nextgeoss-button").style.display="none"; //amaga botó
 		}
 	);
 }
@@ -1417,12 +1421,14 @@ function ValidaSSOWQeMS(popup, f_callback, pending_ajax_req)
 // Click on login button
 function ValidaSSODebug()
 {
-	document.getElementById("sso-debug-button").disabled=true;
+	//document.getElementById("sso-debug-button").disabled=true;
+	document.getElementById("sso-debug-button").style.display="none"; //amaga botó
 
 	document.sign_in.user.value="Debug"
 	AccessToken = "1234-5678-1234-5678";
 	AccessTokenType = "debug";
-	document.getElementById("sso-debug-button").disabled=false;
+	//document.getElementById("sso-debug-button").disabled=false;
+	document.getElementById("sso-debug-button").style.display="none"; //amaga botó
 	SignInNB();
 }
 
@@ -7887,7 +7893,8 @@ function BuidaHlinkResource()
 		<div class="front-welcome-forms">
 			<div class="white-area" style="top: 105px; width: 326px;">
 				<h2 id="front-signin-external-lang" class="white-area-title"></h2>
-				<button id="nextgeoss-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);">NextGEOSS</button>
+				<!--button id="nextgeoss-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);">NextGEOSS</button-->
+				<button id="nextgeoss-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);"  style="display: none;">NextGEOSS</button>
 				<button id="authenix-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOAuthenix(true, SignInNBAuthenix, null);">Authenix</button>
 				<!--br-->
 				<button id="wqems-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOWQeMS(true, SignInNBWQeMS, null);">WQeMS</button>
