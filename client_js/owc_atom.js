@@ -1,4 +1,4 @@
-/* 
+﻿/* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
     storing geospatial resources on the MiraMon private cloud. 
     MiraMon is a family of GIS&RS products developed since 1994 
