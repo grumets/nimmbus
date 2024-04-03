@@ -4986,7 +4986,7 @@ function OmpleRecursPublicsDesDePublicsOfAFeedback(puc_editar)
 	{
 		document.getElementById("public_feedback-resource_compact_list").innerHTML+="<div id=\""+"public_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(PublicsOfAFeedback[item].id_public, "public_feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaPublicOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 2 /*is_public*/, item);
+			document.feedback_resource_form.open_data.checked, 2, null, null, item);
 	}
 	return;
 }
@@ -5004,7 +5004,7 @@ function OmpleRecursRefDocsDesDeRefDocsOfAFeedback(puc_editar)
 	{
 		document.getElementById("ref-doc-feedback-resource_compact_list").innerHTML+="<div id=\""+"ref-doc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(RefDocsOfAFeedback[item].id_public, "ref-doc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaRefDocOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 5 /*is_ref_doc*/, item);
+			document.feedback_resource_form.open_data.checked, 5, null, null, item);
 	}
 	return;
 }
@@ -5022,7 +5022,7 @@ function OmpleRecursAddDocsDesDeAddDocsOfAFeedback(puc_editar)
 	{
 		document.getElementById("add-doc-feedback-resource_compact_list").innerHTML+="<div id=\""+"add-doc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(AddDocsOfAFeedback[item].id_citation, "add-doc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaAddDocOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 6 /*is_add_doc*/, item);
+			document.feedback_resource_form.open_data.checked, 6, null, null, item);
 	}
 	return;
 }
@@ -5040,7 +5040,7 @@ function OmpleRecursAltRsrcsDesDeAltRsrcsOfAFeedback(puc_editar)
 	{
 		document.getElementById("alt-rsrc-feedback-resource_compact_list").innerHTML+="<div id=\""+"alt-rsrc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(AltRsrcsOfAFeedback[item].id_citation, "alt-rsrc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaAltRsrcOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 7 /*is_alt_rsrc*/, item);
+			document.feedback_resource_form.open_data.checked, 7, null, null, item);
 	}
 	return;
 }
@@ -5058,7 +5058,7 @@ function OmpleRecursFixRsrcsDesDeFixRsrcsOfAFeedback(puc_editar)
 	{
 		document.getElementById("fix-rsrc-feedback-resource_compact_list").innerHTML+="<div id=\""+"fix-rsrc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(FixRsrcsOfAFeedback[item].id_citation, "fix-rsrc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaFixRsrcOfAFeedback" : "", 
-			document.feedback_resource_form.open_data.checked, 8 /*is_fix_rsrc*/, item);
+			document.feedback_resource_form.open_data.checked, 8, null, null, item);
 	}
 	return;
 }
@@ -5413,7 +5413,7 @@ function OmpleRecursResponsiblesDesDeResponsiblesOfACitation(puc_editar)
 	{
 		document.getElementById("responsible-citation-resource_compact_list").innerHTML+="<div id=\""+"responsible-citation-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(ResponsiblesOfACitation[item].id_responsible, "responsible-citation-resource_compact_list", ResponsiblesOfACitation[item].role, puc_editar ? "responsibleRole" : "", 
-			(item+1), puc_editar ? "EliminaResponsibleOfACitation" : "", document.citation_resource_form.open_data.checked, 3 /*is_party_a_citation*/, item);
+			(item+1), puc_editar ? "EliminaResponsibleOfACitation" : "", document.citation_resource_form.open_data.checked, 3, null, null, item);
 	}
 	return;
 }
@@ -5428,7 +5428,7 @@ function OmpleRecursResponsiblesDesDeResponsiblesOfAPublication(puc_editar)
 	{
 		document.getElementById("responsible-publication-resource_compact_list").innerHTML+="<div id=\""+"responsible-publication-resource_compact_list"+"_"+(item+1)+"\"></div>";
 		PopulateCompactDescriptionResource(ResponsiblesOfAPublication[item].id_responsible, "responsible-publication-resource_compact_list", ResponsiblesOfAPublication[item].role, puc_editar ? "responsibleRole" : "", 
-			(item+1), puc_editar ? "EliminaResponsibleOfAPublication" : "", document.citation_resource_form.open_data.checked, 4 /*is_party_a_publication*/, item);
+			(item+1), puc_editar ? "EliminaResponsibleOfAPublication" : "", document.citation_resource_form.open_data.checked, 4, null, null, item);
 	}
 	return;
 }
@@ -5703,7 +5703,7 @@ var id;
 
 	EnumerateFeedbackResource(id);
 	document.getElementById("feedback_target_compact_descrip").innerHTML="";		
-	PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null, false, 0 /*is_none*/, null);
+	PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null, false, 0, null, null, null);
 }
 
 function MostraTagResource(event, query)
