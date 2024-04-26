@@ -1,4 +1,4 @@
-﻿/* 
+/* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
     storing geospatial resources on the MiraMon private cloud. 
     MiraMon is a family of GIS&RS products developed since 1994 
@@ -87,13 +87,13 @@ function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, acc
 	if (reprod_usage.ru_code_media_type)
 		reprod_usage.ru_code_media_type = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code_media_type);
 	if (reprod_usage.ru_platform)
-		reprod_usage.ru_platform = encodeURI(reprod_usage.ru_platform);
+		reprod_usage.ru_platform = escapeWin1252(reprod_usage.ru_platform);
 	if (reprod_usage.ru_schema)
-		reprod_usage.ru_schema = encodeURIComponent(reprod_usage.ru_schema);
+		reprod_usage.ru_schema = escapeWin1252Component(reprod_usage.ru_schema);
 	if (typeof reprod_usage.ru_sugg_app === "undefined")
-		reprod_usage.ru_sugg_app = encodeURI(location.href);
+		reprod_usage.ru_sugg_app = escapeWin1252(location.href);
 	else if (reprod_usage.ru_sugg_app)
-		reprod_usage.ru_sugg_app = encodeURI(reprod_usage.ru_sugg_app);
+		reprod_usage.ru_sugg_app = escapeWin1252(reprod_usage.ru_sugg_app);
 	return GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type, reprod_usage);
 }
 
@@ -111,7 +111,7 @@ function GUFGetURLPreviousFeedbackWithReproducibleUsage(code, codespace, reprod_
 		
 	//decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara 
 	url+="&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + DonaCadenaPerValorDeFormulari(code) + 
-					"&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + encodeURIComponent(codespace.replace("https://","http://")) + "&TRG_OPR_2=EQ";
+					"&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + escapeWin1252Component(codespace.replace("https://","http://")) + "&TRG_OPR_2=EQ";
 	
 	var i_cond=1;
 	if (reprod_usage.ru_platform)
@@ -985,6 +985,18 @@ function GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_t
 
 	for (var i=0; i<targets.length; i++)	
 	{		
+		if (targets[i].title)
+			targets[i].title = DonaCadenaPerValorDeFormulari(targets[i].title);
+		if (targets[i].code)
+			targets[i].code = DonaCadenaPerValorDeFormulari(targets[i].code);
+		if (targets[i].codespace)
+			targets[i].codespace = DonaCadenaPerValorDeFormulari(targets[i].codespace);
+		if (targets[i].role)
+			targets[i].role = DonaCadenaPerValorDeFormulari(targets[i].role);
+		if (targets[i].bbox)
+			targets[i].bbox = DonaCadenaPerValorDeFormulari(targets[i].bbox);
+		if (targets[i].gmlpol)
+			targets[i].gmlpol = DonaCadenaPerValorDeFormulari(targets[i].gmlpol);
 		if (targets[i].title && targets[i].title!="" && targets[i].code && targets[i].code!="" && targets[i].codespace && targets[i].codespace!="")
 		{	//aquest target és vàlid
 			//OG: aquí afegim el bbox i el gml pol a la query que rebrà el nimmbus

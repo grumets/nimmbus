@@ -1,4 +1,4 @@
-﻿/* 
+/* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
     storing geospatial resources on the MiraMon private cloud. 
     MiraMon is a family of GIS&RS products developed since 1994 
@@ -43,14 +43,144 @@
 
 "use strict"
 
-/*Aquesta funció fa un subconjunt del que fa encodeURIComponent(), que hem 
-  observat que remplaça les lletres accentuades per caràcters unicode i això no va bé.*/
   function DonaCadenaPerValorDeFormulari(s)
   {
 	  //("\\?", "%3F" > http://stackoverflow.com/questions/889957/escaping-question-mark-in-regex-javascript
 	  //return s.replaceAll("#", "%23").replaceAll("+", "%2B").replaceAll("&", "%26").replaceAll("=", "%3D").replaceAll("?", "%3F"); 
-	  // es canvia d'estrategia per donar sortida a caràcters com "<" i ">" 
-	  return encodeURIComponent(s);
+	// es canvia d'estrategia per donar sortida a caràcters com "<" i ">" 
+	//return encodeURIComponent(s);
+
+    // Fem servir una funció personalitzada per escapar els caràcters segons la codificació Win-1252
+	// No s'utilitza encodeURIComponent ja que aquesta funció el que fa és escapar els caràcters en codificació UTF-8. Això genera problemes al servidor, 
+	// que decodifica els caràters com si fossin WIN1252 i acaben mal escrits a la DBF del NiMMbus.
+	// Les conversions de caràcters es basen en aquesta taula: https://www.w3schools.com/tags/ref_urlencode.ASP
+	// encodeURIcomponent escapa tots els caràcters excepte "AâZ aâz 0â9 - _ . ! ~ * ' ( )". https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+	// Nosaltres farem el mateix
+    return escapeWin1252Component(s);
+}
+
+//equivalent a encodeURIComponent però per Win1252
+function escapeWin1252Component(str) 
+{
+	var encodedURI='';
+	var win1252Table = 
+	{
+		402:131, //ƒ
+		8226:149, //•
+		//els seguents no tenen equivalent en OEM 850 i, per tant, quedaran mal escrits a les taules. Es podria buscar una correspondència amb un caràcter que si assemblés per que no quedi una cosa lletja.
+		8364: 128, // €
+		8218: 130, // ‚		High Control
+		8222:132, //„
+		8230:133, //…
+		8224:134, //† 
+		8225:135, //‡
+		710:136, //ˆ
+		8240:137, //‰
+		352:138, //Š
+		8249:139, //‹
+		338:140, //Œ
+		381:142, //Ž
+		8216:145, //‘
+		8217:146, //’
+		8220:147, //“
+		8221:148, //”
+		8211:150, //–
+		8212:151, //—
+		732:152, //˜
+		8482:153, //™
+		353:154, //š
+		8250:155, //›
+		339:156, //œ
+		382:158, //ž
+		376:159, //Ÿ
+		// Altres caràcters aquí...
+	};
+	for (var i = 0; i < str.length; i++) 
+	{
+		var charCode = str.charCodeAt(i);
+
+		//Comprovem si el caràcter està  a win1252Table (per tant, l'escapament no és directament el seu valor hexadecimal)
+		if (charCode in win1252Table)
+		{
+			encodedURI+= '%' + (win1252Table[charCode] & 0xff).toString(16).toUpperCase();
+		}
+		//Comprovem si cal escapar el caràcter. Recordem que cal escapar tots els caràcters excepte "A–Z a–z 0–9 - _ . ! ~ * ' ( )"
+		else if ((charCode==32)||((charCode>33)&&(charCode<39))||((charCode>42)&&(charCode<45))||(charCode==47)||((charCode>57)&&(charCode<65))
+		||((charCode>90)&&(charCode<95))||(charCode==96)||((charCode>122)&&(charCode<126))||(charCode==127)||(charCode==129)||(charCode==141)
+		||(charCode==143)||(charCode==144)||(charCode==157)||((charCode>159)&&(charCode<256)))
+		{
+			encodedURI+= '%' + charCode.toString(16).toUpperCase();
+		}
+		//si arribés algun cas estrany que no estigui contemplat, usem encodeURIComponent. El que passaria en aquest cas és que no quedaria ben escrit a les taules del NiMMbus.
+		else 
+		{
+			encodedURI+=encodeURIComponent(str[i]);
+		}
+	}
+
+	return encodedURI;
+}
+
+//equivalent a encodeURI perÃ² per Win1252
+function escapeWin1252(str) 
+{
+	var encodedURI='';
+	var win1252Table = 
+	{
+		402:131, //ƒ
+		8226:149, //•
+		//els seguents no tenen equivalent en OEM 850 i, per tant, quedaran mal escrits a les taules. Es podria buscar una correspondència amb un caràcter que si assemblés per que no quedi una cosa lletja.
+		8364: 128, // €
+		8218: 130, // ‚		High Control
+		8222:132, //„
+		8230:133, //…
+		8224:134, //† 
+		8225:135, //‡
+		710:136, //ˆ
+		8240:137, //‰
+		352:138, //Š
+		8249:139, //‹
+		338:140, //Œ
+		381:142, //Ž
+		8216:145, //‘
+		8217:146, //’
+		8220:147, //“
+		8221:148, //”
+		8211:150, //–
+		8212:151, //—
+		732:152, //˜
+		8482:153, //™
+		353:154, //š
+		8250:155, //›
+		339:156, //œ
+		382:158, //ž
+		376:159, //Ÿ
+		// Altres caràcters aquí...
+	};
+	for (var i = 0; i < str.length; i++) 
+	{
+		var charCode = str.charCodeAt(i);
+
+		//Comprovem si el caràcter està  a win1252Table (per tant, l'escapament no és directament el seu valor hexadecimal)
+		if (charCode in win1252Table)
+		{
+			encodedURI+= '%' + (win1252Table[charCode] & 0xff).toString(16).toUpperCase();
+		}
+		//Comprovem si cal escapar el caràcter. Recordem que cal escapar tots els caràcters excepte "A–Z a–z 0–9 - _ . ! ~ * ' ( ) ; / ? : @ & = + $ , #"
+		else if ((charCode==32)||(charCode==34)||(charCode==37)||(charCode==60)||(charCode==62)||((charCode>90)&&(charCode<95))||(charCode==96)
+		||((charCode>122)&&(charCode<126))||(charCode==127)||(charCode==129)||(charCode==141)||(charCode==143)||(charCode==144)||(charCode==157)
+		||((charCode>159)&&(charCode<256)))
+		{
+			encodedURI+= '%' + charCode.toString(16).toUpperCase();
+		}
+		//si arribés algun cas estrany que no estigui contemplat, usem encodeURIComponent. El que passaria en aquest cas és que no quedaria ben escrit a les taules del NiMMbus.
+		else 
+		{
+			encodedURI+=encodeURIComponent(str[i]);
+		}
+	}
+
+	return encodedURI;
   }
 
 function DonaTextDesDeNmsElement(item, namespace, element)

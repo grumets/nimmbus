@@ -102,14 +102,14 @@ var div=elem.nextElementSibling;
 }
 
 	
-<!--
+
 
 //var ServersNB=["http://localhost/cgi-bin/server1/nimmbus.cgi","http://localhost/cgi-bin/server2/nimmbus.cgi"];
 var ServersNB=["https://www.nimmbus.cat/cgi-bin/nimmbus.cgi"];
 var LastServerNB=0;
 
 
-https://stackoverflow.com/questions/13356493/decode-utf-8-with-javascript
+//https://stackoverflow.com/questions/13356493/decode-utf-8-with-javascript
 /*function encode_utf8(s) {
   return unescape(encodeURIComponent(s));
 }*/
@@ -5395,7 +5395,7 @@ var params_str;
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:CREATE&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
-				+"&TYPE=CITATION"+"&TITLE="+obj_amb_targets.targets[0].title+
+				+"&TYPE=CITATION"+"&TITLE="+DonaCadenaPerValorDeFormulari(obj_amb_targets.targets[0].title)+
 				"&ID_CODE="+obj_amb_targets.targets[0].code+"&ID_NAMESPACE="+obj_amb_targets.targets[0].code_space+
 				"&URL_LINK=&URL_DESCRIP=&URL_FUNCTION="+(obj_amb_targets.targets[0].share_borrower_1!="" ? "&SHARE_BORROWER_1="+obj_amb_targets.targets[0].share_borrower_1 : ""), AvaluaRespostaRetrieveTarget, "text/xml", 
 				"{\"nom_funcio\": \""+ (resta_targets.length ? "EntraAAddFeedback" : "SurtDeAddFeedbackCallBack") +"\","+ 
