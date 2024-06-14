@@ -1,4 +1,4 @@
-/* 
+﻿/* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
     storing geospatial resources on the MiraMon private cloud. 
     MiraMon is a family of GIS&RS products developed since 1994 
@@ -303,6 +303,8 @@ var Msg_Access_Policy={cat: "Política d'accés", spa: "Política de acceso", en
 var Msg_Last_Update={cat: "Darrera actualització", spa: "Última actualización", eng: "Last updated"};
 var Msg_Mail_contacte={cat: "Contacte", spa: "Contacto", eng: "Contact"};
 
+var Msg_fb_summary={cat: "Resum de les valoracions", spa: "Resumen de las valoraciones", eng: "Feedback summary"};
+
 function DonaCadenaJSON(s)
 {
 	if (ActiveLanguage==0)
@@ -393,7 +395,6 @@ var l_msg_Min_Lat={cat: "Latitud mínima", spa: "Latitud mínima", eng: "Minimum
 var l_msg_Max_Lat={cat: "Latitud màxima", spa: "Latitud máxima", eng: "Maximum latitude"};
 var l_msg_Min_Lon={cat: "Longitud mínima", spa: "Longitud mínima", eng: "Minimum longitude"};
 var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maximum longitude"};
-	
 		
 	ActiveLanguage=lang;
 	
@@ -429,7 +430,7 @@ var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maxim
 	document.getElementById("GMLpolygon-scope_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_) + '<br>' + '&ltgml:Polygon srsName="EPSG:4326"&gt' + '<br>&emsp;' + '&ltgml:exterior&gt'+ '<br>&emsp;&emsp;' +'&ltgml:LinearRing&gt'+ '<br>&emsp;&emsp;&emsp;' +'&ltgml:posList srsDimension="2"&gt'+ '<br>&emsp;&emsp;&emsp;&emsp;' +'41.81 1.46 41.81 2.73 40.88 2.73 40.88 1.46 41.81 1.46'+ '<br>&emsp;&emsp;&emsp;' +'&lt/gml:posList&gt'+ '<br>&emsp;&emsp;' +'&lt/gml:LinearRing&gt'+ '<br>&emsp;' +'&lt/gml:exterior&gt'+ '<br>' +'&lt/gml:Polygon&gt';
 	document.getElementById("GMLpol-scope_screen").innerHTML=DonaCadenaJSON({cat: "Poligon GML", spa: "Polígono GML", eng: "GML polygon"});
 	document.getElementById("bbox-scope_screen").innerHTML=DonaCadenaJSON({cat: "Envolupant", spa: "Envolvente", eng: "Bounding box"});
-
+	
 	document.getElementById("head_title").innerHTML=DonaCadenaJSON(Msg_NiMMbus_login);
 	document.getElementById("front-welcome-text-title").innerHTML=DonaCadenaJSON(Msg_Welcome_NiMMbus);
 	document.getElementById("front-welcome-text-subtitle").innerHTML=DonaCadenaJSON(Msg_EO_everywhere_Share);
@@ -488,7 +489,6 @@ var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maxim
 	
 	document.getElementById("selector-resource-type_screen").innerHTML=DonaCadenaJSON({cat: "Filtrar per tipus:", spa: "Filtrar por tipo:", eng: "Filter by type:"});
 	
-
 	//document.getElementById("resources-hits-text").innerHTML="<small>"+DonaCadenaJSON(Msg_Use_New_button_to_create_resources)+"</small>"; -> ja es fa quan toca
 	document.getElementById("resource-selector-hits-text").innerHTML="";
 	
@@ -617,6 +617,7 @@ var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maxim
 	document.getElementById("reprodUsage-codeLink-resource_screen").innerHTML=DonaCadenaJSON({cat: "Fragment de codi o sentència d'execució (Adreça URL)", spa: "Fragmento de código o sentencia de ejecución (dirección URL)", eng: "Code snippet or execution sentence (URL link)"});	
 	document.getElementById("reprodUsage-codeLink-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Adreça URL del fragment codi o la sentència d'execució necessari per a reproduir aquest ús*", spa: "Dirección URL del fragmento de código o la  sentencia de ejecución necesario para reproducir este uso*", eng: "URL Link of the necessary code snippet or execution sentence to reproduce this usage*"});			
 	document.getElementById("reprodUsage-code-codeLink-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "*És habitual incloure només una descripció del fragment de codi o sentència d'execució (text o URL)", spa: "*Es habitual incluir sólo una descripción del fragmento de código o sentencia de ejecución (texto o URL)", eng: "*Usually a single code snippet or execution sentence description is provided (text or URL)"});	
+
 	document.getElementById("reprodUsage-mimetype-resource_screen").innerHTML=DonaCadenaJSON({cat: "Format", spa: "Formato", eng: "Format"});
 	document.getElementById("reprodUsage-mimetype-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Format del codi o la sentència d'execució necessari per a reproduir aquest ús", spa: "Formato del código o la sentencia de ejecución necesario para reproducir este uso", eng: "Format of the necessary code or execution sentence to reproduce this usage"});	
 	document.getElementById("bat-reprodUsage-mimetype-resource_value").innerHTML=DonaCadenaJSON({cat: "Línia de comada de Windows", spa: "Línea de comandos de Windows", eng: "Windows command line"});

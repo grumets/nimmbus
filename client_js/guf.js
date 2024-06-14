@@ -1,4 +1,4 @@
-/* 
+﻿/* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
     storing geospatial resources on the MiraMon private cloud. 
     MiraMon is a family of GIS&RS products developed since 1994 
@@ -202,8 +202,11 @@ function GUFShowFeedbackMultipleTargetsInHTMLDiv(elem, seed_div_id, rsc_type, ta
 			targets[i].codespace=targets[i].codespace.replace("https://","http://");
 	}
 	elem.innerHTML = GUFDonaCadenaFinestraFeedbackResourceMultipleTargets(seed_div_id, rsc_type, targets, lang, access_token_type, name_scope_function);
+
 	//demano el fitxer atom de feedbacks previs
 	GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(seed_div_id, rsc_type, targets, lang, access_token_type);
+	
+	GUFDisplayOrHidePreviousFeedbacks(lang);
 }
 
 function GUFShowPreviousFeedbackInHTMLDiv(div_id, rsc_type, code, codespace, lang, access_token_type)
@@ -212,11 +215,33 @@ var targets=[{title: title, code: code, codespace: codespace, role: "primary"}];
 	return GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targets, lang, access_token_type);
 }
 
+function GUFDisplayOrHidePreviousFeedbacks(lang)
+{
+	// Toggle display of previous feedback
+	document.getElementById("showPrevFB").addEventListener("click", function(event) {
+		event.preventDefault();
+		var preFB = document.getElementById("preFB");
+		var feedback_summary_div= document.getElementById("feedback_summary_div");
+		var showPrevFB = document.getElementById("showPrevFB");
+		if (preFB.style.display === "none") {
+			preFB.style.display = "block";
+			feedback_summary_div.style.display="none";
+			showPrevFB.innerHTML = GUFDonaCadenaLang({"cat":"Mostra el resum de les valoracions prèvies", "spa":"Muestra el resumen de las valoraciones previas", "eng":"Show summary of previous user feedback", "fre":"Afficher le résumé des commentaires précédents des utilisateurs"}, lang);
+		} else {
+			preFB.style.display = "none";
+			feedback_summary_div.style.display="block";
+			showPrevFB.innerHTML = GUFDonaCadenaLang({"cat":"Mostra valoracions prèvies", "spa":"Muestra valoraciones previas", "eng":"Show previous user feedback", "fre":"Afficher les commentaires précédents des utilisateurs"}, lang)
+		}
+	});
+}
+
 function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targets, lang, access_token_type)
 {
 	var tinc_target_secondary=false;
 	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE=" + lang + "&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK";
 	var url2=url;
+	//OG
+	var summary=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:SUMMARY&LANGUAGE=" + lang + "&TYPE=FEEDBACK";
 	
 //ara assumeixo que tinc un primari segur i potser un secundari. Futur-> poden haver N de cada un dels TRES tipus, i per cada un farçe un quadradet, suposo
 
@@ -228,15 +253,20 @@ function GUFShowPreviousFeedbackMultipleTargetsInHTMLDiv(div_id, rsc_type, targe
 	
 		if (targets[i].title && targets[i].code && targets[i].codespace && (typeof(targets[i].role)== "undefined" || targets[i].role=="primary"))
 		{			 
-			url+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ";			
+			url+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ";
+			//OG
+			summary+="&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + targets[i].code + "&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + targets[i].codespace + "&TRG_OPR_2=EQ";			
 			break;
 		}
 	}
+	//carreguem el FB SUMMARY
+	loadFile(summary, "text/xml", GUFCarregaFeedbacksSummaryCallback, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: summary, div_id: div_id+"Summary", rsc_type:rsc_type, lang: lang, access_token_type: access_token_type});
+	
 	//l'espai de FB previs sobre el target primari el poso sempre, perquè sempre en tinc un	
 	loadFile(url, "text/xml", GUFCarregaFeedbacksAnteriorsCallback, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: url, div_id: div_id+"Previ", rsc_type:rsc_type, lang: lang, access_token_type: access_token_type});
 
 	//busco el target secundari i l'envio a la segona part de la finestra
-	for (var i=0; i<targets.length; i++)	
+	for (var i=0; i<targets.length; i++)
 	{
 		if (targets[i].title && targets[i].code && targets[i].codespace && targets[i].role=="secondary")
 		{	//la peticio buscarà els que parlin del secondari d'ara, però només com a PRIMARI, per veure tb en el dataset els comentaris generals de la col·lecció (i no tornar a veure els secudaris d'questa o altres imatges!)
@@ -363,6 +393,172 @@ function GUFLoadLastPreviousReproducibleUsageCodeCallback(doc, extra_param)
 	loadFile(owc.features[i_feature].properties.links.alternates[0].href, "text/xml", GUFLoadOnePreviousReproducibleUsageCodeCallback, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: owc.features[i_feature].properties.links.alternates[0].href, callback_function: extra_param.callback_function, params_function: extra_param.params_function});
 }
 
+function GUFCarregaFeedbacksSummaryCallback(doc, extra_param)
+{
+	var cdns=[];
+
+	if (!doc || !doc.documentElement)
+		{
+			alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no és xml", "spa":"El retorno no es xml", "eng":"Return is not xml", "fre":"Le retour n'est pas xml"}, extra_param.lang));
+			return ;
+		}
+	var root=doc.documentElement;
+	var output = GetRetrieveResourceFeedbackSummaryOutputs(root);
+	
+	if (!output)
+	{
+		cdns.push(GUFDonaCadenaLang({"cat":"No hi ha cap valoració prèvia", 
+					"spa":"No hay ninguna valoración previa", 
+					"eng":"There are no previous user feedback", 
+					"fre":"Il n'y a pas encore de commentaires des utilisateurs"}, extra_param.lang)); 
+
+		if (extra_param.rsc_type != "")
+			cdns.push(GUFDonaCadenaLang({"cat":" sobre la", 
+						"spa":" sobre la", 
+						"eng":" on the", 
+						"fre":" sur la"}, extra_param.lang), 
+						" ", extra_param.rsc_type, " ");
+
+		cdns.push(GUFDonaCadenaLang({"cat":"encara", 
+					"spa":"todavía", 
+					"eng":"yet", 
+					"fre":"encore"}, extra_param.lang));
+		document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
+		
+		document.getElementById("showPrevFB").style.display="none";
+		return;
+	}
+	else
+	{
+		if (!output.numberOfRatings)
+		{
+			//si tenim feedbacks però no tenen rating passem directament a ensenyar els feedbacks pq no té sentit ensenyar el summary
+			document.getElementById("feedback_summary_div").style.display="none";
+			document.getElementById("preFB").style.display="block";
+			document.getElementById("showPrevFB").innerHTML=GUFDonaCadenaLang({"cat":"Mostra el resum de les valoracions prèvies", "spa":"Muestra el resumen de las valoraciones previas", "eng":"Show summary of previous user feedback", "fre":"Afficher le résumé des commentaires précédents des utilisateurs"}, extra_param.lang);
+		}
+
+		//start of feedback summary
+		var meanRating = parseInt(output.averageRating);
+	
+		cdns.push('<br>');
+		cdns.push('<div id="meanRating">');
+		
+		// Crida a la funció per generar la taula de valoracions
+		var titleCell = '<b>' + GUFDonaCadenaLang({ "cat": "Valoració mitjana: ", "spa": "Valoración promedio: ", "eng": "Average rating: ", "fre": "note moyenne" }, extra_param.lang) + '</b>';
+		generateRatingTable(cdns, meanRating, 'meanRating', titleCell);
+
+
+		// min, max and n ratings. A table is used to maintain alignment with previous elements.
+		if (output.numberOfRatings) {
+			cdns.push('<table border="0" cellspacing="5">');
+			cdns.push('<tr>');
+			cdns.push('<td id="summary_ratings"><b>' + GUFDonaCadenaLang({ "cat": "n puntuacions: ", "spa": "n puntuaciones: ", "eng": "n ratings: ", "fre": "n évaluations:" }, extra_param.lang) +'</b>'+ output.numberOfRatings + ", <b>" + GUFDonaCadenaLang({ "cat": "puntuació mín.: ", "spa": "puntuación mín.: ", "eng": "min rating: ", "fre": "note min.: " }, extra_param.lang) +'</b>'+ parseInt(output.minimumRating) + ", <b>" + GUFDonaCadenaLang({ "cat": "puntuació màx.: ", "spa": "puntuación máx.: ", "eng": "max rating: ", "fre":"note max.: " }, extra_param.lang)+'</b>' + parseInt(output.maximumRating) + '</td>');
+			cdns.push('</tr>');
+			cdns.push('</table>');
+		} else {
+			cdns.push('<table border="0" cellspacing="5">');
+			cdns.push('<tr>');
+			cdns.push('<td id="summary_ratings"><b>' + GUFDonaCadenaLang({ "cat": "n puntuacions: ", "spa": "n puntuaciones: ", "eng": "n ratings: ", "fre": "n évaluations" }, extra_param.lang) + "</b>, <b>" + GUFDonaCadenaLang({ "cat": "puntuació mín.: ", "spa": "puntuación mín.: ", "eng": "min rating: ", "fre": "note min.: " }, extra_param.lang) + "</b>, <b>" + GUFDonaCadenaLang({ "cat": "puntuació màx.: ", "spa": "puntuación máx.: ", "eng": "max rating: ", "fre": "note max.: " }, extra_param.lang) + '</b></td>');
+			cdns.push('</tr>');
+			cdns.push('</table>');
+		}
+		cdns.push('<br>');
+		// summary table byRatingCount
+		if (output.numberOfRatings != 0) {
+			cdns.push('<div id="byRatingCount_table" style="width: 230px; padding-left: 5px;">');
+			cdns.push('<table style="width: 100%;">');
+			for (var i = output.byRatingCount.length - 1; i >= 0; i--) {
+				var widthPercent = (output.byRatingCount[i].count / output.numberOfRatings) * 100;
+				cdns.push('<tr>');
+				cdns.push('<td style="width: 25px; height: 15px; text-align: left;"><b>' + output.byRatingCount[i].rating + ' &#9733;</b></td>');
+				cdns.push('<td style="height: 15px;"><div style="background-color: #eeeeee; width: 100%;"><div id="byRatingCount' + i + '" style="background-color: #FFC107; width: ' + widthPercent + '%; height: 15px;">&nbsp;</div></div></td>');
+				cdns.push('<td style="width: 20px; height: 15px; text-align: center; vertical-align: middle;">' + output.byRatingCount[i].count + '</td>');
+				cdns.push('</tr>');
+			}
+			cdns.push('</table>');
+			cdns.push('</div>');
+		}
+	
+		// Display toggle for additional information
+		cdns.push('<p style="text-align: right;"><a href="#" id="moreInfoLink">+ info</a></p>');
+	
+		// Additional information section
+		cdns.push('<div id="current_feedback_summary" style="display:none;">');
+
+        cdns.push('<table cellspacing="5">');
+        cdns.push('<tr><td><b>' + GUFDonaCadenaLang({"cat": "n feedbacks: ", "spa": "n feedbacks: ", "eng": "n feedbacks: ", "fre": "n feedbacks"}, extra_param.lang) + '</b></td><td>' + output.numberOfFeedbackItems + '</td><td><b>'+GUFDonaCadenaLang({"cat": "data de l'últim element: ", "spa": "fecha del último elemento: ", "eng": "latest item date: ", "fre": "date du dernier élément :"}, extra_param.lang)+'</b></td><td>');
+
+        if (output.latestItemDate) 
+		{
+            var fb_date = new Date(output.latestItemDate);
+            cdns.push(fb_date.toLocaleString());
+        }
+        cdns.push('</td></tr>');
+
+        cdns.push('<tr><td><b>'+GUFDonaCadenaLang({"cat": "n comentaris dels usuaris: ", "spa": "n comentarios de los usuarios: ", "eng": "n user comments: ", "fre": "n commentaires d'utilisateurs: "}, extra_param.lang)+'</b></td><td>' + output.numberOfUserComments + '</td><td><b>'+GUFDonaCadenaLang({"cat": "informes d'ús: ", "spa": "informes de uso: ", "eng": "usage reports: ", "fre": "rapports d'utilisation :"}, extra_param.lang)+'</b></td><td>' + output.numberOfUsageReports + '</td></tr>');
+        cdns.push('<tr><td><b>'+GUFDonaCadenaLang({"cat": "informes d'ús reproduïble: ", "spa": "informes de uso reproducible: ", "eng": "reproducible usage reports: ", "fre": "rapports d'utilisation reproductibles: "}, extra_param.lang)+'</b></td><td>' + output.numberOfReproducibleUsageReports + '</td><td><b>'+GUFDonaCadenaLang({"cat": "citacions: ", "spa": "citaciones: ", "eng": "citations: ", "fre": "citations: "}, extra_param.lang)+'</b></td><td>' + output.numberOfCitations + '</td></tr>');
+        cdns.push('</table><br>');
+
+        cdns.push('<p><b>'+GUFDonaCadenaLang({"cat": "Per objectiu: ", "spa": "Por objectivo: ", "eng": "By target: ", "fre": "Par cible: "}, extra_param.lang)+'</b></p>');
+        cdns.push('<table cellspacing="5">');
+
+        cdns.push('<tr><td><b>'+GUFDonaCadenaLang({"cat": "objectiu primari: ", "spa": "objectivo primario: ", "eng": "primary targets: ", "fre": "cibles principales: "}, extra_param.lang)+'</b></td><td>');
+        if (output.numberOfPrimaryTargets)
+            cdns.push(output.numberOfPrimaryTargets);
+        cdns.push('</td></tr>');
+
+        cdns.push('<tr><td><b>'+GUFDonaCadenaLang({"cat": "objectiu secundari: ", "spa": "objectivo secundario: ", "eng": "secondary targets: ", "fre": "cibles secondaires: "}, extra_param.lang)+'</b></td><td>');
+        if (output.numberOfSecondaryTargets)
+            cdns.push(output.numberOfSecondaryTargets);
+        cdns.push('</td></tr>');
+
+        cdns.push('<tr><td><b>'+GUFDonaCadenaLang({"cat": "objectiu suplementari: ", "spa": "objectivo suplementario: ", "eng": "supplementary targets: ", "fre": "cibles supplémentaires: "}, extra_param.lang)+'</b></td><td>');
+        if (output.numberOfSupplementaryTargets)
+            cdns.push(output.numberOfSupplementaryTargets);
+        cdns.push('</td></tr>');
+
+        cdns.push('</table><br>');
+
+        if (output.byRoleCount)
+		{
+            cdns.push('<p><b>'+GUFDonaCadenaLang({"cat": "Per rol de l'usuari: ", "spa": "Por rol del usuario: ", "eng": "By user role: ", "fre": "Par rôle d'utilisateur: "}, extra_param.lang)+'</b></p>');
+            cdns.push('<table cellspacing="5">');
+            for (var i = 0; i < output.byRoleCount.length; i++)
+			{
+                if (i % 2 === 0)
+                    cdns.push('<tr>');
+
+                cdns.push('<td><b>' + GUFDonaCadenaLang(GUF_UserRoleCode[output.byRoleCount[i].userRole]) +'</b>:</td><td>' + output.byRoleCount[i].count + '</td>');
+
+                if (i % 2 != 0)
+                    cdns.push('</tr>');
+            }
+            cdns.push('</table><br>');
+        }
+		cdns.push('</div>'); //this div closes the additional information section
+	
+		cdns.push('</div>');
+
+		document.getElementById(extra_param.div_id).innerHTML = cdns.join("");
+
+		// Toggle display of additional information
+		document.getElementById("moreInfoLink").addEventListener("click", function(event) {
+			event.preventDefault();
+			var summary = document.getElementById("current_feedback_summary");
+			var moreInfoLink = document.getElementById("moreInfoLink");
+			if (summary.style.display === "none") {
+				summary.style.display = "block";
+				moreInfoLink.innerHTML = "- info";
+			} else {
+				summary.style.display = "none";
+				moreInfoLink.innerHTML = "+ info";
+			}
+		});
+		document.getElementById("showPrevFB").style.display="block";
+	}
+}
+
 function GUFCarregaFeedbacksAnteriorsCallback(doc, extra_param)
 {
 var cdns=[];
@@ -378,27 +574,7 @@ var cdns=[];
 		return;
 		
 	var owc=ParseOWSContextAtom(root);
-	if (owc.properties.totalResults==0 || !owc.features)
-	{
-		cdns.push(GUFDonaCadenaLang({"cat":"No hi ha cap valoració prèvia", 
-					"spa":"No hay ninguna valoración previa", 
-					"eng":"There is no previous user feedback", 
-					"fre":"Il n'y a pas encore de commentaires des utilisateurs"}, extra_param.lang)); 
 
-		if (extra_param.rsc_type != "")
-			cdns.push(GUFDonaCadenaLang({"cat":" sobre la", 
-						"spa":" sobre la", 
-						"eng":" on the", 
-						"fre":" sur la"}, extra_param.lang), 
-						" ", extra_param.rsc_type, " ");
-
-		cdns.push(GUFDonaCadenaLang({"cat":"encara", 
-					"spa":"todavía", 
-					"eng":"yet", 
-					"fre":"encore"}, extra_param.lang));
-		document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
-		return;
-	}
 	//OG: canviem de posició el botó edit, que inicialment estava al final de tot de la llista de FB
 	if (typeof extra_param.edit_button!=="undefined" && extra_param.edit_button==false)
 	; //si el param no existeix o diu que no vull botó no el poso
@@ -421,11 +597,13 @@ var cdns=[];
 			var n2 = str2.indexOf("&");  
 			str = str2.substring(0, n2);
  		  
-			cdns.push("<fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">", owc.features[i].properties.authors[0].name, ", ", DonaDataISOComAText(owc.features[i].properties.updated), 
-				"</legend>", 							
-				"<div class=\"guf_fb_id user\"><span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+extra_param.lang+"&RESOURCE="+str+"\" target=\"_blank\">"+str+"</a></div>",				
-				"<div class=\"guf_abstract user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Résumé"}, extra_param.lang), "</span>: ", owc.features[i].properties.title,
-				"</div><div id=\"", extra_param.div_id, "_",i , "\"></div>");
+			cdns.push("<fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\"><a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+extra_param.lang+"&RESOURCE="+str+"\" target=\"_blank\">", owc.features[i].properties.authors[0].name, ", ", DonaDataISOComAText(owc.features[i].properties.updated), 
+				"</a></legend>", 							
+				//"<div class=\"guf_fb_id user\"><span class=\"guf_key user\">NiMMbus Id.</span>: <a class=\"guf_link user\" href=\""+ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+extra_param.lang+"&RESOURCE="+str+"\" target=\"_blank\">"+str+"</a></div>",				
+				//"<div class=\"guf_abstract user\"><span class=\"guf_key user\"><br>", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Résumé"}, extra_param.lang), "</span>: ", owc.features[i].properties.title,
+				//"<div class=\"guf_abstract user\"><br><b>", owc.features[i].properties.title,
+				//"</b></div><div id=\"", extra_param.div_id, "_",i , "\"></div>");
+				"<div id=\"", extra_param.div_id, "_",i , "\"></div>");
 								
 			if (typeof extra_param.callback_function!=="undefined" && extra_param.callback_function != "")
 			{
@@ -467,7 +645,6 @@ function ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(identifier, lang, es_id_fb_it
 		if (identifier.code)
 			text_html=text_html+identifier.code;
 			
-		//text_html=text_html+". ";
 			
 		if (text_html.indexOf("www.doi.org") >= 0 || text_html.indexOf("/doi.org") >= 0)
 			link_html="<span class=\"guf_key_2 user\">DOI</span>: <a class=\"guf_link user\" href=\""+text_html+"\" target=\"_blank\">"+identifier.code+"</a>. <br/>";
@@ -667,13 +844,24 @@ var cdns=[];
 		window[extra_param.callback_function](JSON.parse(extra_param.params_function), guf);
 		return;
 	}
+
+    cdns.push('<br><div class="guf_rating user" style="display: flex; justify-content: space-between;">');
+
+    // Compartiment de l'esquerra per al text
+    cdns.push('<div style="flex: 3; text-align: justify;">' + guf.abstract + '</div>');
+
+    // Compartiment de la dreta per a la taula de valoracions
+    cdns.push('<div style="flex: 2; text-align: right;">');
+    generateRatingTable(cdns, guf.rating, 'rating', '', 'margin-left: auto;');
+	cdns.push('<p><a href="#" id="fb_moreInfoLink'+extra_param.div_id+'">+ info</a></p>');
+    cdns.push('</div>');
 	
-	/* Ara l'he posat a fora perquè quedi més endreçat (Id, titol + resta)
-	if (guf.identifier)
-		cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.identifier, extra_param.lang, true));*/
-	
-	/*if (guf.abstract) ja no existeix pq és el feature.title que JA he posat)
-		cdns.push("<div class=\"guf_abstract user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Resum", "spa":"Resumen", "eng":"Abstract", "fre":"Abstrait"}, extra_param.lang), ":</span> ", guf.abstract, "</div>");*/
+	cdns.push("</div>");
+
+	// Display toggle for additional information
+	cdns.push('<div id="fb_moreInfo'+extra_param.div_id+'" style=\"display:none;\">');
+		
+	// Additional information section
 
 	if (guf.purpose)
 		cdns.push("<div class=\"guf_purpose user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Propòsit", "spa":"Propósito", "eng":"Purpose", "fre":"Raison"}, extra_param.lang), ":</span> ", guf.purpose, "</div>");
@@ -694,8 +882,8 @@ var cdns=[];
 		}
 	}	
 	
-	if (guf.rating)	
-		cdns.push("<div class=\"guf_rating user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Puntuació", "spa":"Puntuación", "eng":"Rating", "fre":"Évaluation"}, extra_param.lang), ":</span> ", guf.rating, "/5</div>");
+	//if (guf.rating)	
+	//	cdns.push("<div class=\"guf_rating user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Puntuació", "spa":"Puntuación", "eng":"Rating", "fre":"Évaluation"}, extra_param.lang), ":</span> ", guf.rating, "/5</div>");
 
 	if (guf.user_comment && guf.user_comment.comment)
 	{ 
@@ -753,7 +941,7 @@ var cdns=[];
 				}
 				cdns.push("</div><!-- guf_add_doc -->");
 			}
-			
+
 			if (GUFHiHaReprodUsage(guf.usage.usage_descr))
 			{
 				cdns.push("<div class=\"guf_reprodUsage user\">");
@@ -924,7 +1112,23 @@ var cdns=[];
 		}
 		cdns.push("</div><!-- guf_target -->");
 	}
+	cdns.push('</div>');
+
 	document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
+
+	// Toggle display of additional information
+	document.getElementById("fb_moreInfoLink"+extra_param.div_id).addEventListener("click", function(event) {
+		event.preventDefault();
+		var summary = document.getElementById("fb_moreInfo"+extra_param.div_id);
+		var moreInfoLink = document.getElementById("fb_moreInfoLink"+extra_param.div_id);
+		if (summary.style.display === "none") {
+			summary.style.display = "block";
+			moreInfoLink.innerHTML = "- info";
+		} else {
+			summary.style.display = "none";
+			moreInfoLink.innerHTML = "+ info";
+		}
+	});
 }
 
 var GUFFeedbackWindow=null;
@@ -984,7 +1188,7 @@ function GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_t
 	var n_targets=0;
 
 	for (var i=0; i<targets.length; i++)	
-	{		
+	{	
 		if (targets[i].title)
 			targets[i].title = DonaCadenaPerValorDeFormulari(targets[i].title);
 		if (targets[i].code)
@@ -997,6 +1201,7 @@ function GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_t
 			targets[i].bbox = DonaCadenaPerValorDeFormulari(targets[i].bbox);
 		if (targets[i].gmlpol)
 			targets[i].gmlpol = DonaCadenaPerValorDeFormulari(targets[i].gmlpol);
+		
 		if (targets[i].title && targets[i].title!="" && targets[i].code && targets[i].code!="" && targets[i].codespace && targets[i].codespace!="")
 		{	//aquest target és vàlid
 			//OG: aquí afegim el bbox i el gml pol a la query que rebrà el nimmbus
@@ -1129,7 +1334,22 @@ var n_targets_secundaris=0;
 	else
 		cdns.push("</div><br>");
 
-	cdns.push("<div class=\"guf_report user\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">"); 
+	// div for feedback summary
+	cdns.push("<div id=\"feedback_summary_div\" class=\"guf_summary user\" style=\"display:block;\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">"); 
+	if (rsc_type != "")
+		cdns.push(GUFDonaCadenaLang({"cat":"Resum de les valoracions prèvies sobre", "spa":"Resumen de las valoraciones previas sobre", "eng":"Summary of previous user feedback on", "fre":"Résumé des précédent rétroaction de l'utilisateur de"}, lang));
+	else
+		cdns.push(GUFDonaCadenaLang({"cat":"Resum de les valoracions prèvies", "spa":"Resumen de las valoraciones previas", "eng":"Summary of previous user feedback", "fre":"Résumé des précédent rétroaction de l'utilisateur"}, lang));
+	cdns.push(" ", rsc_type, "</legend>");
+	
+	cdns.push("<div id=\"",div_id,"Summary\" style=\"width:98%\">", "</div></fieldset>");
+	cdns.push("</div>");
+
+	// Display toggle for previous feedbacks
+	cdns.push('<p style="text-align: left;"><a href="#" id="showPrevFB" style=\"display:none;\">'+ GUFDonaCadenaLang({"cat":"Mostra valoracions prèvies", "spa":"Muestra valoraciones previas", "eng":"Show previous user feedback", "fre":"Afficher les commentaires précédents des utilisateurs"}, lang)+'</a></p>');
+	//cdns.push('<p style="text-align: left;"><a href="#" id="showPrevFB" style=\"display:none;\"></a></p>');
+
+	cdns.push("<div id=\"preFB\" class=\"guf_report user\" style=\"display:none;\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">"); 
 	if (rsc_type != "")
 		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prèvies a", "spa":"Valoraciones previas a", "eng":"Previous user feedback to", "fre":"Précédent rétroaction de l'utilisateur de"}, lang));
 	else
@@ -1153,7 +1373,7 @@ var n_targets_secundaris=0;
 		cdns.push("<div id=\"",div_id,"Previ_secundari\" style=\"width:98%\">", "</div></fieldset>");
 	}
 	cdns.push("</div>", "</div></form>");
-	
+
 	return cdns.join("");
 }
 
@@ -1164,4 +1384,29 @@ function EnviaReprodUsageComAPostMessage(event)
 		GUFFeedbackWindow.postMessage(ReprodUsageForPostMessage, ClientGUF);
 		ReprodUsageForPostMessage="";
 	}
+}
+
+
+function generateRatingTable(cdns, rating, idPrefix, titleCell, tableStyle) {
+    cdns.push('<table border="0" cellspacing="5" style="' + tableStyle + '">');
+    cdns.push('<tr>');
+
+    if (titleCell) {
+        cdns.push('<td id="title_' + idPrefix + '">' + titleCell + '</td>');
+    }
+
+    for (var i = 1; i <= 5; i++) {
+        if (rating >= i)
+            cdns.push('<td id="' + idPrefix + i + '" width="15" height="15" bgcolor="#FFC107"></td>');
+        else
+            cdns.push('<td id="' + idPrefix + i + '" width="15" height="15" bgcolor="#eeeeee"></td>');
+    }
+
+    if (!rating)
+        cdns.push('<td id="numeric_' + idPrefix + '">--/5</td>');
+    else
+        cdns.push('<td id="numeric_' + idPrefix + '">' + rating + '/5</td>');
+
+    cdns.push('</tr>');
+    cdns.push('</table>');
 }

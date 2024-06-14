@@ -43,18 +43,19 @@
 
 "use strict"
 
-  function DonaCadenaPerValorDeFormulari(s)
-  {
-	  //("\\?", "%3F" > http://stackoverflow.com/questions/889957/escaping-question-mark-in-regex-javascript
-	  //return s.replaceAll("#", "%23").replaceAll("+", "%2B").replaceAll("&", "%26").replaceAll("=", "%3D").replaceAll("?", "%3F"); 
+
+function DonaCadenaPerValorDeFormulari(s) 
+{
+	//("\\?", "%3F" > http://stackoverflow.com/questions/889957/escaping-question-mark-in-regex-javascript
+	//return s.replaceAll("#", "%23").replaceAll("+", "%2B").replaceAll("&", "%26").replaceAll("=", "%3D").replaceAll("?", "%3F"); 
 	// es canvia d'estrategia per donar sortida a caràcters com "<" i ">" 
 	//return encodeURIComponent(s);
 
     // Fem servir una funció personalitzada per escapar els caràcters segons la codificació Win-1252
 	// No s'utilitza encodeURIComponent ja que aquesta funció el que fa és escapar els caràcters en codificació UTF-8. Això genera problemes al servidor, 
-	// que decodifica els caràters com si fossin WIN1252 i acaben mal escrits a la DBF del NiMMbus.
+	// que decodifica els caràcters com si fossin WIN1252 i acaben mal escrits a la DBF del NiMMbus.
 	// Les conversions de caràcters es basen en aquesta taula: https://www.w3schools.com/tags/ref_urlencode.ASP
-	// encodeURIcomponent escapa tots els caràcters excepte "AâZ aâz 0â9 - _ . ! ~ * ' ( )". https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+	// encodeURIcomponent escapa tots els caràcters excepte "A–Z a–z 0–9 - _ . ! ~ * ' ( )". https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
 	// Nosaltres farem el mateix
     return escapeWin1252Component(s);
 }
@@ -69,10 +70,10 @@ function escapeWin1252Component(str)
 		8226:149, //•
 		//els seguents no tenen equivalent en OEM 850 i, per tant, quedaran mal escrits a les taules. Es podria buscar una correspondència amb un caràcter que si assemblés per que no quedi una cosa lletja.
 		8364: 128, // €
-		8218: 130, // ‚		High Control
+		8218: 130, // '‚' High Control
 		8222:132, //„
 		8230:133, //…
-		8224:134, //† 
+		8224:134, //†
 		8225:135, //‡
 		710:136, //ˆ
 		8240:137, //‰
@@ -99,7 +100,7 @@ function escapeWin1252Component(str)
 	{
 		var charCode = str.charCodeAt(i);
 
-		//Comprovem si el caràcter està  a win1252Table (per tant, l'escapament no és directament el seu valor hexadecimal)
+		//Comprovem si el caràcter està a win1252Table (per tant, l'escapament no és directament el seu valor hexadecimal)
 		if (charCode in win1252Table)
 		{
 			encodedURI+= '%' + (win1252Table[charCode] & 0xff).toString(16).toUpperCase();
@@ -121,7 +122,7 @@ function escapeWin1252Component(str)
 	return encodedURI;
 }
 
-//equivalent a encodeURI perÃ² per Win1252
+//equivalent a encodeURI però per Win1252
 function escapeWin1252(str) 
 {
 	var encodedURI='';
@@ -131,10 +132,10 @@ function escapeWin1252(str)
 		8226:149, //•
 		//els seguents no tenen equivalent en OEM 850 i, per tant, quedaran mal escrits a les taules. Es podria buscar una correspondència amb un caràcter que si assemblés per que no quedi una cosa lletja.
 		8364: 128, // €
-		8218: 130, // ‚		High Control
+		8218: 130, // '‚' High Control
 		8222:132, //„
 		8230:133, //…
-		8224:134, //† 
+		8224:134, //†
 		8225:135, //‡
 		710:136, //ˆ
 		8240:137, //‰
@@ -161,7 +162,7 @@ function escapeWin1252(str)
 	{
 		var charCode = str.charCodeAt(i);
 
-		//Comprovem si el caràcter està  a win1252Table (per tant, l'escapament no és directament el seu valor hexadecimal)
+		//Comprovem si el caràcter està a win1252Table (per tant, l'escapament no és directament el seu valor hexadecimal)
 		if (charCode in win1252Table)
 		{
 			encodedURI+= '%' + (win1252Table[charCode] & 0xff).toString(16).toUpperCase();
@@ -181,11 +182,39 @@ function escapeWin1252(str)
 	}
 
 	return encodedURI;
-  }
+}
+
 
 function DonaTextDesDeNmsElement(item, namespace, element)
 {
 	var elem=GetValueXMLElementByName(item, namespace, element);
+	if (elem)
+		return elem;
+	else
+		return "";
+}
+
+function DonaTextDesDeGcoReal(item)
+{
+	var elem=GetValueXMLElementByName(item, "gco", "Real");
+	if (elem)
+		return elem;
+	else
+		return "";
+}
+
+function DonaTextDesDeGcoInteger(item)
+{
+	var elem=GetValueXMLElementByName(item, "gco", "Integer");
+	if (elem)
+		return elem;
+	else
+		return "";
+}
+
+function DonaTextDesDeCitDate(item)
+{
+	var elem=GetValueXMLElementByName(item, "cit", "CI_Date");
 	if (elem)
 		return elem;
 	else
@@ -575,6 +604,160 @@ function OmpleInputDesDeWPSComplexOutput(item)
 	return GetXMLElementByName(item, "wps", "ComplexData");
 }
 
+function GetRetrieveResourceFeedbackSummaryOutputs(root)
+{
+var output, identifier,ufs_item, elem, byRoleCount, roleCount, userRole, count, byRatingCount, ratingCount, rating;
+
+	output=GetXMLElementCollectionByName(root, "wps", "Output");
+	if (output && output.length)
+	{
+		var ufs={};
+		for (var item=0; item<output.length; item++)
+		{
+			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
+			if (identifier.childNodes[0].nodeValue=="feedback summary")
+			{
+				ufs_item=OmpleInputDesDeWPSComplexOutput(output.item(item)); 
+				if (ufs_item)
+				{
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfFeedbackItems");
+					if (elem)
+						ufs.numberOfFeedbackItems=DonaTextDesDeGcoInteger(elem);
+					else
+						ufs.numberOfFeedbackItems=null;
+
+					//numberOfTargetsWithFeedback només existirà si demanem estadístiques de tots els FB en general. L'atribut no existeix a l'standard.
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfTargetsWithFeedback");
+					if (elem)
+						ufs.numberOfTargetsWithFeedback=DonaTextDesDeGcoInteger(elem);
+					else
+						ufs.numberOfTargetsWithFeedback=null;
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "latestItemDate");
+					if (elem)
+						ufs.latestItemDate=DonaTextDesDeCitDate(elem);
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfPrimaryTargets");
+					if (elem)
+						ufs.numberOfPrimaryTargets=DonaTextDesDeGcoInteger(elem);
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfSecondaryTargets");
+					if (elem)
+						ufs.numberOfSecondaryTargets=DonaTextDesDeGcoInteger(elem);
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfSupplementaryTargets");
+					if (elem)
+						ufs.numberOfSupplementaryTargets=DonaTextDesDeGcoInteger(elem);
+
+					/*elem=GetXMLElementByName(ufs_item, "ufs", "averageUserExpertiseLevel");
+					if (elem)
+						ufs.averageUserExpertiseLevel=DonaTextDesDeGcoReal(elem);
+					else
+						ufs.averageUserExpertiseLevel=null;*/
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "minimumRating");
+					if (DonaTextDesDeGcoReal(elem)=="")
+						ufs.minimumRating=null;
+					else
+						ufs.minimumRating=DonaTextDesDeGcoReal(elem);
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "maximumRating");
+					if (DonaTextDesDeGcoReal(elem)=="")
+						ufs.maximumRating=null;
+					else
+						ufs.maximumRating=DonaTextDesDeGcoReal(elem);
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "averageRating");
+					if (DonaTextDesDeGcoReal(elem)=="")
+						ufs.averageRating=null;
+					else
+						ufs.averageRating=DonaTextDesDeGcoReal(elem);
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfRatings");
+					if (DonaTextDesDeGcoInteger(elem)=="")
+						ufs.numberOfRatings=null;
+					else
+						ufs.numberOfRatings=DonaTextDesDeGcoInteger(elem);
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfUserComments");
+					if (elem)
+						ufs.numberOfUserComments=DonaTextDesDeGcoInteger(elem);
+					else
+						ufs.numberOfUserComments=null;
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfUsageReports");
+					if (elem)
+						ufs.numberOfUsageReports=DonaTextDesDeGcoInteger(elem);
+					else
+						ufs.numberOfUsageReports=null;
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfReproducibleUsageReports");
+					if (elem)
+						ufs.numberOfReproducibleUsageReports=DonaTextDesDeGcoInteger(elem);
+					else
+						ufs.numberOfReproducibleUsageReports=null;
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfCitations");
+					if (elem)
+						ufs.numberOfCitations=DonaTextDesDeGcoInteger(elem);
+					else
+						ufs.numberOfCitations=null;
+
+					/*elem=GetXMLElementByName(ufs_item, "ufs", "numerOfAdditionalQualities");
+					if (elem)
+						ufs.numberOfAdditionalQualities=DonaTextDesDeGcoInteger(elem);
+					else
+						ufs.numberOfAdditionalQualities=null;
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfAdditionalLineages");
+					if (elem)
+						ufs.numberOfAdditionalLineages=DonaTextDesDeGcoInteger(elem);
+					else
+						ufs.numberOfAdditionalLineages=null;
+
+					elem=GetXMLElementByName(ufs_item, "ufs", "numberOfAdditionalEvents");
+					if (elem)
+						ufs.numberOfAdditionalEvents=DonaTextDesDeGcoInteger(elem);
+					else
+						ufs.numberOfAdditionalEvents=null;*/
+
+					byRoleCount=GetXMLElementCollectionByName(ufs_item, "ufs", "userByRoleCount");
+					if (byRoleCount)
+					{	
+						ufs.byRoleCount=[];
+						for (var n=0; n<byRoleCount.length; n++)
+							{
+								roleCount=GetXMLElementByName(byRoleCount.item(n), "ufs", "UFS_UserRoleCount");
+								userRole=GetXMLElementByName(roleCount, null, "userRole");
+								count=GetXMLElementByName(roleCount, null, "count");
+								ufs.byRoleCount[n]={"userRole":userRole.childNodes[0].nodeValue, "count":DonaTextDesDeGcoInteger(count)};
+							}
+					}								
+					else
+						ufs.userByRoleCount=null;
+
+					byRatingCount=GetXMLElementCollectionByName(ufs_item, "ufs", "byRatingCount");
+					if(byRatingCount)
+					{
+						ufs.byRatingCount=[];
+						for (var n=0; n<byRatingCount.length; n++)
+							{
+								ratingCount=GetXMLElementByName(byRatingCount.item(n), "ufs", "UFS_RatingCount");
+								rating=GetXMLElementByName(ratingCount, "ufs", "rating");
+								count=GetXMLElementByName(ratingCount, "ufs", "count");
+								ufs.byRatingCount[n]={"rating":rating.childNodes[0].nodeValue, "count":DonaTextDesDeGcoInteger(count)};
+							}
+					}
+					else
+						ufs.byRatingCount=null;
+				}
+			}
+		}
+		return ufs;
+	}
+	return null;
+}
+
 function GetRetrieveResourceFeedbackOutputs(root)
 {
 var output, identifier, feedback_item, item_identifier, elem, user_comment, output2, target_item, resource_ref, output3, identifier_item;
@@ -838,11 +1021,13 @@ var usage, usage_descr, discov_issue;
 								}
 					 
 								elem=GetXMLElementByName(usage_descr, "qcm", "code");
+								//elem=GetXMLElementByName(usage_descr, "qcm", "codeSnippet");
 								if (elem)
 									//guf.usage.usage_descr.code=decodeURI(DonaTextDesDeGcoCharacterString(elem));
 									guf.usage.usage_descr.code=(DonaTextDesDeGcoCharacterString(elem));
 	
 								elem=GetXMLElementByName(usage_descr, "qcm", "codeLinkage");
+								//elem=GetXMLElementByName(usage_descr, "qcm", "codeSnippetLinkage");
 								guf.usage.usage_descr.codeLink=OmpleEstructuraOnlineResource(elem);	//if (elem) protegit dins
 							
 								elem=GetXMLElementByName(usage_descr, "qcm", "codeMediaType");

@@ -2331,7 +2331,7 @@ var new_format;
 		document.href_resource_form.href.value="";
 		document.href_resource_form.reason.value="";
 		//Valor per defecte de mimetype és "Other" que es marca amb CadenaBuida
-		SeleccionaSelectDesDeValor(document.href_resource_form.mimetype, "");
+		SeleccionaSelectDesDeValor(document.href_resource_form.mimetype, "mmz");
 
 		for (var item=0; item<output.length; item++)
 		{
@@ -2742,7 +2742,8 @@ var root, output, identifier, s, feedback_item, user_comment;
 				if (guf.usage.usage_descr.codeMediaType)
 					SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, guf.usage.usage_descr.codeMediaType);
 				else
-					SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"			
+					//SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"			
+					document.feedback_resource_form.codeMediaType.value="";
 				if (guf.usage.usage_descr.platform)
 					document.feedback_resource_form.platform.value=guf.usage.usage_descr.platform;
 				else
@@ -2771,7 +2772,8 @@ var root, output, identifier, s, feedback_item, user_comment;
 				if (guf.usage.usage_descr.diagramMediaType)
 					SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, guf.usage.usage_descr.diagramMediaType);
 				else
-					SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"
+					//SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"
+					document.feedback_resource_form.diagramMediaType.value="";
 
 				//Si té content ho faré gran
 				CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "block");
@@ -2780,14 +2782,16 @@ var root, output, identifier, s, feedback_item, user_comment;
 			{
 				document.feedback_resource_form.code.value="";
 				document.feedback_resource_form.codeLink.value="";
-				SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"
+				//SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"
+				document.feedback_resource_form.codeMediaType.value="";
 				document.feedback_resource_form.platform.value="";
 				document.feedback_resource_form.version.value="";
 				document.feedback_resource_form.schema.value="";
 				document.feedback_resource_form.sugg_app.value="";
 				document.feedback_resource_form.diagram.value="";
 				document.feedback_resource_form.diagramLink.value="";
-				SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
+				//SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"
+				document.feedback_resource_form.diagramMediaType.value="";			
 				CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "none");
 			}
 
@@ -2805,14 +2809,16 @@ var root, output, identifier, s, feedback_item, user_comment;
 			OmpleRecursAddDocsDesDeAddDocsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);			
 			document.feedback_resource_form.code.value="";
 			document.feedback_resource_form.codeLink.value="";
-			SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"
+			//SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"
+			document.feedback_resource_form.codeMediaType.value="";
 			document.feedback_resource_form.platform.value="";
 			document.feedback_resource_form.version.value="";
 			document.feedback_resource_form.schema.value="";
 			document.feedback_resource_form.sugg_app.value="";
 			document.feedback_resource_form.diagram.value="";
 			document.feedback_resource_form.diagramLink.value="";
-			SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
+			//SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
+			document.feedback_resource_form.diagramMediaType.value="";
 			CollapseFieldset(document.getElementById("usage-description-feedback-resource"), "none"); //default is collapsed
 			CollapseFieldset(document.getElementById("add-doc-feedback-resource"), "none"); //default is collapsed			
 			CollapseFieldset(document.getElementById("reprodUsage-feedback-resource"), "none"); //default is collapsed
@@ -2974,14 +2980,16 @@ var root, output, identifier, s, feedback_item, user_comment;
 		OmpleRecursAddDocsDesDeAddDocsOfAFeedback((guf.rights && guf.rights.indexOf("W")!=-1) ? true : false);
 		document.feedback_resource_form.code.value="";
 		document.feedback_resource_form.codeLink.value="";
-		SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"
+		//SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"
+		document.feedback_resource_form.codeMediaType.value="";
 		document.feedback_resource_form.platform.value="";
 		document.feedback_resource_form.version.value="";
 		document.feedback_resource_form.schema.value="";
 		document.feedback_resource_form.sugg_app.value="";
 		document.feedback_resource_form.diagram.value="";
 		document.feedback_resource_form.diagramLink.value="";
-		SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
+		//SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"			
+		document.feedback_resource_form.diagramMediaType.value="";
 		document.feedback_resource_form.known_problem.value="";
 		document.feedback_resource_form.problem_date.value="";	
 		document.feedback_resource_form.problem_time.value="";
@@ -4432,6 +4440,9 @@ var root, s, type;
 	      if (dades.type_enum=="resources")
 	      {
 					s+="<br/><span class=\"white-area-li-shadow\"> ";
+					if (type=="CITATION")
+						s+="&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\');MostraFeedbackSummary(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Feedback)+'" '+'src="feedback15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
+					else
 					s+="&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Feedback)+'" '+'src="feedback15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
 					
 					if (owc.features[i].properties.rights && owc.features[i].properties.rights.indexOf("S")!=-1)
@@ -5150,14 +5161,16 @@ function BuidaPlegaFeedbackElements()
 	OmpleRecursAddDocsDesDeAddDocsOfAFeedback(true);
 	document.feedback_resource_form.code.value="";
 	document.feedback_resource_form.codeLink.value="";
-	SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"
+	//SeleccionaSelectDesDeValor(document.feedback_resource_form.codeMediaType, ""); //"other"
+	document.feedback_resource_form.codeMediaType.value="";
 	document.feedback_resource_form.platform.value="";
 	document.feedback_resource_form.version.value="";
 	document.feedback_resource_form.schema.value="";	
 	document.feedback_resource_form.sugg_app.value="";	
 	document.feedback_resource_form.diagram.value="";
 	document.feedback_resource_form.diagramLink.value="";
-	SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"
+	//SeleccionaSelectDesDeValor(document.feedback_resource_form.diagramMediaType, ""); //"other"
+	document.feedback_resource_form.diagramMediaType.value="";
 	document.feedback_resource_form.known_problem.value="";
 	document.feedback_resource_form.problem_date.value="";	
 	document.feedback_resource_form.problem_time.value="";
@@ -5697,6 +5710,11 @@ var id;
 		id=id_to_use;
 	else
 		id=DonaValorDeFormulari("RESOURCE", query, true);
+	//en cas que entrem aquí quan no estem consultant un recurs de tipus "citation" cal estar segur que s'han "esborrat" les dades de l'últim summary consultat.
+	if (document.getElementById("current_feedback_summary_screen").innerHTML!="")
+		document.getElementById("current_feedback_summary_screen").innerHTML="";
+	if (document.getElementById("summary_stars").innerHTML!="")
+		document.getElementById("summary_stars").innerHTML="";
 	
 	IdResourceToSaveChanges=id;
 	IdTargetResourceToSaveChanges=id;
@@ -5704,6 +5722,25 @@ var id;
 	EnumerateFeedbackResource(id);
 	document.getElementById("feedback_target_compact_descrip").innerHTML="";		
 	PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null, false, 0, null, null, null);
+	//PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null, false, 0 /*is_none*/, "");
+}
+
+function MostraFeedbackSummary(event, query, id_to_use)
+{
+var id;
+
+	if (event)
+		StopPropagationClick(event);
+
+	if (id_to_use)
+		id=id_to_use;
+	else
+		id=DonaValorDeFormulari("RESOURCE", query, true);
+	
+	IdResourceToSaveChanges=id;
+	IdTargetResourceToSaveChanges=id;
+
+	AskForFeedbackSummary(id);
 }
 
 function MostraTagResource(event, query)
@@ -5802,6 +5839,147 @@ function EnumerateShareResource(id)
 	return true;
 }
 
+
+function AvaluaRespostaFeedbackSummary(doc, id) {
+    var root, text_current_feedback_summary;
+
+    root = DonaRootXML(doc, document);
+    if (!root) return;
+    if (AnalitzaExceptionReport(root, document)) return;
+
+    if (location.hash != "#feedback") 
+        ChangePannel("feedback", true);
+
+    var output = GetRetrieveResourceFeedbackSummaryOutputs(root);
+
+    if (output) {
+
+		document.getElementById("current_feedback_summary_screen").innerHTML=DonaCadenaJSON(Msg_fb_summary);
+
+        var stars = "";
+        stars += '<span class="starRating">';
+        stars += '    <input id="rating-feedback-resource_value5" type="radio" name="rating" value="5">';
+        stars += '    <label for="rating-feedback-resource_value5">5</label>';
+        stars += '    <input id="rating-feedback-resource_value4" type="radio" name="rating" value="4">';
+        stars += '    <label for="rating-feedback-resource_value4">4</label>';
+        stars += '    <input id="rating-feedback-resource_value3" type="radio" name="rating" value="3">';
+        stars += '    <label for="rating-feedback-resource_value3">3</label>';
+        stars += '    <input id="rating-feedback-resource_value2" type="radio" name="rating" value="2">';
+        stars += '    <label for="rating-feedback-resource_value2">2</label>';
+        stars += '    <input id="rating-feedback-resource_value1" type="radio" name="rating" value="1">';
+        stars += '    <label for="rating-feedback-resource_value1">1</label>';
+        stars += '</span>';
+
+        document.getElementById("summary_stars").innerHTML = stars;
+
+        var sumRat = "";
+        sumRat += '<p id="summary_ratings"></p><br>';
+        document.getElementById("summary_stars").innerHTML += sumRat;
+
+        if (output.numberOfRatings)
+            document.getElementById("summary_ratings").innerHTML = DonaCadenaJSON({cat: "n puntuacions: ", spa: "n puntuaciones: ", eng: "n ratings: "}) + output.numberOfRatings + ", "+DonaCadenaJSON({cat: "puntuació mín.: ", spa: "puntuación mín.: ", eng: "min rating: "}) + parseInt(output.minimumRating) + ", "+DonaCadenaJSON({cat: "puntuació màx.: ", spa: "puntuación máx.: ", eng: "max rating: "})+ parseInt(output.maximumRating);
+        else
+			document.getElementById("summary_ratings").innerHTML = DonaCadenaJSON({cat: "n puntuacions: ", spa: "n puntuaciones: ", eng: "n ratings: "}) + ", "+DonaCadenaJSON({cat: "puntuació mín.: ", spa: "puntuación mín.: ", eng: "min rating: "}) + ", "+DonaCadenaJSON({cat: "puntuació màx.: ", spa: "puntuación máx.: ", eng: "max rating: "});
+
+        if (output.numberOfRatings != 0) {
+            var tabRat = '';
+            tabRat += '<div id="byRatingCount_table" style="width:280px;"></div>';
+            document.getElementById("summary_stars").innerHTML += tabRat;
+
+            var taula = document.getElementById("byRatingCount_table");
+            var tableHTML = '<table style="width: 100%;">';
+
+            for (var i = ((output.byRatingCount.length) - 1); i >= 0; i--) {
+                var widthPercent = (output.byRatingCount[i].count / output.numberOfRatings) * 100;
+                tableHTML += '<tr><td style="width: 35px; text-align: center;">' + output.byRatingCount[i].rating + ' <img src="star-on.png" width="17px" style="vertical-align: middle;"></td><td><div style="background-color: #eeeeee; width: 100%;"><div id="byRatingCount' + i + '" style="background-color: #FFC107; width: ' + widthPercent + '%;">&nbsp;</div></div></td><td style="width: 30px; text-align: center; vertical-align: middle;">' + output.byRatingCount[i].count + '</td></tr>';
+            }
+
+            tableHTML += "</table>";
+            taula.innerHTML = tableHTML;
+        }
+
+        document.getElementById("summary_stars").innerHTML += '<br><p id="moreInfoLink" style="cursor:pointer; color:#55ACEE;">+ info</p>';
+
+        var currentFBSum = "";
+        currentFBSum += '<p id="current_feedback_summary" style="display:none;"></p>';
+        document.getElementById("summary_stars").innerHTML += currentFBSum;
+
+        text_current_feedback_summary = "";
+
+        text_current_feedback_summary += '<br>';
+        text_current_feedback_summary += '<table style="width:600px">';
+        text_current_feedback_summary += '<tr><td style="width:35%;">' + DonaCadenaJSON({cat: "n feedbacks: ", spa: "n feedbacks: ", eng: "n feedbacks: "}) + '</td><td style="width:10%;">' + output.numberOfFeedbackItems + '</td><td style="width:30%;">'+DonaCadenaJSON({cat: "data de l'últim element: ", spa: "fecha del último elemento: ", eng: "latest item date: "})+'</td><td>';
+
+        if (output.latestItemDate) {
+            var fb_date = new Date(output.latestItemDate);
+            text_current_feedback_summary += fb_date.toLocaleString();
+        }
+        text_current_feedback_summary += '</td></tr>';
+
+        text_current_feedback_summary += '<tr><td style="width:35%;">'+DonaCadenaJSON({cat: "n comentaris dels usuaris: ", spa: "n comentarios de los usuarios: ", eng: "n user comments: "})+'</td><td style="width:10%;">' + output.numberOfUserComments + '</td><td style="width:30%;">'+DonaCadenaJSON({cat: "informes d'ús: ", spa: "informes de uso: ", eng: "usage reports: "})+'</td><td>' + output.numberOfUsageReports + '</td></tr>';
+        text_current_feedback_summary += '<tr><td style="width:35%;">'+DonaCadenaJSON({cat: "informes d'ús reproduïble: ", spa: "informes de uso reproducible: ", eng: "reproducible usage reports: "})+'</td><td style="width:10%;">' + output.numberOfReproducibleUsageReports + '</td><td style="width:30%;">'+DonaCadenaJSON({cat: "citacions: ", spa: "citaciones: ", eng: "citations: "})+'</td><td>' + output.numberOfCitations + '</td></tr>';
+        text_current_feedback_summary += '</table><br>';
+
+        text_current_feedback_summary += '<p>'+DonaCadenaJSON({cat: "Per objectiu: ", spa: "Por objectivo: ", eng: "By target: "})+'</p>';
+        text_current_feedback_summary += '<table style="width:300px;">';
+
+        text_current_feedback_summary += '<tr><td style="width:70%;">'+DonaCadenaJSON({cat: "objectiu primari: ", spa: "objectivo primario: ", eng: "primary targets: "})+'</td><td>';
+        if (output.numberOfPrimaryTargets)
+            text_current_feedback_summary += output.numberOfPrimaryTargets;
+        text_current_feedback_summary += '</td></tr>';
+
+        text_current_feedback_summary += '<tr><td style="width:70%;">'+DonaCadenaJSON({cat: "objectiu secundari: ", spa: "objectivo secundario: ", eng: "secondary targets: "})+'</td><td>';
+        if (output.numberOfSecondaryTargets)
+            text_current_feedback_summary += output.numberOfSecondaryTargets;
+        text_current_feedback_summary += '</td></tr>';
+
+        text_current_feedback_summary += '<tr><td style="width:70%;">'+DonaCadenaJSON({cat: "objectiu suplementari: ", spa: "objectivo suplementario: ", eng: "supplementary targets: "})+'</td><td>';
+        if (output.numberOfSupplementaryTargets)
+            text_current_feedback_summary += output.numberOfSupplementaryTargets;
+        text_current_feedback_summary += '</td></tr>';
+
+        text_current_feedback_summary += '</table><br>';
+
+        if (output.byRoleCount) {
+            text_current_feedback_summary += '<p>'+DonaCadenaJSON({cat: "Per rol de l'usuari: ", spa: "Por rol del usuario: ", eng: "By user role: "})+'</p>';
+            text_current_feedback_summary += '<table style="width:500px">';
+            for (var i = 0; i < output.byRoleCount.length; i++) {
+                if (i % 2 === 0)
+                    text_current_feedback_summary += '<tr>';
+
+                text_current_feedback_summary += '<td style="width:43%;">' + DonaCadenaJSON(GUF_UserRoleCode[output.byRoleCount[i].userRole]) +':</td><td style="width:10%;">' + output.byRoleCount[i].count + '</td>';
+
+                if (i % 2 != 0)
+                    text_current_feedback_summary += '</tr>';
+            }
+            text_current_feedback_summary += '</table><br>';
+        }
+
+        document.getElementById("current_feedback_summary").innerHTML = text_current_feedback_summary;
+
+        if (output.averageRating)
+            SeleccionaRadioDesDeValor(document.feedback_form.rating, parseInt(output.averageRating));
+
+        //codi que plega i desplega la + info del FB summary
+        document.getElementById("moreInfoLink").addEventListener("click", function(event) {
+            event.preventDefault();
+            var summary = document.getElementById("current_feedback_summary");
+            var moreInfoLink = document.getElementById("moreInfoLink");
+            if (summary.style.display === "none") {
+                summary.style.display = "block";
+                moreInfoLink.innerHTML = "- info";
+            } else {
+                summary.style.display = "none";
+                moreInfoLink.innerHTML = "+ info";
+            }
+        });
+    }
+
+	RemoveInfo("permanent");
+	UpdateLastServer();
+    return;
+}
+
 function AvaluaRespostaFeedbackEnumerate(doc, id)
 {
 var root, text_current_feedback_list;
@@ -5863,6 +6041,23 @@ function EnumerateFeedbackResource(id)
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				//+"&USER="+DonaCadenaPerValorDeFormulari(document.sign_in.user.value)+"&PASSWORD="+DonaCadenaPerValorDeFormulari(document.sign_in.pass.value)
 				+"&TYPE=FEEDBACK&TARGET="+id, AvaluaRespostaFeedbackEnumerate, "text/xml", id);
+        ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
+
+	return true;
+}
+
+function AskForFeedbackSummary(id)
+{	
+	if (id==null)
+	{
+		ShowInfo("long", DonaCadenaJSON(Msg_Cannot_found_resource_identifier));
+		return;
+	}
+
+	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:SUMMARY&LANGUAGE="+LanguagesNB[ActiveLanguage]
+				+"&TYPE=FEEDBACK&TARGET="+id, AvaluaRespostaFeedbackSummary, "text/xml", id);
         ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
 
 	return true;
@@ -7153,7 +7348,10 @@ function OmpleRecursosQueTocaSortintDeQualsevolResource(type)
 	else
 	{	
 		if (type=="FEEDBACK") //Torno des de la pàgina de creació d'un nou FB, a la pàgina de llista de FB sobre un recurs
+		{
 			MostraFeedbackList(null, null, IdTargetResourceToSaveChanges);
+			MostraFeedbackSummary(null, null, IdTargetResourceToSaveChanges);
+		}
 		else if (type=="PUBLICAT")
 			ObreSelectorGeneral(false, type, "FEEDBACK", document.publication_resource_form.element_origin.value);
 		else if (type=="CITATION")
@@ -8358,7 +8556,7 @@ function BuidaHlinkResource()
         <label for="rating-feedback-resource_value3">3</label>
         <input id="rating-feedback-resource_value2" type="radio" name="rating" value="2">
         <label for="rating-feedback-resource_value2">2</label>
-        <input id="rating-feedback-resource_value1" type="radio" name="rating" value="1" checked>
+        <input id="rating-feedback-resource_value1" type="radio" name="rating" value="1">
         <label for="rating-feedback-resource_value1">1</label>
         <!--input id="rating-feedback-resource_value0" type="radio" name="rating" value="0" checked>
         <label for="rating-feedback-resource_value0">0</label> <!-- indefinit -->
@@ -9530,6 +9728,12 @@ function BuidaHlinkResource()
 <div class="controls">
 <p><input id="new_feedback_btn" class="submit_btn" type="button" value="" onClick="MostraFeedbackResource('', null);BuidaPlegaFeedbackElements();"/></p>
 <p id="new_feedback_descrip"></p>
+		</div>
+	</div>
+
+	<div id="feedback_summary_fieldset" class="control-group">
+		<label class="control-label" id="current_feedback_summary_screen"></label>
+		<div id="summary_stars" class="controls">
 </div>
 </div>
 
