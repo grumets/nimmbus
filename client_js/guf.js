@@ -1,4 +1,4 @@
-﻿/* 
+/* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
     storing geospatial resources on the MiraMon private cloud. 
     MiraMon is a family of GIS&RS products developed since 1994 
@@ -183,8 +183,8 @@ function GUFShowPreviousFeedbackWithReproducibleUsageInHTMLDiv(elem, seed_div_id
 		return;
 	}
 	
-	loadFile(GUFGetURLPreviousFeedbackWithReproducibleUsage(code, codespace, reprod_usage, lang, access_token_type), 
-			"text/xml", GUFCarregaFeedbacksAnteriorsCallback, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, 
+	var url=GUFGetURLPreviousFeedbackWithReproducibleUsage(code, codespace, reprod_usage, lang, access_token_type);
+	loadFile(url,"text/xml", GUFCarregaFeedbacksAnteriorsCallback, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, 
 			{url: url, div_id: seed_div_id, lang: lang, access_token_type: access_token_type, callback_function: callback_function, params_function: params_function, edit_button: false});
 }
 
@@ -574,6 +574,27 @@ var cdns=[];
 		return;
 		
 	var owc=ParseOWSContextAtom(root);
+	if (owc.properties.totalResults==0 || !owc.features)
+	{
+		cdns.push(GUFDonaCadenaLang({"cat":"No hi ha cap valoració prèvia", 
+					"spa":"No hay ninguna valoración previa", 
+					"eng":"There is no previous user feedback", 
+					"fre":"Il n'y a pas encore de commentaires des utilisateurs"}, extra_param.lang)); 
+
+		if (extra_param.rsc_type != "")
+			cdns.push(GUFDonaCadenaLang({"cat":" sobre la", 
+						"spa":" sobre la", 
+						"eng":" on the", 
+						"fre":" sur la"}, extra_param.lang), 
+						" ", extra_param.rsc_type, " ");
+
+		cdns.push(GUFDonaCadenaLang({"cat":"encara", 
+					"spa":"todavía", 
+					"eng":"yet", 
+					"fre":"encore"}, extra_param.lang));
+		document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
+		return;
+	}
 
 	//OG: canviem de posició el botó edit, que inicialment estava al final de tot de la llista de FB
 	if (typeof extra_param.edit_button!=="undefined" && extra_param.edit_button==false)
@@ -1189,18 +1210,6 @@ function GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_t
 
 	for (var i=0; i<targets.length; i++)	
 	{	
-		if (targets[i].title)
-			targets[i].title = DonaCadenaPerValorDeFormulari(targets[i].title);
-		if (targets[i].code)
-			targets[i].code = DonaCadenaPerValorDeFormulari(targets[i].code);
-		if (targets[i].codespace)
-			targets[i].codespace = DonaCadenaPerValorDeFormulari(targets[i].codespace);
-		if (targets[i].role)
-			targets[i].role = DonaCadenaPerValorDeFormulari(targets[i].role);
-		if (targets[i].bbox)
-			targets[i].bbox = DonaCadenaPerValorDeFormulari(targets[i].bbox);
-		if (targets[i].gmlpol)
-			targets[i].gmlpol = DonaCadenaPerValorDeFormulari(targets[i].gmlpol);
 		
 		if (targets[i].title && targets[i].title!="" && targets[i].code && targets[i].code!="" && targets[i].codespace && targets[i].codespace!="")
 		{	//aquest target és vàlid
