@@ -71,7 +71,7 @@ GUFIncludeScript("guf_locale.js");
 
 function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, access_token_type)
 {
-	for (var i=0; i<targets.length; i++)
+	/*for (var i=0; i<targets.length; i++)
 	{	
 		if (targets[i].title)
 			targets[i].title = DonaCadenaPerValorDeFormulari(targets[i].title);
@@ -79,7 +79,7 @@ function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, acc
 			targets[i].code = DonaCadenaPerValorDeFormulari(targets[i].code);
 		if (targets[i].codespace) //decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara
 			targets[i].codespace = DonaCadenaPerValorDeFormulari(targets[i].codespace).replace("https://","http://"); 
-	}
+	}*/
 	if (reprod_usage.abstract)
 		reprod_usage.abstract = DonaCadenaPerValorDeFormulari(reprod_usage.abstract);
 	if (reprod_usage.ru_code)
@@ -644,7 +644,7 @@ var cdns=[];
 	{
 		type=GetNimmbusTypeOfAOWCFeature(owc.features[i]);
 		if (type=="FEEDBACK" && owc.features[i].properties && owc.features[i].properties.links && owc.features[i].properties.links.alternates && owc.features[i].properties.links.alternates.length && owc.features[i].properties.links.alternates[0].href)
-			loadFile(owc.features[i].properties.links.alternates[0].href, "text/xml", GUFCarregaFeedbackAnteriorCallback, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: owc.features[i].properties.links.alternates[0].href, div_id: extra_param.div_id + "_" + i, lang: extra_param.lang});
+			loadFile(owc.features[i].properties.links.alternates[0].href, "text/xml", GUFCarregaFeedbackAnteriorCallback, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: owc.features[i].properties.links.alternates[0].href, div_id: extra_param.div_id + "_" + i, lang: extra_param.lang, esRU: extra_param.callback_function});
 	}
 }
 
@@ -866,274 +866,62 @@ var cdns=[];
 		return;
 	}
 
-    cdns.push('<br><div class="guf_rating user" style="display: flex; justify-content: space-between;">');
+	if (extra_param.esRU=="AdoptaEstil") // aquí es pinten els elements que es demanen quan fem un retrieve styles
+	{
+		cdns.push('<div style="text-align: justify;"><br>' + guf.abstract + '</div><br>');
 
-    // Compartiment de l'esquerra per al text
-    cdns.push('<div style="flex: 3; text-align: justify;">' + guf.abstract + '</div>');
+		printFBusage(cdns, guf, extra_param);						
 
-    // Compartiment de la dreta per a la taula de valoracions
-    cdns.push('<div style="flex: 2; text-align: right;">');
-    generateRatingTable(cdns, guf.rating, 'rating', '', 'margin-left: auto;');
-	cdns.push('<p><a href="#" id="fb_moreInfoLink'+extra_param.div_id+'">+ info</a></p>');
-    cdns.push('</div>');
+		cdns.push('<br><p><a href="#" id="fb_moreInfoLink'+extra_param.div_id+'">+ info</a></p>');
 	
-	cdns.push("</div>");
 
 	// Display toggle for additional information
 	cdns.push('<div id="fb_moreInfo'+extra_param.div_id+'" style=\"display:none;\">');
 		
-	// Additional information section
+		cdns.push("<div id='rating_table'>");
+		generateRatingTable(cdns, guf.rating, 'rating', '', '');
+		cdns.push("</div>");
 
-	if (guf.purpose)
-		cdns.push("<div class=\"guf_purpose user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Propòsit", "spa":"Propósito", "eng":"Purpose", "fre":"Raison"}, extra_param.lang), ":</span> ", guf.purpose, "</div>");
+		printFBpurpose(cdns, guf, extra_param);
+		printFBcontact(cdns, guf, extra_param);
+		printFBdateInfo(cdns, guf, extra_param);
+		printFBcomment(cdns, guf, extra_param);
+		printFBpublic(cdns, guf, extra_param);
+		printFBtarget (cdns, guf, extra_param);
 
-	//if (guf.contact)
+		cdns.push('</div>');
 	
-	if (guf.contactRole && GUF_UserRoleCode[guf.contactRole])
-		cdns.push("<div class=\"guf_contact_role user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Rol de l'usuari", "spa":"Rol del usuario", "eng":"User role", "fre":"Rôle de user"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_UserRoleCode[guf.contactRole], extra_param.lang), "</div>");
-
-	if (guf.dateInfo)
-	{
-		for (var i_date=0; i_date<guf.dateInfo.length; i_date++)
-		{
-			if (guf.dateInfo[i_date].dateType)
-				cdns.push("<div class=\"guf_date user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Data", "spa":"Fecha", "eng":"Date", "fre":"Date"},extra_param.lang)+" ("+GUFDonaCadenaLang(CI_DateTypeCode[guf.dateInfo[i_date].dateType],extra_param.lang)+"):</span> "+guf.dateInfo[i_date].date+"</div>");
-			else
-				cdns.push("<div class=\"guf_date user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Data", "spa":"Fecha", "eng":"Date", "fre":"Date"},extra_param.lang)+":</span> "+guf.dateInfo[i_date].date+"</div>");
-		}
-	}	
-	
-	//if (guf.rating)	
-	//	cdns.push("<div class=\"guf_rating user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Puntuació", "spa":"Puntuación", "eng":"Rating", "fre":"Évaluation"}, extra_param.lang), ":</span> ", guf.rating, "/5</div>");
-
-	if (guf.user_comment && guf.user_comment.comment)
-	{ 
-		cdns.push("<div class=\"guf_comment user\"><hr class=\"guf_solid user\">");
-		cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Comentari", "spa":"Comentario", "eng":"Comment", "fre":"Commentaire"}, extra_param.lang), ":</span> ", guf.user_comment.comment, "<br/>");
-		if (guf.user_comment.motivation && GUF_MotivationCode[guf.user_comment.motivation])
-			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Motivació del comentari", "spa":"Motivación del comentario", "eng":"Comment motivation", "fre":"Motivation du commentaire"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_MotivationCode[guf.user_comment.motivation], extra_param.lang));			
-		cdns.push("</div><!-- guf_comment -->");
 	}
-
-	if (guf.usage)
+	else // a partir d'aquí es pinten els elements que es demanen feedbacks
 	{
-		cdns.push("<div class=\"guf_usage user\"><hr class=\"guf_solid user\">");
-		if (guf.usage.reportAspect && guf.usage.reportAspect.length>0)
-		{
-			var s="";
-			for (var item=0; item<guf.usage.reportAspect.length; item++)
-			{
-				if (item!=0)
-					s+=", ";
-				s+=GUFDonaCadenaLang(GUF_ReportAspectCode[guf.usage.reportAspect[item]], extra_param.lang);
-			}
-			cdns.push("<div class=\"guf_aspect_reported user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Aspecte reportat", "spa": "Aspecto reportado", "eng": "Aspect reported", "fre":"Aspect rapporté"}, extra_param.lang), ":</span> ", s, "</div>");
-		}
+		cdns.push('<br><div class="guf_rating user" style="display: flex; justify-content: space-between;">');
+	
+		// Compartiment de l'esquerra per al text
+		cdns.push('<div style="flex: 3; text-align: justify;">' + guf.abstract + '</div>');
+
+		// Compartiment de la dreta per a la taula de valoracions
+		cdns.push('<div style="flex: 2; text-align: right;">');
+		generateRatingTable(cdns, guf.rating, 'rating', '', 'margin-left: auto;');
+		cdns.push('<p><a href="#" id="fb_moreInfoLink'+extra_param.div_id+'">+ info</a></p>');
+		cdns.push('</div>');
+
+		cdns.push("</div>");
 		
-		if (guf.usage.usage_descr)
-		{
-			cdns.push("<div class=\"guf_usage_description user\"><hr class=\"guf_dashed user\">");			
-			if (guf.usage.usage_descr.specific_usage)
-				cdns.push("<div class=\"guf_spec_usage_description user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Descripció de l'ús específic", "spa": "Descripción del uso específico", "eng": "Specific usage description", "fre":"Description d'utilisation spécifique"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.specific_usage, "</div>");				
+		// Display toggle for additional information
+		cdns.push('<div id="fb_moreInfo'+extra_param.div_id+'" style=\"display:none;\">');
 				
-			if (guf.usage.usage_descr.usage_dt)
-			{
-				var s=DonaCadenaDataHoraDesDeElementCompost(guf.usage.usage_descr.usage_dt);
-				if (s!="")
-					cdns.push("<div class=\"guf_usage_dt user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data i  hora de l'ús", "spa": "Fecha y hora del uso", "eng": "Usage date and time", "fre": "Date et heure d'utilisation"}, extra_param.lang), ":</span> ", s, "</div>");
-			}
+		// Additional information section
+		printFBpurpose(cdns, guf, extra_param);
+		printFBcontact(cdns, guf, extra_param);
+		printFBdateInfo(cdns, guf, extra_param);
+		printFBcomment(cdns, guf, extra_param);
+		printFBusage(cdns, guf, extra_param);
+		printFBpublic(cdns, guf, extra_param);
+		printFBtarget (cdns, guf, extra_param);
 			
-			if (guf.usage.usage_descr.user_det_lim)
-				cdns.push("<div class=\"guf_user_deter_limits user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Limitacions determinades per l'usuari", "spa": "Limitaciones determinadas por el usuario", "eng": "User determined limitations", "fre":"Limites déterminées par l'utilisateur"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.user_det_lim, "</div>");				
-				
-			if (guf.usage.usage_descr.response)
-				cdns.push("<div class=\"guf_response user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Resposta", "spa": "Respuesta", "eng": "Response", "fre":"Réponse"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.response, "</div>");				
-				
-			if (guf.usage.usage_descr.add_doc)
-			{
-				cdns.push("<div class=\"guf_add_doc user\">");
-				for (var item=0; item<guf.usage.usage_descr.add_doc.length; item++)
-				{
-					cdns.push("<div>");
-					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.usage_descr.add_doc[item], item, 
-						GUFDonaCadenaLang({"cat": "Documentació addicional", "spa": "Documentación adicional", "eng": "Additional documentation", "fre":"Documentation complémentaire"}, extra_param.lang), 
-						"add_doc", extra_param, false);
-					cdns.push("</div>");
+		cdns.push('</div>');
 				}
-				cdns.push("</div><!-- guf_add_doc -->");
-			}
 
-			if (GUFHiHaReprodUsage(guf.usage.usage_descr))
-			{
-				cdns.push("<div class=\"guf_reprodUsage user\">");
-				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Ús reproduïble", "spa":"Uso reproducible", "eng":"Reproducible usage", "fre":"Utilisation reproductible"}, extra_param.lang), ":</span>");								
-				if (guf.usage.usage_descr.code)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (text)", "spa":"Código (texto)", "eng":"Code (text)", "fre":"Code (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.code);
-				if (guf.usage.usage_descr.codeLink.linkage)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (adreça URL)", "spa":"Código (dirección URL)", "eng": "Code (URL link)", "fre":"Code (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.codeLink.linkage);												
-				if (guf.usage.usage_descr.codeMediaType && guf.usage.usage_descr.codeMediaType.length>0)
-				{
-					var s="";				
-					if (guf.usage.usage_descr.codeMediaType=="application/json")
-						s="JSON ("+guf.usage.usage_descr.codeMediaType+")";
-					else if (guf.usage.usage_descr.codeMediaType=="text/x-python")
-						s="Phyton ("+guf.usage.usage_descr.codeMediaType+")";
-					else if (guf.usage.usage_descr.codeMediaType=="text/x-r-source")
-						s="R ("+guf.usage.usage_descr.codeMediaType+")";
-					else if (guf.usage.usage_descr.codeMediaType=="application/vnd.docker")
-						s=GUFDonaCadenaLang({"cat":"Contenidor docker", "spa":"Contenedor docker", "eng":"Docker container", "fre":"Conteneur Docker"}, extra_param.lang)+" ("+guf.usage.usage_descr.codeMediaType+")";
-					else
-						s=guf.usage.usage_descr.codeMediaType;
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Format del codi", "spa":"Formato del código", "eng": "Code format", "fre":"Format de code"}, extra_param.lang), "</span>: ", s);								
-				}	
-				if (guf.usage.usage_descr.platform)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Plataforma", "spa":"Plataforma", "eng":"Platform", "fre":"Plateforme"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.platform);							
-				if (guf.usage.usage_descr.version)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Versió", "spa":"Versión", "eng": "Version", "fre":"Version"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.version);								
-				if (guf.usage.usage_descr.schema)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Esquema", "spa":"Esquema", "eng": "Schema", "fre":"Schème"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.schema);
-				if (guf.usage.usage_descr.suggestedApplication)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Aplicació suggerida", "spa":"Aplicación sugerida", "eng":"Suggested application", "fre":"Application suggérée"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.suggestedApplication);							
-				if (guf.usage.usage_descr.diagram)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (text)", "spa":"Diagrama (texto)", "eng": "Diagram (text)", "fre":"Diagramme (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagram);			
-				if (guf.usage.usage_descr.diagramLink.linkage)
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (adreça URL)", "spa":"Diagrama (dirección URL)", "eng": "Diagram (URL link)", "fre":"Diagramme (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagramLink.linkage);			
-				if (guf.usage.usage_descr.diagramMediaType && guf.usage.usage_descr.diagramMediaType.length>0)
-				{
-					var s="";					
-					if (guf.usage.usage_descr.diagramMediaType=="image/jpeg")
-						s="JPEG ("+guf.usage.usage_descr.diagramMediaType+")";
-					else if (guf.usage.usage_descr.diagramMediaType=="image/png")
-						s="PNG ("+guf.usage.usage_descr.diagramMediaType+")";
-					else if (guf.usage.usage_descr.diagramMediaType=="text/x-python")
-						s="Phyton ("+guf.usage.usage_descr.diagramMediaType+")";
-					else if (guf.usage.usage_descr.diagramMediaType=="text/x-yuml")
-						s="YUML ("+guf.usage.usage_descr.diagramMediaType+")";
-					else if (guf.usage.usage_descr.diagramMediaType=="application/xmi+xml")
-						s="XMI ("+guf.usage.usage_descr.diagramMediaType+")";
-					else
-						s=guf.usage.usage_descr.diagramMediaType;
-					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Format del diagrama", "spa":"Formato del diagrama", "eng": "Diagram format", "fre":"Format de diagramme"}, extra_param.lang), "</span>: ", s);
-				}
-				cdns.push("</div><!-- guf_reprodUsage -->");
-			}						
-			cdns.push("</div><!-- guf_usage_description -->");						
-		}	
-		if (guf.usage.discov_issue)
-		{			
-			cdns.push("<div class=\"guf_discovered_issue user\"><hr class=\"guf_dashed user\">");
-			
-			if (guf.usage.discov_issue.known_problem)
-				cdns.push("<div class=\"guf_known_problem user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Problema conegut", "spa": "Problema conocido", "eng": "Known problem", "fre": "Problème connu"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.known_problem, "</div>");
-			
-			if (guf.usage.discov_issue.problem_dt)
-			{
-				var s=DonaCadenaDataHoraDesDeElementCompost(guf.usage.discov_issue.problem_dt);
-				if (s!="")
-					cdns.push("<div class=\"guf_known_problem_dt user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data i hora del problema conegut", "spa": "Fecha y hora del problema conocido", "eng": "Known problem date and time", "fre": "Problème connu date et heure"}, extra_param.lang), ":</span> ", s, "</div>");
-			}	
-			
-			if (guf.usage.discov_issue.work_around)
-				cdns.push("<div class=\"guf_work_around user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Solució", "spa": "Solución", "eng": "Work around", "fre":"Solution"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.work_around, "</div>");		
-				
-			if (guf.usage.discov_issue.ref_doc)
-			{	
-				cdns.push("<div class=\"guf_ref_doc user\">");				
-				for (var item=0; item<guf.usage.discov_issue.ref_doc.length; item++)
-				{
-					cdns.push("<div>");
-					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.discov_issue.ref_doc[item], item, 
-						GUFDonaCadenaLang({"cat": "Document de referencia", "spa": "Documento de referencia", "eng": "Reference document", "fre":"Document de référence"}, extra_param.lang), 
-						"ref_doc", extra_param, true);
-					cdns.push("</div>");
-				}
-				cdns.push("</div><!-- guf_ref_doc -->");
-			}
-			
-			if (guf.usage.discov_issue.exp_fix_date)
-				cdns.push("<div class=\"guf_exp_solution_date user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data prevista per la distribució d'una solució", "spa": "Fecha prevista para la distribución de una solución", 
-					"eng": "Expected date for a solution to be released", "fre": "Date prévue pour la publication d'une solution"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.exp_fix_date, "</div>");;
-			
-			if (guf.usage.discov_issue.fix_rsrc)
-			{					
-				cdns.push("<div class=\"guf_fix_rsrc user\">");				
-				for (var item=0; item<guf.usage.discov_issue.fix_rsrc.length; item++)
-				{
-					cdns.push("<div>");
-					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.discov_issue.fix_rsrc[item], item, 
-						GUFDonaCadenaLang({"cat": "Recurs arreglat", "spa": "Recurso arreglado", "eng": "Fixed resource", "fre": "Ressource fixe"}, extra_param.lang), 
-						"fix_rsrc", extra_param, false);
-					cdns.push("</div>");
-				}
-				cdns.push("</div><!-- guf_fix_rsrc -->");
-			}			
-			cdns.push("</div><!-- guf_discovered_issue -->");
-			
-			if (guf.usage.discov_issue.alt_rsrc)
-			{					
-				cdns.push("<div class=\"guf_alt_rsrc user\">");				
-				for (var item=0; item<guf.usage.discov_issue.alt_rsrc.length; item++)
-				{
-					cdns.push("<div>");
-					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.discov_issue.alt_rsrc[item], item, 
-						GUFDonaCadenaLang({"cat": "Recurs alternatiu", "spa": "Recurso alternativo", "eng": "Alternative resource", "fre": "Ressource alternative"}, extra_param.lang), 
-						"alt_rsrc", extra_param, false);
-					cdns.push("</div>");
-				}
-				cdns.push("</div><!-- guf_alt_rsrc -->");
-			}			
-			cdns.push("</div><!-- guf_discovered_issue -->");
-		}	
-		cdns.push("</div><!-- guf_usage user -->");
-	}
-
-	if (guf.public)
-	{			
-		cdns.push("<div class=\"guf_public user\"><hr class=\"guf_solid user\">");
-		for (var i_publi=0; i_publi<guf.public.length; i_publi++)
-		{
-			cdns.push("<div>");
-			ConstrueixCadenaDesdeCitationOPublication(cdns, guf.public[i_publi], i_publi, null, "pub", extra_param, true);		
-			cdns.push("</div>");
-		}
-		cdns.push("</div><!-- guf_public -->");
-	}
-	
-	if (guf.target)
-	{			
-		cdns.push("<div class=\"guf_target user\"><hr class=\"guf_solid user\">");	
-		for (var i_target=0; i_target<guf.target.length; i_target++)
-		{	
-			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Recurs valorat", "spa":"Recurso valorado", "eng":"Target resource", "fre":"Ressource valorisée"}, extra_param.lang));
-			
-			if (guf.target[i_target].role)
-				cdns.push(" (", GUFDonaCadenaLang(GUF_TargetRoleCode[guf.target[i_target].role],extra_param.lang),"):</span> ");
-			else
-				cdns.push(":</span> ");
-			//cdns.push("<input type=\"checkbox\" id=\""+extra_param.div_id+"_"+i_target+"\" style=\"display:none;\">");
-
-			if (guf.target[i_target].title)
-				cdns.push(guf.target[i_target].title, "<br/>");
-			//cdns.push(" <div class=\"guf_folded user\">");
-			
-			if (guf.target[i_target].identifier)
-			{
-	  			for (var i_id=0; i_id<guf.target[i_target].identifier.length; i_id++)
-	  				cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.target[i_target].identifier[i_id], extra_param.lang, false));
-			}
-			if (guf.target[i_target].scope) //comprovem que a l'xml hi ha la secció scope
-			{
-				if (guf.target[i_target].minlong) //comprovem que hi ha dades de coordenades. No cal comprovar que hi siguin totes.
-					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Envolupant", "spa":"Envolvente", "eng":"Bounding box", "fre":"Extension géographique"}, extra_param.lang),":</span>"," ",guf.target[i_target].minlong,", ",guf.target[i_target].maxlong,", ",guf.target[i_target].minlat,", ",guf.target[i_target].maxlat,"<br>");
-				if (guf.target[i_target].gmlpol) //comprovem si tenim un poligon gml
-					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Polígon GML", "spa":"Polígono GML", "eng":"GML polygon", "fre":"GML polygone"}, extra_param.lang),":</span>"," ", GUFDonaCadenaLang({"cat":"definit", "spa":"definido", "eng":"defined", "fre":"défini"}, extra_param.lang),"<br>");
-			}
-			//cdns.push("</div><label for=\""+extra_param.div_id+"_"+i_target+"\"><i>Click to show/hide more information</i></label></input>");
-			//cdns.push("<br/>");
-		}
-		cdns.push("</div><!-- guf_target -->");
-	}
-	cdns.push('</div>');
 
 	document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
 
@@ -1210,6 +998,12 @@ function GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_t
 
 	for (var i=0; i<targets.length; i++)	
 	{	
+		if (targets[i].title)
+			targets[i].title = DonaCadenaPerValorDeFormulari(targets[i].title);
+		if (targets[i].code)
+			targets[i].code = DonaCadenaPerValorDeFormulari(targets[i].code);
+		if (targets[i].codespace)
+			targets[i].codespace = DonaCadenaPerValorDeFormulari(targets[i].codespace);
 		
 		if (targets[i].title && targets[i].title!="" && targets[i].code && targets[i].code!="" && targets[i].codespace && targets[i].codespace!="")
 		{	//aquest target és vàlid
@@ -1418,4 +1212,268 @@ function generateRatingTable(cdns, rating, idPrefix, titleCell, tableStyle) {
 
     cdns.push('</tr>');
     cdns.push('</table>');
+}
+
+function printFBpurpose(cdns, guf, extra_param)
+{
+	if (guf.purpose)
+		cdns.push("<div class=\"guf_purpose user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Propòsit", "spa":"Propósito", "eng":"Purpose", "fre":"Raison"}, extra_param.lang), ":</span> ", guf.purpose, "</div>");
+}
+
+function printFBcontact(cdns, guf, extra_param)
+{
+	if (guf.contactRole && GUF_UserRoleCode[guf.contactRole])
+		cdns.push("<div class=\"guf_contact_role user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Rol de l'usuari", "spa":"Rol del usuario", "eng":"User role", "fre":"Rôle de user"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_UserRoleCode[guf.contactRole], extra_param.lang), "</div>");
+}
+
+function printFBdateInfo(cdns, guf, extra_param)
+{
+	if (guf.dateInfo)
+	{
+		for (var i_date=0; i_date<guf.dateInfo.length; i_date++)
+		{
+			if (guf.dateInfo[i_date].dateType)
+				cdns.push("<div class=\"guf_date user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Data", "spa":"Fecha", "eng":"Date", "fre":"Date"},extra_param.lang)+" ("+GUFDonaCadenaLang(CI_DateTypeCode[guf.dateInfo[i_date].dateType],extra_param.lang)+"):</span> "+guf.dateInfo[i_date].date+"</div>");
+			else
+				cdns.push("<div class=\"guf_date user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Data", "spa":"Fecha", "eng":"Date", "fre":"Date"},extra_param.lang)+":</span> "+guf.dateInfo[i_date].date+"</div>");
+		}
+	}	
+}		
+
+function printFBcomment(cdns, guf, extra_param)
+{
+	if (guf.user_comment && guf.user_comment.comment)
+	{ 
+		cdns.push("<div class=\"guf_comment user\"><hr class=\"guf_solid user\">");
+		cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Comentari", "spa":"Comentario", "eng":"Comment", "fre":"Commentaire"}, extra_param.lang), ":</span> ", guf.user_comment.comment, "<br/>");
+		if (guf.user_comment.motivation && GUF_MotivationCode[guf.user_comment.motivation])
+			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Motivació del comentari", "spa":"Motivación del comentario", "eng":"Comment motivation", "fre":"Motivation du commentaire"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_MotivationCode[guf.user_comment.motivation], extra_param.lang));			
+		cdns.push("</div><!-- guf_comment -->");
+	}
+}
+
+function printFBusage(cdns, guf, extra_param)
+{
+	if (guf.usage)
+	{
+		cdns.push("<div class=\"guf_usage user\"><hr class=\"guf_solid user\">");
+		if (guf.usage.reportAspect && guf.usage.reportAspect.length>0)
+		{
+			var s="";
+			for (var item=0; item<guf.usage.reportAspect.length; item++)
+			{
+				if (item!=0)
+					s+=", ";
+				s+=GUFDonaCadenaLang(GUF_ReportAspectCode[guf.usage.reportAspect[item]], extra_param.lang);
+			}
+			cdns.push("<div class=\"guf_aspect_reported user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Aspecte reportat", "spa": "Aspecto reportado", "eng": "Aspect reported", "fre":"Aspect rapporté"}, extra_param.lang), ":</span> ", s, "</div>");
+		}
+		
+		if (guf.usage.usage_descr)
+		{
+			cdns.push("<div class=\"guf_usage_description user\"><hr class=\"guf_dashed user\">");			
+			if (guf.usage.usage_descr.specific_usage)
+				cdns.push("<div class=\"guf_spec_usage_description user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Descripció de l'ús específic", "spa": "Descripción del uso específico", "eng": "Specific usage description", "fre":"Description d'utilisation spécifique"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.specific_usage, "</div>");				
+				
+			if (guf.usage.usage_descr.usage_dt)
+			{
+				var s=DonaCadenaDataHoraDesDeElementCompost(guf.usage.usage_descr.usage_dt);
+				if (s!="")
+					cdns.push("<div class=\"guf_usage_dt user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data i  hora de l'ús", "spa": "Fecha y hora del uso", "eng": "Usage date and time", "fre": "Date et heure d'utilisation"}, extra_param.lang), ":</span> ", s, "</div>");
+			}
+			
+			if (guf.usage.usage_descr.user_det_lim)
+				cdns.push("<div class=\"guf_user_deter_limits user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Limitacions determinades per l'usuari", "spa": "Limitaciones determinadas por el usuario", "eng": "User determined limitations", "fre":"Limites déterminées par l'utilisateur"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.user_det_lim, "</div>");				
+				
+			if (guf.usage.usage_descr.response)
+				cdns.push("<div class=\"guf_response user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Resposta", "spa": "Respuesta", "eng": "Response", "fre":"Réponse"}, extra_param.lang), ":</span> ", guf.usage.usage_descr.response, "</div>");				
+				
+			if (guf.usage.usage_descr.add_doc)
+			{
+				cdns.push("<div class=\"guf_add_doc user\">");
+				for (var item=0; item<guf.usage.usage_descr.add_doc.length; item++)
+				{
+					cdns.push("<div>");
+					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.usage_descr.add_doc[item], item, 
+						GUFDonaCadenaLang({"cat": "Documentació addicional", "spa": "Documentación adicional", "eng": "Additional documentation", "fre":"Documentation complémentaire"}, extra_param.lang), 
+						"add_doc", extra_param, false);
+					cdns.push("</div>");
+				}
+				cdns.push("</div><!-- guf_add_doc -->");
+			}
+
+			if (GUFHiHaReprodUsage(guf.usage.usage_descr))
+			{
+				cdns.push("<div class=\"guf_reprodUsage user\">");
+				cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Ús reproduïble", "spa":"Uso reproducible", "eng":"Reproducible usage", "fre":"Utilisation reproductible"}, extra_param.lang), ":</span>");								
+				if (guf.usage.usage_descr.code)
+					cdns.push("<br><span class=\"guf_key_2 user\" style=\"display:inline-block; word-wrap:break-word; word-break:break-word; white-space:normal;\">", GUFDonaCadenaLang({"cat":"Codi (text)", "spa":"Código (texto)", "eng":"Code (text)", "fre":"Code (texte)"}, extra_param.lang), "</span>: <span style=\"display:inline-block; word-wrap:break-word; word-break:break-word; white-space:normal;\">", guf.usage.usage_descr.code, "</span>");
+				if (guf.usage.usage_descr.codeLink.linkage)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Codi (adreça URL)", "spa":"Código (dirección URL)", "eng": "Code (URL link)", "fre":"Code (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.codeLink.linkage);												
+				if (guf.usage.usage_descr.codeMediaType && guf.usage.usage_descr.codeMediaType.length>0)
+				{
+					var s="";				
+					if (guf.usage.usage_descr.codeMediaType=="application/json")
+						s="JSON ("+guf.usage.usage_descr.codeMediaType+")";
+					else if (guf.usage.usage_descr.codeMediaType=="text/x-python")
+						s="Phyton ("+guf.usage.usage_descr.codeMediaType+")";
+					else if (guf.usage.usage_descr.codeMediaType=="text/x-r-source")
+						s="R ("+guf.usage.usage_descr.codeMediaType+")";
+					else if (guf.usage.usage_descr.codeMediaType=="application/vnd.docker")
+						s=GUFDonaCadenaLang({"cat":"Contenidor docker", "spa":"Contenedor docker", "eng":"Docker container", "fre":"Conteneur Docker"}, extra_param.lang)+" ("+guf.usage.usage_descr.codeMediaType+")";
+					else
+						s=guf.usage.usage_descr.codeMediaType;
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Format del codi", "spa":"Formato del código", "eng": "Code format", "fre":"Format de code"}, extra_param.lang), "</span>: ", s);								
+				}	
+				if (guf.usage.usage_descr.platform)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Plataforma", "spa":"Plataforma", "eng":"Platform", "fre":"Plateforme"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.platform);							
+				if (guf.usage.usage_descr.version)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Versió", "spa":"Versión", "eng": "Version", "fre":"Version"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.version);								
+				if (guf.usage.usage_descr.schema)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Esquema", "spa":"Esquema", "eng": "Schema", "fre":"Schème"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.schema);
+				if (guf.usage.usage_descr.suggestedApplication)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Aplicació suggerida", "spa":"Aplicación sugerida", "eng":"Suggested application", "fre":"Application suggérée"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.suggestedApplication);							
+				if (guf.usage.usage_descr.diagram)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (text)", "spa":"Diagrama (texto)", "eng": "Diagram (text)", "fre":"Diagramme (texte)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagram);			
+				if (guf.usage.usage_descr.diagramLink.linkage)
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Diagrama (adreça URL)", "spa":"Diagrama (dirección URL)", "eng": "Diagram (URL link)", "fre":"Diagramme (URL)"}, extra_param.lang), "</span>: ", guf.usage.usage_descr.diagramLink.linkage);			
+				if (guf.usage.usage_descr.diagramMediaType && guf.usage.usage_descr.diagramMediaType.length>0)
+				{
+					var s="";					
+					if (guf.usage.usage_descr.diagramMediaType=="image/jpeg")
+						s="JPEG ("+guf.usage.usage_descr.diagramMediaType+")";
+					else if (guf.usage.usage_descr.diagramMediaType=="image/png")
+						s="PNG ("+guf.usage.usage_descr.diagramMediaType+")";
+					else if (guf.usage.usage_descr.diagramMediaType=="text/x-python")
+						s="Phyton ("+guf.usage.usage_descr.diagramMediaType+")";
+					else if (guf.usage.usage_descr.diagramMediaType=="text/x-yuml")
+						s="YUML ("+guf.usage.usage_descr.diagramMediaType+")";
+					else if (guf.usage.usage_descr.diagramMediaType=="application/xmi+xml")
+						s="XMI ("+guf.usage.usage_descr.diagramMediaType+")";
+					else
+						s=guf.usage.usage_descr.diagramMediaType;
+					cdns.push("<br><span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Format del diagrama", "spa":"Formato del diagrama", "eng": "Diagram format", "fre":"Format de diagramme"}, extra_param.lang), "</span>: ", s);
+				}
+				cdns.push("</div><!-- guf_reprodUsage -->");
+			}						
+			cdns.push("</div><!-- guf_usage_description -->");						
+		}	
+		if (guf.usage.discov_issue)
+		{			
+			cdns.push("<div class=\"guf_discovered_issue user\"><hr class=\"guf_dashed user\">");
+			
+			if (guf.usage.discov_issue.known_problem)
+				cdns.push("<div class=\"guf_known_problem user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Problema conegut", "spa": "Problema conocido", "eng": "Known problem", "fre": "Problème connu"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.known_problem, "</div>");
+			
+			if (guf.usage.discov_issue.problem_dt)
+			{
+				var s=DonaCadenaDataHoraDesDeElementCompost(guf.usage.discov_issue.problem_dt);
+				if (s!="")
+					cdns.push("<div class=\"guf_known_problem_dt user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data i hora del problema conegut", "spa": "Fecha y hora del problema conocido", "eng": "Known problem date and time", "fre": "Problème connu date et heure"}, extra_param.lang), ":</span> ", s, "</div>");
+			}	
+			
+			if (guf.usage.discov_issue.work_around)
+				cdns.push("<div class=\"guf_work_around user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Solució", "spa": "Solución", "eng": "Work around", "fre":"Solution"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.work_around, "</div>");		
+				
+			if (guf.usage.discov_issue.ref_doc)
+			{	
+				cdns.push("<div class=\"guf_ref_doc user\">");				
+				for (var item=0; item<guf.usage.discov_issue.ref_doc.length; item++)
+				{
+					cdns.push("<div>");
+					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.discov_issue.ref_doc[item], item, 
+						GUFDonaCadenaLang({"cat": "Document de referencia", "spa": "Documento de referencia", "eng": "Reference document", "fre":"Document de référence"}, extra_param.lang), 
+						"ref_doc", extra_param, true);
+					cdns.push("</div>");
+				}
+				cdns.push("</div><!-- guf_ref_doc -->");
+			}
+			
+			if (guf.usage.discov_issue.exp_fix_date)
+				cdns.push("<div class=\"guf_exp_solution_date user\"><span class=\"guf_key user\">", GUFDonaCadenaLang({"cat": "Data prevista per la distribució d'una solució", "spa": "Fecha prevista para la distribución de una solución", 
+					"eng": "Expected date for a solution to be released", "fre": "Date prévue pour la publication d'une solution"}, extra_param.lang), ":</span> ", guf.usage.discov_issue.exp_fix_date, "</div>");;
+			
+			if (guf.usage.discov_issue.fix_rsrc)
+			{					
+				cdns.push("<div class=\"guf_fix_rsrc user\">");				
+				for (var item=0; item<guf.usage.discov_issue.fix_rsrc.length; item++)
+				{
+					cdns.push("<div>");
+					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.discov_issue.fix_rsrc[item], item, 
+						GUFDonaCadenaLang({"cat": "Recurs arreglat", "spa": "Recurso arreglado", "eng": "Fixed resource", "fre": "Ressource fixe"}, extra_param.lang), 
+						"fix_rsrc", extra_param, false);
+					cdns.push("</div>");
+				}
+				cdns.push("</div><!-- guf_fix_rsrc -->");
+			}			
+			cdns.push("</div><!-- guf_discovered_issue -->");
+			
+			if (guf.usage.discov_issue.alt_rsrc)
+			{					
+				cdns.push("<div class=\"guf_alt_rsrc user\">");				
+				for (var item=0; item<guf.usage.discov_issue.alt_rsrc.length; item++)
+				{
+					cdns.push("<div>");
+					ConstrueixCadenaDesdeCitationOPublication(cdns, guf.usage.discov_issue.alt_rsrc[item], item, 
+						GUFDonaCadenaLang({"cat": "Recurs alternatiu", "spa": "Recurso alternativo", "eng": "Alternative resource", "fre": "Ressource alternative"}, extra_param.lang), 
+						"alt_rsrc", extra_param, false);
+					cdns.push("</div>");
+				}
+				cdns.push("</div><!-- guf_alt_rsrc -->");
+			}			
+			cdns.push("</div><!-- guf_discovered_issue -->");
+		}	
+		cdns.push("</div><!-- guf_usage user -->");
+	}
+}
+
+function printFBpublic(cdns, guf, extra_param)
+{
+	if (guf.public)
+	{			
+		cdns.push("<div class=\"guf_public user\"><hr class=\"guf_solid user\">");
+		for (var i_publi=0; i_publi<guf.public.length; i_publi++)
+		{
+			cdns.push("<div>");
+			ConstrueixCadenaDesdeCitationOPublication(cdns, guf.public[i_publi], i_publi, null, "pub", extra_param, true);		
+			cdns.push("</div>");
+}
+		cdns.push("</div><!-- guf_public -->");
+	}
+}	
+
+function printFBtarget (cdns, guf, extra_param)
+{
+	if (guf.target)
+	{			
+		cdns.push("<div class=\"guf_target user\"><hr class=\"guf_solid user\">");	
+		for (var i_target=0; i_target<guf.target.length; i_target++)
+		{	
+			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Recurs valorat", "spa":"Recurso valorado", "eng":"Target resource", "fre":"Ressource valorisée"}, extra_param.lang));
+			
+			if (guf.target[i_target].role)
+				cdns.push(" (", GUFDonaCadenaLang(GUF_TargetRoleCode[guf.target[i_target].role],extra_param.lang),"):</span> ");
+			else
+				cdns.push(":</span> ");
+			//cdns.push("<input type=\"checkbox\" id=\""+extra_param.div_id+"_"+i_target+"\" style=\"display:none;\">");
+			if (guf.target[i_target].title)
+				cdns.push(guf.target[i_target].title, "<br/>");
+			//cdns.push(" <div class=\"guf_folded user\">");
+			if (guf.target[i_target].identifier)
+			{
+				for (var i_id=0; i_id<guf.target[i_target].identifier.length; i_id++)
+					cdns.push(ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(guf.target[i_target].identifier[i_id], extra_param.lang, false));
+			}
+			if (guf.target[i_target].scope) //comprovem que a l'xml hi ha la secció scope
+			{
+				if (guf.target[i_target].minlong) //comprovem que hi ha dades de coordenades. No cal comprovar que hi siguin totes.
+					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Envolupant", "spa":"Envolvente", "eng":"Bounding box", "fre":"Extension géographique"}, extra_param.lang),":</span>"," ",guf.target[i_target].minlong,", ",guf.target[i_target].maxlong,", ",guf.target[i_target].minlat,", ",guf.target[i_target].maxlat,"<br>");
+				if (guf.target[i_target].gmlpol) //comprovem si tenim un poligon gml
+					cdns.push("<span class=\"guf_key_2 user\">", GUFDonaCadenaLang({"cat":"Polígon GML", "spa":"Polígono GML", "eng":"GML polygon", "fre":"GML polygone"}, extra_param.lang),":</span>"," ", GUFDonaCadenaLang({"cat":"definit", "spa":"definido", "eng":"defined", "fre":"défini"}, extra_param.lang),"<br>");
+			}
+			//cdns.push("</div><label for=\""+extra_param.div_id+"_"+i_target+"\"><i>Click to show/hide more information</i></label></input>");
+			//cdns.push("<br/>");
+		}
+		cdns.push("</div><!-- guf_target -->");
+	}
 }
