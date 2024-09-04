@@ -43,10 +43,10 @@
 
 "use strict"
 
-var ServerGUF="http://localhost/cgi-bin/server1/nimmbus.cgi";
-var ClientGUF="http://localhost/nimmbus/index.htm";
-//var ServerGUF="https://www.nimmbus.cat/cgi-bin/nimmbus.cgi";
-//var ClientGUF="https://www.nimmbus.cat/index.htm";
+//var ServerGUF="http://localhost/cgi-bin/server1/nimmbus.cgi";
+//var ClientGUF="http://localhost/nimmbus/index.htm";
+var ServerGUF="https://www.nimmbus.cat/cgi-bin/nimmbus.cgi";
+var ClientGUF="https://www.nimmbus.cat/index.htm";
 
 var Opcions_GUFFeedbackWindow='toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=1500,height=1000';
 
