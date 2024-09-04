@@ -43,10 +43,10 @@
 
 "use strict"
 
-//var ServerGUF="http://localhost/cgi-bin/server1/nimmbus.cgi";
-//var ClientGUF="http://localhost/nimmbus/index.htm";
-var ServerGUF="https://www.nimmbus.cat/cgi-bin/nimmbus.cgi";
-var ClientGUF="https://www.nimmbus.cat/index.htm";
+var ServerGUF="http://localhost/cgi-bin/server1/nimmbus.cgi";
+var ClientGUF="http://localhost/nimmbus/index.htm";
+//var ServerGUF="https://www.nimmbus.cat/cgi-bin/nimmbus.cgi";
+//var ClientGUF="https://www.nimmbus.cat/index.htm";
 
 var Opcions_GUFFeedbackWindow='toolbar=no,status=no,scrollbars=yes,location=no,menubar=no,directories=no,resizable=yes,width=1500,height=1000';
 
@@ -838,106 +838,145 @@ function GUFLoadOnePreviousReproducibleUsageCodeCallback(doc, extra_param)
 	}
 }
 
-function GUFCarregaFeedbackAnteriorCallback(doc, extra_param)
-{
-var cdns=[];
+function GUFCarregaFeedbackAnteriorCallback(doc, extra_param) {
+    var cdns = [];
 
-	if (!doc || !doc.documentElement)
+    if (!doc || !doc.documentElement) {
+        alert(extra_param.url + ": " + GUFDonaCadenaLang({
+            "cat": "El retorn no és xml",
+            "spa": "El retorno no es xml",
+            "eng": "Return is not xml",
+            "fre": "Le retour n'est pas xml"
+        }, extra_param.lang));
+        return;
+    }
+    var root = doc.documentElement;
+
+    if (GUFAnalitzaExceptionReport(root, extra_param.url))
+        return;
+
+    var guf = GetRetrieveResourceFeedbackOutputs(root);
+
+    if (!guf) {
+        alert(extra_param.url + ": " + GUFDonaCadenaLang({
+            "cat": "El retorn no és un xml guf",
+            "spa": "El retorno no es xml guf",
+            "eng": "Return is not xml guf",
+            "fre": "Le retour n'est pas xml guf"
+        }, extra_param.lang));
+        return;
+    }
+
+    if (extra_param.callback_function && typeof window[extra_param.callback_function] === "function") {
+        window[extra_param.callback_function](JSON.parse(extra_param.params_function), guf);
+        return;
+    }
+
+    if (extra_param.esRU == "AdoptaEstil") // aquí es pinten els elements que es demanen quan fem un retrieve styles
 	{
-		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no és xml", "spa":"El retorno no es xml", "eng":"Return is not xml", "fre":"Le retour n'est pas xml"}, extra_param.lang)); 
-		return ;
-	}
-	var root=doc.documentElement;
+        cdns.push('<div style="text-align: justify;"><br>' + guf.abstract + '</div><br>');
 
-	if (GUFAnalitzaExceptionReport(root, extra_param.url))
-		return;
+        printFBusage(cdns, guf, extra_param);
 
-	var guf=GetRetrieveResourceFeedbackOutputs(root);
+        cdns.push('<br><p><a href="#" id="fb_moreInfoLink' + extra_param.div_id + '">+ info</a></p>');
 
-	if (!guf)
-	{	
-		alert (extra_param.url + ": " + GUFDonaCadenaLang({"cat":"El retorn no és un xml guf", "spa":"El retorno no es xml guf", "eng":"Return is not xml guf", "fre":"Le retour n'est pas xml guf"}, extra_param.lang)); 
-		return;
-	}
-	
-	if (extra_param.callback_function && typeof window[extra_param.callback_function]==="function")
-	{		
-		window[extra_param.callback_function](JSON.parse(extra_param.params_function), guf);
-		return;
-	}
+        // Display toggle for additional information
+        cdns.push('<div id="fb_moreInfo' + extra_param.div_id + '" style="display:none;">');
 
-	if (extra_param.esRU=="AdoptaEstil") // aquí es pinten els elements que es demanen quan fem un retrieve styles
+        cdns.push("<div id='rating_table'>");
+        generateRatingTable(cdns, guf.rating, 'rating', '', '');
+        cdns.push("</div>");
+
+        printFBpurpose(cdns, guf, extra_param);
+        printFBcontact(cdns, guf, extra_param);
+        printFBdateInfo(cdns, guf, extra_param);
+        printFBcomment(cdns, guf, extra_param);
+        printFBpublic(cdns, guf, extra_param);
+        printFBtarget(cdns, guf, extra_param);
+
+        cdns.push('</div>');
+
+    } 
+	else // a partir d'aquí es pinten els elements que es demanen quan fem click a "feedback"
 	{
-		cdns.push('<div style="text-align: justify;"><br>' + guf.abstract + '</div><br>');
+        cdns.push('<br><div class="guf_rating user" style="display: flex; justify-content: space-between;">');
 
-		printFBusage(cdns, guf, extra_param);						
+        // Compartiment de l'esquerra per al text
+        cdns.push('<div style="flex: 3; text-align: justify;">' + guf.abstract + '<br>');
+        if (guf.user_comment && guf.user_comment.comment) 
+		{
+            var comment = guf.user_comment.comment;
+            if (comment.length > 100) 
+			{
+                var truncatedComment = comment.substring(0, 100);
+                var remainingComment = comment.substring(100);
 
-		cdns.push('<br><p><a href="#" id="fb_moreInfoLink'+extra_param.div_id+'">+ info</a></p>');
-	
+                cdns.push('<br>' + truncatedComment + '<span id="dots'+ extra_param.div_id+'">[...]</span><span id="more" style="display:none;">' + remainingComment + '</span><br><br></div>');
+            } 
+			else 
+			{
+                cdns.push('<br>' + comment + '<br><br></div>');
+            }
+        }
+		else 
+		{
+            cdns.push('<br></div>');
+        }
 
-	// Display toggle for additional information
-	cdns.push('<div id="fb_moreInfo'+extra_param.div_id+'" style=\"display:none;\">');
-		
-		cdns.push("<div id='rating_table'>");
-		generateRatingTable(cdns, guf.rating, 'rating', '', '');
-		cdns.push("</div>");
+        // Compartiment de la dreta per a la taula de valoracions
+        cdns.push('<div style="flex: 2; text-align: right;">');
+        generateRatingTable(cdns, guf.rating, 'rating', '', 'margin-left: auto;');
+        cdns.push('<p><a href="#" id="fb_moreInfoLink' + extra_param.div_id + '">+ info</a></p>');
+        cdns.push('</div>');
 
-		printFBpurpose(cdns, guf, extra_param);
-		printFBcontact(cdns, guf, extra_param);
-		printFBdateInfo(cdns, guf, extra_param);
-		printFBcomment(cdns, guf, extra_param);
-		printFBpublic(cdns, guf, extra_param);
-		printFBtarget (cdns, guf, extra_param);
+        cdns.push("</div>");
 
-		cdns.push('</div>');
-	
-	}
-	else // a partir d'aquí es pinten els elements que es demanen feedbacks
-	{
-		cdns.push('<br><div class="guf_rating user" style="display: flex; justify-content: space-between;">');
-	
-		// Compartiment de l'esquerra per al text
-		cdns.push('<div style="flex: 3; text-align: justify;">' + guf.abstract + '</div>');
-
-		// Compartiment de la dreta per a la taula de valoracions
-		cdns.push('<div style="flex: 2; text-align: right;">');
-		generateRatingTable(cdns, guf.rating, 'rating', '', 'margin-left: auto;');
-		cdns.push('<p><a href="#" id="fb_moreInfoLink'+extra_param.div_id+'">+ info</a></p>');
-		cdns.push('</div>');
-
-		cdns.push("</div>");
-		
-		// Display toggle for additional information
-		cdns.push('<div id="fb_moreInfo'+extra_param.div_id+'" style=\"display:none;\">');
-				
+        // Display toggle for additional information
+        cdns.push('<div id="fb_moreInfo' + extra_param.div_id + '" style="display:none;">');
+        
 		// Additional information section
-		printFBpurpose(cdns, guf, extra_param);
-		printFBcontact(cdns, guf, extra_param);
-		printFBdateInfo(cdns, guf, extra_param);
-		printFBcomment(cdns, guf, extra_param);
-		printFBusage(cdns, guf, extra_param);
-		printFBpublic(cdns, guf, extra_param);
-		printFBtarget (cdns, guf, extra_param);
-			
-		cdns.push('</div>');
-				}
-
-
-	document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
-
-	// Toggle display of additional information
-	document.getElementById("fb_moreInfoLink"+extra_param.div_id).addEventListener("click", function(event) {
-		event.preventDefault();
-		var summary = document.getElementById("fb_moreInfo"+extra_param.div_id);
-		var moreInfoLink = document.getElementById("fb_moreInfoLink"+extra_param.div_id);
-		if (summary.style.display === "none") {
-			summary.style.display = "block";
-			moreInfoLink.innerHTML = "- info";
-		} else {
-			summary.style.display = "none";
-			moreInfoLink.innerHTML = "+ info";
+		if (guf.user_comment && guf.user_comment.comment) 
+		{
+			cdns.push("<span class=\"guf_key user\">", GUFDonaCadenaLang({"cat":"Motivació del comentari", "spa":"Motivación del comentario", "eng":"Comment motivation", "fre":"Motivation du commentaire"}, extra_param.lang), ":</span> ", GUFDonaCadenaLang(GUF_MotivationCode[guf.user_comment.motivation], extra_param.lang));			
+			cdns.push("</span><br><br>");
 		}
-	});
+		printFBpurpose(cdns, guf, extra_param);
+        printFBcontact(cdns, guf, extra_param);
+        printFBdateInfo(cdns, guf, extra_param);
+        //printFBcomment(cdns, guf, extra_param);
+		printFBusage(cdns, guf, extra_param);
+        printFBpublic(cdns, guf, extra_param);
+        printFBtarget(cdns, guf, extra_param);
+
+        cdns.push('</div>');
+    }
+
+    document.getElementById(extra_param.div_id).innerHTML = cdns.join("");
+
+    // Toggle display of additional information and full comment
+    document.getElementById("fb_moreInfoLink" + extra_param.div_id).addEventListener("click", function (event) {
+        event.preventDefault();
+        var summary = document.getElementById("fb_moreInfo" + extra_param.div_id);
+        var moreInfoLink = document.getElementById("fb_moreInfoLink" + extra_param.div_id);
+        var dots = document.getElementById("dots" + extra_param.div_id);
+        var moreText = document.getElementById("more");
+
+        if (summary.style.display === "none") {
+            summary.style.display = "block";
+            moreInfoLink.innerHTML = "- info";
+            if (dots) {
+                dots.style.display = "none";
+                moreText.style.display = "inline";
+            }
+        } else {
+            summary.style.display = "none";
+            moreInfoLink.innerHTML = "+ info";
+            if (dots) {
+                dots.style.display = "inline";
+                moreText.style.display = "none";
+            }
+        }
+    });
 }
 
 var GUFFeedbackWindow=null;
@@ -1437,7 +1476,7 @@ function printFBpublic(cdns, guf, extra_param)
 			cdns.push("<div>");
 			ConstrueixCadenaDesdeCitationOPublication(cdns, guf.public[i_publi], i_publi, null, "pub", extra_param, true);		
 			cdns.push("</div>");
-}
+		}
 		cdns.push("</div><!-- guf_public -->");
 	}
 }	
@@ -1456,9 +1495,11 @@ function printFBtarget (cdns, guf, extra_param)
 			else
 				cdns.push(":</span> ");
 			//cdns.push("<input type=\"checkbox\" id=\""+extra_param.div_id+"_"+i_target+"\" style=\"display:none;\">");
+
 			if (guf.target[i_target].title)
 				cdns.push(guf.target[i_target].title, "<br/>");
 			//cdns.push(" <div class=\"guf_folded user\">");
+			
 			if (guf.target[i_target].identifier)
 			{
 				for (var i_id=0; i_id<guf.target[i_target].identifier.length; i_id++)
