@@ -179,7 +179,7 @@ All responses follow the WPS 1.0 specified XML syntax for exceptions.
   * COUNTRY=
 
 * Feedback Summary
-  * NB_RESOURCE:SUMMARY
+  * IDENTIFIER=NB_RESOURCE:SUMMARY
   * LANGUAGE=cat,spa,eng
   * TYPE=FEEDBACK
   * TARGET= (resource_id.)  
