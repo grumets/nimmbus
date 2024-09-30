@@ -1117,6 +1117,8 @@ var targets;
 	if (GUFFeedbackWindow==null || GUFFeedbackWindow.closed)
 	{
 		var url=GUFDonaNomFitxerAddFeedbackMutipleTargets(targets, lang, access_token_type, reprod_usage);
+		if (!url)
+			return;
 		GUFFeedbackWindow=window.open(url,"Feedback", Opcions_GUFFeedbackWindow);
 		GUFShaObertPopUp(GUFFeedbackWindow, lang);
 	}
