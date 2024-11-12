@@ -2,7 +2,7 @@
 
 The NiMMbus service is an OGC Geospatial User Feedback (GUF) implementation developed by the MiraMon team from the Grumets research group at the Universitat Autònoma de Barcelona and CREAF.
 
-This GUF OGC API implementation allows users to interact with the server using the OGC API standard syntax for feedback elements stored in NiMMbus. For interactions with other NiMMbus elements, please refer to an alternative API based on WPS [here](API).
+This GUF OGC API implementation allows users to interact with the server using the OGC API standard syntax for feedback elements stored in NiMMbus. For interactions with other NiMMbus elements, please refer to an alternative API based on WPS [here](../API/readme.md).
 
 ## Accepted Requests
 

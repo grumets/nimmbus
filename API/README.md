@@ -8,7 +8,7 @@ The NiMMbus API uses the OGC WPS 1.0 standard but with 2 significant modificatio
 * The WPS execute request uses the WPS 1.0 abstract model but is implemented as GET requests (not present in the WPS 1.0 standard).
 * The CREATE, MODIFY (update) and DELETE operations are implicitly asynchronous and respond a synchronization ID (more or less equivalent to the job id introduced in WPS 2.0 standard). An extra operation allows for requesting NB_SYNC:GETRETURN the status of the asynchronous process or the actual result if the process has ended.
 
-For the specific case of the Feedback elements, you can read about a new API based on OGC APIs [here](API).
+For the specific case of the Feedback elements, you can read about a new API based on OGC APIs [here](../OGC_API/readme.md).
 
 ## General request parameters
 * All request are in KVP and have these 3 parameters:
