@@ -6,6 +6,7 @@ NiMMbus (https://www.nimmbus.cat/) is a solution for storing geospatial resource
 Materials:
   * the open source [code of the client](client_js)
   * the [API documentation](API) to interact with the server
+  * the [OGC API Feedback documentation] (OGC_API) to interact with the server
   * instructions on [how to integrate](GUF_integration) this system in existing metadata catalogues
 
 Several integrations have been illustrated in [www.eneon.org](ENEON graph), the INSPIRE catalogue, GEO-DAB API test instance, [maps.ecopotential-project.eu](ECOPotential maps browser), [https://geoessential.unepgrid.ch/portal/sdg15_3_1.html](GeoEssential dashboard for SDG15.3.1 indicator Land Degradation), etc.
