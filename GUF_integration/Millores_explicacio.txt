@@ -1,6 +1,0 @@
-* 17 explicar millor el tema de paths, que a vegada cal tocar el paths de guf.js, per fer la referencia relativa de la ubicació dels JS DESDE el index.htm, no des de on hi ha el guf.js
-
-
-* també es podria afegir una imatge de l'ecopotential de com "one user" usa la calculadora per a creara un mnou index, i això s'afegeix com un e3stil nou (secció opció 3.1 create repordc usage)
-
-i després a la secció 3.2 es pot tornar a motrar com un altre usuari (o el mateix en una alstra sessió) que torna a "no tenir" aquell index) pot usar el "retrieve styles" + li surt la llista + apply i aleshores se li afegeix
