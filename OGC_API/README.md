@@ -18,7 +18,7 @@ https://www.nimmbus.cat/devs/cgi-bin/nimmbus.cgi
 ## GUF OGC API
 https://www.nimmbus.cat/devs/cgi-bin/nimmbus.cgi/api
 * Detailed specifications of the GUF OGC API currently developed.
-* Default format: Swagger (HTML)
+* Default format: HTML (Swagger)
 * Accepted query parameters:
   * `f`= (json, html)
 
@@ -46,9 +46,9 @@ https://www.nimmbus.cat/devs/cgi-bin/nimmbus.cgi/collections/feedback
 ## Feedback Items Description
 https://www.nimmbus.cat/devs/cgi-bin/nimmbus.cgi/collections/feedback/items
 * Description of items in the Feedback collection.
-* Default format: XML
+* Default format: HTML
 * Accepted query parameters (all can be combined):
-  * `f`= (json, xml)
+  * `f`= (html, json, xml)
   * `q`= 
     * A comma-separated list of search terms. If a record contains one or more of the terms, it will appear in the response set.
     * Example: `q=climate change, acceleration, Spain`
@@ -90,16 +90,16 @@ https://www.nimmbus.cat/devs/cgi-bin/nimmbus.cgi/collections/feedback/items
 https://www.nimmbus.cat/devs/cgi-bin/nimmbus.cgi/collections/feedback/items/{itemsId}
 * `{itemsId}` is the 47-character NiMMbus internal resource identifier.
 * Returns the details of a specified feedback item.
-* Default format: XML
+* Default format: HTML
 * Accepted query parameters:
-  * `f`= (json, xml)
+  * `f`= (html, json, xml)
 
 ## Feedback Summary
 https://www.nimmbus.cat/devs/cgi-bin/nimmbus.cgi/collections/feedback/stats
 * Returns a summary of feedback items related to a resource (`externalIds`) or a general summary if no parameters are specified.
-* Default format: XML
+* Default format: HTML
 * Accepted query parameters (all can be combined):
-  * `f`= (json, xml)
+  * `f`= (html, json, xml)
   * `externalIds`=
     * A delimited list of external resource identifiers. Only Feedback items with specified external identifiers appear in the response.
     * External IDs can be 47-character NiMMbus internal identifiers or JSON with `code` and `codeSpace` attributes.
