@@ -89,7 +89,7 @@ function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, acc
 	if (reprod_usage.ru_platform)
 		reprod_usage.ru_platform = escapeWin1252(reprod_usage.ru_platform);
 	if (reprod_usage.ru_schema)
-		reprod_usage.ru_schema = escapeWin1252Component(reprod_usage.ru_schema);
+		reprod_usage.ru_schema = escapeWin1252(reprod_usage.ru_schema);
 	if (typeof reprod_usage.ru_sugg_app === "undefined")
 		reprod_usage.ru_sugg_app = escapeWin1252(location.href);
 	else if (reprod_usage.ru_sugg_app)
