@@ -576,23 +576,7 @@ var cdns=[];
 	var owc=ParseOWSContextAtom(root);
 	if (owc.properties.totalResults==0 || !owc.features)
 	{
-		cdns.push(GUFDonaCadenaLang({"cat":"No hi ha cap valoració prèvia", 
-					"spa":"No hay ninguna valoración previa", 
-					"eng":"There is no previous user feedback", 
-					"fre":"Il n'y a pas encore de commentaires des utilisateurs"}, extra_param.lang)); 
-
-		if (extra_param.rsc_type != "")
-			cdns.push(GUFDonaCadenaLang({"cat":" sobre la", 
-						"spa":" sobre la", 
-						"eng":" on the", 
-						"fre":" sur la"}, extra_param.lang), 
-						" ", extra_param.rsc_type, " ");
-
-		cdns.push(GUFDonaCadenaLang({"cat":"encara", 
-					"spa":"todavía", 
-					"eng":"yet", 
-					"fre":"encore"}, extra_param.lang));
-		document.getElementById(extra_param.div_id).innerHTML=cdns.join("");
+		document.getElementById(extra_param.div_id).innerHTML= MissatgeSenseElementsRetornats(extra_param);
 		return;
 	}
 
@@ -646,6 +630,48 @@ var cdns=[];
 		if (type=="FEEDBACK" && owc.features[i].properties && owc.features[i].properties.links && owc.features[i].properties.links.alternates && owc.features[i].properties.links.alternates.length && owc.features[i].properties.links.alternates[0].href)
 			loadFile(owc.features[i].properties.links.alternates[0].href, "text/xml", GUFCarregaFeedbackAnteriorCallback, function(xhr, extra_param) { alert(extra_param.url + ": " + xhr ); }, {url: owc.features[i].properties.links.alternates[0].href, div_id: extra_param.div_id + "_" + i, lang: extra_param.lang, esRU: extra_param.callback_function});
 	}
+}
+
+function MissatgeSenseElementsRetornats(elements)
+{
+	let missatge = [];
+	let lang = elements.lang
+
+	if (elements.callback_function == "AdoptaEstil")
+	{
+		missatge.push(GUFDonaCadenaLang({"cat":"No hi ha cap estil prèvi", 
+			"spa":"No hay ningun estilo previo", 
+			"eng":"There is no previous user style", 
+			"fre":"Il n'y a pas encore de style des utilisateurs"}, lang));
+	}
+	else if (elements.callback_function == "AdoptaStorymap")
+	{
+		missatge.push(GUFDonaCadenaLang({"cat":"No hi ha cap relat prèvi", 
+			"spa":"No hay ninguna relato previo", 
+			"eng":"There is no previous user storymap", 
+			"fre":"Il n'y a pas encore de carte de l'histoire des utilisateurs"}, lang));
+	}
+	else
+	{
+		missatge.push(GUFDonaCadenaLang({"cat":"No hi ha cap valoració prèvia", 
+			"spa":"No hay ninguna valoración previa", 
+			"eng":"There is no previous user feedback", 
+			"fre":"Il n'y a pas encore de commentaires des utilisateurs"}, lang));
+	}
+
+	if (typeof elements.rsc_type !== "undefined" && elements.rsc_type != "")
+		missatge.push(GUFDonaCadenaLang({"cat":" sobre la", 
+					"spa":" sobre la", 
+					"eng":" on the", 
+					"fre":" sur la"}, lang), 
+					" ", elements.rsc_type);
+
+	missatge.push(GUFDonaCadenaLang({"cat":" encara", 
+				"spa":" todavía", 
+				"eng":" yet", 
+				"fre":" encore"}, lang));
+
+	return missatge.join("");
 }
 
 function ConstrueixURLDesdeIdentifierSiDOIoNiMMbus(identifier, lang, es_id_fb_item)
