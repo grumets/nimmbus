@@ -149,7 +149,7 @@ function GUFGetURLPreviousFeedbackWithReproducibleUsage(code, codespace, reprod_
 		if (i_cond>1)
 			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
 	
-		url+="&RSC_FLD_" + i_cond + "=RU_SUGG_APP&RSC_VL_" + i_cond + "=" + /*encodeURI(*/intern_sugg_app/*)*/ + "&RSC_OPR_" + i_cond + "=EQ";	 //no needed			
+		url+="&RSC_FLD_" + i_cond + "=RU_SUGG_APP&RSC_VL_" + i_cond + "=" + escapeWin1252(intern_sugg_app) + "&RSC_OPR_" + i_cond + "=EQ";
 		i_cond++;
 	}
 
