@@ -104,12 +104,12 @@ https://www.nimmbus.cat/devs/cgi-bin/nimmbus.cgi/collections/feedback/stats
     * A delimited list of external resource identifiers. Only Feedback items with specified external identifiers appear in the response.
     * External IDs can be 47-character NiMMbus internal identifiers or JSON with `code` and `codeSpace` attributes.
     * 3 different delimiters can be applied to the list:
-      * `,` returns a single summary of those feedback items pointing to each one of the externalIds indicated on the list.
+      * `,` returns n feedback summaries, one for each externalIds indicated on the list.
+      * `|` returns a single summary of those feedback items pointing to each one of the externalIds indicated on the list.
       * `^` returns a single summary of those feedback items pointing at the same time to all the externalIds indicated on the list (feedback with multiple target).
-      * `/` returns n feedback summaries, one for each externalIds indicated on the list.
     * Examples:
-      * `externalIds=0Y750T3K6H9NYK40Z762235DA9AJ9034102HM2E85B0R8QE,4Z5ZMFM3T8O2VDJ60CY5B7BI8J0616T9L684163T7SDO9WY`
-      * `externalIds={"code":"DonanaDTM","codeSpace":"http://maps.ecopotential-project.eu/cgi-bin/MiraMon.cgi"}/{"code":"BayerischerWaldSnowCoverDuration","codeSpace":"http://maps.ecopotential-project.eu/cgi-bin/MiraMon.cgi"}`
+      * `externalIds=0Y750T3K6H9NYK40Z762235DA9AJ9034102HM2E85B0R8QE|4Z5ZMFM3T8O2VDJ60CY5B7BI8J0616T9L684163T7SDO9WY`
+      * `externalIds={"code":"DonanaDTM","codeSpace":"http://maps.ecopotential-project.eu/cgi-bin/MiraMon.cgi"},{"code":"BayerischerWaldSnowCoverDuration","codeSpace":"http://maps.ecopotential-project.eu/cgi-bin/MiraMon.cgi"}`
   * `bbox`= 
     * Selects features with geometries intersecting the bounding box. Features without spatial geometry are also included.
     * Coordinate reference system: WGS84 longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84).
