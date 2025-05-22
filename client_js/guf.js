@@ -1,4 +1,4 @@
-/* 
+﻿/* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
     storing geospatial resources on the MiraMon private cloud. 
     MiraMon is a family of GIS&RS products developed since 1994 
@@ -22,7 +22,7 @@
     The NiMMbus JavaScript Client can be updated from
     https://github.com/grumets/NiMMbus.
 
-    Copyright 2014, 2024 Xavier Pons
+    Copyright 2014, 2025 Xavier Pons
 
     Aquest codi JavaScript ha estat idea de Joan Masó Pau (joan maso at uab cat) 
     amb l'ajut de l'Alaitz Zabala (alaitz zabala at uab cat)
@@ -97,6 +97,25 @@ function GUFCreateFeedbackWithReproducibleUsage(targets, reprod_usage, lang, acc
 	return GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type, reprod_usage);
 }
 
+function GUFCreateStorymapWithReproducibleUsage(targets, reprod_usage, lang, access_token_type)
+{
+	if (reprod_usage.abstract)
+		reprod_usage.abstract = DonaCadenaPerValorDeFormulari(reprod_usage.abstract);
+	if (reprod_usage.ru_code)
+		reprod_usage.ru_code = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code);
+	if (reprod_usage.ru_code_media_type)
+		reprod_usage.ru_code_media_type = DonaCadenaPerValorDeFormulari(reprod_usage.ru_code_media_type);
+	if (reprod_usage.ru_platform)
+		reprod_usage.ru_platform = escapeWin1252(reprod_usage.ru_platform);
+	if (reprod_usage.ru_schema)
+		reprod_usage.ru_schema = escapeWin1252(reprod_usage.ru_schema);
+	if (typeof reprod_usage.ru_sugg_app === "undefined")
+		reprod_usage.ru_sugg_app = DonaServidorSenseQueryNiProtocolSegur(ParamCtrl.ServidorLocal);
+	else if (reprod_usage.ru_sugg_app)
+		reprod_usage.ru_sugg_app = escapeWin1252(reprod_usage.ru_sugg_app);
+	return GUFAfegirFeedbackCapaMultipleTargets(targets, lang, access_token_type, reprod_usage);
+}
+
 function GUFGetURLPreviousFeedbackWithReproducibleUsage(code, codespace, reprod_usage, lang, access_token_type)
 {
 	if (!code || !codespace)
@@ -141,6 +160,65 @@ function GUFGetURLPreviousFeedbackWithReproducibleUsage(code, codespace, reprod_
 	var intern_sugg_app;
 	if (typeof reprod_usage.ru_sugg_app === "undefined")
 		intern_sugg_app=location.href;
+	else 
+		intern_sugg_app=reprod_usage.ru_sugg_app;
+	
+	if (intern_sugg_app)
+	{
+		if (i_cond>1)
+			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
+	
+		url+="&RSC_FLD_" + i_cond + "=RU_SUGG_APP&RSC_VL_" + i_cond + "=" + escapeWin1252(intern_sugg_app) + "&RSC_OPR_" + i_cond + "=EQ";
+		i_cond++;
+	}
+
+	return url;
+}
+
+function GUFGetURLPreviousStorymapWithReproducibleUsage(code, codespace, reprod_usage, lang, access_token_type)
+{
+	if (!code || !codespace)
+	{
+		alert("'code' and 'codespace' parameters are mandatory in calling GetURLPreviousFeedbackWithReproducibleUsage()");
+		return;
+	}
+
+	var url=ServerGUF+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE";
+	if (lang)
+		url+="&LANGUAGE=" + lang;
+		
+	//decidim que els codespace han de ser independent del protocol i per això els posarem sense S sempre ara 
+	url+="&STARTINDEX=1&COUNT=100&FORMAT=text/xml&TYPE=FEEDBACK&TRG_TYPE_1=CITATION&TRG_FLD_1=CODE&TRG_VL_1=" + DonaCadenaPerValorDeFormulari(code) + 
+					"&TRG_OPR_1=EQ&TRG_NXS_1=AND&TRG_TYPE_2=CITATION&TRG_FLD_2=NAMESPACE&TRG_VL_2=" + escapeWin1252Component(codespace.replace("https://","http://")) + "&TRG_OPR_2=EQ";
+	
+	var i_cond=1;
+	if (reprod_usage.ru_platform)
+	{		
+		url+="&RSC_FLD_" + i_cond + "=RU_PLATFORM&RSC_VL_" + i_cond + "=" + reprod_usage.ru_platform + "&RSC_OPR_" + i_cond + "=EQ";
+		i_cond++;
+	}
+
+	if (reprod_usage.ru_version)
+	{
+		if (i_cond>1)
+			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
+			
+		url+="&RSC_FLD_" + i_cond + "=RU_VERSION&RSC_VL_" + i_cond + "=" + reprod_usage.ru_version + "&RSC_OPR_" + i_cond + "=EQ";
+		i_cond++;
+	}
+	
+	if (reprod_usage.ru_schema)
+	{
+		if (i_cond>1)
+			url+="&RSC_NXS_"+ (i_cond-1) + "=AND";
+			
+		url+="&RSC_FLD_" + i_cond + "=RU_SCHEMA&RSC_VL_" + i_cond + "=" + reprod_usage.ru_schema + "&RSC_OPR_" + i_cond + "=EQ";
+		i_cond++;
+	}
+	
+	var intern_sugg_app;
+	if (typeof reprod_usage.ru_sugg_app === "undefined")
+		intern_sugg_app=DonaServidorSenseQueryNiProtocolSegur(ParamCtrl.ServidorLocal);
 	else 
 		intern_sugg_app=reprod_usage.ru_sugg_app;
 	
@@ -893,8 +971,8 @@ function GUFCarregaFeedbackAnteriorCallback(doc, extra_param) {
         return;
     }
 
-    if (extra_param.callback_function && typeof window[extra_param.callback_function] === "function") {
-        window[extra_param.callback_function](JSON.parse(extra_param.params_function), guf);
+    if (extra_param.callback_function && typeof extra_param.callback_function === "function") {
+        extra_param.callback_function(guf, JSON.parse(extra_param.params_function));
         return;
     }
 
