@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -24,7 +24,6 @@
 <script language="JavaScript" src="authwqems.js"></script>
 
 <script>
-
 
 /* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
@@ -102,9 +101,10 @@ var div=elem.nextElementSibling;
 }
 
 	
-
+//<!--
 
 //var ServersNB=["http://localhost/cgi-bin/server1/nimmbus.cgi","http://localhost/cgi-bin/server2/nimmbus.cgi"];
+//var ServersNB=["https://www.nimmbus.cat/devs/cgi-bin/nimmbus.cgi"];
 var ServersNB=["https://www.nimmbus.cat/cgi-bin/nimmbus.cgi"];
 var LastServerNB=0;
 
@@ -710,8 +710,9 @@ var kvp="";
 		ParamsQuery.newpage="";
 		ParamsQuery.email="";
 		ParamsQuery.llista_targets=[];		
+		ParamsQuery.logbook=[];
 		kvp=location.search.substring(1, location.search.length).split("&");
-	 }
+	}
 		
 	if (kvp)
 	{		
@@ -855,6 +856,40 @@ var kvp="";
 			else
 				ShowInfo("long", "POST_MESSAGE_FROM param without an opener, it will be ommited");
 		}
+		//parametres LOGBOOK
+		if (query["LOGBOOK_TITLE"] && query["LOGBOOK_CODE"] && query["LOGBOOK_CODESPACE"])
+		{
+			ParamsQuery.logbook.push({"title": query["LOGBOOK_TITLE"], "code": query["LOGBOOK_CODE"], "code_space": (query["LOGBOOK_CODESPACE"] ? query["LOGBOOK_CODESPACE"].replace("https://","http://") : ""), "share_borrower_1": share_borrower_1});
+
+			
+			n=1
+			var elems="_"+n;
+			if (!ElementsOfALogPage)
+				ElementsOfALogPage={};
+
+			ElementsOfALogPage.scope=[];
+
+			while (true)
+			{
+				if (query["LPSC_TYPE"+elems] && query["LPSC_COORDS"+elems])
+					;
+				else
+				break;
+			
+				ElementsOfALogPage.scope.push({"type" : query["LPSC_TYPE"+elems], "coords" : query["LPSC_COORDS"+elems]});				
+				n++;
+				elems="_"+n;
+			}
+		
+			ElementsOfALogPage.agg=[];
+			for (var k=1; k<4; k++)
+			{
+				if (query["AGG_TYPE_"+k] && query["AGG_VAL_"+k])
+				{
+					ElementsOfALogPage.agg.push({"aggType": query["AGG_TYPE_"+k], "aggValue": query["AGG_VAL_"+k]});					
+				}
+			}
+		}
 	}
 
 	if (typeof ParamsQuery.newpage !== "undefined" && ParamsQuery.newpage!="")
@@ -885,6 +920,16 @@ var kvp="";
 			}
 			ActionAfterSignIn=EntraAAddFeedback;	
 			ParamActionAfterSignIn={targets : ParamsQuery.llista_targets};
+		}
+		else if (ParamsQuery.newpage=="ADDLOGPAGE")
+		{
+			if (ParamsQuery.logbook.length==0)
+			{
+				ShowInfo("long", DonaCadenaJSON(Msg_LOGBOOK_TILE_and_CODE_needed));
+				return;
+			}
+			ActionAfterSignIn=EntraAAddLogPage;	
+			ParamActionAfterSignIn={logbooks : ParamsQuery.logbook};
 		}
 		else
 			ShowInfo("long", DonaCadenaJSON(Msg_Unidentified_page) +": \""+ ParamsQuery.newpage+"\".");
@@ -1141,6 +1186,56 @@ var root, id_proces, id_obj;
 	TiraAPantallaRespostaSiNoEntenc(root, document);
 	return;
 }
+
+function AvaluaRespostaLogBook(doc, nom_funcio_i_params, logbook_en_creacio)
+{
+var root, id_proces, id_obj;
+	root=DonaRootXML(doc, document);
+	if (!root)
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+
+	if (AnalitzaExceptionReport(root, document))
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+
+	id_obj=DonaIDRecursDesDeRootXML(root);  //La execució de NB_RESOURCE:CREATE dona l'ID de recurs que s'està en procés de crear.
+	if (id_obj!="")
+	{
+		//Exploro si pot ser que hi hagi un missatge de resposta immediata
+		if (MostraMissatgeDesDeRootProcesXML(root))
+		{
+			RemoveInfo("permanent");
+			return;
+		}
+		if (logbook_en_creacio)
+		{
+			var json_funcio_i_params=JSON.parse(nom_funcio_i_params);
+			var json_params=JSON.parse(json_funcio_i_params.params);
+			PropsOfALogPage.push({"id_target": id_obj, "role": (json_params.current_role ? json_params.current_role : "primary")}); 
+		}
+		else
+			IdResourceToSaveChanges=id_obj;
+	}
+	id_proces=DonaIDProcessDesDeRootXML(root);
+	if (id_proces!="")
+	{
+		//ShowInfo("long", "Process id:"+id_proces);
+		if (TimeOutDonaResposta)
+			clearTimeout(TimeOutDonaResposta);
+		TimeOutDonaResposta=setTimeout("EvaluateGetReturnProcess(\""+id_proces+"\", "+nom_funcio_i_params+");", 1300);
+		return;
+	}
+
+	RemoveInfo("permanent");
+	TiraAPantallaRespostaSiNoEntenc(root, document);
+	return;
+}
+
 
 function DiguesOKIEntraANimmbusCallBack()
 {
@@ -1706,6 +1801,7 @@ function ObreSelectorGeneral(make_pannel_visible, resource_type, resource_origin
 			}
 		}
 		document.getElementById("selector-resource-type_screen_value").innerHTML=s;
+		
 		EnumerateResources(1, {"type_enum":"resource-selector", "make_pannel_visible":make_pannel_visible, "resource_type": resource_type, "resource_origin": resource_origin, "element_origin": element_origin});
 		return;	
 }
@@ -1841,10 +1937,9 @@ function AfegeixAddDocOfAFeedback(id_citation, open_data)
 	return;	
 }
 
-
+//AZscope
 function ModificaScopeOfAFeedback(item) //aquest item és el que ens diu en quin element de l'array TargetsOfAFeedback estem
 {
-
 	RecuperaCanvisARolesATargetsOfAFeedback();
 	OmpleRecursTargetsDesDeTargetsOfAFeedback(true);
 	TargetsOfAFeedbackHaveChanged=true;
@@ -1852,6 +1947,15 @@ function ModificaScopeOfAFeedback(item) //aquest item és el que ens diu en quin
 	return;
 }
 
+function ModificaScopeOfALogPage(item)
+{
+	OmpleRecursTargetsDesDePropsOfALogPage(true);
+	PropsOfALogPageHaveChanged=true;
+	MostraScopeOfALogPage(item);
+	return;
+}
+
+//OGscope
 var Scope_puc_modificar=true;
 var nTargetOfAFeedback;
 
@@ -1866,7 +1970,7 @@ nTargetOfAFeedback=item;
 	if (TargetsOfAFeedback[item].minlong==null && TargetsOfAFeedback[item].gmlpol==null)
 	{
 		//estem introduint un scope nou
-		document.getElementById("scope-title-text").innerHTML=DonaCadenaJSON(Msg_New_Scope)+" "+'<a href="help/help.htm#Res_hyperlink" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		document.getElementById("scope-title-text").innerHTML=DonaCadenaJSON(Msg_New_Scope)+" "+'<a href="help/help.htm#Feedback" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		
 		document.getElementById("scope-resource-exit_btn").style.display='none';
 		document.getElementById("scope-resource-close_btn").style.display='inline';
@@ -1881,7 +1985,7 @@ nTargetOfAFeedback=item;
 	else
 	{
 		//estem consultant un scope existent. Omplim els camps que toqui tenint en compte els permisos per si cal bloquejar les finestres.
-		document.getElementById("scope-title-text").innerHTML=DonaCadenaJSON(Msg_Scope)+" "+'<a href="help/help.htm#Res_hyperlink" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		document.getElementById("scope-title-text").innerHTML=DonaCadenaJSON(Msg_Scope)+" "+'<a href="help/help.htm#Feedback" target="NiMMbus_help"><img src="help_info20.png"></a>';
 		
 		
 		document.getElementById("scope_btn").style.display=Scope_puc_modificar ? 'inline' : 'none';
@@ -1909,22 +2013,324 @@ nTargetOfAFeedback=item;
 			document.getElementById("min-lat-scope_screen_value").value="";
 			document.getElementById("max-lat-scope_screen_value").value="";
 		}
+		
 		if (TargetsOfAFeedback[item].gmlpol)
 			document.getElementById("GMLpolygon-scope_screen_value").value=TargetsOfAFeedback[item].gmlpol;
 		else //igual que el cas anterior però amb el GMLpol
 			document.getElementById("GMLpolygon-scope_screen_value").value="";
 		
 	}
+		
 return;
 
 }
 
+var Scope_lp_puc_modificar=true;
+var nTargetOfALogPage;
+var nScopesOfALogPage;
 
+function ReindexaFilesScopeLogPagePnt() 
+{
+    var table = document.getElementById("logpage-scope_pnts_list").getElementsByTagName('table')[0];
+    var rows = table.rows;
+
+    for (var i = 1; i < rows.length; i++) 
+	{ 
+		// comencem per 1 per saltar la capçalera
+        var cells = rows[i].cells;
+
+        // Reindexem Longitud
+        var inputLong = cells[1].getElementsByTagName('input')[0];
+        inputLong.name = "long_" + (i - 1);
+
+        // Reindexem Latitud
+        var inputLat = cells[2].getElementsByTagName('input')[0];
+        inputLat.name = "lat_" + (i - 1);
+
+        // Reindexem Descripció
+        var inputDesc = cells[3].getElementsByTagName('input')[0];
+        inputDesc.name = "desc_" + (i - 1);
+    }
+}
+
+function ReindexaFilesScopeLogPagePol() 
+{
+    var table = document.getElementById("logpage-scope_pols_list").getElementsByTagName('table')[0];
+    var rows = table.rows;
+
+    for (var i = 1; i < rows.length; i++) 
+	{ 
+		// comencem per 1 per saltar la capçalera
+        var cells = rows[i].cells;
+
+        // Reindexem poligons
+        var inputLong = cells[1].getElementsByTagName('input')[0];
+        inputLong.name = "pol_" + (i - 1);
+
+        // Reindexem Descripció
+        var inputDesc = cells[2].getElementsByTagName('input')[0];
+        inputDesc.name = "desc_" + (i - 1);
+    }
+}
+
+function PintaScopeLogPagePntsList() 
+{
+	var s = "<table style='border-collapse: collapse; width: 100%;'>";
+	s += "<colgroup>";
+	s += "<col style='width: 10%;'>";
+	s += "<col style='width: 20%;'>";
+	s += "<col style='width: 20%;'>";
+	s += "<col style='width: 40%;'>";
+	s += "<col style='width: 10%;'>";
+	s += "</colgroup>";
+    s += "<tr><th id='scope_lp_pnts_hd_type' style='font-weight: normal;'>"+DonaCadenaJSON(Msg_Scope_LP_type)+"</th><th id='scope_lp_pnts_hd_long' style='font-weight: normal;'>"+DonaCadenaJSON(Msg_Scope_LP_long)+"</th>";
+	s += "<th id='scope_lp_pnts_hd_lat' style='font-weight: normal;'>"+DonaCadenaJSON(Msg_Scope_LP_lat)+"</th><th id='scope_lp_pnts_hd_desc' style='font-weight: normal;'>"+DonaCadenaJSON(Msg_Scope_LP_desc)+"</th><th></th></tr>";
+
+	var count=0;
+	var disabledAttr = Scope_lp_puc_modificar ? "" : " disabled";
+
+    for (var n = 0; n < PropsOfALogPage[0].n_scope; n++) 
+	{
+        if (PropsOfALogPage[0].scope_elems[n].type == "PNT") 
+		{
+            // Separem coords
+            var parts = PropsOfALogPage[0].scope_elems[n].coords.split(',');
+            var long = parseFloat(parts[0]);
+            var lat = parseFloat(parts[1]);
+            var desc = PropsOfALogPage[0].scope_elems[n].desc;
+
+            s += "<tr>";
+            s += "<td>" + PropsOfALogPage[0].scope_elems[n].type + "</td>";
+            s += "<td><input type='text' style='width: 90%;' class='text-input' name='long_" + count + "' value='" + long + "'"+disabledAttr+"></td>";
+            s += "<td><input type='text' style='width: 90%;' class='text-input' name='lat_" + count + "' value='" + lat + "'"+disabledAttr+"></td>";
+            s += "<td><input type='text' style='width: 90%;' class='text-input' name='desc_" + count + "' value='" + desc + "'"+disabledAttr+"></td>";
+            if (Scope_lp_puc_modificar)
+				s += "<td><button class='submit_btn' onclick='EliminaFilaScopeLogPagePnt(this)'>"+DonaCadenaJSON(Msg_Scope_LP_delete)+"</button></td>";
+			else 
+				s += "<td></td>";
+            s += "</tr>";
+			
+			count++;
+        }
+    }
+
+    s += "</table>";
+	s += "<p id='pnt_scope_lp_descrip' class='white-area-screen-descrip-text'>"+DonaCadenaJSON(Msg_ScopeLP_PntExample)+"</p>";
+
+	// Afegim el botó per afegir nova fila
+	if (Scope_lp_puc_modificar)
+   		s += "<br><button type='button' id='btn_afegir_pnt' class='submit_btn' onclick='AfegirNovaFilaScopeLogPagePnt()'>"+DonaCadenaJSON(Msg_Scope_LP_addPoint)+"</button>";
+
+	document.getElementById("logpage-scope_pnts_list").innerHTML = s;
+
+	return;
+}
+
+function PintaScopeLogPagePolsList() 
+{
+    var s = "<table style='border-collapse: collapse; width: 100%;'>";
+	s += "<colgroup>";
+	s += "<col style='width: 10%;'>";
+	s += "<col style='width: 40%;'>";
+	s += "<col style='width: 40%;'>";
+	s += "<col style='width: 10%;'>";
+	s += "</colgroup>";
+    s += "<tr><th id='scope_lp_pols_hd_type' style='font-weight: normal;'>"+DonaCadenaJSON(Msg_Scope_LP_type)+"</th><th id='scope_lp_pols_hd' style='font-weight: normal;'>"+DonaCadenaJSON(Msg_Scope_LP_pols_hd)+"</th>";
+	s += "<th id='scope_lp_pols_hd_desc' style='font-weight: normal;'>"+DonaCadenaJSON(Msg_Scope_LP_desc)+"</th><th></th></tr>";
+
+    var count=0;
+	var disabledAttr = Scope_lp_puc_modificar ? "" : " disabled";
+	for (var n = 0; n < PropsOfALogPage[0].n_scope; n++) 
+	{
+        if (PropsOfALogPage[0].scope_elems[n].type == "POL") 
+		{
+            var pol = PropsOfALogPage[0].scope_elems[n].coords;
+            var desc = PropsOfALogPage[0].scope_elems[n].desc;
+
+            s += "<tr>";
+            s += "<td>" + PropsOfALogPage[0].scope_elems[n].type + "</td>";
+            s += "<td><input type='text' style='width: 95%;' class='text-input' name='pol_" + count + "' value='" + pol + "'"+disabledAttr+"></td>";
+            s += "<td><input type='text' style='width: 90%;' class='text-input' name='desc_" + count + "' value='" + desc + "'"+disabledAttr+"></td>";
+            if (Scope_lp_puc_modificar)
+				s += "<td><button class='submit_btn' onclick='EliminaFilaScopeLogPagePol(this)'>"+DonaCadenaJSON(Msg_Scope_LP_delete)+"</button></td>";
+			else
+				s += "<td></td>";
+            s += "</tr>";
+
+			count++;
+        }
+    }
+
+    s += "</table>";
+	s += "<p id='pol_scope_lp_descrip' class='white-area-screen-descrip-text'>"+DonaCadenaJSON(Msg_ScopeLP_PolExample)+"</p>";
+
+    // Afegim el botó per afegir nova fila
+	if (Scope_lp_puc_modificar)
+    	s += "<br><button type='button' id='btn_afegir_pol' class='submit_btn' onclick='AfegirNovaFilaScopeLogPagePol()'>"+DonaCadenaJSON(Msg_Scope_LP_addPolyg)+"</button>";
+
+    document.getElementById("logpage-scope_pols_list").innerHTML = s;
+
+	return;
+}
+
+function ActualitzaVisibilitatBotonsAfegir() 
+{
+    var botoAfegirPnt = document.getElementById("btn_afegir_pnt");
+    var botoAfegirPol = document.getElementById("btn_afegir_pol");
+
+    if (nScopesOfALogPage >= 30) 
+	{
+        botoAfegirPnt.style.display = "none";
+        botoAfegirPol.style.display = "none";
+    } else 
+	{
+        botoAfegirPnt.style.display = "inline-block";
+        botoAfegirPol.style.display = "inline-block";
+    }
+}
+
+function AfegirNovaFilaScopeLogPagePnt() 
+{
+	if (nScopesOfALogPage >= 30) 
+        return;
+
+    // Busquem la taula
+    var table = document.getElementById("logpage-scope_pnts_list").getElementsByTagName('table')[0];
+
+    // Afegim una nova fila al final
+    var n = table.rows.length - 1; // comptem les files existents (menys la capçalera)
+    var row = table.insertRow(-1);
+
+    // Type (text fix)
+    var cellType = row.insertCell(0);
+    cellType.textContent = "PNT";
+
+    // Longitud (input)
+    var cellLong = row.insertCell(1);
+    cellLong.innerHTML = "<input type='text' style='width: 90%;' class='text-input' name='long_" + n + "' value=''>";
+
+    // Latitud (input)
+    var cellLat = row.insertCell(2);
+    cellLat.innerHTML = "<input type='text' style='width: 90%;' class='text-input' name='lat_" + n + "' value=''>";
+
+    // Descripció (input)
+    var cellDesc = row.insertCell(3);
+    cellDesc.innerHTML = "<input type='text' style='width: 90%;' class='text-input' name='desc_" + n + "' value=''>";
+
+    // Accions (sense eliminar perquè encara no existeix)
+    var cellActions = row.insertCell(4);
+    cellActions.innerHTML = "<button class='submit_btn' onclick='EliminaFilaScopeLogPagePnt(this)'>"+DonaCadenaJSON(Msg_Scope_LP_delete)+"</button>";
+
+	ReindexaFilesScopeLogPagePnt();
+	nScopesOfALogPage=(nScopesOfALogPage+1);
+	ActualitzaVisibilitatBotonsAfegir();
+
+	return;
+}
+
+function AfegirNovaFilaScopeLogPagePol() 
+{
+	if (nScopesOfALogPage >= 30) 
+        return;
+
+    // Busquem la taula
+    var table = document.getElementById("logpage-scope_pols_list").getElementsByTagName('table')[0];
+
+    // Afegim una nova fila al final
+    var n = table.rows.length - 1; // comptem les files existents (menys la capçalera)
+    var row = table.insertRow(-1);
+
+    // Type (text fix)
+    var cellType = row.insertCell(0);
+    cellType.textContent = "POL";
+
+    // Poligon (input)
+    var cellLong = row.insertCell(1);
+    cellLong.innerHTML = "<input type='text' style='width: 95%;' class='text-input' name='pol_" + n + "' value=''>";
+
+    // Descripció (input)
+    var cellDesc = row.insertCell(2);
+    cellDesc.innerHTML = "<input type='text' style='width: 90%;' class='text-input' name='desc_" + n + "' value=''>";
+
+    // Accions (sense eliminar perquè encara no existeix)
+    var cellActions = row.insertCell(3);
+    cellActions.innerHTML = "<button class='submit_btn' onclick='EliminaFilaScopeLogPagePol(this)'>"+DonaCadenaJSON(Msg_Scope_LP_delete)+"</button>";
+
+	ReindexaFilesScopeLogPagePol();
+	nScopesOfALogPage=(nScopesOfALogPage+1);
+	ActualitzaVisibilitatBotonsAfegir();
+
+	return;
+}
+
+function EliminaFilaScopeLogPagePnt(button) 
+{
+    // Pugem a la fila i l’esborrem
+    var row = button.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+
+	ReindexaFilesScopeLogPagePnt();
+	nScopesOfALogPage=(nScopesOfALogPage-1);
+	ActualitzaVisibilitatBotonsAfegir();
+
+	return;
+}
+
+function EliminaFilaScopeLogPagePol(button) 
+{
+    // Pugem a la fila i l’esborrem
+    var row = button.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+
+	ReindexaFilesScopeLogPagePol();
+	nScopesOfALogPage=(nScopesOfALogPage-1);
+	ActualitzaVisibilitatBotonsAfegir();
+
+	return;
+}
+
+function MostraScopeOfALogPage(item)
+{
+	var s;
+	//"item" ens diu a quin element de l'array estem. En aquest cas, com que només podem tenir un "target" (un LogBook), sempre serà el mateix (0)
+	ChangePannel("scope_lp", true);
+	nTargetOfALogPage=item;
+	nScopesOfALogPage=0;
+
+	if (!PropsOfALogPage[0].n_scope) //no tenim scopes o val 0
+	{
+		document.getElementById("scope_lp-title-text").innerHTML=DonaCadenaJSON(Msg_New_Scope_LP)+" "+'<a href="help/help.htm" target="NiMMbus_help"><img src="help_info20.png"></a>';
+
+		document.getElementById("scope_lp-resource-exit_btn").style.display='none';
+		document.getElementById("scope_lp-resource-close_btn").style.display='inline';
+		
+		//hem d'esborrar el contingut que hi pugui haver de recursos obertes prèviament.
+		nScopesOfALogPage=0;
+		PintaScopeLogPagePolsList();
+		PintaScopeLogPagePntsList();
+	}
+	else
+	{
+		//quan existeix scope previ
+		document.getElementById("scope_lp-title-text").innerHTML=DonaCadenaJSON(Msg_Scope_LP)+" "+'<a href="help/help.htm" target="NiMMbus_help"><img src="help_info20.png"></a>';
+			
+		document.getElementById("scope_lp_btn").style.display=Scope_lp_puc_modificar ? 'inline' : 'none';
+		document.getElementById("scope_lp-resource-delete_btn").style.display=Scope_lp_puc_modificar ? 'inline' : 'none';
+		document.getElementById("scope_lp-resource-close_btn").style.display=Scope_lp_puc_modificar ? 'inline' : 'none';
+		document.getElementById("scope_lp-resource-exit_btn").style.display=Scope_lp_puc_modificar ? 'none' : 'inline';
+
+		nScopesOfALogPage=PropsOfALogPage[0].n_scope;
+		PintaScopeLogPagePntsList();
+		PintaScopeLogPagePolsList();
+	}
+	return;
+}
+
+//OGscope:
 function RecuperaCanvisAScope(avis)
 {
 	if (avis==true) //salvem l'scope introduït per l'usuari
-	{
-		
+	{	
 		//bbox
 		var xmin_t=document.getElementById("min-long-scope_screen_value").value;
 		var xmax_t=document.getElementById("max-long-scope_screen_value").value;
@@ -1986,6 +2392,7 @@ function RecuperaCanvisAScope(avis)
 	document.getElementById("min-lat-scope_screen_value").value="";
 	document.getElementById("max-lat-scope_screen_value").value="";
 	document.getElementById("GMLpolygon-scope_screen_value").value="";
+	
 	//modifiquem temporalment la taula de compact feedback resource
 	var id_tr="compact-resource_table_hidden_br"+nTargetOfAFeedback
 	var s=document.getElementById(id_tr).innerHTML;
@@ -1998,11 +2405,141 @@ function RecuperaCanvisAScope(avis)
 	
 	document.getElementById(id_tr).innerHTML=s2;
 	
+	
 	nTargetOfAFeedback="";
 	Scope_puc_modificar=true;
 	history.back();
 	return;
 }
+
+function ComprovaPoligonLogPageScope(cadena) 
+{
+    var resultat=false;
+
+    // Eliminem espais innecessaris
+    var neta = cadena.trim();
+
+    // Comprovem que hi hagi només parells tipus [num, num]
+    var regex = /\[\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*\]/g;
+    var trobat = neta.match(regex);
+
+    if (!trobat) {
+        alert(DonaCadenaJSON(Msg_ScopeLP_PolNoCoords_Error));
+        return resultat;
+    }
+
+    // Comprovem que la cadena sencera és feta d’aquests parells separats per comes
+    var reconstruida = trobat.join(', ');
+    var netaSenseEspais = neta.replace(/\s+/g, '');
+    var reconstruidaSenseEspais = reconstruida.replace(/\s+/g, '');
+    if (reconstruidaSenseEspais !== netaSenseEspais) {
+		alert(DonaCadenaJSON(Msg_ScopeLP_PolFormat_Error));
+        return resultat;
+    }
+
+    // Comprovem que hi ha almenys 4 punts
+    if (trobat.length < 4) {
+		alert(DonaCadenaJSON(Msg_ScopeLP_PolNCoords_Error));
+        return resultat;
+    }
+
+    // Comprovem que primer i últim coincideixen
+    if (trobat[0].replace(/\s+/g, '') !== trobat[trobat.length - 1].replace(/\s+/g, '')) {
+		alert(DonaCadenaJSON(Msg_ScopeLP_PolCoords_Error));
+        return resultat;
+    }
+
+    // Comprovem que no hi ha comes decimals
+    var regexComaDecimal = /\[\s*-?\d+,\d+\s*,\s*-?\d+,\d+\s*\]/;
+    if (regexComaDecimal.test(neta)) {
+		alert(DonaCadenaJSON(Msg_ScopeLP_PolDec_Error));
+        return resultat;
+    }
+
+    // Tot correcte
+    resultat=true;
+    return resultat;
+}
+
+function RecuperaCanvisALogPageScope(avis) 
+{
+    // salvem l'scope introduït per l'usuari
+	if (avis == true) 
+	{ 
+	    var nouElems = [];
+
+        // 1) Llegim files de la taula de PUNTS
+        var tablePnts = document.getElementById("logpage-scope_pnts_list").getElementsByTagName('table')[0];
+        for (var i = 1; i < tablePnts.rows.length; i++) { // comencem a 1 per saltar la capçalera
+            var row = tablePnts.rows[i];
+
+            var longVal = row.cells[1].getElementsByTagName('input')[0].value.trim();
+            var latVal = row.cells[2].getElementsByTagName('input')[0].value.trim();
+            var descVal = row.cells[3].getElementsByTagName('input')[0].value.trim();
+
+            // Comprovem que el separador decimal sigui un punt
+            if (longVal.includes(',') || latVal.includes(',')) {
+                alert(DonaCadenaJSON(Msg_Scope_LP_error));
+                return; // sortim sense tocar dades anteriors
+            }
+
+            nouElems.push({
+                "type": "PNT",
+                "coords": longVal + "," + latVal,
+                "desc": descVal
+            });
+        }
+
+        // 2) Llegim files de la taula de POLÍGONS
+        var tablePols = document.getElementById("logpage-scope_pols_list").getElementsByTagName('table')[0];
+        for (var i = 1; i < tablePols.rows.length; i++) { // comencem a 1 per saltar la capçalera
+            var row = tablePols.rows[i];
+
+            var coordsVal = row.cells[1].getElementsByTagName('input')[0].value.trim();
+            var descVal = row.cells[2].getElementsByTagName('input')[0].value.trim();
+
+            // Comprovem que el polígon sigui correcte
+            var res = ComprovaPoligonLogPageScope(coordsVal);
+            if (res == false) {
+                return; // sortim sense tocar dades anteriors
+            }
+
+            nouElems.push({
+                "type": "POL",
+                "coords": coordsVal,
+                "desc": descVal
+            });
+        }
+
+        // Només ara esborrem i guardem perquè sabem que tot és correcte
+        PropsOfALogPage[0].n_scope = nouElems.length;
+        PropsOfALogPage[0].scope_elems = nouElems;
+		PropsOfALogPage[0].scope=true;
+
+    } 
+	else // esborrem totes les dades d'scope d'aquesta logpage
+	{ 
+        PropsOfALogPage[0].n_scope = 0;
+        PropsOfALogPage[0].scope_elems = [];
+    }
+
+	//modifiquem temporalment la taula de compact logbook resource
+	var id_tr="compact-resource_table_hidden_br"+nTargetOfALogPage
+	var s=document.getElementById(id_tr).innerHTML;
+	var s2=s.split("<br>",3)[0]+"<br>"+s.split("<br>",3)[1]+"<br>"+s.split("<br>",3)[2];
+	if (PropsOfALogPage[0].n_scope)
+		s2+="<br>" + DonaCadenaJSON({cat: "Àmbit del registe: definit", spa: "Ámbito del registro: definido", eng: "Log's scope: defined"});
+	
+	document.getElementById(id_tr).innerHTML=s2;
+
+    nTargetOfALogPage = "";
+    nScopesOfALogPage = 0;
+    Scope_lp_puc_modificar = true;
+    history.back();
+    return;
+}
+
+
 
 function EliminaTargetOfAFeedback(del_item)
 {
@@ -2046,7 +2583,7 @@ function AfegeixResponsibleOfACitation(id_responsible, open_data)
 	if (id_responsible==null)  //S'ha cancel·lat d'afegir res.
 		;
 	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no té sentit que se seleccioni.
-		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again ));*/
+		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again $$$ ));*/
 	else
 	{
 		RecuperaCanvisARolesAResponsiblesOfACitation();		
@@ -2074,7 +2611,7 @@ function AfegeixResponsibleOfAPublication(id_responsible, open_data)
 	if (id_responsible==null)  //S'ha cancel·lat d'afegir res.
 		;
 	/*else if (id_responsible=='') //S'ha seleccionat un recurs que no té sentit que se seleccioni.
-		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again ));*/
+		ShowInfo("short", DonaCadenaJSON(Msg_Resource_already_targeted_no_added_again $$$ ));*/
 	else
 	{
 		RecuperaCanvisARolesAResponsiblesOfAPublication();		
@@ -2091,6 +2628,7 @@ function AfegeixResponsibleOfAPublication(id_responsible, open_data)
 function AvaluaRespostaRetrieveResourceCompacte(doc, dades)
 { 
 var root, output, identifier, s, elem, citation, md_identifier, title, code=null, code_space=null, type, href=null, position=null, open_data=false, s_table;
+var noVullBoto=false;
 
 	root=DonaRootXML(doc, document);
 	if (!root)
@@ -2157,13 +2695,24 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 						}
 					}
 				}
+				else if (identifier.childNodes[0].nodeValue=="rights")
+				{
+					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+					var puc_modificar=true;
+					
+					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
+						document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_FB_item_detailed_description_no_modification);
+					}
+				}
 				else if (identifier.childNodes[0].nodeValue=="individu") 
 				{
-					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme
+					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme $$
 				}
 				else if (identifier.childNodes[0].nodeValue=="organism") 
 				{
-					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme
+					;	//de moment no recupero res particular, potser més endavant posar email o, quan el tingui, el nom de l'organisme -> email || organisme $$
 				}
 				else if (identifier.childNodes[0].nodeValue=="href")
 					href=OmpleInputDesDeWPSLiteralOutput(output.item(item));
@@ -2204,34 +2753,42 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 			s_table+="<br><a href=\"" + href + "\">" + href + "</a>";			
 		else if (type=="POI" && position)
 			s_table+="<br>lat/long: " + position;		
-		//else if	(type=="INDIVIDU" && (email || organisme)) 
-		//else if	(type=="ORGANISM" && (adreça))
+		//else if	(type=="INDIVIDU" && (email || organisme)) $$
+		//else if	(type=="ORGANISM" && (adreça)) $$
 		s_table+="</td>"
 	
-
+		//AZscope
 		if (dades.is_target_public_or_none==1) //només aplica si és un Target
 		{
 			if (type=="CITATION") //OGscope l'scope només té sentit sobre feedbacks a citacions
 			{
 				var p;
-				s_table+="<td>";
-				if (dades.scope)
-				{				
-					if (dades.select_role=="") //tenim dades scope però no podem seleccionar un rol. Això vol dir que estem en un context de només lectura
+				s_table+='<td align="right">';
+				
+				if (puc_modificar==false)
+				{
+					if (dades.scope)
 						p=DonaCadenaJSON({cat: "Veure àmbit", spa: "Ver ámibto", eng: "View scope"});
 					else
-						p=DonaCadenaJSON({cat: "Editar àmbit", spa: "Editar ámibto", eng: "Edit scope"});
-						//s_table+=s.scope;						
+						noVullBoto=true;
 				}
 				else
 				{
-					p=DonaCadenaJSON({cat: "Definir àmbit", spa: "Definir ámibto", eng: "Define scope"});
+					if (dades.scope)
+						p=DonaCadenaJSON({cat: "Editar àmbit", spa: "Editar ámibto", eng: "Edit scope"});
+					else
+						p=DonaCadenaJSON({cat: "Definir àmbit", spa: "Definir ámibto", eng: "Define scope"});
 				}
-				if (dades.scope_function)
-					s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ p +"\" onClick=\""+dades.scope_function+"("+(dades.del_item-1)+")\"/>";
-				if (!dades.scope_function && dades.select_role=="")
-					s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ p +"\" onClick=\""+ "MostraScopeOfAFeedback("+ dades.item +")\"/>";
-				s_table+="</td>";
+				if (noVullBoto == true)
+					s_table+="</td>";
+				else
+				{
+					if (dades.scope_function)
+						s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ p +"\" onClick=\""+dades.scope_function+"("+(dades.del_item-1)+")\"/>";
+					if (!dades.scope_function && dades.select_role=="")
+						s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ p +"\" onClick=\""+ "MostraScopeOfAFeedback("+ dades.item +")\"/>";
+					s_table+="</td>";
+				}
 			}
 		}
 		if (dades.role || (dades.del_item && dades.del_function))
@@ -2292,6 +2849,142 @@ var root, output, identifier, s, elem, citation, md_identifier, title, code=null
 				
 			s_table+="</td>";
 		}
+		s_table+="</tr></table>";
+		document.getElementById(compact_element_item).innerHTML=s_table;
+		
+		UpdateLastServer();
+	}
+	else
+	{	
+		RemoveInfo("permanent");
+		TiraAPantallaRespostaSiNoEntenc(root, document);
+	}
+	return;
+}
+
+
+function AvaluaRespostaRetrieveResourceCompacteLogBook(doc, dades)
+{ 
+var root, output, identifier, s, elem, citation, md_identifier, title, code=null, code_space=null, type, href=null, position=null, open_data=false, s_table;
+var noVullBoto=false;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+	if (AnalitzaExceptionReport(root, document))
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+
+	output=GetXMLElementCollectionByName(root, "wps", "Output");
+
+	if (output && output.length)
+	{
+		for (var item=0; item<output.length; item++)
+		{
+			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
+			if (identifier)
+			{
+				if (identifier.childNodes[0].nodeValue=="title")
+					title=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="openData")
+				{
+					open_data=TornaBooleaDesDeWPSLiteralOutput(output.item(item));
+					if (dades.is_target_public_or_none==1) //aquest item és un dels arrays de targets de FB
+						PropsOfALogPage[dades.del_item-1].open_data=open_data;
+				}
+				else if (identifier.childNodes[0].nodeValue=="type")
+					type=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="logbook")
+				{	//els puc fer junts perquè només miro els elements de la part comuna				
+					citation=OmpleInputDesDeWPSComplexOutput(output.item(item));
+					if (citation)
+					{ 
+						md_identifier=GetXMLElementByName(citation, "mcc", "MD_Identifier");
+						if (md_identifier)
+						{
+							//CODE						
+							elem=GetXMLElementByName(md_identifier, "mcc", "code");
+							if (elem)
+								code=DonaTextDesDeGcoCharacterString(elem);
+							//NAMESPACE
+							elem=GetXMLElementByName(md_identifier, "mcc", "codeSpace");
+							if (elem)
+								code_space=DonaTextDesDeGcoCharacterString(elem);
+						}
+					}
+				}
+				else if (identifier.childNodes[0].nodeValue=="rights")
+				{
+					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+					var puc_modificar=true;
+					
+					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
+						document.getElementById("logbook-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_LB_detailed_description_no_modification);
+					}
+				}
+			}
+		}
+		RemoveInfo("permanent");		
+		compact_element_item=(dades.del_item ? dades.compact_element+"_"+dades.del_item : dades.compact_element);
+		//document.getElementById(compact_element_item).innerHTML="<table width=\"80%\">"; -> si faig això posa el table i el /table :( -> ho construeixo sobre s_table i després ho assigno
+		s_table="<table width=\"100%\">";
+		s_table+="<tr><td width=\"80\" align=\"center\"><img src=\""+DonaNomImgTipusRecurs(type, true)+"\">";
+
+		if (dades.open_data && !open_data)
+			s_table+="<img src=\"ExclamationMark36.png\" id=\""+compact_element_item+"_shared\"></td>";
+		else //creo un element img també amb src="", perquè així el ID existeix sempre
+			s_table+="<img src=\"\" id=\""+compact_element_item+"_shared\"></td>"; 
+		
+		//s_table+="<td>"+title;
+		s_table+='<td id="compact-resource_table_hidden_br'+ dades.item +'">'+title; //utilitzaré aquest id desde function RecuperaCanvisALogPageScope(avis) per dibuixar una taula temporal
+		if ((type=="LOGBOOK") && code)
+		{
+			s_table+="<br>" + DonaCadenaJSON({cat: "codi: ", spa: "código: ", eng: "code: "}) + code;
+			s_table+="<br>" +DonaCadenaJSON({cat: "espai de noms: ", spa: "espacio de nombres: ", eng: "code space: "}) + (code_space ? code_space : "");
+			if (dades.scope)
+				s_table+="<br>" + DonaCadenaJSON({cat: "Àmbit del registe: definit", spa: "Ámbito del registro: definido", eng: "Log's scope: defined"});
+		}
+		if (dades.is_target_public_or_none==1)
+		{
+			if (type=="LOGBOOK")
+			{
+				var p;
+				s_table+='<td align="right">';
+				
+				if (puc_modificar==false)
+				{
+					if (dades.scope)
+						p=DonaCadenaJSON({cat: "Veure àmbit", spa: "Ver ámibto", eng: "View scope"});
+					else
+						noVullBoto=true;
+				}
+				else
+				{
+					if (dades.scope)
+						p=DonaCadenaJSON({cat: "Editar àmbit", spa: "Editar ámibto", eng: "Edit scope"});
+					else
+						p=DonaCadenaJSON({cat: "Definir àmbit", spa: "Definir ámibto", eng: "Define scope"});
+				}
+				if (noVullBoto == true)
+					s_table+="</td>";
+				else
+				{
+					if (dades.scope_function)
+						s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ p +"\" onClick=\""+dades.scope_function+"("+(dades.del_item-1)+")\"/>";
+					if (!dades.scope_function && dades.select_role=="")
+						s_table+="<input class=\"submit_btn\" type=\"button\" value=\""+ p +"\" onClick=\""+ "MostraScopeOfALogPage("+ dades.item +")\"/>";
+					s_table+="</td>";
+				}
+			}
+		}
+
 		s_table+="</tr></table>";
 		document.getElementById(compact_element_item).innerHTML=s_table;
 		
@@ -2381,6 +3074,9 @@ var new_format;
 		
 					//OG: disable selectors
 					document.getElementById("mimetype-href-resource_screen_value").disabled=puc_modificar ? false : true;
+					//if (puc_modificar == false) {
+					//	document.getElementById("mimetype-href-resource_screen_value").style.pointerEvents='none'; //encara es podrien moure les opcions amb el teclat
+					//}
 					
 					//OG: block text areas
 					document.getElementById("reason-href-resource_screen_value").disabled=puc_modificar ? false : true;
@@ -2495,6 +3191,319 @@ var root, output, identifier, s, georss;
 				}
 			}
 		}
+		RemoveInfo("permanent");
+		IdResourceToSaveChanges=id;
+		UpdateLastServer();
+	}
+	else
+	{	
+		RemoveInfo("permanent");
+		TiraAPantallaRespostaSiNoEntenc(root, document);
+	}
+	return;
+}
+
+function AvaluaRespostaRetrieveResourceLogBook(doc, id)
+{
+	var root, output, identifier;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+	if (AnalitzaExceptionReport(root, document))
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+
+	output=GetXMLElementCollectionByName(root, "wps", "Output");
+
+	if (output && output.length)
+	{
+		puc_modificar=false;
+
+		document.logbook_resource_form.title.value="";
+		document.logbook_resource_form.id_code.value="";
+		document.logbook_resource_form.id_namespace.value="";
+						
+		for (var item=0; item<output.length; item++)
+		{
+			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
+			if (identifier)
+			{
+				if (identifier.childNodes[0].nodeValue=="title")
+					document.logbook_resource_form.title.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="openData")
+					document.logbook_resource_form.open_data.checked=TornaBooleaDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="logbook")
+				{					
+					logbook=OmpleInputDesDeWPSComplexOutput(output.item(item));
+					if (logbook)
+					{ 					
+						//identifier -> n'hi pot haver més d'un, de fet sempre hi ha el de NiMMbus i potser altres. En teoria pot ser n, nosaltres mostrem 1 (a banda del de NiMbus que no es veu)
+						output_2=GetXMLElementCollectionByName(logbook, "mcc", "MD_Identifier");
+						if (output_2 && output_2.length)							
+						{	
+							for (var item_2=0; item_2<output_2.length; item_2++)
+							{
+									var code="", namespace="";
+									
+									//CODE						
+									elem=GetXMLElementByName(output_2.item(item_2), "mcc", "code");
+									if (elem)
+										code=DonaTextDesDeGcoCharacterString(elem);
+									//NAMESPACE
+									elem=GetXMLElementByName(output_2.item(item_2), "mcc", "codeSpace");
+									if (elem)
+										namespace=DonaTextDesDeGcoCharacterStringOGcxAnchor(elem);
+									
+									if (code)
+									{
+										if (namespace=="https://www.nimmbus.cat/resourceId")
+										//aquest és el IdNiMMbus, no el vull mostrar!
+											continue;
+										
+										//si arribo aquí és que tinc un codi amb un namespace que NO és el de NiMMbus (p.ex. és blanc) --> per tant el mostro i plego pq només en mostro un.										
+										document.logbook_resource_form.id_namespace.value=namespace;									
+										document.logbook_resource_form.id_code.value=code;
+										break;										
+								}									
+							}
+						}
+					}
+				}	
+				else if (identifier.childNodes[0].nodeValue=="rights")
+				{
+					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+										
+					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
+						document.getElementById("logbook-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Citation_detailed_description_no_modification);
+						
+					}					
+					else
+						puc_modificar=true;
+					document.getElementById("logbook-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("logbook-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
+					document.getElementById("logbook-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("logbook-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';
+					
+					//OG: block inputs
+					document.getElementById("title-logbook-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-code-logbook-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("id-namespace-logbook-resource_screen_value").disabled=puc_modificar ? false : true;					
+				}
+			}
+		}		
+		RemoveInfo("permanent");
+		IdResourceToSaveChanges=id;
+		UpdateLastServer();
+	}
+	else
+	{	
+		RemoveInfo("permanent");
+		TiraAPantallaRespostaSiNoEntenc(root, document);
+	}
+	return;
+}
+
+function AvaluaRespostaRetrieveResourceLogPage(doc, id)
+{
+	var root, output, identifier;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+	if (AnalitzaExceptionReport(root, document))
+	{
+		RemoveInfo("permanent");
+		return;
+	}
+
+	output=GetXMLElementCollectionByName(root, "wps", "Output");
+
+	if (output && output.length)
+	{
+		document.logpage_resource_form.aggType1.value="";
+		document.logpage_resource_form.aggValue1.value="";
+		document.logpage_resource_form.aggType2.value="";
+		document.logpage_resource_form.aggValue2.value="";
+		document.logpage_resource_form.aggType3.value="";
+		document.logpage_resource_form.aggValue3.value="";
+		document.logpage_resource_form.title.value="";
+		document.logpage_resource_form.ini_content_date.value="";
+		document.logpage_resource_form.ini_content_time.value="";
+		document.logpage_resource_form.fin_content_date.value="";
+		document.logpage_resource_form.fin_content_time.value="";
+		document.logpage_resource_form.comment.value="";
+		document.logpage_resource_form.logpageLink.value="";
+
+		PropsOfALogPage.length=0;
+
+		for (var item=0; item<output.length; item++)
+		{
+			identifier=GetXMLElementByName(output.item(item), "ows", "Identifier");
+			if (identifier)
+			{
+				if (identifier.childNodes[0].nodeValue=="title")
+					document.logpage_resource_form.title.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+				
+				if (identifier.childNodes[0].nodeValue=="idLogBook")
+				{
+					//var id_logbook=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+					var logbook=OmpleInputDesDeWPSComplexOutput(output.item(item));
+					if (logbook)
+					{ 					
+						//identifier -> n'hi pot haver més d'un, de fet sempre hi ha el de NiMMbus i potser altres. En teoria pot ser n, nosaltres mostrem 1 (a banda del de NiMbus que no es veu)
+						var output_2=GetXMLElementCollectionByName(logbook, "mcc", "MD_Identifier");
+						if (output_2 && output_2.length)							
+						{	
+							for (var item_2=0; item_2<output_2.length; item_2++)
+							{
+								var code="", namespace="";
+								
+								//CODE						
+								elem=GetXMLElementByName(output_2.item(item_2), "mcc", "code");
+								if (elem)
+									code=DonaTextDesDeGcoCharacterString(elem);
+								//NAMESPACE
+								elem=GetXMLElementByName(output_2.item(item_2), "mcc", "codeSpace");
+								if (elem)
+									namespace=DonaTextDesDeGcoCharacterStringOGcxAnchor(elem);
+								
+								if (code)
+								{
+									if (namespace=="https://www.nimmbus.cat/resourceId")
+									//aquest és el IdNiMMbus
+									{
+										//sempre escrivim sobre PropsOfALogPage[0] pq de moment només podem tenir un target
+										//el role en aquest cas no serveix per res de moment.
+										PropsOfALogPage[0]={"id_target": code, "role": "primary"};
+									}																	
+								}									
+							}
+						}
+					}
+				}
+				if (identifier.childNodes[0].nodeValue == "LogPageScope") {
+					var scope = OmpleInputDesDeWPSComplexOutput(output.item(item));
+					if (scope) {
+						var n_scope = GetXMLElementByName(output.item(item), "", "LogPageScope"); 
+						if (n_scope) {
+							var a = GetXMLElementByName(n_scope, "", "n_elems");
+							if (a) {
+								var nElems = parseInt(a.textContent, 10);
+								PropsOfALogPage[0].n_scope = nElems;
+								PropsOfALogPage[0].scope=true;
+
+								// Inicialitza la llista on es guarden els elements que formen l'scope
+								PropsOfALogPage[0].scope_elems = [];
+
+								for (var i = 0; i < nElems; i++) {
+									// Busca el tag elem_#
+									var elemTagName = "elem_" + i;
+									var elemNode = GetXMLElementByName(n_scope, "", elemTagName);
+
+									if (elemNode) {
+										// Llegeix els valors de type, coords i desc
+										var typeNode = GetXMLElementByName(elemNode, "", "type");
+										var coordsNode = GetXMLElementByName(elemNode, "", "coords");
+										var descNode = GetXMLElementByName(elemNode, "", "desc");
+
+										// Desa l'element com un objecte
+										PropsOfALogPage[0].scope_elems.push({
+											type: typeNode ? typeNode.textContent : "",
+											coords: coordsNode ? coordsNode.textContent : "",
+											desc: descNode ? descNode.textContent : ""
+										});
+									}
+								}
+							}
+						}
+					}
+				}
+				if (identifier.childNodes[0].nodeValue == "contentDateIni") {
+					var dateTime = OmpleInputDesDeWPSLiteralOutput(output.item(item));  
+					var [data, hora] = dateTime.split("T");
+					document.logpage_resource_form.ini_content_date.value = data;
+					if (hora) // podria ser que no tinguéssim hora
+					{ 
+						var horaSenseZ = hora.replace("Z", "");
+						var horaMinuts = horaSenseZ.substring(0, 5); // agafa només els primers 5 caràcters (HH:MM)
+						document.logpage_resource_form.ini_content_time.value = horaMinuts;
+					}
+				}
+				if (identifier.childNodes[0].nodeValue=="contentDateFin")
+				{
+					var dateTime=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+					var [data, hora] = dateTime.split("T");
+					document.logpage_resource_form.fin_content_date.value=data;
+					if (hora)  //podria ser que no tinguessim hora
+					{
+						var horaSenseZ = hora.replace("Z", "");
+						var horaMinuts = horaSenseZ.substring(0, 5); // agafa només els primers 5 caràcters (HH:MM)
+						document.logpage_resource_form.fin_content_time.value = horaMinuts;
+					}
+				}
+				else if (identifier.childNodes[0].nodeValue=="comment")
+					document.logpage_resource_form.comment.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+				else if (identifier.childNodes[0].nodeValue=="link")
+					document.logpage_resource_form.logpageLink.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+				else if (identifier.childNodes[0].nodeValue=="aggType1")
+					document.logpage_resource_form.aggType1.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+				else if (identifier.childNodes[0].nodeValue=="aggValue1")
+					document.logpage_resource_form.aggValue1.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="aggType2")
+					document.logpage_resource_form.aggType2.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+				else if (identifier.childNodes[0].nodeValue=="aggValue2")
+					document.logpage_resource_form.aggValue2.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="aggType3")
+					document.logpage_resource_form.aggType3.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+				else if (identifier.childNodes[0].nodeValue=="aggValue3")
+					document.logpage_resource_form.aggValue3.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="rights")
+				{
+					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+					var puc_modificar=true;
+					
+					if (rights.indexOf("W")==-1)
+					{
+						puc_modificar=false;
+						document.getElementById("logpage-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_LP_detailed_description_no_modification);
+					}
+					Scope_lp_puc_modificar=puc_modificar;
+
+					document.getElementById("logpage-resource_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("logpage-resource-exit_btn").style.display=puc_modificar ? 'none' : 'inline';
+					document.getElementById("logpage-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
+					document.getElementById("logpage-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';	
+					
+					document.getElementById("aggregationType-logpage-resource_screen_valueL1").disabled=puc_modificar ? false : true;
+					document.getElementById("aggregationValue-logpage-resource_screen_valueL1").disabled=puc_modificar ? false : true;
+					document.getElementById("aggregationType-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
+					document.getElementById("aggregationValue-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
+					document.getElementById("aggregationType-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
+					document.getElementById("aggregationValue-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
+					document.getElementById("title-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("ini-content-date-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("ini-content-time-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("fin-content-date-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("fin-content-time-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("logpage-link-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("open-data-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
+
+					document.getElementById("comment-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
+				}
+			}
+		}
+		OmpleRecursTargetsDesDePropsOfALogPage((rights && rights.indexOf("W")!=-1) ? true : false);
 		RemoveInfo("permanent");
 		IdResourceToSaveChanges=id;
 		UpdateLastServer();
@@ -3053,6 +4062,7 @@ var root, output, identifier, s, feedback_item, user_comment;
 			puc_modificar=false;
 			document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_FB_item_detailed_description_no_modification);
 		}
+		//OGscope
 		Scope_puc_modificar=puc_modificar;
 		
 		document.getElementById("feedback-resource_btn").style.display=puc_modificar ? 'inline' : 'none';			
@@ -3098,6 +4108,12 @@ var root, output, identifier, s, feedback_item, user_comment;
 		document.getElementById("comment-motiv-feedback-resource_screen_value").disabled=puc_modificar ? false : true;
 		document.getElementById("reprodUsage-mimetype-resource_screen_value").disabled=puc_modificar ? false : true;
 		document.getElementById("reprodUsage-diagram-mimetype-resource_screen_value").disabled=puc_modificar ? false : true;
+		//if (puc_modificar == false) {
+		//	document.getElementById("contactRole-feedback-resource_screen_value").style.pointerEvents='none';
+		//	document.getElementById("comment-motiv-feedback-resource_screen_value").style.pointerEvents='none';
+		//	document.getElementById("reprodUsage-mimetype-resource_screen_value").style.pointerEvents='none';
+		//	document.getElementById("reprodUsage-diagram-mimetype-resource_screen_value").style.pointerEvents='none';
+		//}
 		
 		//OG: Hide buttons
 		document.getElementById("add-doc-feedback-resource_compact_add_btn").style.display=puc_modificar ? 'inline' : 'none';			
@@ -3324,6 +4340,7 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 				else if (identifier.childNodes[0].nodeValue=="rights")
 				{
 					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+					var puc_modificar=true;
 										
 					if (rights.indexOf("W")==-1)
 					{
@@ -3357,6 +4374,11 @@ var root, output, identifier, s, elem, citation, md_identifier, onlineResource;
 					
 					//OG: disable selectors
 					document.getElementById("url-function-citation-resource_screen_value").disabled=puc_modificar ? false : true;
+					//if (puc_modificar == false) {
+					//	document.getElementById("url-function-citation-resource_screen_value").style.pointerEvents='none';
+					//}
+
+
 					
 				}
 			}
@@ -3620,6 +4642,10 @@ var root, output, identifier, s, elem, publication, md_identifier, onlineResourc
 					//OG: disable selectors
 					document.getElementById("url-function-publication-resource_screen_value").disabled=puc_modificar ? false : true;
 					document.getElementById("category-publication-resource_screen_value").disabled=puc_modificar ? false : true;
+					//if (puc_modificar == false) {
+					//	document.getElementById("url-function-publication-resource_screen_value").style.pointerEvents='none';
+					//	document.getElementById("category-publication-resource_screen_value").style.pointerEvents='none';
+					//}
 					
 					//OG: block text areas
 					document.getElementById("abstract-publication-resource_screen_value").disabled=puc_modificar ? false : true;
@@ -3905,7 +4931,9 @@ function AvaluaRespostaRetrieveResourceOrganism(doc, id)
 	return;
 }
 
+//AZscope
 function PopulateCompactDescriptionResource(id, compact_element, role, select_role, del_item, del_function, open_data, is_target_public_or_none, scope, scope_function, item)
+//function PopulateCompactDescriptionResource(id, compact_element, role, select_role, del_item, del_function, open_data, is_target_public_or_none)
 {
 	ajaxExecuteNB=new Ajax();
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
@@ -3914,6 +4942,17 @@ function PopulateCompactDescriptionResource(id, compact_element, role, select_ro
 				+"&RESOURCE="+id, AvaluaRespostaRetrieveResourceCompacte, "text/xml", 
 				{"compact_element": compact_element, "role": role, "select_role": select_role, "del_item": del_item, "del_function": del_function, "open_data": open_data, 
 				//"is_target_public_or_none": is_target_public_or_none});
+				"is_target_public_or_none": is_target_public_or_none, "scope": scope, "scope_function" : scope_function, "item": item});
+        ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
+}
+
+function PopulateCompactDescriptionResourceLogBook(id, compact_element, role, select_role, del_item, del_function, open_data, is_target_public_or_none, scope, scope_function, item)
+{
+	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+LanguagesNB[ActiveLanguage]
+				+"&RESOURCE="+id, AvaluaRespostaRetrieveResourceCompacteLogBook, "text/xml", 
+				{"compact_element": compact_element, "role": role, "select_role": select_role, "del_item": del_item, "del_function": del_function, "open_data": open_data, 
 				"is_target_public_or_none": is_target_public_or_none, "scope": scope, "scope_function" : scope_function, "item": item});
         ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
 }
@@ -3939,6 +4978,16 @@ var AvaluaRespostaRetrieveResource;
 		AvaluaRespostaRetrieveResource=AvaluaRespostaRetrieveResourcePoi;
 		MostraPoiResource(id);
 	}
+	else if (type=="LOGBOOK")
+	{
+		AvaluaRespostaRetrieveResource=AvaluaRespostaRetrieveResourceLogBook;
+		MostraLogBookResource(id);
+	}
+	else if (type=="LOGPAGE")
+	{
+		AvaluaRespostaRetrieveResource=AvaluaRespostaRetrieveResourceLogPage;
+		MostraLogPageResource(id);
+	}		
 	else if (type=="FEEDBACK")
 	{
 		AvaluaRespostaRetrieveResource=AvaluaRespostaRetrieveResourceFeedback;
@@ -3987,6 +5036,10 @@ function DonaNomImgTipusRecurs(type, small)
 			return "link36.png";
 		if (type=="POI")
 			return "point36.png";  
+		if (type=="LOGBOOK")
+			return "LogBook36.png"; 
+		if (type=="LOGPAGE")
+			return "logPage36.png"; 
 		if (type=="FEEDBACK")
 			return "feedback36.png";             
 		if (type=="CITATION")
@@ -4002,7 +5055,11 @@ function DonaNomImgTipusRecurs(type, small)
 	if (type=="HREF")
 		return "link48.png";
 	if (type=="POI")
-		return "point48.png";  
+		return "point48.png"; 
+	if (type=="LOGBOOK")
+		return "LogBook48.png"; 
+	if (type=="LOGPAGE")
+		return "logPage48.png"; 
 	if (type=="FEEDBACK")
 		return "feedback48.png";             
 	if (type=="CITATION")
@@ -4434,24 +5491,31 @@ var root, s, type;
 					s+=" <a class=\"white-area-li-text-link\" href=\""+owc.features[i].properties.links.enclosures[0].href+"\" target=\"_blank\" onClick=\"StopPropagationClick(event);return true;\">"+owc.features[i].properties.title+"</a>";
 				else if (type=="POI")
 					s+=owc.features[i].properties.title+" (lat/long: "+ owc.features[i].geometry.coordinates[1]+","+owc.features[i].geometry.coordinates[0]+")";
-				else if (type=="FEEDBACK" || type=="CITATION" || type=="PUBLICAT" || type=="INDIVIDU" || type=="ORGANISM")
+				else if (type=="FEEDBACK" || type=="CITATION" || type=="PUBLICAT" || type=="INDIVIDU" || type=="ORGANISM" || type=="LOGBOOK" || type =="LOGPAGE")
 					s+=owc.features[i].properties.title; 
 	      
 	      if (dades.type_enum=="resources")
 	      {
 					s+="<br/><span class=\"white-area-li-shadow\"> ";
+					//s+="<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\');\">"+DonaCadenaJSON(Msg_Feedback)+"</a>&nbsp;&nbsp;&nbsp; ";
+					if (type=="LOGBOOK")
+						s+="&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"white-area-li-shadow-link\" id=\"lp-resource-"+i+"\" onClick=\"MostraLogPageList(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_LogPage)+'" '+'src="logPage15.png">'+"</a>";
 					if (type=="CITATION")
 						s+="&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\');MostraFeedbackSummary(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Feedback)+'" '+'src="feedback15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
 					else
-					s+="&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Feedback)+'" '+'src="feedback15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
+						s+="&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"white-area-li-shadow-link\" id=\"fb-resource-"+i+"\" onClick=\"MostraFeedbackList(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Feedback)+'" '+'src="feedback15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
 					
 					if (owc.features[i].properties.rights && owc.features[i].properties.rights.indexOf("S")!=-1)
+						//s+="<a class=\"white-area-li-shadow-link\" id=\"share-resource-"+i+"\" onClick=\"MostraShareResource(event, \'"+owc.features[i].id+"\', \'"+type+"\');\">"+DonaCadenaJSON(Msg_Share)+"</a>&nbsp;&nbsp;&nbsp; ";
 						s+="<a class=\"white-area-li-shadow-link\" id=\"share-resource-"+i+"\" onClick=\"MostraShareResource(event, \'"+owc.features[i].id+"\', \'"+type+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Share)+'" '+' src="share15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
 						
+					//s+="<a class=\"white-area-li-shadow-link\" id=\"tag-resource-"+i+"\" onClick=\"MostraTagResource(event, \'"+owc.features[i].id+"\');\">"+DonaCadenaJSON(Msg_Tag)+"</a>&nbsp;&nbsp;&nbsp; ";
 					s+="<a class=\"white-area-li-shadow-link\" id=\"tag-resource-"+i+"\" onClick=\"MostraTagResource(event, \'"+owc.features[i].id+"\');\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Tag)+'" '+' src="tag15.png">'+"</a>&nbsp;&nbsp;&nbsp; ";
+					
 					if (owc.features[i].properties.rights && owc.features[i].properties.rights.indexOf("O")!=-1)
 					//OG: només podem eliminar un recurs si en som propietaris
-					s+="<a class=\"white-area-li-shadow-link\" id=\"delete-resource-"+i+"\" onClick=\"SendResourceDelete(event, \'"+owc.features[i].id+"\', \'"+type+"\', false);\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Delete)+'" '+' src="remove15.png">'+"</a></span>";
+					//s+="<a class=\"white-area-li-shadow-link\" id=\"delete-resource-"+i+"\" onClick=\"SendResourceDelete(event, \'"+owc.features[i].id+"\', \'"+type+"\', false);\">"+DonaCadenaJSON(Msg_Delete)+"</a></span>"
+						s+="<a class=\"white-area-li-shadow-link\" id=\"delete-resource-"+i+"\" onClick=\"SendResourceDelete(event, \'"+owc.features[i].id+"\', \'"+type+"\', false);\">"+'<img style=\"padding-top:10px;\" title="'+DonaCadenaJSON(Msg_Delete)+'" '+' src="remove15.png">'+"</a></span>";
 				}		
 				else if (dades.type_enum=="resource-selector")			
 				{
@@ -4501,8 +5565,8 @@ function EnumeraResourcesQueTocaASelector()
 {	
 	//Quan crido a aquesta funció ja he entrat ni que sigui una vegada a EnumerateResources de Resources-Selector, així que tinc el type i el origin apuntat	
 	EnumerateResources(1, {"type_enum":"resource-selector", "make_pannel_visible":false, 
-		"resource_type": document.resource_selector_form.resource_type.value, 
-		"resource_origin": document.resource_selector_form.resource_origin.value});
+			"resource_type": document.resource_selector_form.resource_type.value, 
+			"resource_origin": document.resource_selector_form.resource_origin.value});
 	return;
 }
 
@@ -4518,20 +5582,21 @@ function EnumerateResources(start_index, dades)
 	if (dades.type_enum=="resource-selector")
 	{ 
 		if (dades.resource_type!="")
+			//s="&TYPE="+dades.resource_type;
 			if (document.getElementById("selector-resource-type_screen_value").selectedIndex>0)
 				s="&TYPE="+document.getElementById("selector-resource-type_screen_value").options[document.getElementById("selector-resource-type_screen_value").selectedIndex].value;
 			else
-				s="&TYPE="+dades.resource_type;					
+				s="&TYPE="+dades.resource_type;
 		else
 		{
 			if (document.getElementById("selector-resource-type_screen_value").selectedIndex>0)
+			//miro el que hi ha seleccionat a la dropdown-list resource-type. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
 				s="&TYPE="+document.getElementById("selector-resource-type_screen_value").options[document.getElementById("selector-resource-type_screen_value").selectedIndex].value;		
 		}
 		
 		if (document.getElementById("selector-owner-type_screen_value").selectedIndex>0)
 		//miro el que hi ha seleccionat a la dropdown-list owner-type de la pàgina de resource-selector. Només m'interessa si selectedIndex>1 perquè -1 indica que no hi ha selecció i 0 és "Tots"
 			s=s+"&OWNER="+document.getElementById("selector-owner-type_screen_value").options[document.getElementById("selector-owner-type_screen_value").selectedIndex].value;	
-			
 	}
 	else //if (dades.type_enum=="resources")
 	{ 
@@ -4642,6 +5707,8 @@ var i_pannel,
 		{"id": "account", "parent": "main-page", "title": Msg_NiMMbus_account}, 
 		{"id": "href-resource", "parent": "main-page", "title": Msg_NiMMbus_Href}, 
 		{"id": "poi-resource", "parent": "main-page", "title": Msg_NiMMbus_PoI}, 
+		{"id": "logbook-resource", "parent": "main-page", "title": Msg_NiMMbus_LogBook},
+		{"id": "logpage-resource", "parent": "main-page", "title": Msg_NiMMbus_LogPage},
 		{"id": "feedback-resource", "parent": "main-page", "title": Msg_NiMMbus_Feedback}, 
 		{"id": "citation-resource", "parent": "main-page", "title": Msg_NiMMbus_Citation}, 
 		{"id": "publication-resource", "parent": "main-page", "title": Msg_NiMMbus_Publication}, 
@@ -4650,8 +5717,10 @@ var i_pannel,
 		{"id": "resources", "parent": "main-page", "title": Msg_NiMMbus_Resources}, 
 		{"id": "resource-selector", "parent": "main-page", "title": Msg_NiMMbus_ResourcesSelector}, 
 		{"id": "feedback", "parent": "main-page", "title": Msg_NiMMbus_Feedbacks}, 
+		{"id": "logpage", "parent": "main-page", "title": Msg_NiMMbus_LogPages}, 
+		{"id": "scope_lp", "parent": "main-page", "title": Msg_NiMMbus_LogPageScope}, 
 		{"id": "share", "parent": "main-page", "title": Msg_NiMMbus_Share},
-		{"id": "scope", "parent": "main-page", "title": Msg_NiMMbus_Scope} 
+		{"id": "scope", "parent": "main-page", "title": Msg_NiMMbus_Scope} //AZscope
 		/*, {"id": "tag", "parent": "main-page", "title": Msg_NiMMbus} */];
 
 	if (add_hash)
@@ -4727,6 +5796,11 @@ var IdResourceToSaveChanges="";
 var IdTargetResourceToSaveChanges="";
 var IdFeedbackResourceToSaveChanges="";
 
+var PropsOfALogPage=[];
+var IdLogBookResourceToSaveChanges="";
+var PropsOfALogPageHaveChanged=false;
+var VincDeLogBook=false;
+
 var TargetsOfAFeedback=[];
 var TargetsOfAFeedbackHaveChanged=false;
 
@@ -4750,6 +5824,7 @@ var ResponsiblesOfAPublicationHaveChanged=false;
 var BackNeededAfterDelete="";
 
 var ElementsOfAFeedback=null;
+var ElementsOfALogPage=null;
 
 function MostraHRefResource(id)
 {
@@ -4863,6 +5938,57 @@ function MostraPoiResource(id)
 	}
 }
 
+function MostraLogBookResource(id)
+{
+	ChangePannel("logbook-resource", true);
+	BuidaLogBookResource();
+	IdResourceToSaveChanges=id;
+
+	document.getElementById("logbook-resource-exit_btn").style.display='none';
+	if (id=="")
+	{
+		document.getElementById("logbook-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_LogBook)+" "+'<a href="help/help.htm#Res_LogBook" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		document.getElementById("logbook-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_LogBook_characteristics);
+		document.getElementById("logbook-resource_btn").value=DonaCadenaJSON(Msg_Create);
+		document.getElementById("logbook-resource-delete_btn").style.display='none';
+
+		document.getElementById("open-data-logbook-resource_screen_value").disabled=false;
+		document.getElementById("open-data-logbook-resource_screen_value").checked=true; //un logbook nou el marco compartit amb anònim per defecte
+		
+		document.getElementById("title-logbook-resource_screen").innerHTML = DonaCadenaJSON(Msg_Title) + DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		document.getElementById("logbook_mandatory_txt").innerHTML = DonaCadenaJSON(Msg_mandatory_elements);
+
+		//OG: unblock inputs
+		document.getElementById("title-logbook-resource_screen_value").disabled=false;
+		
+		//OG: unblock buttons
+		document.getElementById("logbook-resource_btn").style.display='inline';
+		document.getElementById("logbook-resource-close_btn").style.display='inline';
+
+		//si estem creant el logbook, encara no podem afegir logpages. desactivem el fieldset.
+		document.getElementById("logpages-in-a-logbook").style.display='none';
+
+	}
+	else
+	{
+		document.getElementById("logbook-resource-title-text").innerHTML=DonaCadenaJSON(Msg_LogBook)+" "+'<a href="help/help.htm#Res_LogBook" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		document.getElementById("logbook-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_LogBook_characteristics);
+		document.getElementById("logbook-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
+		document.getElementById("logbook-resource-delete_btn").style.display='inline';
+		
+		document.getElementById("open-data-logbook-resource_screen_value").disabled=true;
+		
+		document.getElementById("title-logbook-resource_screen").innerHTML = DonaCadenaJSON(Msg_Title);
+		document.getElementById("logbook_mandatory_txt").innerHTML = "";
+
+		//aquí el logbook ja existeix. Ens asegurem que podem noves logpages
+		document.getElementById("logpages-in-a-logbook").style.display='inline';
+
+		EnumerateLogPageResourceDesDeLogBook(id);
+	}
+
+}
+
 function OmpleElementsOfAFeedback()
 {	//per a omplir la pàgina de FB amb les info que han vingut per la URL
 	if (ElementsOfAFeedback)
@@ -4962,6 +6088,81 @@ function OmpleElementsOfAFeedback()
 	}
 }
 
+function OmpleElementsOfALogPage()
+{	//per a omplir la pàgina de LP amb les info que han vingut per la URL
+	if (ElementsOfALogPage)
+	{	//poso cada text en el recurs que toca, inclús la data actual, de manera similar com els llegeixo del XML
+		//Si estic en aquest context, esborro tot el que hi pugui haver
+		BuidaLogPageResource();
+		if (ElementsOfALogPage.title)
+			document.logpage_resource_form.title.value=ElementsOfALogPage.title;			
+		if (ElementsOfALogPage.aggType1)
+			document.logpage_resource_form.aggType1.value=ElementsOfALogPage.aggType1;	
+		if (ElementsOfALogPage.aggValue1)
+			document.logpage_resource_form.aggType1.value=ElementsOfALogPage.aggValue1;
+		if (ElementsOfALogPage.aggType2)
+			document.logpage_resource_form.aggType2.value=ElementsOfALogPage.aggType2;	
+		if (ElementsOfALogPage.aggValue2)
+			document.logpage_resource_form.aggType2.value=ElementsOfALogPage.aggValue2;
+		if (ElementsOfALogPage.aggType1)
+			document.logpage_resource_form.aggType3.value=ElementsOfALogPage.aggType3;	
+		if (ElementsOfALogPage.aggValue3)
+			document.logpage_resource_form.aggType3.value=ElementsOfALogPage.aggValue3;
+		if (ElementsOfALogPage.comment)
+			document.logpage_resource_form.comment.value=ElementsOfALogPage.comment;
+		if (ElementsOfALogPage.link)
+			document.logpage_resource_form.logpageLink.value=ElementsOfALogPage.link;
+
+		if (ElementsOfALogPage.contentDateIni)
+		{
+			var d = new Date();
+			document.logpage_resource_form.ini_content_date.value=d.toISOString().substring(0, 10);
+			document.logpage_resource_form.ini_content_time.value=d.toISOString().substring(11, 16);		
+		}
+		
+		if (ElementsOfALogPage.contentDateFin)
+		{
+			var d = new Date();
+			document.logpage_resource_form.fin_content_date.value=d.toISOString().substring(0, 10);
+			document.logpage_resource_form.fin_content_time.value=d.toISOString().substring(11, 16);		
+		}
+		if (ElementsOfALogPage.scope)
+		{
+			var nScope = ElementsOfALogPage.scope.length;
+			PropsOfALogPage[0].n_scope = nScope;
+			PropsOfALogPage[0].scope_elems = []; // inicialitzem com a array buit
+
+			for (var i = 0; i < nScope; i++)
+			{
+				PropsOfALogPage[0].scope_elems[i] = {}; // inicialitzem l'objecte
+				PropsOfALogPage[0].scope_elems[i].type = ElementsOfALogPage.scope[i].type;
+				PropsOfALogPage[0].scope_elems[i].coords = ElementsOfALogPage.scope[i].coords;
+				PropsOfALogPage[0].scope_elems[i].desc = ""; //la descripció està en blanc pq venim del navegador i no la podem enviar de moment.
+			}
+		}
+		if (ElementsOfALogPage.agg) {
+			var nAgg = ElementsOfALogPage.agg.length;
+			if (nAgg > 3) nAgg = 3;
+
+			for (var i = 0; i < nAgg; i++) {
+				var typeSection = "aggregationType-logpage-resource_screen_valueL" + i;
+				var valueSection = "aggregationValue-logpage-resource_screen_valueL" + i;
+
+				var typeInput = document.getElementById(typeSection);
+				var valueInput = document.getElementById(valueSection);
+
+				// Elimina els ":" finals de aggType
+				var cleanedAggType = ElementsOfALogPage.agg[i].aggType.trim().replace(/:$/, '');
+
+
+				if (typeInput) typeInput.value = cleanedAggType;
+				if (valueInput) valueInput.value = ElementsOfALogPage.agg[i].aggValue;
+			}
+		}
+		ElementsOfALogPage=null; //perquè un cop usat no es torni a usar més	
+	}
+}
+
 //define is_none=0;
 //define is_target=1;
 //define is_public=2;
@@ -4976,10 +6177,36 @@ function OmpleRecursTargetsDesDeTargetsOfAFeedback(puc_editar)
 	for (var item=0; item<TargetsOfAFeedback.length; item++)
 	{
 		document.getElementById("target_feedback-resource_compact_list").innerHTML+="<div id=\""+"target_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
-		
+		/*PopulateCompactDescriptionResource(TargetsOfAFeedback[item].id_target, "target_feedback-resource_compact_list", TargetsOfAFeedback[item].role,  puc_editar ? "targetRole" : "", 
+			(item+1), puc_editar ? "EliminaTargetOfAFeedback" : "", document.feedback_resource_form.open_data.checked, 1);*/
 		PopulateCompactDescriptionResource(TargetsOfAFeedback[item].id_target, "target_feedback-resource_compact_list", TargetsOfAFeedback[item].role,  puc_editar ? "targetRole" : "", 
 			(item+1), puc_editar ? "EliminaTargetOfAFeedback" : "", document.feedback_resource_form.open_data.checked, 1, TargetsOfAFeedback[item].scope, 
 			puc_editar ? "ModificaScopeOfAFeedback" : "", item);
+	
+	//AZscope original
+	//		 document.getElementById("target_feedback-resource_compact_list").innerHTML+="<div id=\""+"target_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
+	//	PopulateCompactDescriptionResource(TargetsOfAFeedback[item].id_target, "target_feedback-resource_compact_list", TargetsOfAFeedback[item].role,  puc_editar ? "targetRole" : "", 
+	//		(item+1), puc_editar ? "EliminaTargetOfAFeedback" : "", document.feedback_resource_form.open_data.checked, 1 /*is_target*/);
+		/*PopulateCompactDescriptionResource(TargetsOfAFeedback[item].id_target, "target_feedback-resource_compact_list", TargetsOfAFeedback[item].role,  puc_editar ? "targetRole" : "", 
+			(item+1), puc_editar ? "EliminaTargetOfAFeedback" : "", document.feedback_resource_form.open_data.checked, 1 /*is_target* /, TargetsOfAFeedback[item].scope, 
+			puc_editar ? "ModificaScopeOfAFeedback" : "");*/
+
+	}
+	return;
+}
+
+function OmpleRecursTargetsDesDePropsOfALogPage(puc_editar)
+{
+	document.getElementById("target_logpage-resource_compact_list").innerHTML="";		
+	if (PropsOfALogPage.length==0)
+		return;		
+
+	for (var item=0; item<PropsOfALogPage.length; item++)
+	{
+		document.getElementById("target_logpage-resource_compact_list").innerHTML+="<div id=\""+"target_logpage-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		PopulateCompactDescriptionResourceLogBook(PropsOfALogPage[item].id_target, "target_logpage-resource_compact_list", PropsOfALogPage[item].role,  puc_editar ? "targetRole" : "", 
+			(item+1), puc_editar ? "EliminaTargetOfALogPage" : "", document.logpage_resource_form.open_data.checked, 1, PropsOfALogPage[item].scope, 
+			puc_editar ? "ModificaScopeOfALogPage" : "", item);
 	}
 	return;
 }
@@ -4996,6 +6223,9 @@ function OmpleRecursPublicsDesDePublicsOfAFeedback(puc_editar)
 	for (var item=0; item<PublicsOfAFeedback.length; item++)
 	{
 		document.getElementById("public_feedback-resource_compact_list").innerHTML+="<div id=\""+"public_feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		/*PopulateCompactDescriptionResource(PublicsOfAFeedback[item].id_public, "public_feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaPublicOfAFeedback" : "", 
+			document.feedback_resource_form.open_data.checked, 2 /*is_public* /, item);*/
+			//document.feedback_resource_form.open_data.checked, 2 /*is_public*/, "", "");
 		PopulateCompactDescriptionResource(PublicsOfAFeedback[item].id_public, "public_feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaPublicOfAFeedback" : "", 
 			document.feedback_resource_form.open_data.checked, 2, null, null, item);
 	}
@@ -5014,6 +6244,9 @@ function OmpleRecursRefDocsDesDeRefDocsOfAFeedback(puc_editar)
 	for (var item=0; item<RefDocsOfAFeedback.length; item++)
 	{
 		document.getElementById("ref-doc-feedback-resource_compact_list").innerHTML+="<div id=\""+"ref-doc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		/*PopulateCompactDescriptionResource(RefDocsOfAFeedback[item].id_public, "ref-doc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaRefDocOfAFeedback" : "", 
+			document.feedback_resource_form.open_data.checked, 5 /*is_ref_doc* /, item);*/
+			//document.feedback_resource_form.open_data.checked, 5 /*is_ref_doc*/, "", "");
 		PopulateCompactDescriptionResource(RefDocsOfAFeedback[item].id_public, "ref-doc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaRefDocOfAFeedback" : "", 
 			document.feedback_resource_form.open_data.checked, 5, null, null, item);
 	}
@@ -5032,6 +6265,9 @@ function OmpleRecursAddDocsDesDeAddDocsOfAFeedback(puc_editar)
 	for (var item=0; item<AddDocsOfAFeedback.length; item++)
 	{
 		document.getElementById("add-doc-feedback-resource_compact_list").innerHTML+="<div id=\""+"add-doc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		/* PopulateCompactDescriptionResource(AddDocsOfAFeedback[item].id_citation, "add-doc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaAddDocOfAFeedback" : "", 
+			document.feedback_resource_form.open_data.checked, 6 /*is_add_doc* /, item);*/
+			//document.feedback_resource_form.open_data.checked, 6 /*is_add_doc*/, "", "");
 		PopulateCompactDescriptionResource(AddDocsOfAFeedback[item].id_citation, "add-doc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaAddDocOfAFeedback" : "", 
 			document.feedback_resource_form.open_data.checked, 6, null, null, item);
 	}
@@ -5050,6 +6286,9 @@ function OmpleRecursAltRsrcsDesDeAltRsrcsOfAFeedback(puc_editar)
 	for (var item=0; item<AltRsrcsOfAFeedback.length; item++)
 	{
 		document.getElementById("alt-rsrc-feedback-resource_compact_list").innerHTML+="<div id=\""+"alt-rsrc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		/*PopulateCompactDescriptionResource(AltRsrcsOfAFeedback[item].id_citation, "alt-rsrc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaAltRsrcOfAFeedback" : "", 
+			document.feedback_resource_form.open_data.checked, 7 /*is_alt_rsrc* /, item);*/
+			//document.feedback_resource_form.open_data.checked, 7 /*is_alt_rsrc*/, "", "");
 		PopulateCompactDescriptionResource(AltRsrcsOfAFeedback[item].id_citation, "alt-rsrc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaAltRsrcOfAFeedback" : "", 
 			document.feedback_resource_form.open_data.checked, 7, null, null, item);
 	}
@@ -5068,8 +6307,12 @@ function OmpleRecursFixRsrcsDesDeFixRsrcsOfAFeedback(puc_editar)
 	for (var item=0; item<FixRsrcsOfAFeedback.length; item++)
 	{
 		document.getElementById("fix-rsrc-feedback-resource_compact_list").innerHTML+="<div id=\""+"fix-rsrc-feedback-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		/*PopulateCompactDescriptionResource(FixRsrcsOfAFeedback[item].id_citation, "fix-rsrc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaFixRsrcOfAFeedback" : "", 
+			document.feedback_resource_form.open_data.checked, 8 /*is_fix_rsrc* /, item);*/
+			//document.feedback_resource_form.open_data.checked, 8 /*is_fix_rsrc*/, "", "");
 		PopulateCompactDescriptionResource(FixRsrcsOfAFeedback[item].id_citation, "fix-rsrc-feedback-resource_compact_list", null, null, (item+1), puc_editar ? "EliminaFixRsrcOfAFeedback" : "", 
 			document.feedback_resource_form.open_data.checked, 8, null, null, item);
+
 	}
 	return;
 }
@@ -5193,6 +6436,7 @@ function BuidaPlegaFeedbackElements()
 	CollapseFieldset(document.getElementById("ref-doc-feedback-resource"), "none"); //default is collapsed
 	CollapseFieldset(document.getElementById("fix-rsrc-feedback-resource"), "none"); //default is collapsed
 	CollapseFieldset(document.getElementById("alt-rsrc-feedback-resource"), "none"); //default is collapsed		
+
 	document.getElementById("reprodUsage-code-resource_screen_value").maxLength=1999; //per defecte el ru_usage (ru_codeSnippet) son 2000 char.
 
 	PublicsOfAFeedback.length=0;
@@ -5201,6 +6445,71 @@ function BuidaPlegaFeedbackElements()
 	OmpleRecursPublicsDesDePublicsOfAFeedback(true);	
 }
 
+// Còpia de NiMMbus.cat 20121215 abans de simplificar les proteccions a id i target
+//function MostraFeedbackResource(id, target, target_role, i_target)
+/*function MostraFeedbackResource(id, target)
+{	
+	TargetsOfAFeedbackHaveChanged=false;
+	if (id=='')
+	{
+		if (target==null)
+			;// en aquest cas estic en un context de creació de FB a un target seleccionat per la via de ADDFEEDBACK i TargetsOfAFeedback pot estar ple d'abans!
+		else
+			TargetsOfAFeedback.length=0;		
+		//Estic creant un FB nou, per tant he de posar tot en blanc (també el rating a indefinit perquè si no em queda
+			//el rating de la darrer FB que he obert, i en aquest cas no interessa (per si vull fer un comment SENSE rating!))
+		BuidaPlegaFeedbackElements();		
+		document.getElementById("open-data-feedback-resource_screen_value").checked=true; //una valoració nova la marco compartida amb anònim per defecte		
+	}
+		
+	if (id=='' && target==null)  //Marca de que estic afegint un feedback a un target seleccionat 
+	{
+		if (IdTargetResourceToSaveChanges) /* Estic mirant els FB existents d'un cert recurs al client "normal", per tant he passat per la pàgina de FB_list 
+				i he demanat això en aquest context NO PUC usar IdResourceToSaveChanges perquè si des de la pàgina de FB_list en creava un de nou, 
+				després entrava a editar-lo, i després en volia crear un altre, el segon q creava tenia de target el primer!!! * /
+			TargetsOfAFeedback[0]={"id_target": IdTargetResourceToSaveChanges, "role": "primary"};				
+		/*else -> En aquest segon cas, estic en un context de creació de FB a un target seleccionat per la via de ADDFEEDBACK (p.ex. des de CKAN o un navegador
+				de mapes, etc), i per tant NO he entrat per la via de FB_list i IdTargetResourceToSaveChanges és blanc, però IdResourceToSaveChanges és el que vull.
+			ABANS es feia aquí usant IdResourceToSaveChanges, però ara es fa a on s'omplia IdResourceToSaveChanges per permetre N targets si cal)
+				TargetsOfAFeedback[0]={"id_target": IdResourceToSaveChanges, "role": "primary"};
+			però ara ja no cal fer res perquè ja està fet * /
+		TargetsOfAFeedbackHaveChanged=true; //Si no no s'enviarà el text "TARGET_1=... en el CREATE
+	}
+	else
+	{
+		if  (target && target!='')
+		{
+			TargetsOfAFeedback[0]={"id_target": target, "role": (target_role ? target_role : "primary")};
+			TargetsOfAFeedbackHaveChanged=true; //Si no no s'enviarà el text "TARGET_1=... en el CREATE
+		}
+	}	
+	OmpleRecursTargetsDesDeTargetsOfAFeedback(true);
+	OmpleElementsOfAFeedback();
+	ChangePannel("feedback-resource", true);
+
+	IdResourceToSaveChanges=id;
+	IdFeedbackResourceToSaveChanges=id; //perquè si des de la pàgina de FB acabo creant una publicació, el IdResourceToSaveChanges passa a ser el del nou recurs creat i el perdo
+	
+	document.getElementById("feedback-resource-exit_btn").style.display='none';
+	if (id=="")
+	{		
+		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_feedback);
+		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_feedback_characteristics);		//document.getElementById("open-data-feedback-resource_fieldset").style.display='inline';
+		document.getElementById("open-data-feedback-resource_screen_value").disabled=false;
+		//fet abans -> document.getElementById("open-data-feedback-resource_screen_value").checked=true; //una valoració nova la marco compartida amb anònim per defecte		
+		document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Create);
+		document.getElementById("feedback-resource-delete_btn").style.display='none';		
+	}
+	else
+	{
+		document.getElementById("feedback-resource-title-text").innerHTML=DonaCadenaJSON(Msg_Feedback);
+		document.getElementById("feedback-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_feedback_characteristics);		//document.getElementById("open-data-feedback-resource_fieldset").style.display='none';
+		document.getElementById("open-data-feedback-resource_screen_value").disabled=true;
+		document.getElementById("feedback-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
+		document.getElementById("feedback-resource-delete_btn").style.display='inline';
+	}
+}
+*/
 
 //function MostraFeedbackResource(id, target, target_role, i_target)
 function MostraFeedbackResource(id, target)
@@ -5299,7 +6608,8 @@ function MostraFeedbackResource(id, target)
 		document.getElementById("feedback-resource_btn").style.display='inline';			
 		document.getElementById("feedback-resource-close_btn").style.display='inline';
 		
-		//BuidaPlegaFeedbackElements();		
+		//BuidaPlegaFeedbackElements();
+		
 	}
 	else
 	{
@@ -5313,8 +6623,91 @@ function MostraFeedbackResource(id, target)
 		
 		document.getElementById("abstract-feedback-resource_screen").innerHTML=DonaCadenaJSON(Msg_Abstract);
 		document.getElementById("feedback_mandatory_txt").innerHTML = "";
+
+
 	}
 }
+
+
+function MostraLogPageResource(id, target)
+{	
+	PropsOfALogPageHaveChanged=false;
+	if (id=='')
+	{
+		if (IdLogBookResourceToSaveChanges) /* Estic mirant les pàgines existents d'un cert recurs al client "normal", per tant he passat per la pàgina de LP_list 
+				i he demanat això en aquest context NO PUC usar IdResourceToSaveChanges perquè si des de la pàgina de LP_list en creava un de nou, 
+				després entrava a editar-lo, i després en volia crear un altre, el segon q creava tenia de target el primer!!!*/
+			PropsOfALogPage[0]={"id_target": IdLogBookResourceToSaveChanges, "role": "primary"};				
+		else 
+			OmpleElementsOfALogPage();
+		/*-> En (else anterior) aquest segon cas, estic en un context de creació de LP a un target(LB) seleccionat per la via de ADDLOGPAGE*/
+
+		PropsOfALogPageHaveChanged=true; //Si no no s'enviarà el text "TARGET_1=... en el CREATE
+		OmpleRecursTargetsDesDePropsOfALogPage(true);
+	}
+	ChangePannel("logpage-resource", true);
+
+	IdResourceToSaveChanges=id;
+	IdLogPageResourceToSaveChanges=id;
+	
+	document.getElementById("logpage-resource-exit_btn").style.display='none';
+	
+	if (id=="")
+	{		
+		document.getElementById("logpage-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_LogPage)+" "+'<a href="help/help.htm#Res_logpage_item" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		document.getElementById("logpage-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_LogPage_characteristics);
+
+		document.getElementById("title-logpage-resource_screen").innerHTML = DonaCadenaJSON(Msg_Title) + DonaCadenaJSON(Msg_asterisk_for_mandatory_elements);
+		
+		document.getElementById("open-data-logpage-resource_screen_value").disabled=false;
+		document.getElementById("logpage-resource_btn").value=DonaCadenaJSON(Msg_Create);
+		document.getElementById("logpage-resource-delete_btn").style.display='none';		
+		
+		//OG: unblock text areas
+		document.getElementById("aggregationType-logpage-resource_screen_valueL1").disabled=false;
+		document.getElementById("aggregationValue-logpage-resource_screen_valueL1").disabled=false;
+		document.getElementById("aggregationType-logpage-resource_screen_valueL2").disabled=false;
+		document.getElementById("aggregationValue-logpage-resource_screen_valueL2").disabled=false;
+		document.getElementById("aggregationType-logpage-resource_screen_valueL3").disabled=false;
+		document.getElementById("aggregationValue-logpage-resource_screen_valueL3").disabled=false;
+		document.getElementById("title-logpage-resource_screen_value").disabled=false;
+		document.getElementById("comment-logpage-resource_screen_value").disabled=false;
+		document.getElementById("logpage-link-resource_screen_value").disabled=false;
+
+		//date-time
+		document.getElementById("ini-content-date-logpage-resource_screen_value").readOnly=false;
+		document.getElementById("ini-content-time-logpage-resource_screen_value").readOnly=false;
+		document.getElementById("fin-content-date-logpage-resource_screen_value").readOnly=false;
+		document.getElementById("fin-content-time-logpage-resource_screen_value").readOnly=false;
+		
+		//OG: show buttons
+		document.getElementById("logpage-resource_btn").style.display='inline';			
+		document.getElementById("logpage-resource-close_btn").style.display='inline';
+	}
+	else
+	{
+		document.getElementById("logpage-resource-title-text").innerHTML=DonaCadenaJSON(Msg_LogPage)+" "+'<a href="help/help.htm#Res_logpage_item" target="NiMMbus_help"><img src="help_info20.png"></a>';
+		document.getElementById("logpage-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Modify_LogPage_characteristics);
+		document.getElementById("title-logpage-resource_screen").innerHTML = DonaCadenaJSON(Msg_Title);
+
+		document.getElementById("open-data-logpage-resource_screen_value").disabled=true;
+		document.getElementById("logpage-resource_btn").value=DonaCadenaJSON(Msg_Save_changes);
+		document.getElementById("logpage-resource-delete_btn").style.display='inline';
+	}
+}
+
+function SurtDeAddLogPageCallBack(obj_amb_logbooks)
+{
+	RetrieveUserMinPreferences();
+
+	//En un context de ADDFEEDBACK:
+	document.getElementById("new-resource").style.display='none';
+	document.getElementById("settings-signout").style.display='none'; //trec la "signout" del menu de tools. Si se n'agefeixen més pensar si les vull o no en aquest context
+
+	EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":false});	
+	MostraLogPageResource('', null); 
+}
+
 
 function SurtDeAddFeedbackCallBack(obj_amb_targets)
 /* obj_amb_targets.targets és en aquest moment un array amb 0 elements perquè ja s'han processat tots */
@@ -5361,6 +6754,60 @@ var root, id_proces, id_obj;
 	return "";
 }
 
+function AvaluaRespostaCreaLogBookNoNecessari(doc)
+{
+var root, id_proces, id_obj;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+	{
+		RemoveInfo("permanent");
+		return null;
+	}
+
+	if (AnalitzaExceptionReport(root, document))
+	{
+		RemoveInfo("permanent");
+		return null;
+	}
+
+	process_succeeded=GetXMLElementByName(root, "wps", "ProcessSucceeded");
+	if (process_succeeded)
+	{
+		//Si ha retornat de manera immediata amb una ProcessSucceeded vol dir que no calia crear cap target. Es podria comprobar més bé mirant is "msg_id:" és 99 però no em cal.
+		id_obj=DonaIDRecursDesDeRootXML(root);
+		RemoveInfo("permanent");
+		return id_obj;
+	}
+	return "";
+}
+
+function AvaluaRespostaRetrieveLogBook(doc, nom_funcio_i_params)
+{
+var logbook_id;
+
+//Determina si la resposta ha estat "error" "ja existeix" i puc obtenir el target_id
+	logbook_id=AvaluaRespostaCreaLogBookNoNecessari(doc);
+	if (logbook_id==null)  // El fitxer doc no és ni tant sols un xml que es pugui entendre.
+		return;
+	if (logbook_id=="")
+	{
+		AvaluaRespostaLogBook(doc, nom_funcio_i_params, true);	//El recurs no existia i està en procés de creació
+		ShowInfo("short", DonaCadenaJSON(Msg_LogBook_created));
+	}
+	else
+	{
+		var json_funcio_i_params=JSON.parse(nom_funcio_i_params);
+		var json_params=JSON.parse(json_funcio_i_params.params);
+		PropsOfALogPage.push({"id_target": logbook_id, "role": (json_params.current_role ? json_params.current_role : "primary")}); 
+
+		if (typeof window[json_funcio_i_params.nom_funcio] === "function")
+			window[json_funcio_i_params.nom_funcio](json_params);
+		else 
+			alert("AvaluaRespostaRetrieveLogBook(doc, nom_funcio_i_params) error in parameter \"nom_funcio_i_params.nom_funcio\": "+ json_funcio_i_params.nom_funcio +" is not a function.");
+	}
+}
+
 function AvaluaRespostaRetrieveTarget(doc, nom_funcio_i_params)
 {
 var target_id;
@@ -5385,6 +6832,40 @@ var target_id;
 		else 
 			alert("AvaluaRespostaRetrieveTarget(doc, nom_funcio_i_params) error in parameter \"nom_funcio_i_params.nom_funcio\": "+ json_funcio_i_params.nom_funcio +" is not a function.");
 	}
+}
+
+function EntraAAddLogPage(logbook_obj)
+{
+    var logbook = logbook_obj.logbooks[0];
+	var scope = logbook_obj.scope;
+	var agg = logbook_obj.agg;
+    var current_role = logbook.role ? logbook.role : "primary";
+//TODO
+    var params_str = JSON.stringify({
+        logbook: [], 
+        current_role: current_role
+    }).replaceAll("\"", "\\\"");
+
+	ActionAfterSignIn=TancaFinestraNimmbus;
+	ParamActionAfterSignIn=null;
+
+	ShowInfo("permanent", DonaCadenaJSON(Msg_LogBook_sent));
+	
+	ajaxExecuteNB=new Ajax();	
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	ajaxExecuteNB.doGet(
+		ServersNB[LastServerNB]+
+		"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:CREATE" +
+		"&LANGUAGE=" + LanguagesNB[document.account_form.language.selectedIndex] +
+		"&TYPE=LOGBOOK" + 
+		"&TITLE=" + DonaCadenaPerValorDeFormulari(logbook.title) +
+		"&ID_CODE=" + logbook.code + 
+		"&ID_NAMESPACE=" + logbook.code_space +
+		(logbook.share_borrower_1!="" ? "&SHARE_BORROWER_1=" + logbook.share_borrower_1 : ""), 
+		AvaluaRespostaRetrieveLogBook,
+		"text/xml", 
+		"{\"nom_funcio\": \"SurtDeAddLogPageCallBack\",\"params\": \"" + params_str + "\"}");
+	return false;
 }
 
 //Funció inspirada en SendCitationResourceChanges() però molt més automàtica.
@@ -5425,6 +6906,9 @@ function OmpleRecursResponsiblesDesDeResponsiblesOfACitation(puc_editar)
 	for (var item=0; item<ResponsiblesOfACitation.length; item++)
 	{
 		document.getElementById("responsible-citation-resource_compact_list").innerHTML+="<div id=\""+"responsible-citation-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		/*PopulateCompactDescriptionResource(ResponsiblesOfACitation[item].id_responsible, "responsible-citation-resource_compact_list", ResponsiblesOfACitation[item].role, puc_editar ? "responsibleRole" : "", 
+			(item+1), puc_editar ? "EliminaResponsibleOfACitation" : "", document.citation_resource_form.open_data.checked, 3 /*is_party_a_citation* /, item);*/
+			//(item+1), puc_editar ? "EliminaResponsibleOfACitation" : "", document.citation_resource_form.open_data.checked, 3 /*is_party_a_citation*/, "", "");
 		PopulateCompactDescriptionResource(ResponsiblesOfACitation[item].id_responsible, "responsible-citation-resource_compact_list", ResponsiblesOfACitation[item].role, puc_editar ? "responsibleRole" : "", 
 			(item+1), puc_editar ? "EliminaResponsibleOfACitation" : "", document.citation_resource_form.open_data.checked, 3, null, null, item);
 	}
@@ -5440,6 +6924,9 @@ function OmpleRecursResponsiblesDesDeResponsiblesOfAPublication(puc_editar)
 	for (var item=0; item<ResponsiblesOfAPublication.length; item++)
 	{
 		document.getElementById("responsible-publication-resource_compact_list").innerHTML+="<div id=\""+"responsible-publication-resource_compact_list"+"_"+(item+1)+"\"></div>";
+		/* PopulateCompactDescriptionResource(ResponsiblesOfAPublication[item].id_responsible, "responsible-publication-resource_compact_list", ResponsiblesOfAPublication[item].role, puc_editar ? "responsibleRole" : "", 
+			(item+1), puc_editar ? "EliminaResponsibleOfAPublication" : "", document.citation_resource_form.open_data.checked, 4 /*is_party_a_publication* /, item);*/
+			//(item+1), puc_editar ? "EliminaResponsibleOfAPublication" : "", document.citation_resource_form.open_data.checked, 4 /*is_party_a_publication*/, "", "");
 		PopulateCompactDescriptionResource(ResponsiblesOfAPublication[item].id_responsible, "responsible-publication-resource_compact_list", ResponsiblesOfAPublication[item].role, puc_editar ? "responsibleRole" : "", 
 			(item+1), puc_editar ? "EliminaResponsibleOfAPublication" : "", document.citation_resource_form.open_data.checked, 4, null, null, item);
 	}
@@ -5538,7 +7025,7 @@ function MostraPublicationResource(id)
 	if (id=="")
 	{
 		document.getElementById("publication-resource-title-text").innerHTML=DonaCadenaJSON(Msg_New_publication)+" "+'<a href="help/help.htm#Publication" target="NiMMbus_help"><img src="help_info20.png"></a>';
-		document.getElementById("publication-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_publication_characteristics);
+		document.getElementById("publication-resource-subtitle-text").innerHTML=DonaCadenaJSON(Msg_Define_publication_characteristics)+DonaCadenaJSON(Msg_Ris_file);
 		//document.getElementById("open-data-publication-resource_fieldset").style.display='inline';
 		document.getElementById("open-data-publication-resource_screen_value").disabled=false;
 		document.getElementById("open-data-publication-resource_screen_value").checked=true; //una publicació nova la marco compartida amb anònim per defecte		
@@ -5566,6 +7053,8 @@ function MostraPublicationResource(id)
 		//OG: enable selectors
 		document.getElementById("url-function-publication-resource_screen_value").disabled=false;
 		document.getElementById("category-publication-resource_screen_value").disabled=false;
+		//document.getElementById("url-function-publication-resource_screen_value").style.pointerEvents='auto';
+		//document.getElementById("category-publication-resource_screen_value").style.pointerEvents='auto';
 		
 		//OG: unblock text areas
 		document.getElementById("abstract-publication-resource_screen_value").disabled=false;
@@ -5710,12 +7199,13 @@ var id;
 		id=id_to_use;
 	else
 		id=DonaValorDeFormulari("RESOURCE", query, true);
+	
 	//en cas que entrem aquí quan no estem consultant un recurs de tipus "citation" cal estar segur que s'han "esborrat" les dades de l'últim summary consultat.
 	if (document.getElementById("current_feedback_summary_screen").innerHTML!="")
 		document.getElementById("current_feedback_summary_screen").innerHTML="";
 	if (document.getElementById("summary_stars").innerHTML!="")
 		document.getElementById("summary_stars").innerHTML="";
-	
+
 	IdResourceToSaveChanges=id;
 	IdTargetResourceToSaveChanges=id;
 
@@ -5723,6 +7213,43 @@ var id;
 	document.getElementById("feedback_target_compact_descrip").innerHTML="";		
 	PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null, false, 0, null, null, null);
 	//PopulateCompactDescriptionResource(id, "feedback_target_compact_descrip", null, null, null, null, false, 0 /*is_none*/, "");
+}
+
+
+function TornaALogBookDesdeLogPage(event, query, id_to_use)
+{
+	id=id_to_use;
+	IdLogBookResourceToSaveChanges="";
+	VincDeLogBook==false;
+	
+	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:RETRIEVE&LANGUAGE="+LanguagesNB[ActiveLanguage]
+				+"&RESOURCE="+id, AvaluaRespostaRetrieveResourceLogBook, "text/xml", id);
+        ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
+
+	MostraLogBookResource(id);
+}
+
+/*This function draws the "LogPage items" form.*/
+function MostraLogPageList(event, query, id_to_use)
+{
+var id;
+
+	if (event)
+		StopPropagationClick(event);
+
+	if (id_to_use)
+		id=id_to_use;
+	else
+		id=DonaValorDeFormulari("RESOURCE", query, true);
+	
+	IdResourceToSaveChanges=id;
+	IdLogBookResourceToSaveChanges=id;
+
+	EnumerateLogPageResource(id);
+	document.getElementById("logpage_target_compact_descrip").innerHTML="";		
+	PopulateCompactDescriptionResourceLogBook(id, "logpage_target_compact_descrip", null, null, null, null, false, 0, null, null, null);
 }
 
 function MostraFeedbackSummary(event, query, id_to_use)
@@ -5980,6 +7507,7 @@ function AvaluaRespostaFeedbackSummary(doc, id) {
     return;
 }
 
+
 function AvaluaRespostaFeedbackEnumerate(doc, id)
 {
 var root, text_current_feedback_list;
@@ -6028,6 +7556,106 @@ var root, text_current_feedback_list;
 	return;
 }
 
+function AvaluaRespostaLogPageEnumerateDesDeLogBook(doc, id)
+{
+	var root, text_current_feedback_list;
+
+	//ho necessito per poder afegir logpages des de la pagina d'un logbook concret
+	IdLogBookResourceToSaveChanges=id;
+	VincDeLogBook=true;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+		return;
+	if (AnalitzaExceptionReport(root, document))
+		return;
+	var owc=ParseOWSContextAtom(root);
+
+	if (location.hash!="#logbook-resource") 
+		ChangePannel("logbook-resource", true);
+	//else -> si ja hi soc no cal
+
+	document.getElementById("current_pagesOfALogBook_fieldset").style.display=(!owc.features || owc.features.length) ? 'inline' : 'none';
+
+	text_current_logpage_list="";
+	if (owc.features)
+	{
+		text_current_logpage_list+='<ol>';
+		for (var i=0; i<owc.features.length; i++)
+		{
+			//We are supposing that all the returned objects are of the same type: LOGPAGE
+			//OG: Numerem la llista de logpages d'un recurs i hi afegim l'autor i la data.
+
+			var fb_date = new Date (owc.features[i].properties.updated);
+
+			text_current_logpage_list+='<table style="width:100%"><tr>';
+			text_current_logpage_list+='<td style="width:75%"><b><li>'+owc.features[i].properties.authors[0].name+":</b> "+fb_date.toLocaleString() +'</td>';
+			text_current_logpage_list+='<td style="width:25%">';
+			text_current_logpage_list+="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Edit) +"\" onClick=\"EditResource(\'"+owc.features[i].id+"\', \'LOGPAGE\')\"/>";
+			text_current_logpage_list+='</td>';	
+			text_current_logpage_list+='</tr><tr>';
+			text_current_logpage_list+='<td style="width:75%">'+ owc.features[i].properties.title+"</td>";
+			text_current_logpage_list+=' <td style="width:25%"></td>';
+			text_current_logpage_list+='</tr></table>';
+		
+		}
+		text_current_logpage_list+="</ol>";
+		document.getElementById("current_pagesOfALogBook_list").innerHTML=text_current_logpage_list;
+	}
+	
+	RemoveInfo("permanent");
+	UpdateLastServer();
+	return;
+}
+
+function AvaluaRespostaLogPageEnumerate(doc, id)
+{
+	var root, text_current_feedback_list;
+
+	root=DonaRootXML(doc, document);
+	if (!root)
+		return;
+	if (AnalitzaExceptionReport(root, document))
+		return;
+	var owc=ParseOWSContextAtom(root);
+
+	if (location.hash!="#logpage") 
+		ChangePannel("logpage", true);
+	//else -> si ja hi soc no cal
+
+	document.getElementById("current_logpage_fieldset").style.display=(!owc.features || owc.features.length) ? 'inline' : 'none';
+
+	text_current_logpage_list="";
+	if (owc.features)
+	{
+		text_current_logpage_list+='<ol>';
+		for (var i=0; i<owc.features.length; i++)
+		{
+			//We are supposing that all the returned objects are of the same type: LOGPAGE
+			//OG: Numerem la llista de logpages d'un recurs i hi afegim l'autor i la data.
+
+			var fb_date = new Date (owc.features[i].properties.updated);
+			
+			text_current_logpage_list+='<table style="width:100%"><tr>';
+			text_current_logpage_list+='<td style="width:75%"><b><li>'+owc.features[i].properties.authors[0].name+":</b> "+fb_date.toLocaleString() +'</td>';
+			text_current_logpage_list+='<td style="width:25%">';
+			text_current_logpage_list+="<input class=\"submit_btn\" type=\"button\" value=\""+ DonaCadenaJSON(Msg_Edit) +"\" onClick=\"EditResource(\'"+owc.features[i].id+"\', \'LOGPAGE\')\"/>";
+			text_current_logpage_list+='</td>';	
+			text_current_logpage_list+='</tr><tr>';
+			text_current_logpage_list+='<td style="width:75%">'+ owc.features[i].properties.title+"</td>";
+			text_current_logpage_list+=' <td style="width:25%"></td>';
+			text_current_logpage_list+='</tr></table>';
+		
+		}
+		text_current_logpage_list+="</ol>";
+	}
+	document.getElementById("current_logpage_list").innerHTML=text_current_logpage_list;
+
+	RemoveInfo("permanent");
+	UpdateLastServer();
+	return;
+}
+
 function EnumerateFeedbackResource(id)
 {	
 	if (id==null)
@@ -6046,6 +7674,40 @@ function EnumerateFeedbackResource(id)
 	return true;
 }
 
+function EnumerateLogPageResource(id)
+{
+	if (id==null)
+	{
+		ShowInfo("long", DonaCadenaJSON(Msg_Cannot_found_resource_identifier));
+		return;
+	}
+	
+	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE="+LanguagesNB[ActiveLanguage]
+				+"&TYPE=LOGPAGE&TARGET="+id, AvaluaRespostaLogPageEnumerate, "text/xml", id);
+        ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
+
+	return true;
+}
+
+function EnumerateLogPageResourceDesDeLogBook(id)
+{
+	if (id==null)
+	{
+		ShowInfo("long", DonaCadenaJSON(Msg_Cannot_found_resource_identifier));
+		return;
+	}
+	
+	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:ENUMERATE&LANGUAGE="+LanguagesNB[ActiveLanguage]
+				+"&TYPE=LOGPAGE&TARGET="+id, AvaluaRespostaLogPageEnumerateDesDeLogBook, "text/xml", id);
+        ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
+
+	return true;
+}
+
 function AskForFeedbackSummary(id)
 {	
 	if (id==null)
@@ -6059,7 +7721,7 @@ function AskForFeedbackSummary(id)
 	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:SUMMARY&LANGUAGE="+LanguagesNB[ActiveLanguage]
 				+"&TYPE=FEEDBACK&TARGET="+id, AvaluaRespostaFeedbackSummary, "text/xml", id);
         ShowInfo("permanent", DonaCadenaJSON(Msg_Requesting_data_));
-
+	
 	return true;
 }
 
@@ -6339,6 +8001,121 @@ var s,s2;
 				"&TITLE="+DonaCadenaPerValorDeFormulari(document.poi_resource_form.title.value)+s2, 
 				AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"POI\"}");
 	return false;
+}
+
+function SendLogBookResourceChanges()
+{
+	var s,s2;
+	if (document.logbook_resource_form.title.value=="")
+	{
+		ShowInfo("long", DonaCadenaIdNoPotSerBuit("title-logbook-resource_screen"));
+		return false;
+	}
+	RemoveInfo("long");
+	if (IdResourceToSaveChanges=="")
+	{
+		s="CREATE";
+		s2=(document.poi_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
+	  	ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
+	}
+	else
+	{
+		s="MODIFY";
+		s2="&RESOURCE="+IdResourceToSaveChanges;
+	  	ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
+	}
+	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
+				"&TYPE=LOGBOOK"+(document.logbook_resource_form.id_code.value=="" ? "" : "&ID_CODE="+document.logbook_resource_form.id_code.value)+
+				(document.logbook_resource_form.id_namespace.value=="" ? "" : "&ID_NAMESPACE="+document.logbook_resource_form.id_namespace.value)+
+				"&TITLE="+DonaCadenaPerValorDeFormulari(document.logbook_resource_form.title.value)+s2, 
+				AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"LOGBOOK\"}");
+	return false;
+
+}
+
+function SendLogPageResourceChanges()
+{
+	var s,s2,p;
+	if (document.logpage_resource_form.title.value=="")
+	{
+		ShowInfo("long", DonaCadenaIdNoPotSerBuit("title-logpage-resource_screen"));
+		return false;
+	}
+	RemoveInfo("long");
+
+	if (IdResourceToSaveChanges=="")
+	{
+		s="CREATE";
+		s2=(document.logpage_resource_form.open_data.checked) ? "&SHARE_BORROWER_1=Anonymous" : "";
+	  	ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
+
+		// En una creació els elements buits no s'han d'enviar
+		if (document.logpage_resource_form.aggType1.value!="")
+			s2+="&AGG_TYPE_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType1.value);
+		if (document.logpage_resource_form.aggValue1.value!="")
+			s2+="&AGG_VAL_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue1.value);
+		if (document.logpage_resource_form.aggType2.value!="")
+			s2+="&AGG_TYPE_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType2.value);
+		if (document.logpage_resource_form.aggValue2.value!="")
+			s2+="&AGG_VAL_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue2.value);
+		if (document.logpage_resource_form.aggType3.value!="")
+			s2+="&AGG_TYPE_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType3.value);
+		if (document.logpage_resource_form.aggValue3.value!="")
+			s2+="&AGG_VAL_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue3.value);
+		if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.ini_content_date.value,document.logpage_resource_form.ini_content_time.value))!="")
+			s2+="&DATE_1="+p;
+		if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.fin_content_date.value,document.logpage_resource_form.fin_content_time.value))!="")
+			s2+="&DATE_2="+p;
+		if (document.logpage_resource_form.comment.value!="")
+			s2+="&COMMENT="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.comment.value);
+		if (document.logpage_resource_form.logpageLink.value!="")
+			s2+="&LINK="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.logpageLink.value);
+	}
+	else
+	{
+		s="MODIFY";
+		s2="&RESOURCE="+IdResourceToSaveChanges;
+	  	ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
+
+		// En una modificació els elements buits SI que s'han d'enviar
+		s2+="&AGG_TYPE_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType1.value)+"&AGG_VAL_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue1.value);
+		s2+="&AGG_TYPE_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType2.value)+"&AGG_VAL_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue2.value);
+		s2+="&AGG_TYPE_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType3.value)+"&AGG_VAL_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue3.value);
+		p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.ini_content_date.value,document.logpage_resource_form.ini_content_time.value);
+		s2+="&DATE_1="+p;
+		p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.fin_content_date.value,document.logpage_resource_form.fin_content_time.value);
+		s2+="&DATE_2="+p;
+		s2+="&COMMENT="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.comment.value)+"&LINK="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.logpageLink.value);
+
+	}
+	//necessitem l'id del logbook al que li estem afegint pàgines:
+	s2+="&ID_LOGBOOK="+ PropsOfALogPage[0].id_target;
+
+	//mirem si s'ha canviat o afegit Scope a la logpage
+	if (PropsOfALogPageHaveChanged && (PropsOfALogPage[0].n_scope > 0))
+	{
+		for (var item=0; item<PropsOfALogPage[0].n_scope; item++)
+		{
+			var n=(item+1) //perquè vull començar a numerar a partir de 1
+			s2+="&LPSC_TYPE_"+n+"="+PropsOfALogPage[0].scope_elems[item].type;
+			s2+="&LPSC_COORDS_"+n+"="+PropsOfALogPage[0].scope_elems[item].coords;
+			s2+="&LPSC_DESC_"+n+"="+PropsOfALogPage[0].scope_elems[item].desc;
+		}
+	}
+
+	ajaxExecuteNB=new Ajax();
+	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);
+	var payload="SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
+				"&TYPE=LOGPAGE"+"&TITLE="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.title.value)+s2;
+				
+	ajaxExecuteNB.doPost(ServersNB[LastServerNB], "application/x-www-form-urlencoded", payload, AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"LOGPAGE\"}");				
+
+	PropsOfALogPage=[];
+	Scope_lp_puc_modificar=true;
+	return false;
+
 }
 
 function RecuperaCanvisARolesATargetsOfAFeedback()
@@ -6648,6 +8425,8 @@ var s,s2;
 			s2+="&FIX_RSRC_1=";
 	}
 	
+	//console.log(s, s2);
+	
 	ajaxExecuteNB=new Ajax();	
 	AfegeixCredencialsUsuari(ajaxExecuteNB, null, null);		
 	/*ajaxExecuteNB.doGet(ServersNB[LastServerNB]+"?SERVICE=WPS&REQUEST=EXECUTE&IDENTIFIER=NB_RESOURCE:"+s+"&LANGUAGE="+LanguagesNB[document.account_form.language.selectedIndex]+
@@ -6666,6 +8445,7 @@ var s,s2;
 			s2;
 
 	ajaxExecuteNB.doPost(ServersNB[LastServerNB], "application/x-www-form-urlencoded", payload, AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceChangesCallBack\", params: \"FEEDBACK\"}");
+
 
 	if (document.feedback_resource_form.open_data.checked)
 	{	//Si aquest FB item es compartit anònimament, m'asseguro que els elements relacionats amb ell també ho són
@@ -6759,6 +8539,7 @@ var s,s2;
 			}
 		}
 	}
+	//OGscope
 	TargetsOfAFeedback=[];
 	Scope_puc_modificar=true;
 	return false;
@@ -7092,6 +8873,10 @@ function SendResourceDelete(event, query, type, cal_history_back)
 		s+=DonaCadenaJSON(Msg_this_Hyperlink);
 	else if (type=="POI")
 		s+=DonaCadenaJSON(Msg_this_PoI);
+	else if (type=="LOGBOOK")
+		s+=DonaCadenaJSON(Msg_this_logbook);
+	else if (type=="LOGPAGE")
+		s+=DonaCadenaJSON(Msg_this_logpage);
 	else if (type=="FEEDBACK")
 		s+=DonaCadenaJSON(Msg_this_feedback_item);
 	else if (type=="CITATION")
@@ -7120,7 +8905,7 @@ function SendResourceDelete(event, query, type, cal_history_back)
 				+"&RESOURCE="+IdResourceToSaveChanges,
 				AvaluaResposta, "text/xml", "{nom_funcio: \"SurtDeQualsevolResourceDeleteCallBack\", params: \""+type+"\"}");				 
   ShowInfo("permanent", DonaCadenaJSON(Msg_Request_sent));
-  
+  //OGscope
   Scope_puc_modificar=true;
   TargetsOfAFeedback=[];
 	return false;
@@ -7142,7 +8927,9 @@ function SurtDeQualsevolResourceChangesCallBack(type)
 {
 	ShowInfo("short", DonaCadenaJSON(Msg_Changes_sent));
 
-	if (type=="FEEDBACK")
+	if (type=="LOGPAGE")
+		SurtDeLogPageResourceChanges(false);
+	else if (type=="FEEDBACK")
 		SurtDeFeedbackResourceChanges(false);
 	else if (type=="CITATION")
 		SurtDeCitationResourceChanges(false);
@@ -7162,6 +8949,10 @@ var s;
 		s=DonaCadenaJSON(Msg_Hyperlink_deleted);
 	else if (type=="POI")
 		s=DonaCadenaJSON(Msg_this_PoI);
+	else if (type=="LOGBOOK")
+		s=DonaCadenaJSON(Msg_this_logbook);
+	else if (type=="LOGPAGE")
+		s=DonaCadenaJSON(Msg_this_logpage);
 	else if (type=="FEEDBACK")
 		s=DonaCadenaJSON(Msg_this_feedback_item);
 	else if (type=="CITATION")
@@ -7177,7 +8968,7 @@ var s;
 	
 	if (BackNeededAfterDelete)
 	{
-		if (type=="FEEDBACK")
+		if (type=="FEEDBACK" || type=="LOGPAGE")
 		{
 			SurtDeFeedbackResourceChanges(false);
 			//Si estic sortint d'un FB i venia de la pàgina de FBList, em cal reescriure-la, per que el recurs esborrat desaparegui. 
@@ -7287,14 +9078,43 @@ function SurtDeFeedbackResourceChanges(avis)
 	}
 }
 
+function SurtDeLogPageResourceChanges(avis)
+{
+	if (avis)
+	{
+		if (false==confirm(DonaCadenaJSON(Msg_Exit_without_saving_changes)))
+			return false;
+	}
+	//Si cal ja he enviat els canvis
+	PropsOfALogPageHaveChanged=false;
+	
+	if (ActionAfterSignIn==TancaFinestraNimmbus)
+		ActionAfterSignIn(ParamActionAfterSignIn);
+	else
+	{
+		//Si vaig a recursos qui decideix repintar la llista després d'esborrar?
+		history.back();
+		//ChangePannel("resources", true);
+	}
+}
+
 function SurtDeFeedbackResourceChangesIRecarregaResources(avis)
 {	// Encara que surti de la pàgina de FB sense desar (tancar/descartar) he de demanar que es repinti la pàgina de recursos, perquè potser des de la pàgina del FB he creat una publicació nova
 	SurtDeFeedbackResourceChanges(avis);
 	//if (location.hash=="#resources") --> caldrà fer l'estil de setTimeout("OmpleRecursosQueTocaSortintDeXXXXX();",100);
 	EnumerateResources(1, {"type_enum":"resources"});
-	
+	//OGscope
 	Scope_puc_modificar=true;
 	TargetsOfAFeedback=[];
+}
+
+function SurtDeLogPageResourceChangesIRecarregaResources(avis)
+{	
+	SurtDeLogPageResourceChanges(avis);
+	EnumerateResources(1, {"type_enum":"resources"});
+	//OGscope
+	Scope_lp_puc_modificar=true;
+	PropsOfALogPage=[];
 }
 
 function SurtDeCitationResourceChanges(avis)
@@ -7352,6 +9172,13 @@ function OmpleRecursosQueTocaSortintDeQualsevolResource(type)
 			MostraFeedbackList(null, null, IdTargetResourceToSaveChanges);
 			MostraFeedbackSummary(null, null, IdTargetResourceToSaveChanges);
 		}
+		if (type=="LOGPAGE") //Torno des de la pàgina de creació d'un nou LP, a la pàgina de llista de LP sobre un recurs
+		{
+			if (VincDeLogBook==true)
+				TornaALogBookDesdeLogPage(null, null, IdLogBookResourceToSaveChanges);
+			else
+				MostraLogPageList(null, null, IdLogBookResourceToSaveChanges); 
+		}
 		else if (type=="PUBLICAT")
 			ObreSelectorGeneral(false, type, "FEEDBACK", document.publication_resource_form.element_origin.value);
 		else if (type=="CITATION")
@@ -7364,6 +9191,45 @@ function OmpleRecursosQueTocaSortintDeQualsevolResource(type)
 			else //PUBLICAT
 				ObreSelectorGeneral(false, type, "PUBLICAT");
 		}
+
+
+		//else //estic tornant a pàgina selector de recursos, per tant he de tornar amb la darrera combinació que hi havia arribat pàgina de selected
+
+
+			//ObreSelectorGeneral(false, resource_selector_form.resource_type.value, resource_selector_form.resource_origin.value, document.resource_selector_form.element_origin.value);		
+		/* if (type=="PUBLICAT")
+		{	//aquí, de moment, sempre vinc de FB, però el element_origin pot ser un o un altre	
+			ObreSelectorGeneral(false, type, "FEEDBACK", document.resource_selector_form.element_origin.value);
+			//resource_selector_form.resource_type
+			//resource_selector_form.resource_origin
+			//document.resource_selector_form.element_origin
+			/*$$$$ no se a quin form etàs element_origin, però el necessito per diferenciar
+			ObreSelectorGeneral(true, 'PUBLICAT', 'FEEDBACK', 'REF_DOC');">
+			ObreSelectorGeneral(true, 'PUBLICAT', 'FEEDBACK', 'PUBLICAT');* /
+		
+		}
+		else if (type=="CITATION")
+		{
+			ObreSelectorGeneral(false, type, "FEEDBACK", "CITATION", document.resource_selector_form.element_origin.value);
+			/*no entenc les crides antigues u noves aqui, no estenc el citation de la linea de dalt, crec que estacva així per analogia amb el d'abans, però que no s'usava mai, i ara si que caldra posar els 3 de sota
+			$$$$ no se a quin form etàs element_origin, però el necessito per diferenciar
+			ObreSelectorGeneral(true, 'CITATION', 'FEEDBACK', 'ADD_DOC');">
+			ObreSelectorGeneral(true, 'CITATION', 'FEEDBACK', 'FIX_RSRC');">
+			ObreSelectorGeneral(true, 'CITATION', 'FEEDBACK', 'ALT_RSRC');">* /
+
+		}
+		else if (type=="PARTY")
+		{	//aquí potser venia de citation o de publication!	
+			ObreSelectorGeneral(false, resource_selector_form.resource_typen.value, resource_selector_form.resource_origin.value, document.resource_selector_form.element_origin.value);
+			//if (document.organism_resource_form.resource_origin.value=="CITATION") -> això està malament perquè pot ser indiv!?
+			//if (document.resource_selector_form.resource_origin.value=="CITATION")
+			//	ObreSelectorGeneral(false, type, "CITATION", ""); //element_origin no cal
+			//else //PUBLICAT
+			//	ObreSelectorGeneral(false, type, "PUBLICAT", ""); //element_origin no cal
+			//else //FEEDBACK -> en el moment que obri la porta a triar PARTY des d'algun element fill
+			//de FB, problablement ja em caldrà element_origin per distingir per quins dels de dins 
+			//de FB estic escollint responsibles (p.ex.user details dins contact; usercontactinfo dins usage; processors dins procesStep a additionallineage o a usage_ext�s,
+		}*/
 	}
 }
 
@@ -7544,6 +9410,20 @@ function SurtITornaEndarrera(recarrega_pagina_recursos, surto_de_fb_list)
 	//ChangePannel("resources", true);
 	if (surto_de_fb_list)
 		IdTargetResourceToSaveChanges="";
+		
+	if (recarrega_pagina_recursos)
+	//he de recarregar la pagina de recursos perquè potser s'ha afegit un element nou, o s'ha modificat un dels existents
+		EnumerateResources(1, {"type_enum":"resources", "make_pannel_visible":false});	
+
+	return false;
+}
+
+function SurtITornaEndarreraLogPage(recarrega_pagina_recursos, surto_de_lp_list)
+{
+	history.back();
+	//ChangePannel("resources", true);
+	if (surto_de_lp_list)
+		IdLogBookResourceToSaveChanges="";
 		
 	if (recarrega_pagina_recursos)
 	//he de recarregar la pagina de recursos perquè potser s'ha afegit un element nou, o s'ha modificat un dels existents
@@ -7939,9 +9819,408 @@ function CanviaLogoBarraSup()
 		document.getElementById("bar_logo_href").href="https://www.eiffel4climate.eu/";
 		document.getElementById("bar_logo_img").src="Eiffel_logo_color_v1.png";
 		document.getElementById("bar_logo_img").height="35";
+	}
+	return;
 }
-return;
+
+//OG: les següents funcions importen el contingut d'un fitxer ris per omplir tots els camps possibles de PUBLICATION resource
+
+var textRis;
+/*Aquesta funció va buscant dins del *.ris totes les claus conegudes i va muntant un objecte que després usarem per omplir els camps corresponents de la PUBLICATION resource*/
+//https://en.wikipedia.org/wiki/RIS_(file_format)
+function modificaReferenciaFormatRis()
+{
+	var refObj = new Object();
+	var ref = textRis;
+	var errors = false;
+	var errors_s ="";
+
+	//TYPE
+	if (ref.match(/TY  - EJOUR/g) || ref.match(/TY  - JOUR/g))
+		refObj.type="journalArticle";
+	else if (ref.match(/TY  - COMP/g))
+		refObj.type="applicationProgram";
+	else if (ref.match(/TY  - MAP/g))
+		refObj.type="atlasMap";
+	else if (ref.match(/TY  - BLOG/g))
+		refObj.type="blogWiki";
+	else if (ref.match(/TY  - BOOK/g)||ref.match(/TY  - DICT/g)||ref.match(/TY  - EBOOK/g)||ref.match(/TY  - EDBOOK/g))
+		refObj.type="book";	
+	else if (ref.match(/TY  - CHAP/g)||ref.match(/TY  - ECHAP/g))
+		refObj.type="bookChapter";
+	else if (ref.match(/TY  - CONF/g)||ref.match(/TY  - CPAPER/g))
+		refObj.type="conferenceProceedings";		
+	else if (ref.match(/TY  - MGZN/g)||ref.match(/TY  - NEWS/g))
+		refObj.type="magazineNewspaper";		
+	else if (ref.match(/TY  - AGGR/g)||ref.match(/TY  - DATA/g)||ref.match(/TY  - DBASE/g)||ref.match(/TY  - MULTI/g))
+		refObj.type="multimediaContent";		
+	else if (ref.match(/TY  - RPRT/g))
+		refObj.type="report";
+	else if (ref.match(/TY  - ADVS/g)||ref.match(/TY  - MPCT/g)||ref.match(/TY  - MUSIC/g)||ref.match(/TY  - SOUND/g)||ref.match(/TY  - VIDEO/g))
+		refObj.type="videoAudio";
+	else if (ref.match(/TY  - WEB/g))
+		refObj.type="webPage";
+	else
+		refObj.type="undefined";
+		
+	//TITLE
+	var check_ti="";
+	if (ref.match(/TI  - /g))
+		check_ti="TI";
+	else if (ref.match(/T1  - /g))
+		check_ti="T1";
+	else if (ref.match(/T2  - /g))
+		check_ti="T2";
+	else if (ref.match(/T3  - /g))
+		check_ti="T3";
+	else if (ref.match(/CT  - /g))
+		check_ti="CT";
+	else
+	{
+		errors=true;
+		errors_s+="* Title not found\r\n";
+	}
+	if (check_ti!="")
+	{
+		var aux=ExtreuLiniaRIS(check_ti,"title");
+		var s=aux.split(" : ",2);
+		refObj.title=s[1];	
+	}
+	
+	//EDITION
+	if (!ref.match(/ET  - /g))
+	{
+		errors=true;
+		errors_s+="* Edition not found\r\n";
+	}	
+	else
+	{
+		if (ref.match(/ET  - /g))
+		{
+			var aux=ExtreuLiniaRIS("ET","edition");
+			var s=aux.split(" : ",2);
+			refObj.edition=s[1];
+		}
+	
+	}
+	
+	//EDITION DATE (PY (publication year) només dona l'any. En alguns casos pot existir DA (date, genèric), Y1 o Y2 (primary date o acces date))
+	
+	//DOI
+	if (!ref.match(/DO  - /g))
+	{
+		errors=true;
+		errors_s+="* Identifier not found\r\n";
+	}	
+	else
+	{
+		var aux=ExtreuLiniaRIS("DO","doi");
+		var s=aux.split(" : ",2);
+		refObj.doi=s[1];			
+	}
+	
+	//ISBN-ISSN De moment el guardem a l'estructura, però no en fem res.
+	if (!ref.match(/SN  - /g))
+	{
+		//errors=true;
+		//errors_s+="* Identifier not found\r\n";
+	}	
+	else
+	{
+		var aux=ExtreuLiniaRIS("SN","isbn_issn");
+		var s=aux.split(" : ",2);
+		refObj.isbn_issn=s[1];			
+	}	
+	
+	//SERIES NAME (existeixen diferents claus que podrien servir per guardar el nom de la revista JO>JF>T2>J1>J2>JA>JF>JO)
+	var check_sn="";
+	if (ref.match(/JO  - /g))
+		check_sn="JO";
+	else if (ref.match(/JF  - /g))
+		check_sn="JF";
+	else if (ref.match(/T2  - /g))
+		check_sn="T2";
+	else if (ref.match(/J1  - /g))
+		check_sn="J1";
+	else if (ref.match(/J2  - /g))
+		check_sn="J2";
+	else if (ref.match(/JA  - /g))
+		check_sn="JA";
+	else if (ref.match(/JF  - /g))
+		check_sn="JF";
+	else if (ref.match(/JO  - /g))
+		check_sn="JO";
+	else
+	{
+		errors=true;
+		errors_s+="* Series Name not found\r\n";
+	}
+	if (check_sn!="")
+	{
+		var aux=ExtreuLiniaRIS(check_sn,"seriesName");
+		var s=aux.split(" : ",2);
+		refObj.seriesName=s[1];	
+	}
+	
+	//SERIES ISSUE ID
+	if (!ref.match(/VL  - /g) && !ref.match(/IS  - /g))
+	{
+		errors=true;
+		errors_s+="* Series issue identification not found\r\n";
+	}	
+	else
+	{
+		if (ref.match(/VL  - /g))
+		{
+			var aux=ExtreuLiniaRIS("VL","volume");
+			var s=aux.split(" : ",2);
+			refObj.volume=s[1];
+		}
+
+		if (ref.match(/IS  - /g))
+		{
+			var aux=ExtreuLiniaRIS("IS","issue");
+			var s=aux.split(" : ",2);				
+			refObj.issue=s[1];
+		}
+		
+	}
+	
+	//PAGES IN THE SERIES ISSUE
+	if (!ref.match(/SP  - /g) && !ref.match(/EP  - /g))
+	{
+		errors=true;
+		errors_s+="* Pages in the series issue not found\r\n";
+	}	
+	else
+	{
+		if (ref.match(/SP  - /g))
+		{
+			var aux=ExtreuLiniaRIS("SP","startPage");
+			var s=aux.split(" : ",2);				
+			refObj.startPage=s[1];
+		}
+
+		if (ref.match(/EP  - /g))
+		{
+			var aux=ExtreuLiniaRIS("EP","endPage");
+			var s=aux.split(" : ",2);								
+			refObj.endPage=s[1];
+		}
+		
+	}		
+
+	//URL link
+	var check_lnk="";
+	if (ref.match(/UR  - /g))
+		check_lnk="UR";
+	else if (ref.match(/L1  - /g))
+		check_lnk="L1";
+	else if (ref.match(/L2  - /g))
+		check_lnk="L2";
+	else if (ref.match(/LK  - /g))
+		check_lnk="LK";
+	else
+	{
+		errors=true;
+		errors_s+="* URL link not found\r\n";
+	}	
+	if (check_lnk!="")
+	{
+		var aux=ExtreuLiniaRIS(check_lnk,"url");
+		var s=aux.split(" : ",2);
+		refObj.url=s[1];			
+	}
+			
+	// ABSTRACT
+	var check_abs="";
+	if (ref.match(/AB  - /g))
+		check_abs="AB";
+	else if (ref.match(/N2  - /g))
+		check_abs="N2";
+	else
+	{
+		errors=true;
+		errors_s+="* Abstract not found\r\n";
+	}	
+	if (check_abs!="")
+	{
+		var aux=ExtreuLiniaRIS(check_abs,"abstract");
+		var s=aux.split(" : ",2);
+		refObj.abstract=s[1];			
+	}		
+	
+	// AUTHORS (Responsible Party)
+	if (!ref.match(/AU  - /g))
+	{
+		errors = true;
+		errors_s += "* Authors not found\r\n";
+	}	
+	else
+	{
+		var count = (ref.match(/AU  - /g) || []).length; // comptem quants AU hi ha
+		refObj.authors = {};
+		var s = "";
+
+		for (var i = 1; i <= count; i++)
+		{
+			ref = ref.replace("AU  - ", '"author_' + i + '" : "', 1); // canviem AU per author_n
+
+			// permet tant \n com \r\n com a final de línia
+			const regex = new RegExp('"author_' + i + '" : (.*?)(\\r?\\n)');
+
+			const match = ref.match(regex);
+			if (!match) continue; // si no trobem la línia, saltem
+
+			// extreiem la línia sencera
+			var aux = match[0].replace(/\r?\n/, '"'); // tanquem la cometa
+
+			if (i < count)
+				s += "{" + aux + "},";
+			else
+				s += "{" + aux + "}";
+		}
+
+		refObj.authors = JSON.parse("[" + s + "]");
+	}
+	if (errors)
+		alert(errors_s);
+	
+	OmplePublicationResourceDesDeRIS(refObj);
+	
+	return; 
+
 }
+
+/*retorna la línia "neta" d'una clau concreta del fitxer RIS*/
+/*clauRis --> és el codi de dues lletres que volem extreure del fitxer origen, per exemple: AB*/
+/*clauOut --> és el nom de sortida que li volem donar i que més tard ens servira per afegir-ho com a part d'un objecte, per exemple: abstract*/
+function ExtreuLiniaRIS(clauRis, clauOut)
+{
+	var ref = textRis;
+	var inp = clauRis;
+	var out = clauOut;
+
+	ref = ref.replace(inp + '  - ', '"' + out + '" : ', 1);
+
+	// Aquesta regex permet CRLF (\r\n) o només LF (\n)
+	const regex = new RegExp('"' + out + '" : (.*)(\\r?\\n)');
+
+	// Comprovem si hi ha match
+	const match = ref.match(regex);
+	if (!match) return null; // No trobat, retornem null
+
+	// Retornem la línia sencera neta
+	var aux = match[0].replace(/\r?\n/, ''); // elimina \n o \r\n
+
+	return aux;
+}
+
+/*carrega el fitxer ris guardat en local*/
+/*inspirat en https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText*/
+function CarregaFitxerRISLocal() {
+  const [file] = document.querySelector('input[type=file]').files;
+  const reader = new FileReader();
+
+  reader.addEventListener("load", () => {
+	textRis=reader.result;
+	//modificaReferenciaFormatBib();
+	modificaReferenciaFormatRis();
+  }, false);
+
+  if (file) {
+    reader.readAsText(file);
+  }
+}
+
+/*omple els camps de Publication resource a partir del contingut de l'objecte refObj creat a modificaReferenciaFormatRis()*/
+function OmplePublicationResourceDesDeRIS(obj)
+{
+	BuidaPublicationResource(); //abans d'omplir ho netejem tot pq sinó l'usuari podria confondre dades noves amb les que ja hi havia
+	
+	var objRis = obj;
+	
+	//title
+	if (objRis.title)
+		document.getElementById("title-publication-resource_screen_value").value=objRis.title;
+	
+	//edition
+	if (objRis.edition)
+		document.getElementById("edition-publication-resource_screen_value").value=objRis.edition;
+	
+	//edition date --> not suported
+	//document.getElementById("edition-date-publication-resource_screen_value").value=;
+	
+	//code & namespace
+	if (objRis.doi)
+	{
+		var s=objRis.doi;
+		var pos="";
+		if (s.search("https://doi.org/")!=-1)
+			pos="https://doi.org/";
+		else if (s.search("http://doi.org/")!=-1)
+			pos="http://doi.org/";
+		else if (s.search("https://wwww.doi.org/")!=-1)
+			pos="https://www.doi.org/";
+		else if (s.search("http://wwww.doi.org/")!=-1)
+			pos="http://www.doi.org/";
+		else if (s.search("wwww.doi.org/")!=-1)
+			pos="www.doi.org/";
+		else if (s.search("doi.org/")!=-1)
+			pos="doi.org/";
+		
+		if (pos!="")
+			document.getElementById("id-code-publication-resource_screen_value").value=s.substring(pos.length);
+		else
+			document.getElementById("id-code-publication-resource_screen_value").value=objRis.doi;
+		
+		document.getElementById("id-namespace-publication-resource_screen_value").value="https://doi.org";
+	}
+	
+	//seriesName
+	if (objRis.seriesName)
+		document.getElementById("series-name-publication-resource_screen_value").value=objRis.seriesName;
+	
+	//series issue
+	var issue="";
+	if (objRis.volume)
+		issue="volume "+objRis.volume +" ";
+	if (objRis.issue)
+		issue+="issue "+objRis.issue;
+	
+	document.getElementById("series-issue-publication-resource_screen_value").value=issue;
+	
+	
+	//pages
+	var pag="";
+	if (objRis.startPage)
+		pag=objRis.startPage+" -";
+	if (objRis.endPage)
+		pag+=objRis.endPage;
+	
+	document.getElementById("series-page-publication-resource_screen_value").value=pag;
+	
+	//other citation details --> not supported
+	//document.getElementById("other-cit-details-publication-resource_screen_value")
+	
+	//url link
+	if (objRis.url)
+		document.getElementById("url-link-publication-resource_screen_value").value=objRis.url;
+	
+	//url description --> not supported
+	//document.getElementById("url-descrip-publication-resource_screen_value")
+	
+	//url function --> not supported
+	//document.getElementById("url-function-publication-resource_screen_value")
+	
+	//abstract
+	if (objRis.abstract)
+	document.getElementById("abstract-publication-resource_screen_value").value=objRis.abstract;
+	
+	//category
+	document.getElementById("category-publication-resource_screen_value").value=objRis.type;
+}
+
 
 //Funcions Buida*Resource* --> per cada resource hi ha una funció que deixa la plana en blanc.
 //En el cas dels Feedback hi ha una funció anomenada BuidaPlegaFeedbackElements() en una secció diferent de l'script.
@@ -7989,7 +10268,7 @@ function BuidaCitationResource()
 	document.getElementById("url-descrip-citation-resource_screen_value").value="";
 	document.getElementById("url-function-citation-resource_screen_value").value="undefined";
 	ResponsiblesOfACitation.length=0;
-	ResponsiblesOfACitationHaveChanged=true;
+	ResponsiblesOfACitationHaveChanged=false;
 	OmpleRecursResponsiblesDesDeResponsiblesOfACitation(true);
 	
 	return;
@@ -8013,7 +10292,7 @@ function BuidaPublicationResource()
 	document.getElementById("abstract-publication-resource_screen_value").value="";
 	document.getElementById("category-publication-resource_screen_value").value="undefined";
 	ResponsiblesOfAPublication.length=0;
-	ResponsiblesOfAPublicationHaveChanged=true;
+	ResponsiblesOfAPublicationHaveChanged=false;
 	OmpleRecursResponsiblesDesDeResponsiblesOfAPublication(true);
 
 	return;
@@ -8032,6 +10311,35 @@ function BuidaPOIResource()
 	return;
 }
 
+/* Deixa en blanc tots els camps d'un resource tipus LOGBOOK*/
+function BuidaLogBookResource()
+{
+	document.getElementById("title-logbook-resource_screen_value").value="";
+	document.getElementById("id-code-logbook-resource_screen_value").value="";
+	document.getElementById("id-namespace-logbook-resource_screen_value").value="";	
+	document.getElementById("current_pagesOfALogBook_list").innerHTML="";	
+	return;
+}
+
+function BuidaLogPageResource()
+{
+	document.getElementById("aggregationType-logpage-resource_screen_valueL1").value="";
+	document.getElementById("aggregationValue-logpage-resource_screen_valueL1").value="";
+	document.getElementById("aggregationType-logpage-resource_screen_valueL2").value="";
+	document.getElementById("aggregationValue-logpage-resource_screen_valueL2").value="";
+	document.getElementById("aggregationType-logpage-resource_screen_valueL3").value="";
+	document.getElementById("aggregationValue-logpage-resource_screen_valueL3").value="";
+	document.getElementById("title-logpage-resource_screen_value").value="";
+	document.getElementById("ini-content-date-logpage-resource_screen_value").value="";
+	document.getElementById("ini-content-time-logpage-resource_screen_value").value="";
+	document.getElementById("fin-content-date-logpage-resource_screen_value").value="";
+	document.getElementById("fin-content-time-logpage-resource_screen_value").value="";
+	document.getElementById("comment-logpage-resource_screen_value").value="";
+	document.getElementById("logpage-link-resource_screen_value").value="";
+	document.getElementById("open-data-logpage-resource_screen_value").value="";
+	return;
+}
+
 /* Deixa en blanc tots els camps d'un resource tipus HyperLink*/
 function BuidaHlinkResource()
 {
@@ -8042,6 +10350,7 @@ function BuidaHlinkResource()
 	
 	return;
 }
+
 </script>
 
 <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
@@ -8214,6 +10523,7 @@ function BuidaHlinkResource()
 				<br>
 				<input id="new-resource-href" class="add_resource_btn" type="image" alt="new href" src="link_add20.png" onClick="MostraHRefResource('')"/>
 				<input id="new-resource-poi" class="add_resource_btn" type="image" alt="new poi" src="point_add20.png" onClick="MostraPoiResource('')"/>
+				<input id="new-resource-logbook" class="add_resource_btn" type="image" alt="new poi" src="logBook_add20.png" onClick="MostraLogBookResource('')"/>
 				<input id="new-resource-citation" class="add_resource_btn" type="image" alt="new citation" src="citation_add20.png" onClick="MostraCitationResource('')"/>
 				<input id="new-resource-publication" class="add_resource_btn" type="image" alt="new publication" src="publication_add20.png" onClick="MostraPublicationResource('')"/>
 				<input id="new-resource-individual" class="add_resource_btn" type="image" alt="new individual" src="indv_add20.png" onClick="MostraIndividualResource('')"/>
@@ -8258,6 +10568,8 @@ function BuidaHlinkResource()
 							<option value="ORGANISM" id="organism-resource-type-value"></option>
 							<option value="HREF" id="href-resource-type-value"></option>
 							<option value="POI" id="poi-resource-type-value"></option>
+							<option value="LOGBOOK" id="logbook-resource-type-value"></option>
+							<option value="LOGPAGE" id="logpage-resource-type-value"></option>
 						</select>
 					</td>
 					<td align="left">
@@ -8274,6 +10586,21 @@ function BuidaHlinkResource()
 						<span style="white-space: nowrap;">
 						<input id="newer-resources_btn" class="submit_btn" type="button" value="<">
 						<input id="older-resources_btn" class="submit_btn" type="button" value=">">
+
+<!--
+<input id="newer-resources_btn" class="submit_btn" type="button" value="<" onMouseOver="document.getElementById('newer-resources-tooltip').style.opacity='1';" onMouseOut="document.getElementById('newer-resources-tooltip').style.opacity='0';">
+<input id="older-resources_btn" class="submit_btn" type="button" value=">" onMouseOver="document.getElementById('older-resources-tooltip').style.opacity='1';" onMouseOut="document.getElementById('older-resources-tooltip').style.opacity='0';">
+</span>
+<span id="newer-resources-tooltip" class="tooltip" style="right: 40px; top:86px;">
+<b class="tooltip-caret"></b><br>
+<span id="newer-resources-tooltip-text" class="tooltip-text">Newer</span>
+</span>
+
+<span id="older-resources-tooltip" class="tooltip" style="right: 0px; top:86px;">
+<b class="tooltip-caret"></b><br>
+<span id="older-resources-tooltip-text" class="tooltip-text">Older</span>
+</span>
+-->
 					</td>
 				</tr>
 			</table>
@@ -8294,12 +10621,12 @@ function BuidaHlinkResource()
 					<input type="text" class="text-input" name="element_origin" maxlength="10" style="display: none;"/>
 					
 					<td align="left">
-						
 						<label class="control-label" id="selector-resource-type_screen" for="resource-type_screen_value"></label>
 						<select class="text-input" id="selector-resource-type_screen_value" name="resource-type" onchange="EnumeraResourcesQueTocaASelector()">
+
 						</select>
 					</td>
-					
+
 					<td align="left">
 						<label class="control-label" id="selector-owner-type_screen" for="owner-type_screen_value"></label>
 						<select class="text-input" id="selector-owner-type_screen_value" name="owner-type" onchange="EnumeraResourcesQueTocaASelector()">
@@ -8313,6 +10640,22 @@ function BuidaHlinkResource()
 					<td align="right"><span id="resource-selector-hits-text">1-10 of 12</span> 
 						<input id="newer-resource-selector_btn" class="submit_btn" type="button" value="<">
 						<input id="older-resource-selector_btn" class="submit_btn" type="button" value=">">
+
+<!--
+<input id="newer-resource-selector_btn" class="submit_btn" type="button" value="<" onMouseOver="document.getElementById('newer-resource-selector-tooltip').style.opacity='1';" onMouseOut="document.getElementById('newer-resource-selector-tooltip').style.opacity='0';">
+<input id="older-resource-selector_btn" class="submit_btn" type="button" value=">" onMouseOver="document.getElementById('older-resource-selector-tooltip').style.opacity='1';" onMouseOut="document.getElementById('older-resource-selector-tooltip').style.opacity='0';">
+
+<span id="newer-resource-selector-tooltip" class="tooltip" style="right: 40px; top:86px;">
+<b class="tooltip-caret"></b><br>
+<span id="newer-resource-selector-tooltip-text" class="tooltip-text">Newer</span>
+</span>
+
+<span id="older-resource-selector-tooltip" class="tooltip" style="right: 0px; top:86px;">
+<b class="tooltip-caret"></b><br>
+<span id="older-resource-selector-tooltip-text" class="tooltip-text">Older</span>
+</span>
+-->
+
 					</td>
 				</tr>
 			</table>
@@ -8432,7 +10775,7 @@ function BuidaHlinkResource()
 </div>  <!--End of id="lat-poi-resource_fieldset" -->
 
 <div id="pos-accur-poi-resource_fieldset" class="control-group">
-<label class="control-label" id="pos-accur-poi-resource_screen" for="pos_accur-poi-resource_screen_value"></label>
+	<!--$x$--><label class="control-label" id="pos-accur-poi-resource_screen" for="pos_accur-poi-resource_screen_value"></label>
 <div class="controls">
 <p><input type="text" class="text-input" value="" id="pos_accur-poi-resource_screen_value" name="pos_accur" maxlength="10" style="width: 40%;"/></p>
 <p id="pos-accur-poi-resource_descrip" class="white-area-screen-descrip-text"></p>
@@ -8478,6 +10821,84 @@ function BuidaHlinkResource()
 </form>
 
 </div>  <!--End of id="poi-resource" -->
+
+<!-- *** LOGBOOK DLG *** -->
+
+<div id="logbook-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
+	<h2 id="logbook-resource-title-text" class="white-area-title"></h2>
+	<p id="logbook-resource-subtitle-text"></p>
+	
+	<form id="logbook-resource_form" name="logbook_resource_form" method="get" autocomplete="off" onSubmit="return SendLogBookResourceChanges();">
+	
+		<div id="title-logbook-resource_fieldset" class="control-group">
+			<label class="control-label" id="title-logbook-resource_screen" for="title-logbook-resource_screen_value"></label>
+			<div class="controls">
+				<input type="text" class="text-input" value="" id="title-logbook-resource_screen_value" name="title" style="width: 80%;" maxlength="254"/>
+				<p id="title-logbook-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+			</div>
+		</div>  <!--End of id="title-logbook-resource_fieldset" -->
+			
+		<fieldset class="control-fielset-group">
+			<legend id="identifier-logbook-resource"></legend>	
+			<div id="id-code-logbook-resource_fieldset" class="control-group">
+				<label class="control-label" id="id-code-logbook-resource_screen" for="id-code-logbook-resource_screen_value"></label>
+				<div class="controls">
+					<p id="id-code-logbook-resource_alert" style="display: none;"></p>
+					<input type="text" class="text-input" id="id-code-logbook-resource_screen_value" name="id_code" maxlength="254" style="width: 100%;"/>
+					<p id="id-code-logbook-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+				</div>
+			</div>  <!--End of id="id-code-logbook-resource_fieldset" -->
+			
+			<div id="id-namespace-logbook-resource_fieldset" class="control-group">
+				<label class="control-label" id="id-namespace-logbook-resource_screen" for="id-namespace-logbook-resource_screen_value"></label>
+				<div class="controls">
+					<p id="id-namespace-logbook-resource_alert" style="display: none;"></p>
+					<input type="text" class="text-input" id="id-namespace-logbook-resource_screen_value" name="id_namespace" maxlength="254" style="width: 100%;"/>
+					<p id="id-namespace-logbook-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+				</div>
+			</div>  <!--End of id="id-namespace-logbook-resource_fieldset" -->
+		</fieldset>
+
+		<fieldset class="control-fielset-group" id="logpages-in-a-logbook">
+			<div class="control-group">
+				<label class="control-label" id="new_logpage_from_logbook_screen"></label>
+				<div class="controls">
+					<p><input id="new_logpage_from_logbook_btn" class="submit_btn" type="button" value="" onClick="MostraLogPageResource('', null);BuidaLogPageResource();"/></p>
+					<p id="new_logpage_descrip"></p>
+				</div>
+			</div>
+			<legend id="logbook-logpagelist-resource"></legend>	
+			<div id="current_pagesOfALogBook_fieldset" class="control-group">
+				<label class="control-label" id="current_pagesOfALogBook_screen"></label>
+				<div class="controls">
+					<p id="current_pagesOfALogBook_list"></p>
+					<p id="current_pagesOfALogBook_descrip"></p>
+				</div>
+			</div>
+		</fieldset>
+		
+		<div id="open-data-logbook-resource_fieldset" class="control-group">
+			<label class="control-label" id="open-data-logbook-resource_screen" for="open-data-logbook-resource_screen_value"></label>
+			<div class="controls">
+				<p id="open-data-logbook-resource_alert" style="display: none;"></p>
+				<input type="checkbox" id="open-data-logbook-resource_screen_value" name="open_data" checked="checked"/>
+				<p id="open-data-logbook-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+			</div>
+		</div>  <!--End of id="open-data-logbook-resource_fieldset" -->
+		
+		<div id="logbook_mandatory_txt" class="mandatory_txt" style="padding-left: 140px;"></div>
+		
+		<div class="form-actions">
+			<input id="logbook-resource_btn" class="submit_btn" type="submit" value="Save changes" />
+			<input id="logbook-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'LOGBOOK', true);" />
+			<input id="logbook-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(true);" />
+			<input id="logbook-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(false);" />
+		</div>
+	
+	</form>
+	
+</div>  <!--End of id="logbook-resource" -->
+
 
 <!-- *** FEEDBACK RESOURCE DLG *** -->
 
@@ -8545,8 +10966,17 @@ function BuidaHlinkResource()
 
 <br>
 <div id="rating-feedback-resource_fieldset" class="control-group">
+<!--<label class="control-label" id="rating-feedback-resource_screen" for="rating-feedback-resource_screen_value"></label>-->
 <label class="control-label" id="rating-feedback-resource_screen"></label>
 <div class="controls">
+<!--select class="text-input" id="rating-feedback-resource_screen_value" name="rating">
+<option value="" id="undefined-rating-feedback-resource_value" selected="selected"></option>
+<option value="1" id="oneStar-rating-feedback-resource_value"></option>
+<option value="2" id="twoStars-rating-feedback-resource_value"></option>
+<option value="3" id="threeStars-rating-feedback-resource_value"></option>
+<option value="4" id="fourStars-rating-feedback-resource_value"></option>
+<option value="5" id="fiveStars-rating-feedback-resource_value"></option>
+</select-->
       <span class="starRating">
         <input id="rating-feedback-resource_value5" type="radio" name="rating" value="5">
         <label for="rating-feedback-resource_value5">5</label>
@@ -8601,6 +11031,7 @@ function BuidaHlinkResource()
 <legend id="usage-feedback-resource" class="collapsible collapsed" onClick='CollapseFieldset(this);'></legend>
 <div style="display: none;">
 	<div id="reportAspect-feedback-resource_fieldset" class="control-group">
+	<!--<label class="control-label" id="reportAspect-feedback-resource_screen" for="reportAspect-feedback-resource_screen_value"></label>-->
 	<label class="control-label" id="reportAspect-feedback-resource_screen"></label>
 	<div class="controls">
   	<input type="checkbox" id="reportAspect-feedback-usage" value="usage"><label id="reportAspect-feedback-usage-label" class="compact_descrip_in_FB"></label>
@@ -8628,6 +11059,7 @@ function BuidaHlinkResource()
 		</div>  <!--End of id="specific-usage-feedback-resource_fieldset" -->
 		
 		<div id="usage-date-time-feedback-resource_fieldset" class="control-group">
+			<!--<label class="control-label" id="usage-date-time-feedback-resource_screen" for="usage-date-time-feedback-resource_screen_value"></label>-->
 			<label class="control-label" id="usage-date-time-feedback-resource_screen"></label>
 			<div class="controls">
 			<input type="date" class="text-input" id="usage-date-feedback-resource_screen_value" name="usage_date" style="width:40%;"/>
@@ -8803,6 +11235,7 @@ function BuidaHlinkResource()
 		</div>  <!--End of id="known-problem-feedback-resource_fieldset" -->
 		
 		<div id="problem-date-time-feedback-resource_fieldset" class="control-group">
+			<!--<label class="control-label" id="problem-date-time-feedback-resource_screen" for="problem-date-time-feedback-resource_screen_value"></label>-->
 			<label class="control-label" id="problem-date-time-feedback-resource_screen"></label>
 			<div class="controls">
 			<input type="date" class="text-input" id="problem-date-feedback-resource_screen_value" name="problem_date" style="width:40%;"/>
@@ -8898,6 +11331,164 @@ function BuidaHlinkResource()
 </form>
 
 </div>  <!--End of id="feedback-resource" -->
+
+<!-- *** LOGPAGE RESOURCE DLG *** -->
+
+<div id="logpage-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
+	<h2 id="logpage-resource-title-text" class="white-area-title"></h2>
+	<p id="logpage-resource-subtitle-text"></p>
+	
+	<form id="logpage-resource_form" name="logpage_resource_form" method="post" autocomplete="off" onSubmit="return SendLogPageResourceChanges();">
+		<fieldset class="control-fielset-group">
+		<legend id="target-logpage-resource"></legend>
+			<p id="target_logpage-resource_compact_list" class="compact_descrip_in_LP"></p>
+			<p id="target_logpage-resource_compact_add_descrip" class="white-area-screen-descrip-text"></p> 
+		</fieldset> <!--End of id="target-logpage-resource" -->
+		
+		<br>
+
+		<div id="aggregation-logpage-resource_fieldset" class="control-group" style="text-align: left;">
+			<div class="controls" style="display: flex; flex-direction: column; gap: 20px;">
+				
+				<!-- Fila L1 -->
+				<div style="display: flex; gap: 40px;">
+					<!-- Tipus L1 -->
+					<div style="display: flex; flex-direction: column;">
+						<div style="display: flex; align-items: flex-start; gap: 10px;">
+							<label class="control-label" id="aggregationType-logpage-resource_screenL1" for="aggregationType-logpage-resource_screen_valueL1" style="margin-top: 5px;">Tipus</label>
+							<div style="display: flex; flex-direction: column;">
+								<input type="text" class="text-input" id="aggregationType-logpage-resource_screen_valueL1" name="aggType1" style="width: 200px;" />
+								<p id="aggregationType-logpage-resource_screen_descripL1" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+							</div>
+						</div>
+					</div>
+					<!-- Valor L1 -->
+					<div style="display: flex; flex-direction: column;">
+						<div style="display: flex; align-items: flex-start; gap: 10px;">
+							<label class="control-label" id="aggregationValue-logpage-resource_screenL1" for="aggregationValue-logpage-resource_screen_valueL1" style="margin-top: 5px;">Valor</label>
+							<div style="display: flex; flex-direction: column;">
+								<input type="text" class="text-input" id="aggregationValue-logpage-resource_screen_valueL1" name="aggValue1" style="width: 200px;" />
+								<p id="aggregationValue-logpage-resource_screen_descripL1" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Fila L2 -->
+				<div style="display: flex; gap: 40px;">
+					<!-- Tipus L2 -->
+					<div style="display: flex; flex-direction: column;">
+						<div style="display: flex; align-items: flex-start; gap: 10px;">
+							<label class="control-label" id="aggregationType-logpage-resource_screenL2" for="aggregationType-logpage-resource_screen_valueL2" style="margin-top: 5px;">Tipus</label>
+							<div style="display: flex; flex-direction: column;">
+								<input type="text" class="text-input" id="aggregationType-logpage-resource_screen_valueL2" name="aggType2" style="width: 200px;" />
+								<p id="aggregationType-logpage-resource_screen_descripL2" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+							</div>
+						</div>
+					</div>
+					<!-- Valor L2 -->
+					<div style="display: flex; flex-direction: column;">
+						<div style="display: flex; align-items: flex-start; gap: 10px;">
+							<label class="control-label" id="aggregationValue-logpage-resource_screenL2" for="aggregationValue-logpage-resource_screen_valueL2" style="margin-top: 5px;">Valor</label>
+							<div style="display: flex; flex-direction: column;">
+								<input type="text" class="text-input" id="aggregationValue-logpage-resource_screen_valueL2" name="aggValue2" style="width: 200px;" />
+								<p id="aggregationValue-logpage-resource_screen_descripL2" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Fila L3 -->
+				<div style="display: flex; gap: 40px;">
+					<!-- Tipus L3 -->
+					<div style="display: flex; flex-direction: column;">
+						<div style="display: flex; align-items: flex-start; gap: 10px;">
+							<label class="control-label" id="aggregationType-logpage-resource_screenL3" for="aggregationType-logpage-resource_screen_valueL3" style="margin-top: 5px;">Tipus</label>
+							<div style="display: flex; flex-direction: column;">
+								<input type="text" class="text-input" id="aggregationType-logpage-resource_screen_valueL3" name="aggType3" style="width: 200px;" />
+								<p id="aggregationType-logpage-resource_screen_descripL3" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+							</div>
+						</div>
+					</div>
+					<!-- Valor L3 -->
+					<div style="display: flex; flex-direction: column;">
+						<div style="display: flex; align-items: flex-start; gap: 10px;">
+							<label class="control-label" id="aggregationValue-logpage-resource_screenL3" for="aggregationValue-logpage-resource_screen_valueL3" style="margin-top: 5px;">Valor</label>
+							<div style="display: flex; flex-direction: column;">
+								<input type="text" class="text-input" id="aggregationValue-logpage-resource_screen_valueL3" name="aggValue3" style="width: 200px;" />
+								<p id="aggregationValue-logpage-resource_screen_descripL3" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div id="title-logpage-resource_fieldset" class="control-group">
+			<label class="control-label" id="title-logpage-resource_screen" for="title-logpage-resource_screen_value"></label>
+			<div class="controls">
+				<input type="text" class="text-input" value="" id="title-logpage-resource_screen_value" name="title" style="width: 80%;" maxlength="254"/>
+				<p id="title-logpage-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+			</div>
+		</div>  <!--End of id="title-logpage-resource_fieldset" -->
+
+		<div id="ini-content-date-time-logpage-resource_fieldset" class="control-group">
+			<label class="control-label" id="ini-content-date-time-logpage-resource_screen"></label>
+			<div class="controls">
+				<input type="date" class="text-input" id="ini-content-date-logpage-resource_screen_value" name="ini_content_date" style="width:35%;"/>
+				<input type="time" class="text-input" id="ini-content-time-logpage-resource_screen_value" name="ini_content_time" style="width:35%;"/>
+				<p id="ini-content-date-time-logpage-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+			</div>
+		</div>  <!--End of id="ini-content-date-time-logpage-resource_fieldset" -->
+
+		<div id="fin-content-date-time-logpage-resource_fieldset" class="control-group">
+			<label class="control-label" id="fin-content-date-time-logpage-resource_screen"></label>
+			<div class="controls">
+				<input type="date" class="text-input" id="fin-content-date-logpage-resource_screen_value" name="fin_content_date" style="width:35%;"/>
+				<input type="time" class="text-input" id="fin-content-time-logpage-resource_screen_value" name="fin_content_time" style="width:35%;"/>
+				<p id="fin-content-date-time-logpage-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+			</div>
+		</div>  <!--End of id="fin-content-date-time-logpage-resource_fieldset" -->
+
+		<div id="comment-logpage-resource_fieldset" class="control-group">
+			<label class="control-label" id="comment-logpage-resource_screen" for="comment-logpage-resource_screen_value"></label>
+			<div class="controls">
+				<p id="comment-logpage-resource_alert" style="display: none;"></p>
+				<textarea class="text-input" id="comment-logpage-resource_screen_value" name="comment" maxlength="1999" style="width: 80%; height: 60px;"></textarea>
+				<p id="comment-logpage-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+			</div>
+		</div>  <!--End of id="comment-logpage-resource_fieldset" -->
+
+		<div id="logpage-link-resource_fieldset" class="control-group">
+			<label class="control-label" id="logpage-link-resource_screen" for="logpage-link-resource_screen_value"></label>
+			<div class="controls">
+				<p id="logpage-link-resource_alert" style="display: none;"></p>
+				<input type="text" class="text-input" value="" id="logpage-link-resource_screen_value" name="logpageLink" style="width: 80%;" maxlength="149"/>
+				<p id="logpage-link-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+			</div>
+		</div>  <!--End of id="logpage-link-resource_fieldset" -->
+
+		<div id="open-data-logpage-resource_fieldset" class="control-group">
+			<label class="control-label" id="open-data-logpage-resource_screen" for="open-data-logpage-resource_screen_value"></label>
+			<div class="controls">
+				<p id="open-data-logpage-resource_alert" style="display: none;"></p>
+				<input type="checkbox" id="open-data-logpage-resource_screen_value" name="open_data" checked="checked"/>
+				<p id="open-data-logpage-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
+			</div>
+		</div>  <!--End of id="open-data-feedback-resource_fieldset" -->
+
+		<div id="logpage_mandatory_txt" class="mandatory_txt" style="padding-left: 140px;"></div>
+
+		<div class="form-actions">
+			<input id="logpage-resource_btn" class="submit_btn" type="submit" value="Save changes" />
+			<input id="logpage-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="SendResourceDelete(null, null, 'LOGPAGE', true);" />
+			<input id="logpage-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeLogPageResourceChangesIRecarregaResources(true);" />
+			<input id="logpage-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeLogPageResourceChangesIRecarregaResources(false);" />
+		</div>
+
+	</form>
+</div>  <!--End of id="logpage-resource" -->
 
 <!-- *** CITATION RESOURCE DLG *** -->
 <div id="citation-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
@@ -9001,7 +11592,7 @@ function BuidaHlinkResource()
 <label class="control-label" id="other-cit-details-citation-resource_screen" for="other-cit-details-citation-resource_screen_value"></label>
 <div class="controls">
 <p id="other_cit_details-citation-resource_alert" style="display: none;"></p>
-<input type="text" class="text-input" id="other-cit-details-citation-resource_screen_value" name="other_cit_details" maxlength="254" style="width: 80%;"/>
+<!--$x$--><input type="text" class="text-input" id="other-cit-details-citation-resource_screen_value" name="other_cit_details" maxlength="254" style="width: 80%;"/>
 <p id="other-cit-details-citation-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 </div>
 </div>  <!--End of id="other_cit_details-citation-resource_fieldset" -->
@@ -9079,6 +11670,15 @@ function BuidaHlinkResource()
 <div id="publication-resource" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
 <h2 id="publication-resource-title-text" class="white-area-title"></h2>
 <p id="publication-resource-subtitle-text"></p>
+
+<div class="form-actions">
+<form name="local_RIS_file">
+	<button class="submit_btn" onclick="document.getElementById('openLocalLayer').click();return false;">Import RIS</button>
+	<input type="file" name="nom_fitxer" id="openLocalLayer" accept=".ris" style="display:none" onChange="CarregaFitxerRISLocal();">
+	<p id="ris-publication-resource_import_descrip" class="white-area-screen-descrip-text"></p>
+	<br>
+</form>
+</div>
 
 <form id="publication_resource_form" name="publication_resource_form" method="get" autocomplete="off" onSubmit="return SendPublicationResourceChanges();">
 
@@ -9178,7 +11778,7 @@ function BuidaHlinkResource()
 <label class="control-label" id="other-cit-details-publication-resource_screen" for="other-cit-details-publication-resource_screen_value"></label>
 <div class="controls">
 <p id="other_cit_details-publication-resource_alert" style="display: none;"></p>
-<input type="text" class="text-input" id="other-cit-details-publication-resource_screen_value" name="other_cit_details" maxlength="254" style="width: 80%;"/>
+<!--$x$--><input type="text" class="text-input" id="other-cit-details-publication-resource_screen_value" name="other_cit_details" maxlength="254" style="width: 80%;"/>
 <p id="other-cit-details-publication-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 </div>
 </div>  <!--End of id="other_cit_details-publication-resource_fieldset" -->
@@ -9483,6 +12083,7 @@ function BuidaHlinkResource()
 	<!-- OGscope -->
 	
 		<div id="scope_bbox" class="control-group">
+			<!--<label class="control-label" id="bbox-scope_screen" for="bbox-scope_screen_value">bbox</label>-->
 			<label class="control-label" id="bbox-scope_screen">bbox</label>
 			<div class="controls">
 				<table id="scope_bbox_table" style="border-collapse: collapse;">
@@ -9553,7 +12154,7 @@ function BuidaHlinkResource()
 		<div id="GMLpolygon-scope_fieldset" class="control-group">
 			<label class="control-label" id="GMLpol-scope_screen" for="GMLpolygon-scope_screen_value">GMLpol</label>
 			<div class="controls">
-				<textarea class="text-input" id="GMLpolygon-scope_screen_value" name="GMLpolygon" maxlength="1999" style="width: 80%; height: 60px;"></textarea>
+				<!--$x$--><textarea class="text-input" id="GMLpolygon-scope_screen_value" name="GMLpolygon" maxlength="1999" style="width: 80%; height: 60px;"></textarea>
 				<p id="GMLpolygon-scope_screen_descrip" class="white-area-screen-descrip-text">For example:</p>
 			</div>
 		</div>
@@ -9572,6 +12173,38 @@ function BuidaHlinkResource()
 	</form>
 
 </div>  <!--End of id="scope" -->
+
+<!-- *** SCOPE LOGPAGE DLG *** -->
+
+<div id="scope_lp" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
+	<h2 id="scope_lp-title-text" class="white-area-title"></h2>
+	<p id="scope_lp-subtitle-text"></p>
+
+	<form id="scope_lp_form" name="scope_lp_form" method="get" autocomplete="off">
+	
+	<!-- OGscope -->
+	
+		<div id="scope_lp_pnts" class="control-group">
+		<label class="control-label" id="logpage-scope_pnts_screen"></label>
+			<div class="controls" id="logpage-scope_pnts_list">
+			</div>
+		</div>
+		
+		<div id="scope_lp_pols" class="control-group">
+		<label class="control-label" id="logpage-scope_pols_screen"></label>
+			<div class="controls" id="logpage-scope_pols_list">
+			</div>
+		</div>
+			
+		<div class="form-actions">
+			<input id="scope_lp_btn" class="submit_btn" type="button" value="Save changes" onclick="RecuperaCanvisALogPageScope(true);">
+			<input id="scope_lp-resource-delete_btn" class="submit_btn" type="button" value="Delete" onclick="RecuperaCanvisALogPageScope(false);">
+			<input id="scope_lp-resource-close_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(true);">
+			<input id="scope_lp-resource-exit_btn" class="submit_btn" type="button" value="Close" onclick="SurtDeQualsevolResourceChanges(false);">
+		</div>
+	
+	</form>
+</div>  <!--End of id="scope_lp" -->
 
 
 <!-- *** ACCOUNT DLG *** -->
@@ -9675,6 +12308,7 @@ function BuidaHlinkResource()
 <label class="control-label" id="new_share_screen" for="new_share_screen_value"></label>
 <div class="controls">
 <p><input type="text" class="text-input" value="" id="new_share_screen_value" name="new_share" maxlength="79" onfocus="ShowShareAuthorizedList();" onblur="HideShareAuthorizedList();"/> <label id="new_share_rights_read_label"></label><img src="check16.png" id="new_share_rights_read"/>, <label id="new_share_rights_write_label" for="new_share_rights_write"></label><input type="checkbox" id="new_share_rights_write" name="W" checked="checked"/>, <label id="new_share_rights_share_label" for="new_share_rights_share"></label><input type="checkbox" id="new_share_rights_share" name="S" checked="checked"/> <input id="new_share_btn" class="submit_btn" type="button" value="" onClick="AddShareResource(false);"/></p>
+<!--<p><input type="text" class="text-input" value="" id="new_share_screen_value" name="new_share" maxlength="79" onfocus="ShowShareAuthorizedList();" onblur="HideShareAuthorizedList();"/> <label id="new_share_rights_read_label" for="new_share_rights_read"></label><img src="check16.png" id="new_share_rights_read"/>, <label id="new_share_rights_write_label" for="new_share_rights_write"></label><input type="checkbox" id="new_share_rights_write" name="W" checked="checked"/>, <label id="new_share_rights_share_label" for="new_share_rights_share"></label><input type="checkbox" id="new_share_rights_share" name="S" checked="checked"/> <input id="new_share_btn" class="submit_btn" type="button" value="" onClick="AddShareResource(false);"/></p>-->
 <p id="new_share_select" style="display:none;position:absolute;">
 <select size=10 class="text-input" name="new_share_select" style="height:116px;width:250px;" onfocus="ShowShareAuthorizedList();" onblur="HideShareAuthorizedList();" onchange="SelectionShareAuthorizedList();HideShareAuthorizedList();">
 </select>
@@ -9686,6 +12320,7 @@ function BuidaHlinkResource()
 <div id="new_share_open_fieldset" class="control-group">
 <label class="control-label" id="new_share_open_screen"></label>
 <div class="controls">
+<!--<p><label id="new_share_open_read_label" for="new_share_open_rights_read"></label> <input id="new_share_open_btn" class="submit_btn" type="button" value="" onClick="AddShareResource(true);"/></p>-->
 <p><label id="new_share_open_read_label"></label> <input id="new_share_open_btn" class="submit_btn" type="button" value="" onClick="AddShareResource(true);"/></p>
 <p id="new_share_open_descrip"></p>
 </div>
@@ -9716,42 +12351,85 @@ function BuidaHlinkResource()
 
 <form id="feedback_form" name="feedback_form" method="get" autocomplete="off" onSubmit="return SurtITornaEndarrera(true, true);">
 
-<div class="control-group">
-<label class="control-label" id="feedback_target_compact_screen"></label>
-<div class="controls">
-<p id="feedback_target_compact_descrip"></p>
-</div>
-</div>
+	<div class="control-group">
+		<!--<label class="control-label" id="feedback_target_compact_screen" for="feedback_target_compact_value"></label>-->
+		<label class="control-label" id="feedback_target_compact_screen"></label>
+		<div class="controls">
+			<p id="feedback_target_compact_descrip"></p>
+		</div>
+	</div>
 
-<div class="control-group">
-<label class="control-label" id="new_feedback_screen"></label>
-<div class="controls">
-<p><input id="new_feedback_btn" class="submit_btn" type="button" value="" onClick="MostraFeedbackResource('', null);BuidaPlegaFeedbackElements();"/></p>
-<p id="new_feedback_descrip"></p>
+	<div class="control-group">
+		<!--<label class="control-label" id="new_feedback_screen" for="new_feedback_screen_value"></label>-->
+		<label class="control-label" id="new_feedback_screen"></label>
+		<div class="controls">
+			<p><input id="new_feedback_btn" class="submit_btn" type="button" value="" onClick="MostraFeedbackResource('', null);BuidaPlegaFeedbackElements();"/></p>
+			<p id="new_feedback_descrip"></p>
 		</div>
 	</div>
 
 	<div id="feedback_summary_fieldset" class="control-group">
 		<label class="control-label" id="current_feedback_summary_screen"></label>
 		<div id="summary_stars" class="controls">
-</div>
-</div>
+		</div>
 
-<div id="current_feedback_fieldset" class="control-group">
-<label class="control-label" id="current_feedback_screen"></label>
-<div class="controls">
-<p id="current_feedback_list"></p>
-<p id="current_feedback_descrip"></p>
-</div>
-</div>  <!--End of id="current_feedback_fieldset" -->
+	</div>
 
-<div class="form-actions">
-<input id="feedback-close_btn" class="submit_btn" type="submit" value="Close">
-</div>
+	<div id="current_feedback_fieldset" class="control-group">
+		<label class="control-label" id="current_feedback_screen"></label>
+		<div class="controls">
+			<p id="current_feedback_list"></p>
+			<p id="current_feedback_descrip"></p>
+		</div>
+	</div>  <!--End of id="current_feedback_fieldset" -->
+
+	<div class="form-actions">
+		<input id="feedback-close_btn" class="submit_btn" type="submit" value="Close">
+	</div>
 
 </form>
 
 </div>  <!--End of id="feedback" -->
+
+
+<!-- *** LOGPAGE DLG *** -->
+
+<div id="logpage" class="white-area" style="left: 29%; top: 50px; width: 60%; height: auto; visibility: hidden;">
+	<h2 id="logpage-title-text" class="white-area-title"></h2>
+	<p id="logpage-subtitle-text"></p>
+	
+	<form id="logpage_form" name="logpage_form" method="get" autocomplete="off" onSubmit="return SurtITornaEndarreraLogPage(true, true);">
+	
+		<div class="control-group">
+			<label class="control-label" id="logpage_target_compact_screen"></label>
+			<div class="controls">
+				<p id="logpage_target_compact_descrip"></p>
+			</div>
+		</div>
+	
+		<div class="control-group">
+			<label class="control-label" id="new_logpage_screen"></label>
+			<div class="controls">
+				<p><input id="new_logpage_btn" class="submit_btn" type="button" value="" onClick="MostraLogPageResource('', null);BuidaLogPageResource();"/></p>
+				<p id="new_logpage_descrip"></p>
+			</div>
+		</div>
+	
+		<div id="current_logpage_fieldset" class="control-group">
+			<label class="control-label" id="current_logpage_screen"></label>
+			<div class="controls">
+				<p id="current_logpage_list"></p>
+				<p id="current_logpage_descrip"></p>
+			</div>
+		</div>
+	
+		<div class="form-actions">
+			<input id="logpage-close_btn" class="submit_btn" type="submit" value="Close">
+		</div>
+	
+	</form>
+	
+	</div>  <!--End of id="logpage" -->
 
 
 </div>  <!--End of id="main-page" -->
@@ -9814,7 +12492,7 @@ function BuidaHlinkResource()
 <label class="control-label" id="new-user_new_user_screen" for="new-user_new_user_screen_value"></label>
 <div class="controls">
 <p id="new-user_new_user_alert" style="display: none;"></p>
-<p><input type="text" class="text-input" value="" id="new-user_new_user_screen_value" name="new_user" maxlength="79" onkeyup="NewUserUserInputChange();" onpaste="NewUserUserInputChange();" oninput="NewUserUserInputChange();"/>
+<!--$x$--><p><input type="text" class="text-input" value="" id="new-user_new_user_screen_value" name="new_user" maxlength="79" onkeyup="NewUserUserInputChange();" onpaste="NewUserUserInputChange();" oninput="NewUserUserInputChange();"/>
 <p id="new-user_new_user_screen_descrip" class="white-area-screen-descrip-text"></p>
 </div>
 </div>

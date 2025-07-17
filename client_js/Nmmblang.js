@@ -62,6 +62,7 @@ var Msg_Unidentified_key={cat: "Clau no identificada", spa: "Clave no identifica
 var Msg_Unidentified_page={cat: "Plana no identificada", spa: "Página no identificada", eng: "Unidentified page name"};
 var Msg_Valid_token_required={cat: "És necessari tenir un passi vàlid.", spa: "Es necesario tener un pase válido.", eng: "Valid token required."};
 var Msg_TARGET_TILE_and_CODE_needed={cat: "És necessari indicar TARGET_TITLE= i TARGET_CODE=.", spa: "Es necesario indicar TARGET_TITLE= i TARGET_CODE=.", eng: "TARGET_TITLE= and TARGET_CODE= should be provided."};
+var Msg_LOGBOOK_TILE_and_CODE_needed={cat: "És necessari indicar LOGBOOK_TITLE= i LOGBOOK_CODE=.", spa: "Es necesario indicar LOGBOOK_TITLE= i LOGBOOK_CODE=.", eng: "LOGBOOK_TITLE= and LOGBOOK_CODE= should be provided."};
 var Msg_Server_answer_cannot_be_shown={cat: "El servidor ha respost però no és possible mostrar el resultat en aquest navegador.", spa: "El servidor ha respondido pero no es posible mostrar el resultado en este navegador.", eng: "The server responded but it is not possible to show the result on this browser."};
 var Msg_Server_answer_cannot_be_identified={cat: "El servidor ha respost però no puc identificar la seva resposta.", spa: "El servidor ha respondido pero no puedo identificar su respuesta.", eng: "The server responded but it cannot be identified correctly."};
 var Msg_Ok={cat: "Tot bé", spa: "Todo correcto", eng: "Ok!"};
@@ -108,6 +109,8 @@ var Msg_Today={cat: "Avui", spa: "Hoy", eng: "Today"};
 var Msg_Sure_completely_delete_={cat: "Estàs segur que vols eliminar del tot ", spa: "¿Está seguro que desea eliminar completamente ", eng: "Are you sure that you want to completely delete "};
 var Msg_this_Hyperlink={cat: "aquest hiperenllaç", spa: "este hiperenlace", eng: "this hyperlink"};
 var Msg_this_PoI={cat: "aquest punt d'interès", spa: "este punto de interés", eng: "this point of interest"};
+var Msg_this_logbook={cat: "aquest llibre de registres", spa: "este libro de registros", eng: "this log book"};
+var Msg_this_logpage={cat: "aquest registre", spa: "este registro", eng: "this log"};
 var Msg_this_feedback_item={cat: "aquesta valoració", spa: "esta valoración", eng: "this feedback item"};
 var Msg_this_citation={cat: "aquesta citació", spa: "esta citación", eng: "this citation"};
 var Msg_this_publication={cat: "aquesta publicació", spa: "esta publicación", eng: "this publication"};
@@ -115,6 +118,7 @@ var Msg_this_individual={cat: "aquest individu", spa: "este individuo", eng: "th
 var Msg_this_organism={cat: "aquest organisme", spa: "este organismo", eng: "this organism"};
 var Msg_Hyperlink_deleted={cat: "Hiperenllaç esborrat", spa: "Hiperenlace eliminado", eng: "Hyperlink deleted"};
 var Msg_PoI_deleted={cat: "Punt d'interès esborrat", spa: "Punto de interés eliminado", eng: "Point of interest deleted"};
+var Msg_LogBook_deleted={cat: "Llibre de registres esborrat", spa: "Libro de registros eliminado", eng: "Log Book deleted"};
 var Msg_Feedback_deleted={cat: "Valoració esborrada", spa: "Valoración eliminada", eng: "Feedback deleted"};
 var Msg_Citation_deteled={cat: "Citació esborrada", spa: "Citación eliminada", eng: "Citation deleted"};
 var Msg_Publication_deteled={cat: "Publicació esborrada", spa: "Publicación eliminada", eng: "Publication deleted"};
@@ -138,6 +142,18 @@ var Msg_Modify_PoI_characteristics={cat: "Modifica les característiques d'aques
 var Msg_New_PoI={cat: "Nou punt d'interès", spa: "Nuevo punto de interés", eng: "New point of interest"};
 var Msg_Define_PoI_characteristics={cat: "Introdueix les característiques d'aquest punt", spa: "Introduce las características de este punto", eng: "Define the characteristics of this point"};
 var Msg_PoI_detailed_description_no_modification={cat: "Descripció detallada d'aquest punt d'interès (no tens drets de modificació)", spa: "Descripción detallada de este punto de interés (no tiene derechos de modificación)", eng: "Detailed description of this point of interest (you do not have modification rights)"};
+
+var Msg_LogBook={cat: "Llibre de Registres", spa: "Libro de Registros", eng: "Log Book"};
+var Msg_Modify_LogBook_characteristics={cat: "Modifica les característiques d'aquest llibre de registres", spa: "Modifica las características de este libro de registros", eng: "Modify the characteristics of this log book"};
+var Msg_New_LogBook={cat: "Nou llibre de registres", spa: "Nuevo libro de registros", eng: "New log book"};
+var Msg_Define_LogBook_characteristics={cat: "Introdueix les característiques d'aquest llibre de registres", spa: "Introduce las características de este libro de registros", eng: "Define the characteristics of this log book"};
+var Msg_LB_detailed_description_no_modification={cat: "Descripció detallada d'aquest llibre de registres (no tens drets de modificació)", spa: "Descripción detallada de este libro de registros (no tiene derechos de modificación)", eng: "Detailed description of this log book (you do not have modification rights)"};
+
+var Msg_LogPage={cat: "Pàgina de Registre", spa: "Página de Registro", eng: "Log Page"};
+var Msg_Modify_LogPage_characteristics={cat: "Modifica les característiques d'aquesta pàgina registre", spa: "Modifica las características de esta página registro", eng: "Modify the characteristics of this log page"};
+var Msg_New_LogPage={cat: "Nova pàgina de registre", spa: "Nueva página de registro", eng: "New log page"};
+var Msg_Define_LogPage_characteristics={cat: "Introdueix les característiques d'aquesta pàgina de registre", spa: "Introduce las características de esta página registro", eng: "Define the characteristics of this log page"};
+var Msg_LP_detailed_description_no_modification={cat: "Descripció detallada d'aquesta pàgina registre (no tens drets de modificació)", spa: "Descripción detallada de esta página de registro (no tiene derechos de modificación)", eng: "Detailed description of this log page (you do not have modification rights)"};
 
 var Msg_Feedback={cat: "Valoració", spa: "Valoración", eng: "Feedback"};
 var Msg_Modify_feedback_characteristics={cat: "Modifica les característiques d'aquesta valoració", spa: "Modifica las características de esta valoración", eng: "Modify the characteristics of this feedback"};
@@ -202,11 +218,15 @@ var Msg_Citation_sent={cat: "Citació enviada", spa: "Citación enviada", eng: "
 var Msg_Citation_created={cat: "Citació creada", spa: "Citación creada", eng: "Citation created"};
 var Msg_Citation_detailed_description_no_modification={cat: "Descripció detallada d'aquesta citació (no tens drets de modificació)", spa: "Descripción detallada de esta citación (no tiene derechos de modificación)", eng: "Detailed description of this citation (you do not have modification rights)"};
 
+var Msg_LogBook_sent={cat: "Llibre de registres enviat", spa: "Libro de registros enviado", eng: "LogBook sent"};
+var Msg_LogBook_created={cat: "Llibre de registres creat", spa: "Libro de registros creado", eng: "LogBook created"};
+
 var Msg_Publication={cat: "Publicació", spa: "Publicación", eng: "Publication"};
 var Msg_Modify_publication_characteristics={cat: "Modifica les característiques d'aquesta publicació", spa: "Modifica las características de esta publicación", eng: "Modify the characteristics of this publication"};
 var Msg_New_publication={cat: "Nova publicació", spa: "Nueva publicación", eng: "New publication"};
 var Msg_Define_publication_characteristics={cat: "Introdueix les característiques d'aquesta publicació", spa: "Introduce las características de esta publicación", eng: "Define the characteristics of this publication"};
 var Msg_Publication_detailed_description_no_modification={cat: "Descripció detallada d'aquesta publicació (no tens drets de modificació)", spa: "Descripción detallada de esta publicación (no tiene derechos de modificación)", eng: "Detailed description of this publication (you do not have modification rights)"};
+var Msg_Ris_file={cat: " o prova d'importar-les des d'un fitxer *.ris:", spa: " o intenta importarlas desde un archivo *.ris:", eng: " or try importing them form a *.ris file:"};
 
 var Msg_Individual={cat: "Individu", spa: "Individuo", eng: "Individual"};
 var Msg_Modify_individual_characteristics={cat: "Modifica les característiques d'aquest individu", spa: "Modifica las características de este individuo", eng: "Modify the characteristics of this individual"};
@@ -255,6 +275,8 @@ var Msg_SignUp_NiMMbus={cat: "Registra't al NiMMbus", spa: "Regístrese en NiMMb
 var Msg_NiMMbus_account={cat: "Compte de NiMMbus", spa: "Cuenta de NiMMbus", eng: "NiMMbus account"};
 var Msg_NiMMbus_Href={cat: "NiMMbus: Hiperenllaç", spa: "NiMMbus: Hiperenlace", eng: "NiMMbus: Hyperlink"};
 var Msg_NiMMbus_PoI={cat: "NiMMbus: Punt d'interès", spa: "NiMMbus: Punto de Interés", eng: "NiMMbus: Point of Interest"};
+var Msg_NiMMbus_LogBook={cat: "NiMMbus: Llibre de registres", spa: "NiMMbus: Libro de registros", eng: "NiMMbus: Log Book"};
+var Msg_NiMMbus_LogPage={cat: "NiMMbus: Pàgina de registre", spa: "NiMMbus: Página de registro", eng: "NiMMbus: Log page"};
 var Msg_NiMMbus_Feedback={cat: "NiMMbus: Valoració", spa: "NiMMbus: Valoración", eng: "NiMMbus: Feedback"};
 var Msg_NiMMbus_Citation={cat: "NiMMbus: Citació", spa: "NiMMbus: Citación", eng: "NiMMbus: Citation"};
 var Msg_NiMMbus_Publication={cat: "NiMMbus: Publicació", spa: "NiMMbus: Publicación", eng: "NiMMbus: Publication"};
@@ -263,6 +285,8 @@ var Msg_NiMMbus_Organism={cat: "NiMMbus: Organisme", spa: "NiMMbus: Organismo", 
 var Msg_NiMMbus_Resources={cat: "NiMMbus: Recursos", spa: "NiMMbus: Recursos", eng: "NiMMbus: Resources"};
 var Msg_NiMMbus_ResourcesSelector={cat: "NiMMbus: Selector de recursos", spa: "NiMMbus: Selector de recursos", eng: "NiMMbus: Resource selector"};
 var Msg_NiMMbus_Feedbacks={cat: "NiMMbus: Valoracions", spa: "NiMMbus: Valoraciones", eng: "NiMMbus: Feedbacks"};
+var Msg_NiMMbus_LogPages={cat: "NiMMbus: Pàgines de registre", spa: "NiMMbus: Páginas de registro", eng: "NiMMbus: Log pages"};
+var Msg_NiMMbus_LogPageScope={cat: "NiMMbus: Abast del registre", spa: "NiMMbus: Alcance del registro", eng: "NiMMbus: Scope of the log"};
 var Msg_NiMMbus_Share={cat: "NiMMbus: Compartir", spa: "NiMMbus: Compartir", eng: "NiMMbus: Share"};
 var Msg_NiMMbus_Scope={cat: "NiMMbus: Abast", spa: "NiMMbus: Alcance", eng: "NiMMbus: Scope"};
 var Msg_Not_implemented_yet={cat: "Ho sentim, no implementat encara", spa: "Lo sentimos, no implementado aún", eng: "Sorry, not implemented yet"};
@@ -289,6 +313,36 @@ var Msg_Scope={cat: "Àmbit de Valoració", spa: "Ámbito de Valoración", eng: 
 var Msg_Modify_Scope={cat: "Modifica l'àmbit referent a aquesta valoració", spa: "Modifica el ámbito referente a esta valoración", eng: "Modify this feedback's scope"};
 var Msg_New_Scope={cat: "Nou àmbit de Valoració", spa: "Nuevo ámbito de Valoración", eng: "New Feedback's Scope"};
 var Msg_For_example_={cat: "Per exemple:", spa: "Por ejemplo:", eng: "For example:"};
+
+var Msg_Scope_LP={cat: "Àmbit/s del Registre", spa: "Ámbito/s del Registro", eng: "Log's Scope/s"};
+var Msg_New_Scope_LP={cat: "Nou/s àmbit/s del registre", spa: "Nuevo/s ámbito/s del registro", eng: "New log's Scope/s"};
+var Msg_Modify_Scope_LP={cat: "Modifica l'àmbit/s referent a aquest registre", spa: "Modifica el ámbito/s referente a este registro", eng: "Modify this log's scope/s"};
+var Msg_Scope_LP_type={cat: "Tipus", spa: "Tipo", eng: "Type"};
+var Msg_Scope_LP_long={cat: "Longitud", spa: "Longitud", eng: "Longitude"};
+var Msg_Scope_LP_lat={cat: "Latitud", spa: "Latitud", eng: "Latitude"};
+var Msg_Scope_LP_desc={cat: "Descripció", spa: "Descripción", eng: "Description"};
+var Msg_Scope_LP_delete={cat: "Elimina", spa: "Elimina", eng: "Delete"};
+var Msg_Scope_LP_addPoint={cat: "Afegir punt", spa: "Añadir punto", eng: "Add point"};
+var Msg_Scope_LP_pols_hd={cat: "Poligon", spa: "Polígono", eng: "Polygon"};
+var Msg_Scope_LP_addPolyg={cat: "Afegir poligon", spa: "Añadir polígono", eng: "Add polygon"};
+var Msg_Scope_LP_error={cat: "Error: utilitza punt (.) com a separador decimal", spa: "Error: utilice punto (.) como separador decimal", eng: "Error: use a dot (.) as decimal delimiter"};
+var Msg_ScopeLP_PolNoCoords_Error={cat: "Error: no s'han trobat coordenades en el format [long, lat]", spa: "Error: no se han encontrado coordenadas en el formato [long, lat]", eng: "Error: no coordinates found in format [long, lat]"};
+var Msg_ScopeLP_PolFormat_Error={cat: "Error: format incorrecte. Revisa separadors, comes o espais", spa: "Error: formato incorrecto. Revisa separadores, comas o espacios", eng: "Error: incorrect format. Check separators, commas or spaces"};
+var Msg_ScopeLP_PolNCoords_Error={cat: "Error: hi ha d’haver almenys 4 punts per formar un polígon tancat", spa: "Error: debe haber al menos 4 puntos para formar un polígono cerrado", eng: "Error: at least 4 points are needed to form a closed polygon"};
+var Msg_ScopeLP_PolCoords_Error={cat: "Error: el primer i últim punt no coincideixen. El polígon ha d'estar tancat", spa: "Error: el primer y último punto no coinciden. El polígono debe estar cerrado", eng: "Error: first and last point do not match. Polygon must be closed"};
+var Msg_ScopeLP_PolDec_Error={cat: "Error: utilitza punt (.) com a separador decimal, no coma (,)", spa: "Error: utiliza punto (.) como separador decimal, no coma (,)", eng: "Error: use dot (.) as decimal separator, not comma (,)"};
+var Msg_ScopeLP_PntExample={
+    cat: "Coordenades en longitud/latitud. Per exemple: 3.2145, 42.2993",
+    spa: "Coordenadas en longitud/latitud. Por ejemplo: 3.2145, 42.2993",
+    eng: "Coordinates in longitude/latitude. For example: 3.2145, 42.2993"
+};
+
+var Msg_ScopeLP_PolExample={
+    cat: "Llistat de coordenades (Long,Lat) que formen el polígon. Per exemple: [3.2145,42.2993],[1.0866,42.3456],[0.7628,41.0195],[3.2145,42.2993]",
+    spa: "Listado de coordenadas (Long,Lat) que forman el polígono. Por ejemplo: [3.2145,42.2993],[1.0866,42.3456],[0.7628,41.0195],[3.2145,42.2993]",
+    eng: "List of coordinates (Long,Lat) forming the polygon. For example: [3.2145,42.2993],[1.0866,42.3456],[0.7628,41.0195],[3.2145,42.2993]"
+};
+
 
 var Msg_All={cat: "Tots", spa: "Todos", eng: "All"};
 //Needed for Test_*.html
@@ -390,11 +444,15 @@ var l_msg_New_Pwd={cat: "Contrasenya nova", spa: "Contraseña nueva", eng: "New 
 var l_msg_Email={cat: "Correu electrònic", spa: "Correo electrónico", eng: "Email"};
 
 var l_msg_Define_Scope={cat: "Introdueix l'àmbit referent a aquesta valoració", spa: "Introduce el ámbito referente a esta valoración", eng: "Define this feedback's scope"};
+var l_msg_Scope_LP_pnts_screen={cat: "Afegeix punts", spa: "Añade puntos", eng: "Add points"};
+var l_msg_Scope_LP_pols_screen={cat: "Afegeix polígons", spa: "Añade polígonos", eng: "Add polygons"};
 
 var l_msg_Min_Lat={cat: "Latitud mínima", spa: "Latitud mínima", eng: "Minimum latitude"};
 var l_msg_Max_Lat={cat: "Latitud màxima", spa: "Latitud máxima", eng: "Maximum latitude"};
 var l_msg_Min_Lon={cat: "Longitud mínima", spa: "Longitud mínima", eng: "Minimum longitude"};
 var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maximum longitude"};
+
+var l_msg_Define_Scope_LP={cat: "Introdueix l'àmbit/s referent a aquest registre", spa: "Introduce el ámbito/s referente a este registro", eng: "Define this log's scope/s"};
 		
 	ActiveLanguage=lang;
 	
@@ -402,6 +460,7 @@ var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maxim
 	/* OG 20221102*/
 	document.getElementById("new-resource-href").title=DonaCadenaJSON(Msg_New_Hyperlink);
 	document.getElementById("new-resource-poi").title=DonaCadenaJSON(Msg_New_PoI);
+	document.getElementById("new-resource-logbook").title=DonaCadenaJSON(Msg_New_LogBook);
 	document.getElementById("new-resource-citation").title=DonaCadenaJSON(Msg_New_citation);
 	document.getElementById("new-resource-publication").title=DonaCadenaJSON(Msg_New_publication);
 	document.getElementById("new-resource-individual").title=DonaCadenaJSON(Msg_New_individual);
@@ -430,6 +489,11 @@ var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maxim
 	document.getElementById("GMLpolygon-scope_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_) + '<br>' + '&ltgml:Polygon srsName="EPSG:4326"&gt' + '<br>&emsp;' + '&ltgml:exterior&gt'+ '<br>&emsp;&emsp;' +'&ltgml:LinearRing&gt'+ '<br>&emsp;&emsp;&emsp;' +'&ltgml:posList srsDimension="2"&gt'+ '<br>&emsp;&emsp;&emsp;&emsp;' +'41.81 1.46 41.81 2.73 40.88 2.73 40.88 1.46 41.81 1.46'+ '<br>&emsp;&emsp;&emsp;' +'&lt/gml:posList&gt'+ '<br>&emsp;&emsp;' +'&lt/gml:LinearRing&gt'+ '<br>&emsp;' +'&lt/gml:exterior&gt'+ '<br>' +'&lt/gml:Polygon&gt';
 	document.getElementById("GMLpol-scope_screen").innerHTML=DonaCadenaJSON({cat: "Poligon GML", spa: "Polígono GML", eng: "GML polygon"});
 	document.getElementById("bbox-scope_screen").innerHTML=DonaCadenaJSON({cat: "Envolupant", spa: "Envolvente", eng: "Bounding box"});
+
+	/*msg LP SCOPE */
+	document.getElementById("scope_lp-subtitle-text").innerHTML=DonaCadenaJSON(l_msg_Define_Scope_LP);
+	document.getElementById("logpage-scope_pnts_screen").innerHTML=DonaCadenaJSON(l_msg_Scope_LP_pnts_screen);
+	document.getElementById("logpage-scope_pols_screen").innerHTML=DonaCadenaJSON(l_msg_Scope_LP_pols_screen);
 	
 	document.getElementById("head_title").innerHTML=DonaCadenaJSON(Msg_NiMMbus_login);
 	document.getElementById("front-welcome-text-title").innerHTML=DonaCadenaJSON(Msg_Welcome_NiMMbus);
@@ -474,6 +538,8 @@ var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maxim
 	document.getElementById("organism-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Organism);
 	document.getElementById("href-resource-type-value").innerHTML=DonaCadenaJSON(Msg_Hyperlink);
 	document.getElementById("poi-resource-type-value").innerHTML=DonaCadenaJSON(Msg_PoI);	
+	document.getElementById("logbook-resource-type-value").innerHTML=DonaCadenaJSON(Msg_LogBook);
+	document.getElementById("logpage-resource-type-value").innerHTML=DonaCadenaJSON(Msg_LogPage);
 	
 	document.getElementById("selector-owner-type_screen").innerHTML=DonaCadenaJSON({cat: "Propietats:", spa: "Propiedades:", eng: "Properties:"});
 	document.getElementById("all-selector-owner-type-value").innerHTML=DonaCadenaJSON(l_msg_Owned_and_shared_with_me);
@@ -542,6 +608,57 @@ var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maxim
 	document.getElementById("poi-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
 	document.getElementById("poi-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
 
+
+	document.getElementById("identifier-logbook-resource").innerHTML=DonaCadenaJSON({cat: "Identificador del llibre de registres", spa: "Identificador del libro de registros", eng: "Log book identifier"});
+	document.getElementById("logbook-logpagelist-resource").innerHTML=DonaCadenaJSON({cat: "Llistat de registres", spa: "Lista de registros", eng: "Log page list"});
+	document.getElementById("title-logbook-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "per exemple: Conreus de regadiau la mediterrani. Cas d'ús", spa: "por ejemplo: Cultivos de regadio en el mediterraneo. Caso de uso", eng: "for example: Irrigation crops in the mediterranean. Use Case."});
+	document.getElementById("id-code-logbook-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Code);
+	document.getElementById("id-code-logbook-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_resource_id_eg)+" "+"clc-2012";
+	document.getElementById("id-namespace-logbook-resource_screen").innerHTML=DonaCadenaJSON(Msg_Namespace);
+	document.getElementById("id-namespace-logbook-resource_screen_descrip").innerHTML=DonaCadenaJSON(l_msg_Namespace_where_id_unique_eg_)+" "+"https://land.copernicus.eu";
+	document.getElementById("open-data-logbook-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
+	document.getElementById("open-data-logbook-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquest llibre de registres amb tothom", spa: "Compartir este libro de registros con todos", eng: "If check this logbook will be visible to everyone"});
+	document.getElementById("logbook-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_LogBook);
+	document.getElementById("logbook-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
+	document.getElementById("logbook-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+
+	document.getElementById("target-logpage-resource").innerHTML=DonaCadenaJSON({cat: "Llibre de registres objectiu", spa: "Libro de registros objetivo", eng: "Log Book target"});
+	document.getElementById("open-data-logpage-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
+	document.getElementById("open-data-logpage-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquest registre amb tothom", spa: "Compartir este registro con todos", eng: "If check this logpage will be visible to everyone"});
+	document.getElementById("aggregationType-logpage-resource_screenL1").innerHTML=DonaCadenaJSON({cat: "Tipus d'agregació (nivell 1):", spa: "Tipo de agregación (nivel 1):", eng: "Aggregation type (level 1):"});
+	document.getElementById("aggregationValue-logpage-resource_screenL1").innerHTML=DonaCadenaJSON({cat: "Valor d'agregació (nivell 1):", spa: "Valor de agregación (nivel 1):", eng: "Aggregation value (level 1):"});
+	document.getElementById("aggregationType-logpage-resource_screenL2").innerHTML=DonaCadenaJSON({cat: "Tipus d'agregació (nivell 1):", spa: "Tipo de agregación (nivel 2):", eng: "Aggregation type (level 2):"});
+	document.getElementById("aggregationValue-logpage-resource_screenL2").innerHTML=DonaCadenaJSON({cat: "Valor d'agregació (nivell 1):", spa: "Valor de agregación (nivel 2):", eng: "Aggregation value (level 2):"});
+	document.getElementById("aggregationType-logpage-resource_screenL3").innerHTML=DonaCadenaJSON({cat: "Tipus d'agregació (nivell 1):", spa: "Tipo de agregación (nivel 3):", eng: "Aggregation type (level 3):"});
+	document.getElementById("aggregationValue-logpage-resource_screenL3").innerHTML=DonaCadenaJSON({cat: "Valor d'agregació (nivell 1):", spa: "Valor de agregación (nivel 3):", eng: "Aggregation value (level 3):"});
+	document.getElementById("ini-content-date-time-logpage-resource_screen").innerHTML=DonaCadenaJSON({cat: "Data del contingut (inicial):", spa: "Fecha del contenido (inicial)", eng: "Content date (start)"});
+	document.getElementById("fin-content-date-time-logpage-resource_screen").innerHTML=DonaCadenaJSON({cat: "Data del contingut (final):", spa: "Fecha del contenido (final)", eng: "Content date (end)"});
+	document.getElementById("comment-logpage-resource_screen").innerHTML=DonaCadenaJSON({cat: "Comentari", spa: "Comentario", eng: "Comment"});
+	document.getElementById("logpage-link-resource_screen").innerHTML=DonaCadenaJSON({cat: "URL amb informació adicional", spa: "URL con informació adicional", eng: "URL with additional information"});			
+	document.getElementById("aggregationType-logpage-resource_screen_descripL1").innerHTML=DonaCadenaJSON({cat: "per exemple: Regió", spa: "por ejemplo: Región", eng: "for example: Region"});
+	document.getElementById("aggregationValue-logpage-resource_screen_descripL1").innerHTML=DonaCadenaJSON({cat: "per exemple: Catalunya", spa: "por ejemplo: Cataluña", eng: "for example: Catalonia"});
+	document.getElementById("aggregationType-logpage-resource_screen_descripL2").innerHTML=DonaCadenaJSON({cat: "per exemple: Província", spa: "por ejemplo: Provincia", eng: "for example: Province"});
+	document.getElementById("aggregationValue-logpage-resource_screen_descripL2").innerHTML=DonaCadenaJSON({cat: "per exemple: Barcelona", spa: "por ejemplo: Barcelona", eng: "for example: Barcelona"});
+	document.getElementById("aggregationType-logpage-resource_screen_descripL3").innerHTML=DonaCadenaJSON({cat: "per exemple: Ciutat", spa: "por ejemplo: Ciudad", eng: "for example: City"});
+	document.getElementById("aggregationValue-logpage-resource_screen_descripL3").innerHTML=DonaCadenaJSON({cat: "per exemple: St. Cugat del Vallès", spa: "por ejemplo: St. Cugat del Vallés", eng: "for example: St. Cugat del Vallès"});
+	document.getElementById("title-logpage-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "per exemple: instal·lació de nous sensors a la parcel·la d'estudi", spa: "por ejemplo: instalación de nouevos sensores en la parcela de estudio", eng: "for example: installation of new sensors on the study plot"});
+	document.getElementById("ini-content-date-time-logpage-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "inici del període temporal sobre el qual aplica el contingut del registre", spa: "inicio del periodo temporal sobre el cual aplica el contenido del registro", eng: "begining of the time period over which the contents of the log apply"});
+	document.getElementById("fin-content-date-time-logpage-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "final del període temporal sobre el qual aplica el contingut del registre", spa: "final del periodo temporal sobre el cual aplica el contenido del registro", eng: "ending of the time period over which the contents of the log apply"});
+	document.getElementById("comment-logpage-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "contingut del registre", spa: "contenido del registro", eng: "log content"});
+	document.getElementById("logpage-link-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "enllaç a més informació relacionada amb el registre", spa: "enlace a más información relacionada con el registro", eng: "link to more information related to the log"});
+	document.getElementById("logpage-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_LogPage);
+	document.getElementById("logpage-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
+	document.getElementById("logpage-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+	document.getElementById("new_logpage_btn").value=DonaCadenaJSON(l_msg_Add);
+	document.getElementById("new_logpage_from_logbook_btn").value=DonaCadenaJSON(l_msg_Add);
+	document.getElementById("current_logpage_screen").innerHTML=DonaCadenaJSON({cat: "Llista de pàgines de registre", spa: "Lista de páginas de registro", eng: "Log page list"});
+	document.getElementById("new_logpage_screen").innerHTML=DonaCadenaJSON(Msg_LogPage);
+	document.getElementById("logpage_target_compact_screen").innerHTML=DonaCadenaJSON({cat: "Llibre de registres objectiu", spa: "Libro de registros objetivo", eng: "Target log book"});
+	document.getElementById("logpage-subtitle-text").innerHTML=DonaCadenaJSON({cat: "Pàgines del llibre de registres:", spa: "Páginas del libro de registros", eng: "Log book pages"});
+	document.getElementById("logpage-title-text").innerHTML=DonaCadenaJSON({cat: "Pàgines de registre", spa: "Páginas de registro", eng: "Log pages"})+" "+'<a href="help/help.htm#_resource_logpage" target="NiMMbus_help"><img src="help_info20.png"></a>';
+	document.getElementById("new_logpage_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Afegir] per a crear una nova página de registre en aquest llibre de registres", spa: "Presione [Añadir] para crear una nueva página de registro en este libro de registros", eng: "Press [Add] to create a new log page in this log book"});
+	document.getElementById("current_logpage_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Editar] per a veure, modificar o esborrar pàgines de registre", spa: "Presione [Editar] para ver, modificar o borrar páginas de registro", eng: "Press [Edit] to view, modify or delete log pages"});
+	
 	document.getElementById("target-feedback-resource").innerHTML=DonaCadenaJSON({cat: "Recurs(os) objectiu de la valoració", spa: "Recurso(s) objetivo de la valoración", eng: "Feedback target resource(s)"});
 	document.getElementById("target_feedback-resource_compact_add_btn").value=DonaCadenaJSON(l_msg_Select);			
 	document.getElementById("target_feedback-resource_compact_add_descrip").innerHTML=DonaCadenaJSON({cat: "Prem [Seleccionar] per a escollir un nou recurs valorat.", spa: "Presione [Seleccionar] para escoger un nuevo recurso valorado.", 
@@ -680,6 +797,10 @@ var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maxim
 	document.getElementById("scope-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
 	document.getElementById("scope_btn").value=DonaCadenaJSON(Msg_Save_changes);
 
+	document.getElementById("scope_lp-resource-delete_btn").value=DonaCadenaJSON(Msg_Delete)+" "+DonaCadenaJSON(Msg_Scope_LP);
+	document.getElementById("scope_lp-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
+	document.getElementById("scope_lp-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
+	document.getElementById("scope_lp_btn").value=DonaCadenaJSON(Msg_Save_changes);
 
 	//document.getElementById("title-citation-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
 	document.getElementById("title-citation-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+DonaCadenaJSON({cat: "Mapa Cobertes del Sòl de Catalunya", spa: "Sistema de Información sobre Ocupación del Suelo de España", eng: "Corine Land Cover 2012"});
@@ -735,7 +856,7 @@ var l_msg_Max_Lon={cat: "Longitud màxima", spa: "Longitud máxima", eng: "Maxim
 	document.getElementById("citation-resource-exit_btn").value=DonaCadenaJSON(l_msg_Close_Sortir);
 	document.getElementById("citation-resource-close_btn").value=DonaCadenaJSON(l_msg_Discard);
 
-	//document.getElementById("title-publication-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
+	document.getElementById("title-publication-resource_screen").innerHTML=DonaCadenaJSON(Msg_Title);
 	document.getElementById("title-publication-resource_screen_descrip").innerHTML=DonaCadenaJSON(Msg_For_example_)+" "+"Daytime urban heat islands from Landsat ETM+ and Corine land cover data: An application to major cities in Greece";
 	document.getElementById("edition-publication-resource").innerHTML=DonaCadenaJSON(l_msg_Resource_Edition);
 	document.getElementById("edition-publication-resource_screen").innerHTML=DonaCadenaJSON(l_msg_Edition);
