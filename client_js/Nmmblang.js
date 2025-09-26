@@ -46,7 +46,7 @@
 var LanguagesNB=["cat","spa","eng"];
 var ActiveLanguage=2;
 var Terms_and_Privacy_Last_Updated="15-03-2021";
-var Client_Last_Updated="01-02-2023";
+var Client_Last_Updated="26-09-2025";
 
 //Global message variables start by "Msg_" 
 var Msg_NiMMbus={cat: "NiMMbus", spa: "NiMMbus", eng: "NiMMbus"};
