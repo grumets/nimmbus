@@ -49,7 +49,7 @@ include::5-feedback.adoc[]
 
 include::6-user.adoc[]
 
-include::7-how-to.adoc[]
+//include::7-how-to.adoc[]
 
 ////
 Revision History should be the last annex before the Bibliography

@@ -32,6 +32,14 @@ To create this type of resource some characteristics shall be defined, as the ti
 The main goal is to be able to *pinpoint a single point feature with an exact location* (with coordinates), so that features or phenomena can be accurately located (for example at a single pixel or group of pixels).
 
 To create this type of resource, the following properties need to be specified: a title, the coordinates (that can be directly obtained from the device if location services are active), and a small note with the motivation of this resource.
+[[Res_LogBook]]
+=== *Log Book*
+This resource is defined by a title and a unique combination of a Code and a Namespace. You can add LogPages to it, which describe how its properties change over time. It is designed to keep a timeline of a geospatial element (for example, a map layer or part of it on a map server).
+
+[[Res_logpage_item]]
+=== *Log Page*
+A Log Page is directly associated with a Log Book. A set of Log Pages forms the record of a specific Log Book element.
+A Log Page allows adding comments that affect a Log Book element at a specific point in time. These comments may refer to one or more specific geographic areas (defined by points or polygons) or to specific levels of aggregation of the dataset represented in the Log Book.
 
 [[Res_Cit_Pub]]
 === *Citation & Publication*

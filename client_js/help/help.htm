@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.23">
 <title>NiMMbus Help</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -84,10 +84,10 @@ code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;
 ul,ol,dl{line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
 ul,ol{margin-left:1.5em}
 ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0}
-ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
-ul.square{list-style-type:square}
 ul.circle{list-style-type:circle}
 ul.disc{list-style-type:disc}
+ul.square{list-style-type:square}
+ul.circle ul:not([class]),ul.disc ul:not([class]),ul.square ul:not([class]){list-style:inherit}
 ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
 dl dt{margin-bottom:.3125em;font-weight:bold}
 dl dd{margin-bottom:1.25em}
@@ -140,7 +140,7 @@ p a>code:hover{color:rgba(0,0,0,.9)}
 #content::before{content:none}
 #header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
 #header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #dddddf}
-#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #dddddf;padding-bottom:8px}
+#header>h1:only-child{border-bottom:1px solid #dddddf;padding-bottom:8px}
 #header .details{border-bottom:1px solid #dddddf;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:flex;flex-flow:row wrap}
 #header .details span:first-child{margin-left:-.125em}
 #header .details span.email a{color:rgba(0,0,0,.85)}
@@ -162,6 +162,7 @@ p a>code:hover{color:rgba(0,0,0,.9)}
 #toctitle{color:#7a2518;font-size:1.2em}
 @media screen and (min-width:768px){#toctitle{font-size:1.375em}
 body.toc2{padding-left:15em;padding-right:0}
+body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #dddddf;padding-bottom:8px}
 #toc.toc2{margin-top:0!important;background:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #e7e7e9;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
 #toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
 #toc.toc2>ul{font-size:.9em;margin-bottom:0}
@@ -208,13 +209,10 @@ table.tableblock.fit-content>caption.title{white-space:nowrap;width:0}
 .admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6);word-wrap:anywhere}
 .admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
 .exampleblock>.content{border:1px solid #e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;border-radius:4px}
-.exampleblock>.content>:first-child{margin-top:0}
-.exampleblock>.content>:last-child{margin-bottom:0}
 .sidebarblock{border:1px solid #dbdbd6;margin-bottom:1.25em;padding:1.25em;background:#f3f3f2;border-radius:4px}
-.sidebarblock>:first-child{margin-top:0}
-.sidebarblock>:last-child{margin-bottom:0}
 .sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
-.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content>:first-child,.sidebarblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child,.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
 .literalblock pre,.listingblock>.content>pre{border-radius:4px;overflow-x:auto;padding:1em;font-size:.8125em}
 @media screen and (min-width:768px){.literalblock pre,.listingblock>.content>pre{font-size:.90625em}}
 @media screen and (min-width:1280px){.literalblock pre,.listingblock>.content>pre{font-size:1em}}
@@ -330,7 +328,7 @@ a.image{text-decoration:none;display:inline-block}
 a.image object{pointer-events:none}
 sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
 sup.footnote a,sup.footnoteref a{text-decoration:none}
-sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+sup.footnote a:active,sup.footnoteref a:active,#footnotes .footnote a:first-of-type:active{text-decoration:underline}
 #footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
 #footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em;border-width:1px 0 0}
 #footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;margin-bottom:.2em}
@@ -393,7 +391,7 @@ b.conum *{color:inherit!important}
 dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
 h1,h2,p,td.content,span.alt,summary{letter-spacing:-.01em}
 p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
-p,blockquote,dt,td.content,span.alt,summary{font-size:1.0625rem}
+p,blockquote,dt,td.content,td.hdlist1,span.alt,summary{font-size:1.0625rem}
 p{margin-bottom:1.25rem}
 .sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
 .exampleblock>.content{background:#fffef7;border-color:#e0e0dc;box-shadow:0 1px 4px #e0e0dc}
@@ -436,7 +434,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body class="book toc2 toc-left data-line-1">
+<body class="book toc2 toc-left">
 <div id="header">
 <h1>NiMMbus Help</h1>
 <div id="toc" class="toc2">
@@ -459,7 +457,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#Res_responsible_party">3.2. <strong>Responsible party: Individual &amp; Organization</strong></a></li>
 <li><a href="#Res_hyperlink">3.3. <strong>Hyperlink</strong></a></li>
 <li><a href="#Res_PoI">3.4. <strong>Point of interest</strong></a></li>
-<li><a href="#Res_Cit_Pub">3.5. <strong>Citation &amp; Publication</strong></a></li>
+<li><a href="#Res_LogBook">3.5. <strong>Log Book</strong></a></li>
+<li><a href="#Res_logpage_item">3.6. <strong>Log Page</strong></a></li>
+<li><a href="#Res_Cit_Pub">3.7. <strong>Citation &amp; Publication</strong></a></li>
 </ul>
 </li>
 <li><a href="#Citation">4. <strong>Citation</strong></a></li>
@@ -480,16 +480,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#Privacy">7.1. <strong>Privacy and security of personal data</strong></a></li>
 </ul>
 </li>
-<li><a href="#Res_How_to">8. <strong>How to use NiMMbus</strong></a>
-<ul class="sectlevel2">
-<li><a href="#_once_logged_in_in_nimmbus">8.1. Once logged-in in NiMMbus</a>
-<ul class="sectlevel3">
-<li><a href="#_left_panel_user_information_and_options_to_create_a_new_resource">8.1.1. Left Panel: User information and options to create a new resource</a></li>
-<li><a href="#_right_panel_resources_list">8.1.2. Right Panel: Resources List</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li><a href="#History">Appendix A: Revision History</a></li>
 <li><a href="#TestPages">Appendix B: NiMMbus GUF integration</a>
 <ul class="sectlevel2">
@@ -503,65 +493,65 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph data-line-27">
+<div class="paragraph">
 <p>Posted Date: 2022-11-17</p>
 </div>
-<div class="paragraph data-line-29">
-<p>Reference URL for this document: <a href="https://www.nimmbus.cat/help/help.htm" class="undefined" data-href="https://www.nimmbus.cat/help/help.htm">https://www.nimmbus.cat/help/help.htm</a></p>
+<div class="paragraph">
+<p>Reference URL for this document: <a href="https://www.nimmbus.cat/help/help.htm" class="bare">https://www.nimmbus.cat/help/help.htm</a></p>
 </div>
-<div class="paragraph data-line-31">
+<div class="paragraph">
 <p>Editor: Javiera Crisóstomo L., Alaitz Zabala, Joan Masó.</p>
 </div>
-<div class="paragraph data-line-33">
+<div class="paragraph">
 <p>Title: NiMMbus Help</p>
 </div>
 <hr>
 </div>
 </div>
-<div class="sect1 data-line-2">
+<div class="sect1">
 <h2 id="Summary"><a class="anchor" href="#Summary"></a>1. <strong>Summary</strong></h2>
 <div class="sectionbody">
-<div class="paragraph data-line-10">
+<div class="paragraph">
 <p>NiMMbus is a <strong>solution for storing geospatial resources</strong> on the <em>MiraMon</em> private cloud. <a href="http://www.miramon.cat" target="_blank">MiraMon</a> is a family of GIS products, developed since 1994, that includes a desktop GIS, a web map browser and the NiMMbus system.</p>
 </div>
-<div class="paragraph data-line-12">
+<div class="paragraph">
 <p>NiMMbus was originally created to store geospatial resources such as points of interest or hyperlinks to geospatial resources in the web. It has evolved from the original approach and now the main goal of NiMMbus is to <strong>provide an interface for user feedback that can be easily integrated into existing servers or  online data catalogues</strong>, by a <strong>data or metadata identifier</strong>, beside of being the online storage cloud thought on its beginning.</p>
 </div>
-<div class="paragraph data-line-14">
+<div class="paragraph">
 <p>The system implements the <strong>Geospatial User Feedback standard</strong>, originated in the EU FP7 GeoViQua project (since now on, we will refer to Geospatial user Feedback as <em>GUF</em>) and which evolved to become an <a href="https://www.ogc.org/standards" target="_blank">OGC</a> standard.</p>
 </div>
-<div class="paragraph data-line-16">
+<div class="paragraph">
 <p><strong>GUF is metadata produced by the users of geospatial data products</strong> as they use and gain experience with them, so that is directly related to their background while working with a given geospatial resource. It allows to provide comments, ratings (evaluations), making questions or user reports of dataset problems, and proposing solutions to those problems (among others possibilities), all of them related to the use or interpretation of a dataset, by the one that has been using it. For more information about GUF, you can check the information in the <a href="https://www.ogc.org/standards/guf" target="_blank">OGC_GUF</a> look on the webpage OGC.</p>
 </div>
-<div class="paragraph data-line-18">
+<div class="paragraph">
 <p>On <strong>NiMMbus</strong>, it is possible to create a citation of an external resource (pointing to an external catalogue or repository) and associate feedback items to it (more information about different types of resources on next sections).</p>
 </div>
-<div class="paragraph data-line-22">
+<div class="paragraph">
 <p>More information about the NiMMbus system can be found in the <a href="https://github.com/joanma747/nimmbus" target="_blank">NiMMbus GitHub</a>.</p>
 </div>
-<div class="sect2 data-line-25">
+<div class="sect2">
 <h3 id="Acknowledgements"><a class="anchor" href="#Acknowledgements"></a>1.1. <strong>Acknowledgements</strong></h3>
-<div class="paragraph data-line-27">
+<div class="paragraph">
 <p>The NiMMbus project has received funding from the European Union Horizon 2020 research and innovation programme under grant agreements No 730329 - NextGEOSS and No 101003518 - EIFFEL.</p>
 </div>
-<div class="paragraph data-line-29">
+<div class="paragraph">
 <p>The contribution of the H2020 NextGEOSS project was to extend the initial implementation of NiMMbus to support GUF resources.</p>
 </div>
-<div class="paragraph data-line-31">
+<div class="paragraph">
 <p>Currently, GUF is being extended through the <u>H2020 Eiffel project</u>, which contribution is to extend quality elements to capture quality metadata in climate change scenarios, as well as to extend GUF features to store and share knowledge elements.</p>
 </div>
 <hr>
-<div class="paragraph data-line-34">
+<div class="paragraph">
 <p>This documentation and implementation reflect only the author&#8217;s view and the Agency is not responsible for any use that may be made of the information it contains.</p>
 </div>
 <hr>
 </div>
-<div class="sect2 data-line-39">
+<div class="sect2">
 <h3 id="Contributors"><a class="anchor" href="#Contributors"></a>1.2. <strong>Document contributor contact points</strong></h3>
-<div class="paragraph data-line-41">
+<div class="paragraph">
 <p>All questions regarding this document should be directed to the editor or the contributors, through the general MiraMon<a href="mailto:suport@miramon.uab.cat" target="_blank"> support email</a> account:</p>
 </div>
-<table class="tableblock frame-all grid-all data-line-45" style="width: 80%;">
+<table class="tableblock frame-all grid-all" style="width: 80%;">
 <caption class="title">Contacts</caption>
 <colgroup>
 <col style="width: 50%;">
@@ -591,219 +581,232 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
-<div class="sect1 data-line-2">
+<div class="sect1">
 <h2 id="Overview"><a class="anchor" href="#Overview"></a>2. <strong>Overview</strong></h2>
 <div class="sectionbody">
-<div class="paragraph data-line-4">
+<div class="paragraph">
 <p>This section describes the NiMMbus system and it’s characteristics. Next subsection describes how to sign-in the system, and the allowed single-sign-on systems for users.</p>
 </div>
-<div class="paragraph data-line-6">
+<div class="paragraph">
 <p>Following sections in the document explain the different pages of the system:</p>
 </div>
-<div class="ulist data-line-8">
+<div class="ulist">
 <ul>
-<li class="data-line-8">
+<li>
 <p><strong>Resources</strong>: describes the main page after singing-in: the resource list.</p>
 </li>
-<li class="data-line-9">
+<li>
 <p><strong>Citation &amp; publication</strong>: describes the citation and publication resource pages.</p>
 </li>
-<li class="data-line-10">
+<li>
 <p><strong>Feedback</strong>: describes the feedback resource page and also how to manage feedback items for other resources.</p>
 </li>
-<li class="data-line-11">
+<li>
 <p><strong>User</strong>: describes the user page and also how to share resources with other users.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph data-line-13">
+<div class="paragraph">
 <p>Each one has a specific form, and user can decide which information fulfil on base of the element.</p>
 </div>
-<div class="paragraph data-line-15">
+<div class="paragraph">
 <p>Moreover, there are two appendices, the first one with the document history (list of versions), and the second one describing test pages created to support in NiMMbus integration in other community portals.</p>
 </div>
-<div class="sect2 data-line-18">
+<div class="sect2">
 <h3 id="Sign-in"><a class="anchor" href="#Sign-in"></a>2.1. Sign-in in NiMMbus</h3>
-<div class="paragraph data-line-20">
+<div class="paragraph">
 <p>The Log In page to the system is:</p>
 </div>
-<div id="2_1_log_in" class="imageblock data-line-24">
+<div id="2_1_log_in" class="imageblock">
 <div class="content">
 <img src="images/2_1_log_in.png" alt="2 1 log in">
 </div>
 <div class="title">Figure 1. Log in</div>
 </div>
-<div class="paragraph data-line-26">
+<div class="paragraph">
 <p>Several single-sign-one (SSO) systems have been connected:</p>
 </div>
-<div class="ulist data-line-28">
+<div class="ulist">
 <ul>
-<li class="data-line-28">
+<li>
 <p>NextGEOSS</p>
 </li>
-<li class="data-line-29">
+<li>
 <p>Authenix</p>
 </li>
-<li class="data-line-30">
+<li>
 <p>WQeMS</p>
 </li>
-<li class="data-line-31">
+<li>
 <p>Google</p>
 </li>
 </ul>
 </div>
-<div class="paragraph data-line-33">
+<div class="paragraph">
 <p>Alternatively, a user in the NiMMbus system can be created to sign-in, only  needing a username and an email, the latter will be the base of each profile.
 Once a new <em>user</em> has been created, is possible to <em>Log in</em> into NiMMbus.</p>
 </div>
-<div class="paragraph data-line-42">
+<div class="paragraph">
 <p>More details about user creation and management of your profile are included in the <a href="#User">User</a> section.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="sect1 data-line-2">
+<div class="sect1">
 <h2 id="Resources"><a class="anchor" href="#Resources"></a>3. <strong>Resources</strong></h2>
 <div class="sectionbody">
-<div class="paragraph data-line-4">
+<div class="paragraph">
 <p>As <strong>NiMMbus is a repository for saving and sharing geospatial information</strong>, there are five types of resources to be created, depending on the characteristics of the information that needs to be saved to describe the resource. The five types of resources are briefly described in the next sub-sections. and fully described in a section for each.</p>
 </div>
-<div class="paragraph data-line-6">
+<div class="paragraph">
 <p>Further more, <strong>one of NiMMbus&#8217;s main goals is to generate and improve knowledge from metadata and interaction between users</strong>. For that, there is the option of creating a new resource that can only be viewed by the owner, to share it with a specific person/organization (using a NiMMbus user name or an e-mail), or to share it with the NiMMbus community. To define that property, there is a small box at the end of each resource page to mark/unmark for making it visible to other users. For sharing resources with other users of NiMMbus, search for it at the general resources page, and press on "<em>Share</em>" bottom.</p>
 </div>
-<div class="sect2 data-line-9">
+<div class="sect2">
 <h3 id="Res_feedback_item"><a class="anchor" href="#Res_feedback_item"></a>3.1. <strong>Feedback item</strong></h3>
-<div class="paragraph data-line-10">
+<div class="paragraph">
 <p>Creating feedback is providing information or opinions about a geospatial resource, on base of the experience of users with it. In that way, it is also a <strong>key driver to improve data information</strong>, as to make and transmit knowledge about data of experience using data.</p>
 </div>
-<div class="paragraph data-line-12">
+<div class="paragraph">
 <p>The goal is to <strong>inform other users about the experience using a specific resource</strong> (for example: how, when and why it was used in a particular way, a comment about the experience using it or an opinion about it). So that, other users can consider that assessment when it is needed and even the provider can improve the product after reading this feedback item. In that way, feedbacks are helping us on improving datasets as well as creating knowledge from metadata.</p>
 </div>
-<div class="paragraph data-line-14">
+<div class="paragraph">
 <p><a href="#Feedback">Feedback</a> section explains in detail all the elements about the GUF item (look for more details there).</p>
 </div>
 </div>
-<div class="sect2 data-line-17">
+<div class="sect2">
 <h3 id="Res_responsible_party"><a class="anchor" href="#Res_responsible_party"></a>3.2. <strong>Responsible party: Individual &amp; Organization</strong></h3>
-<div class="paragraph data-line-18">
+<div class="paragraph">
 <p>This section is for making an <strong>identification file of a single person or an organization that has created a resource</strong>.</p>
 </div>
-<div class="paragraph data-line-20">
+<div class="paragraph">
 <p>In the case of creating the description for an individual, it contains: the role, name, contact and position of the person. When it comes to an organization, the required data is: the name and some address data, such as the city, postal code, country, among others.</p>
 </div>
-<div class="paragraph data-line-22">
+<div class="paragraph">
 <p>This resource is typically used within a feedback item (to identify the user creating the feedback item) or within a citation or publication (to identify parties related to the citation such as the editor, author, funder…).</p>
 </div>
 </div>
-<div class="sect2 data-line-25">
+<div class="sect2">
 <h3 id="Res_hyperlink"><a class="anchor" href="#Res_hyperlink"></a>3.3. <strong>Hyperlink</strong></h3>
-<div class="paragraph data-line-26">
+<div class="paragraph">
 <p>This section is for creating a <strong>link to an online resource of interest</strong>, such as a website with shapefiles or satellite images, for example.</p>
 </div>
-<div class="paragraph data-line-28">
+<div class="paragraph">
 <p>To create this type of resource some characteristics shall be defined, as the title, the URL, the format of the resource (MMZ, MMZX, ZIP, JPEG, PNG, or others -to define-), and a brief explanation of the motivations to save this resource.</p>
 </div>
 </div>
-<div class="sect2 data-line-31">
+<div class="sect2">
 <h3 id="Res_PoI"><a class="anchor" href="#Res_PoI"></a>3.4. <strong>Point of interest</strong></h3>
-<div class="paragraph data-line-32">
+<div class="paragraph">
 <p>The main goal is to be able to <strong>pinpoint a single point feature with an exact location</strong> (with coordinates), so that features or phenomena can be accurately located (for example at a single pixel or group of pixels).</p>
 </div>
-<div class="paragraph data-line-34">
+<div class="paragraph">
 <p>To create this type of resource, the following properties need to be specified: a title, the coordinates (that can be directly obtained from the device if location services are active), and a small note with the motivation of this resource.</p>
 </div>
 </div>
-<div class="sect2 data-line-37">
-<h3 id="Res_Cit_Pub"><a class="anchor" href="#Res_Cit_Pub"></a>3.5. <strong>Citation &amp; Publication</strong></h3>
-<div class="paragraph data-line-38">
+<div class="sect2">
+<h3 id="Res_LogBook"><a class="anchor" href="#Res_LogBook"></a>3.5. <strong>Log Book</strong></h3>
+<div class="paragraph">
+<p>This resource is defined by a title and a unique combination of a Code and a Namespace. You can add LogPages to it, which describe how its properties change over time. It is designed to keep a timeline of a geospatial element (for example, a map layer or part of it on a map server).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Res_logpage_item"><a class="anchor" href="#Res_logpage_item"></a>3.6. <strong>Log Page</strong></h3>
+<div class="paragraph">
+<p>A Log Page is directly associated with a Log Book. A set of Log Pages forms the record of a specific Log Book element.
+A Log Page allows adding comments that affect a Log Book element at a specific point in time. These comments may refer to one or more specific geographic areas (defined by points or polygons) or to specific levels of aggregation of the dataset represented in the Log Book.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Res_Cit_Pub"><a class="anchor" href="#Res_Cit_Pub"></a>3.7. <strong>Citation &amp; Publication</strong></h3>
+<div class="paragraph">
 <p>This type of resource is a resource reference, associated to the <strong>set of bibliographic characteristics of a file</strong>, so that it’s defined as the information object containing information that directs a user’s attention from one resource to another.</p>
 </div>
-<div class="paragraph data-line-40">
+<div class="paragraph">
 <p>The information needed to create a citation is: the title or name of the resource, the creating date, a unique identification code, information about the person responsible for the resource (that could be an individual or an organization), information about the serial number of the resource (name, ID, and pages) and also about the online resource (URL, URL description). The publication resource extends the citation so it allows to also define a summary and a category describing the type of publication (e.g. book chapter, journal article, webpage…).</p>
 </div>
-<div class="paragraph data-line-42">
+<div class="paragraph">
 <p>These resources are typically used within a feedback item.</p>
 </div>
-<div class="paragraph data-line-44">
+<div class="paragraph">
 <p><a href="#Citation">Citation</a> &amp; <a href="#Publication">Publication</a> sections explains in detail all the elements about the Citation &amp; Publication items respectively (look for more details there).</p>
 </div>
 </div>
 </div>
 </div>
-<div class="sect1 data-line-2">
+<div class="sect1">
 <h2 id="Citation"><a class="anchor" href="#Citation"></a>4. <strong>Citation</strong></h2>
 <div class="sectionbody">
-<div class="paragraph data-line-6">
+<div class="paragraph">
 <p>Is a resource reference that is typically used within a feedback item, for example to point out to the targets or publications related to the feedback item.</p>
 </div>
-<div class="paragraph data-line-8">
+<div class="paragraph">
 <p>The structure of this type of resource has seven subsections:</p>
 </div>
-<div class="ulist data-line-10">
+<div class="ulist">
 <ul>
-<li class="data-line-10">
+<li>
 <p><strong>Title</strong>: to write the name of the resource you are  citing.</p>
 </li>
-<li class="data-line-11">
+<li>
 <p><strong>Resource edition</strong>: with two fields to add information:
 Edition, to indicate the version of the cited resource; Edition date, to indicate the date of edition.</p>
 </li>
-<li class="data-line-13">
+<li>
 <p><strong>Citation identifier</strong>: to design a Code on the resource (a.k.a. Identifier), and a special name space where this identifier is unique.</p>
 </li>
-<li class="data-line-14">
+<li>
 <p><strong>Responsible party</strong>: to link to an <em>individual or organization</em> (already created using the specific resource types) and to define the role this party has with the cited resource (i.e. author of the resource, editor, contributor&#8230;&#8203;).</p>
 </li>
-<li class="data-line-15">
+<li>
 <p><strong>Series which the resource is part of</strong>: to identify the name of the series where the resource is part, the identifier of the issue in the series and the  pages that the resource fills in the series issue. Typically (but not only) used to define the journal, issue and pages of a scientific publication.</p>
 </li>
-<li class="data-line-16">
+<li>
 <p><strong>Other citation details</strong>: to explain in a text any other details required to complete the citation.</p>
 </li>
-<li class="data-line-17">
+<li>
 <p><strong>Online resource</strong>: to identify the URL related to the element, also giving a description or explanation about it and the URL function (there is a drop-down list with different options to mark such as: information, download, view&#8230;&#8203;).</p>
 </li>
 </ul>
 </div>
-<div class="paragraph data-line-19">
+<div class="paragraph">
 <p>Finally, and before creating the resource, there is an option to check if the citation will be publicly available on the sharing resources list or will be just for the owner (or the specific users to which it has been shared with).</p>
 </div>
 </div>
 </div>
-<div class="sect1 data-line-22">
+<div class="sect1">
 <h2 id="Publication"><a class="anchor" href="#Publication"></a>5. <strong>Publication</strong></h2>
 <div class="sectionbody">
-<div class="paragraph data-line-24">
+<div class="paragraph">
 <p>The structure of this type of resource has nine subsections, the first seven identical to the ones in a Citation resource:</p>
 </div>
-<div class="ulist data-line-26">
+<div class="ulist">
 <ul>
-<li class="data-line-26">
+<li>
 <p><strong>Title</strong>: to write the name of the resource you are  citing.</p>
 </li>
-<li class="data-line-27">
+<li>
 <p><strong>Resource edition</strong>: with two fields to add information: Edition, one to indicate the version of the cited resource; Edition date, to indicate the date of edition.</p>
 </li>
-<li class="data-line-28">
+<li>
 <p><strong>Citation identifier</strong>: to design a Code on the resource (a.k.a. Identifier), and a special name space where this identifier is unique.</p>
 </li>
-<li class="data-line-29">
+<li>
 <p><strong>Responsible party</strong>: to link to an individual or organization (already created using the specific resource types) and to define the role this party has with the cited resource (i.e. author of the resource, editor, contributor&#8230;&#8203;).</p>
 </li>
-<li class="data-line-30">
+<li>
 <p><strong>Series which the resource is part of</strong>: to identify the name of the series where the resource is part, the identifier of the issue in the series and the  pages that the resource fills in the series issue. Typically (but not only) used to define the journal, issue and pages of a scientific publication.</p>
 </li>
-<li class="data-line-31">
+<li>
 <p><strong>Other citation details</strong>: to explain in a text any other details required to complete the citation.</p>
 </li>
-<li class="data-line-32">
+<li>
 <p><strong>Online resource</strong>: to identify the URL related to the element, also giving a description or explanation about it and the URL function (there is a drop-down list with different options to mark such as: information, download, view&#8230;&#8203;).</p>
-<div class="ulist data-line-33">
+<div class="ulist">
 <ul>
-<li class="data-line-33">
+<li>
 <p><strong>Abstract</strong>: to copy and paste the abstract of the publication.</p>
 </li>
-<li class="data-line-34">
+<li>
 <p><strong>Category</strong>: for selecting from a drop-down list the type of publication this resource is (e.g. book chapter, journal article, webpage&#8230;&#8203;).</p>
 </li>
 </ul>
@@ -811,64 +814,64 @@ Edition, to indicate the version of the cited resource; Edition date, to indicat
 </li>
 </ul>
 </div>
-<div class="paragraph data-line-46">
+<div class="paragraph">
 <p>Finally, and before creating the resource, there is an option to check if the citation will be publicly available on the sharing resources list or will be just for the owner (or the specific users to which it has been shared with).</p>
 </div>
 </div>
 </div>
-<div class="sect1 data-line-2">
+<div class="sect1">
 <h2 id="Feedback"><a class="anchor" href="#Feedback"></a>6. <strong>Feedback</strong></h2>
 <div class="sectionbody">
-<div class="paragraph data-line-4">
+<div class="paragraph">
 <p>A geospatial feedback item can be understood as any <strong>comment or information about a geospatial resource</strong>, both quantitative and/or qualitative, made to share a personal experience when using a specific dataset or a recommendation about it. It may help other users to improve the identification and usefulness of datasets, to resolve problems with datasets, to share personal comments about quality of dataset, to report positive and negative experiences using the resource or to find new usages of the data, among many other possibilities.</p>
 </div>
-<div class="paragraph data-line-6">
+<div class="paragraph">
 <p>Anyone who has been working with a geospatial dataset can provide feedback about it, regardless of the area of expertise they come from, as users with different backgrounds can assess the dataset from several points of view. This can be useful for users by gaining access to the experience of others, and also for the producers of the datasets, who can discover new uses of or receive hints to improve their resources, among others.</p>
 </div>
-<div class="paragraph data-line-8">
+<div class="paragraph">
 <p>One of the main objectives is to build a network of feedbacks associated with the experience of users with different datasets, in order to collectively generate knowledge, facilitating a “user-centric" approach and being able to transmit and share it.</p>
 </div>
-<div class="sect2 data-line-11">
+<div class="sect2">
 <h3 id="Managing_Feedback"><a class="anchor" href="#Managing_Feedback"></a>6.1. Managing feedbacks of a resource</h3>
-<div class="paragraph data-line-17">
+<div class="paragraph">
 <p>There are two ways to create a feedback item on NiMMbus: one is within NiMMbus website, the other one is integrating the NiMMbus widget on a geospatial platform. Both options are explained next.</p>
 </div>
-<div class="sect3 data-line-19">
+<div class="sect3">
 <h4 id="_within_stand_alone_nimmbus"><a class="anchor" href="#_within_stand_alone_nimmbus"></a>6.1.1. Within stand-alone-NiMMbus</h4>
-<div class="paragraph data-line-21">
+<div class="paragraph">
 <p>To create a new Feedback on NiMMbus, there must be a resource already created, which will be the target of the new feedback item. Feedback can be given about any of the resource types recently shown (citation, publication, hyperlink, point of interest, etc), even about another feedback item.</p>
 </div>
-<div class="paragraph data-line-23">
+<div class="paragraph">
 <p>There are two options to generate a new feedback item: to create a new resource and then create a feedback item about this newly created resource, or to add a feedback item to a resource already created by someone else (or by us).</p>
 </div>
-<div class="paragraph data-line-25">
+<div class="paragraph">
 <p>Once the resource exists, find it in the list of resources and click on the <em>Feedback icon</em>, which is under the resource name and looks like a <em>dialog cloud</em>, as shown in red square at the image below.</p>
 </div>
-<div class="imageblock data-line-28">
+<div class="imageblock">
 <div class="content">
 <img src="images/6_1_1_FB_boton.png" alt="6 1 1 FB boton">
 </div>
 <div class="title">Figure 2. Feedback button on Resources list</div>
 </div>
 </div>
-<div class="sect3 data-line-30">
+<div class="sect3">
 <h4 id="_when_nimmbus_is_integrated_in_other_portals"><a class="anchor" href="#_when_nimmbus_is_integrated_in_other_portals"></a>6.1.2. When NiMMbus is integrated in other portals</h4>
-<div class="paragraph data-line-32">
+<div class="paragraph">
 <p>The other option for creating a Feedback item about a target resource, is to integrate the NiMMbus widget into other geospatial platforms. This is generally the preferred options, as the feedback items are created linked to a current geospatial service or catalogue such as it has been done in the <a href="https://catalogue.nextgeoss.eu/" target="_blank">NextGEOSS catalogue</a> created in the <a href="https://nextgeoss.eu/" target="_blank">NextGEOSS H2020 project</a>, <a href="http://maps.ecopotential-project.eu/" target="_blank">Protected Areas from space</a> web map browser created in the <a href="http://www.ecopotential-project.eu/" target="_blank">ECOPotential H2020 project</a>, or an internal web map browser in the <a href="https://wqems.eu/" target="_blank">WQeMS H2020 project</a>.</p>
 </div>
-<div class="paragraph data-line-34">
+<div class="paragraph">
 <p>The feedback creation through the widget is associated to a specific resource from the beginning, and also implies the automatic creation of the citation to this resource, easing the process for the final user.</p>
 </div>
-<div class="paragraph data-line-36">
+<div class="paragraph">
 <p>There are three steps to integrate the widget. The first one is to include the JavaScript library in the HTML page, the second one to create a division or a window to contain the feedback, and finally to fill in the division (or window) with the widget. More details for the widget integration are explained on <a href="https://github.com/joanma747/nimmbus" target="_blank">NiMMbus GitHub</a>.</p>
 </div>
-<div class="imageblock data-line-39">
+<div class="imageblock">
 <div class="content">
 <img src="images/6_1_2_a_ejemp_eco_fb_wdg.png" alt="6 1 2 a ejemp eco fb wdg">
 </div>
 <div class="title">Figure 3. Example of the Feedback widget on the ECOPotential project web map browser</div>
 </div>
-<div class="imageblock data-line-42">
+<div class="imageblock">
 <div class="content">
 <img src="images/6_1_2_b_nimm_eco_fb_wdg.png" alt="6 1 2 b nimm eco fb wdg">
 </div>
@@ -876,27 +879,27 @@ Edition, to indicate the version of the cited resource; Edition date, to indicat
 </div>
 </div>
 </div>
-<div class="sect2 data-line-45">
+<div class="sect2">
 <h3 id="Feedback_elements"><a class="anchor" href="#Feedback_elements"></a>6.2. Feedback elements</h3>
-<div class="paragraph data-line-47">
+<div class="paragraph">
 <p>Feedback repository is organized in 5 subsections, to be explained:</p>
 </div>
-<div class="paragraph data-line-49">
+<div class="paragraph">
 <p><strong>FEEDBACK TARGET RESOURCE(S)</strong></p>
 </div>
-<div class="ulist data-line-51">
+<div class="ulist">
 <ul>
-<li class="data-line-51">
+<li>
 <p><strong><em>Role</em></strong>: To identify the type of target a certain resource is. With a dropdown list, there are three options to choose.</p>
-<div class="ulist data-line-52">
+<div class="ulist">
 <ul>
-<li class="data-line-52">
+<li>
 <p>Primary role: Points to the resource(s) the feedback it is mainly about. i.e. the specific scene or layer (or other) used.</p>
 </li>
-<li class="data-line-53">
+<li>
 <p>Secondary Role: Point to the resource(s) the feedback is also related to, usually not as directly as for a primary target, but for the feedback item is also relevant. i.e. the complete product or time series.</p>
 </li>
-<li class="data-line-54">
+<li>
 <p>Supplementary Role: For additional references. i.e. another dataset with similar problems.</p>
 </li>
 </ul>
@@ -905,76 +908,76 @@ Edition, to indicate the version of the cited resource; Edition date, to indicat
 </ul>
 </div>
 <hr>
-<div class="ulist data-line-57">
+<div class="ulist">
 <ul>
-<li class="data-line-57">
+<li>
 <p><strong><em>Abstract</em></strong>: Brief narrative description, to help other users to understand the summary of the contribution.</p>
 </li>
 </ul>
 </div>
 <hr>
-<div class="paragraph data-line-61">
+<div class="paragraph">
 <p><strong>PURPOSE</strong></p>
 </div>
-<div class="ulist data-line-63">
+<div class="ulist">
 <ul>
-<li class="data-line-63">
+<li>
 <p><strong><em>Purpose</em></strong>: Is a non-quantitative description to explain the rationale for creating a feedback item and contains information about its intended use.</p>
 </li>
-<li class="data-line-65">
+<li>
 <p><strong><em>User role</em></strong>: This is a set of dropdown choices to characterize the one giving feedback, as: Commercial data producer, Commercial added value, Scientific data producer, Research end user, Decision maker, and general public.</p>
 </li>
-<li class="data-line-67">
+<li>
 <p><strong><em>Rating</em></strong>: Evaluation space, showing 1-5 stars, to subjectively rank the target resources. The idea is to help others on identifying satisfaction with the resource about which the feedback us given.</p>
 </li>
 </ul>
 </div>
 <hr>
-<div class="paragraph data-line-70">
+<div class="paragraph">
 <p><strong>USER COMMENT</strong></p>
 </div>
-<div class="ulist data-line-72">
+<div class="ulist">
 <ul>
-<li class="data-line-72">
+<li>
 <p><strong><em>User comment</em></strong>: Area for commenting about the target resource(s) resource. In this section there is also a dropdown option, namely Comment motivation,  to select the type of comment about the resource. The options are: Comment, Question, Answer, Accepted answer, Response, Justification, Resolution, and Moderation.</p>
 </li>
 </ul>
 </div>
 <hr>
-<div class="paragraph data-line-76">
+<div class="paragraph">
 <p><strong>USAGE</strong></p>
 </div>
-<div class="paragraph data-line-78">
+<div class="paragraph">
 <p>This section describes the application(s) for which a dataset (the target resource(s)) has been used by the data producer or by other, distinct, data users. It has several elements to be fulfilled:</p>
 </div>
-<div class="ulist data-line-80">
+<div class="ulist">
 <ul>
-<li class="data-line-80">
+<li>
 <p>Aspect reported: To describe the aspect (facet) that the feedback item is covering about the target resource(s). One or many options can be selected from the following list: Usage, Fitness for purpose, Limitation, Alternative, and/or Problem. Depending on which report aspects have been selected, some elements below or others should be described:</p>
-<div class="ulist data-line-82">
+<div class="ulist">
 <ul>
-<li class="data-line-82">
+<li>
 <p>Usage: Description of a usage of the target resource. At least one element on 'Usage description' should be defined.</p>
 </li>
-<li class="data-line-84">
+<li>
 <p>Fitness for purpose: Description of a usage of the target resource that was appropriated for the intended purpose. At least one element on 'Usage description' should be defined.</p>
 </li>
-<li class="data-line-86">
+<li>
 <p>Limitation: Description of a limitation of the target resource. At least one 'User determined limitations' in 'Usage description' should be defined.</p>
 </li>
-<li class="data-line-88">
+<li>
 <p>Alternative: Alternative route that helps to avoid a problem or a limitation. At least one 'Work around' or one 'Alternative resource' should be defined.</p>
 </li>
-<li class="data-line-90">
+<li>
 <p>Problem: A report of a problem or an issue. At least one 'Discovered issue' should be described.</p>
 </li>
 </ul>
 </div>
 </li>
-<li class="data-line-93">
+<li>
 <p><strong><em>Usage description</em></strong>: To describe how the target has been used.  This subsection contains several elements such as specific usage description, date and time, user determined limitations, additional documentation and reproducible usage (including code, format, platform&#8230;&#8203;).</p>
 </li>
-<li class="data-line-95">
+<li>
 <p><strong><em>Discovered issue</em></strong>:   To report an error or identified problem with data. This subsection contains several elements such as known problem, date and time, workaround, alternative resources or fixed resource.</p>
 </li>
 </ul>
@@ -982,107 +985,36 @@ Edition, to indicate the version of the cited resource; Edition date, to indicat
 </div>
 </div>
 </div>
-<div class="sect1 data-line-2">
+<div class="sect1">
 <h2 id="User"><a class="anchor" href="#User"></a>7. <strong>User profile</strong></h2>
 <div class="sectionbody">
-<div class="paragraph data-line-4">
+<div class="paragraph">
 <p>This is the section to <strong>edit all the personal information</strong> associated to a user account. <strong>It is not mandatory to complete all the requested information</strong>, so is possible to choose which personal data to include in the profile and which not.</p>
 </div>
-<div class="paragraph data-line-6">
+<div class="paragraph">
 <p>Among the personal data that can be added and edited, there is: a username, a personal email (minimum requirement), the real name and a biography review.</p>
 </div>
-<div class="paragraph data-line-8">
+<div class="paragraph">
 <p>All the information on profiles can be modified as many times as needed except for <strong>the email</strong>, since <strong>is the basis on which the profile is built</strong>. If it is needed to change the profile email, a new profile account needs to be created, but it will disconnect the user’s initial resources, feedbacks or features from the new ones within the new account.</p>
 </div>
-<div class="paragraph data-line-10">
+<div class="paragraph">
 <p>As for the <strong>username</strong>, it <strong>can be changed as several times without losing the created resources</strong>, since everything is built over the registered email address in the first instance. In this way, and as users have full control of personal data, is possible to use a profile named different to the user’s real name. However, using a different username is not recommended from the creators’ team point of view, as one of main purposes of NiMMbus is to share comments and knowledge between users, and having a “default” name, may not be trustable for other users.</p>
 </div>
-<div class="sect2 data-line-13">
+<div class="sect2">
 <h3 id="Privacy"><a class="anchor" href="#Privacy"></a>7.1. <strong>Privacy and security of personal data</strong></h3>
-<div class="paragraph data-line-15">
+<div class="paragraph">
 <p>Regarding the security of personal data, and as it is written in the <a href="https://www.nimmbus.cat/PrivacyStatement.htm" target="_blank">Privacy Statement</a>, personal information will not be used or shared, unless the user ask for it. It is necessary to mention that <strong>username</strong> is the only visible personal data that will be used publicly in this webpage, as every feedback item publicly shared is related to its creator trough this username. Only in case it is necessary, users’ personal information may be used to contact them, for example if other user request to get in touch with other, or when a user had forgotten the password and request to recover it.</p>
 </div>
-<div class="paragraph data-line-17">
+<div class="paragraph">
 <p>The security of Personal Information is important to us, and we will do our best for saving it properly, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect Personal Information, we cannot guarantee its absolute security.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="sect1 data-line-2">
-<h2 id="Res_How_to"><a class="anchor" href="#Res_How_to"></a>8. <strong>How to use NiMMbus</strong></h2>
-<div class="sectionbody">
-<div class="sect2 data-line-4">
-<h3 id="_once_logged_in_in_nimmbus"><a class="anchor" href="#_once_logged_in_in_nimmbus"></a>8.1. Once logged-in in NiMMbus</h3>
-<div class="paragraph data-line-6">
-<p>Main page has two panels, the left panel (with the user information and the options to <em>create a new resource</em>) and the right panel (with the list of available <em>Resources</em>).</p>
-</div>
-<div class="sect3 data-line-8">
-<h4 id="_left_panel_user_information_and_options_to_create_a_new_resource"><a class="anchor" href="#_left_panel_user_information_and_options_to_create_a_new_resource"></a>8.1.1. Left Panel: User information and options to create a new resource</h4>
-<div class="paragraph data-line-10">
-<p>First part of this panel shows the User Information, as the registration name, the current NiMMbus username and the registration date (this one is the same since the first sign-in). To learn how to modify the username and name, go to the <a href="#User">User</a> section.</p>
-</div>
-<div class="paragraph data-line-12">
-<p>Second part of this panel has the Resource Creation section (highlighted with a red box in the next figure). There are six buttons to create different resources. From left to right the presentation order is: <a href="Res_hyperlink">New Hyperlink</a>, <a href="#Res_PoI">New point of interest</a>, <a href="#Citation">New Citation</a>, <a href="#Publication">New Publication</a>, <a href="#Res_responsible_party">New Individual</a> and <a href="#Res_responsible_party">New Organization</a>.</p>
-</div>
-<div class="imageblock data-line-15">
-<div class="content">
-<img src="images/8_1_1_resources_panel.png" alt="8 1 1 resources panel">
-</div>
-<div class="title">Figure 5. Left Panel</div>
-</div>
-<div class="paragraph data-line-17">
-<p>Third part of left panel, and below the resource creation buttons, is for two important links related to the operation of NiMMbus: <a href="https://www.nimmbus.cat/TermsOfUse.htm" target="_blank">Terms of use</a> &amp; <a href="https://www.nimmbus.cat/PrivacyStatement.htm" target="_blank">Privacy Statement</a>. Each of them define the parameters for working with NiMMbus. Please read them both carefully.</p>
-</div>
-<div class="paragraph data-line-19">
-<p><em>Terms of Use</em> governs the operations of NiMMbus and includes several sections: Accounts, Links To Other Web Sites, Termination on NiMMbus, Governing Law, Changes on Terms of Use &amp; Contact. As this is a document that is on constantly revision, the last updated date its also indicated.</p>
-</div>
-<div class="paragraph data-line-21">
-<p><em>Privacy Statement</em> informs the user about NiMMbus policies regarding the collection, use and disclosure of Personal Information at the moment of using the platform. It includes the following sections: Information Collection And Use, Log Data, Security, Links To Other Sites, Changes To This Privacy Statement, Contact.</p>
-</div>
-</div>
-<div class="sect3 data-line-23">
-<h4 id="_right_panel_resources_list"><a class="anchor" href="#_right_panel_resources_list"></a>8.1.2. Right Panel: Resources List</h4>
-<div class="paragraph data-line-25">
-<p>This part of the main page shows the list of resources displayed from the most recently modified to the oldest resource.</p>
-</div>
-<div class="paragraph data-line-27">
-<p>The <em>resource filter bar</em> has three sections: two resource filters and the <em>resource page selector</em>. The filters are two drop-down variables: <strong>Type</strong> and <strong>Properties</strong>. Each combination of them shows the available resources on the displayed list, always ordered from the most recent to the last modified item. To see more resources than the ones shown in the first place, it is possible to move to next page of resources, with the buttons at the right top of the <em>resources selecting bar</em>.</p>
-</div>
-<div class="imageblock data-line-30">
-<div class="content">
-<img src="images/8_1_2_a_resources_filters.PNG" alt="8 1 2 a resources filters">
-</div>
-<div class="title">Figure 6. Resources filters bar</div>
-</div>
-<div class="paragraph data-line-32">
-<p><em>Type</em> filter, is for choosing resources according to its category, like a <em>Citation</em>, <em>Publication</em>, <em>Individual</em>, <em>Organism</em>, <em>Hyperlink</em>, a <em>Feedback</em>, or <em>All</em>, to see all types of resources.</p>
-</div>
-<div class="imageblock data-line-35">
-<div class="content">
-<img src="images/8_1_2_b_filter_resource.png" alt="8 1 2 b filter resource">
-</div>
-<div class="title">Figure 7. Filter by type dropdown list</div>
-</div>
-<div class="paragraph data-line-37">
-<p><em>Properties</em> filter is related to the one who has created the resource or if it has been shared to the user. The options for selecting a resource are: first of all resources owned by the user or directly shared with him/her; second option to show only the resources owned by the user; third option to display only the resources shared with the user; and finally las option to see only the public resources.</p>
-</div>
-<div class="imageblock data-line-40">
-<div class="content">
-<img src="images/8_1_2_c_resources_sharedproperty.png" alt="8 1 2 c resources sharedproperty">
-</div>
-<div class="title">Figure 8. Filter by properties dropdown list</div>
-</div>
-<div class="paragraph data-line-42">
-<p>By default, the resource list shows in the first place <em>"All"</em> as Type category, and <em>"Owned and shared with me"</em> as Property type. Once selected the filters, the available resources list will change as the number of total resources will change too.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1 data-line-3">
+<div class="sect1">
 <h2 id="History"><a class="anchor" href="#History"></a>Appendix A: Revision History</h2>
 <div class="sectionbody">
-<table class="tableblock frame-all grid-all data-line-7" style="width: 90%;">
+<table class="tableblock frame-all grid-all" style="width: 90%;">
 <caption class="title">Revision History</caption>
 <colgroup>
 <col style="width: 20%;">
@@ -1119,61 +1051,61 @@ Edition, to indicate the version of the cited resource; Edition date, to indicat
 </table>
 </div>
 </div>
-<div class="sect1 data-line-3">
+<div class="sect1">
 <h2 id="TestPages"><a class="anchor" href="#TestPages"></a>Appendix B: NiMMbus GUF integration</h2>
 <div class="sectionbody">
-<div class="paragraph data-line-5">
+<div class="paragraph">
 <p>There are other integration options (using Javascript and the NiMMbus Web API, that are described on next subsection) which provide full control on how the content is shown in the screen, but require considerable more knowledge on JavaScript programming, including XML parsing and AJAX calls. This is the widget option recommended for most of the cases. Detailed information on all integration options can be found in <a href="https://github.com/joanma747/nimmbus/tree/master/GUF_integration" target="_blank">GUF integration</a>.</p>
 </div>
-<div class="paragraph data-line-7">
+<div class="paragraph">
 <p>To integrate the widget there are three steps:</p>
 </div>
-<div class="olist arabic data-line-9">
+<div class="olist arabic">
 <ol class="arabic">
-<li class="data-line-9">
+<li>
 <p>Include the JavaScript library in the HTML page.</p>
 </li>
-<li class="data-line-11">
+<li>
 <p>Create a division or a window to contain the feedback.</p>
 </li>
-<li class="data-line-13">
+<li>
 <p>Fill in the division (or window) with the widget.</p>
 </li>
 </ol>
 </div>
-<div class="sect2 data-line-17">
+<div class="sect2">
 <h3 id="Integration_1"><a class="anchor" href="#Integration_1"></a>B.1. Option 1: JavaScript API and widget</h3>
-<div class="paragraph data-line-19">
+<div class="paragraph">
 <p>There are several options depending on the type of feedback that wants to be provided</p>
 </div>
-<div class="paragraph data-line-21">
+<div class="paragraph">
 <p>A couple of test pages have been created to show the use of the widget to integrate NiMMbus GUF in any community portal:</p>
 </div>
-<div class="ulist data-line-23">
+<div class="ulist">
 <ul>
-<li class="data-line-23">
+<li>
 <p>General example: <a href="../test_widget.htm" target="_blank">test_widget.htm</a></p>
 </li>
-<li class="data-line-24">
+<li>
 <p>General example with custom styles: <a href="../test_widget_custom.htm" target="_blank">test_widget_custom.htm</a></p>
 </li>
-<li class="data-line-25">
+<li>
 <p>Corine Land Cover 2012 example: <a href="../test_widget_corine.htm" target="_blank">test_widget_corine.htm</a></p>
 </li>
-<li class="data-line-26">
+<li>
 <p>Sentinel 2 image and series example:  <a href="../test_widget_multitarget.htm" target="_blank">test_widget_multitarget.htm</a></p>
 </li>
 </ul>
 </div>
 </div>
-<div class="sect2 data-line-29">
+<div class="sect2">
 <h3 id="Integration_2"><a class="anchor" href="#Integration_2"></a>B.2. Option 2: JavaScript for the Web API</h3>
-<div class="paragraph data-line-31">
+<div class="paragraph">
 <p>A couple of test pages have been created how to directly use the NiMMbus API to add or retrieve feedback items:</p>
 </div>
-<div class="ulist data-line-33">
+<div class="ulist">
 <ul>
-<li class="data-line-33">
+<li>
 <p>New feedback example: <a href="../test_new_feedback.htm" target="_blank">test_new_feedback.htm</a></p>
 </li>
 </ul>
@@ -1184,7 +1116,7 @@ Edition, to indicate the version of the cited resource; Edition date, to indicat
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-12-14 10:32:02 +0100
+Last updated 2025-09-29 11:24:04 +0200
 </div>
 </div>
 </body>
