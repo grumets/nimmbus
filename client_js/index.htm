@@ -881,12 +881,12 @@ var kvp="";
 				elems="_"+n;
 			}
 		
-			ElementsOfALogPage.agg=[];
+			ElementsOfALogPage.dim=[];
 			for (var k=1; k<4; k++)
 			{
-				if (query["AGG_TYPE_"+k] && query["AGG_VAL_"+k])
+				if (query["DIM_NAME_"+k] && query["DIM_VAL_"+k])
 				{
-					ElementsOfALogPage.agg.push({"aggType": query["AGG_TYPE_"+k], "aggValue": query["AGG_VAL_"+k]});					
+					ElementsOfALogPage.dim.push({"dimName": query["DIM_NAME_"+k], "dimValue": query["DIM_VAL_"+k]});					
 				}
 			}
 		}
@@ -3331,12 +3331,12 @@ function AvaluaRespostaRetrieveResourceLogPage(doc, id)
 
 	if (output && output.length)
 	{
-		document.logpage_resource_form.aggType1.value="";
-		document.logpage_resource_form.aggValue1.value="";
-		document.logpage_resource_form.aggType2.value="";
-		document.logpage_resource_form.aggValue2.value="";
-		document.logpage_resource_form.aggType3.value="";
-		document.logpage_resource_form.aggValue3.value="";
+		document.logpage_resource_form.dimName1.value="";
+		document.logpage_resource_form.dimValue1.value="";
+		document.logpage_resource_form.dimName2.value="";
+		document.logpage_resource_form.dimValue2.value="";
+		document.logpage_resource_form.dimName3.value="";
+		document.logpage_resource_form.dimValue3.value="";
 		document.logpage_resource_form.title.value="";
 		document.logpage_resource_form.ini_content_date.value="";
 		document.logpage_resource_form.ini_content_time.value="";
@@ -3456,18 +3456,18 @@ function AvaluaRespostaRetrieveResourceLogPage(doc, id)
 					document.logpage_resource_form.comment.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
 				else if (identifier.childNodes[0].nodeValue=="link")
 					document.logpage_resource_form.logpageLink.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
-				else if (identifier.childNodes[0].nodeValue=="aggType1")
-					document.logpage_resource_form.aggType1.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
-				else if (identifier.childNodes[0].nodeValue=="aggValue1")
-					document.logpage_resource_form.aggValue1.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-				else if (identifier.childNodes[0].nodeValue=="aggType2")
-					document.logpage_resource_form.aggType2.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
-				else if (identifier.childNodes[0].nodeValue=="aggValue2")
-					document.logpage_resource_form.aggValue2.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-				else if (identifier.childNodes[0].nodeValue=="aggType3")
-					document.logpage_resource_form.aggType3.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
-				else if (identifier.childNodes[0].nodeValue=="aggValue3")
-					document.logpage_resource_form.aggValue3.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="dimName1")
+					document.logpage_resource_form.dimName1.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+				else if (identifier.childNodes[0].nodeValue=="dimValue1")
+					document.logpage_resource_form.dimValue1.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="dimName2")
+					document.logpage_resource_form.dimName2.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+				else if (identifier.childNodes[0].nodeValue=="dimValue2")
+					document.logpage_resource_form.dimValue2.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="dimName3")
+					document.logpage_resource_form.dimName3.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
+				else if (identifier.childNodes[0].nodeValue=="dimValue3")
+					document.logpage_resource_form.dimValue3.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
 				else if (identifier.childNodes[0].nodeValue=="rights")
 				{
 					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
@@ -3485,12 +3485,12 @@ function AvaluaRespostaRetrieveResourceLogPage(doc, id)
 					document.getElementById("logpage-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("logpage-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';	
 					
-					document.getElementById("aggregationType-logpage-resource_screen_valueL1").disabled=puc_modificar ? false : true;
-					document.getElementById("aggregationValue-logpage-resource_screen_valueL1").disabled=puc_modificar ? false : true;
-					document.getElementById("aggregationType-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
-					document.getElementById("aggregationValue-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
-					document.getElementById("aggregationType-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
-					document.getElementById("aggregationValue-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
+					document.getElementById("dimensionName-logpage-resource_screen_valueL1").disabled=puc_modificar ? false : true;
+					document.getElementById("dimensionValue-logpage-resource_screen_valueL1").disabled=puc_modificar ? false : true;
+					document.getElementById("dimensionName-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
+					document.getElementById("dimensionValue-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
+					document.getElementById("dimensionName-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
+					document.getElementById("dimensionValue-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
 					document.getElementById("title-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
 					document.getElementById("ini-content-date-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
 					document.getElementById("ini-content-time-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
@@ -6089,79 +6089,71 @@ function OmpleElementsOfAFeedback()
 }
 
 function OmpleElementsOfALogPage()
-{	//per a omplir la pàgina de LP amb les info que han vingut per la URL
-	if (ElementsOfALogPage)
-	{	//poso cada text en el recurs que toca, inclús la data actual, de manera similar com els llegeixo del XML
-		//Si estic en aquest context, esborro tot el que hi pugui haver
-		BuidaLogPageResource();
-		if (ElementsOfALogPage.title)
-			document.logpage_resource_form.title.value=ElementsOfALogPage.title;			
-		if (ElementsOfALogPage.aggType1)
-			document.logpage_resource_form.aggType1.value=ElementsOfALogPage.aggType1;	
-		if (ElementsOfALogPage.aggValue1)
-			document.logpage_resource_form.aggType1.value=ElementsOfALogPage.aggValue1;
-		if (ElementsOfALogPage.aggType2)
-			document.logpage_resource_form.aggType2.value=ElementsOfALogPage.aggType2;	
-		if (ElementsOfALogPage.aggValue2)
-			document.logpage_resource_form.aggType2.value=ElementsOfALogPage.aggValue2;
-		if (ElementsOfALogPage.aggType1)
-			document.logpage_resource_form.aggType3.value=ElementsOfALogPage.aggType3;	
-		if (ElementsOfALogPage.aggValue3)
-			document.logpage_resource_form.aggType3.value=ElementsOfALogPage.aggValue3;
-		if (ElementsOfALogPage.comment)
-			document.logpage_resource_form.comment.value=ElementsOfALogPage.comment;
-		if (ElementsOfALogPage.link)
-			document.logpage_resource_form.logpageLink.value=ElementsOfALogPage.link;
+{
+    // Per a omplir la pàgina de LP amb les info que han vingut per la URL
+    if (!ElementsOfALogPage) return;
 
-		if (ElementsOfALogPage.contentDateIni)
-		{
-			var d = new Date();
-			document.logpage_resource_form.ini_content_date.value=d.toISOString().substring(0, 10);
-			document.logpage_resource_form.ini_content_time.value=d.toISOString().substring(11, 16);		
+    // Buidem primer el formulari
+		BuidaLogPageResource();
+
+    // Omplim camps bàsics
+    if (ElementsOfALogPage.title) {
+        document.logpage_resource_form.title.value = ElementsOfALogPage.title;
+    }
+    if (ElementsOfALogPage.comment) {
+        document.logpage_resource_form.comment.value = ElementsOfALogPage.comment;
+    }
+    if (ElementsOfALogPage.link) {
+        document.logpage_resource_form.logpageLink.value = ElementsOfALogPage.link;
 		}
 		
-		if (ElementsOfALogPage.contentDateFin)
-		{
-			var d = new Date();
-			document.logpage_resource_form.fin_content_date.value=d.toISOString().substring(0, 10);
-			document.logpage_resource_form.fin_content_time.value=d.toISOString().substring(11, 16);		
-		}
-		if (ElementsOfALogPage.scope)
-		{
-			var nScope = ElementsOfALogPage.scope.length;
-			PropsOfALogPage[0].n_scope = nScope;
-			PropsOfALogPage[0].scope_elems = []; // inicialitzem com a array buit
+    // Omplim les dimensions (fins a 3)
+    if (ElementsOfALogPage.dim) {
+        var nDim = Math.min(ElementsOfALogPage.dim.length, 3);
 
-			for (var i = 0; i < nScope; i++)
-			{
-				PropsOfALogPage[0].scope_elems[i] = {}; // inicialitzem l'objecte
-				PropsOfALogPage[0].scope_elems[i].type = ElementsOfALogPage.scope[i].type;
-				PropsOfALogPage[0].scope_elems[i].coords = ElementsOfALogPage.scope[i].coords;
-				PropsOfALogPage[0].scope_elems[i].desc = ""; //la descripció està en blanc pq venim del navegador i no la podem enviar de moment.
+        for (var i = 0; i < nDim; i++) {
+            var idx = i + 1; // perquè al HTML és L1, L2, L3
+
+            var typeInput = document.getElementById("dimensionName-logpage-resource_screen_valueL" + idx);
+            var valueInput = document.getElementById("dimensionValue-logpage-resource_screen_valueL" + idx);
+
+            var dim = ElementsOfALogPage.dim[i];
+            var cleanedDimName = (dim.dimName || "").trim().replace(/:$/, '');
+
+            if (typeInput) typeInput.value = cleanedDimName;
+            if (valueInput) valueInput.value = dim.dimValue || "";
+        }
+    }
+
+    // Dates (si existeixen, posem l'actual)
+    if (ElementsOfALogPage.contentDateIni) {
+        var d = new Date();
+        document.logpage_resource_form.ini_content_date.value = d.toISOString().substring(0, 10);
+        document.logpage_resource_form.ini_content_time.value = d.toISOString().substring(11, 16);
+    }
+    if (ElementsOfALogPage.contentDateFin) {
+        var d = new Date();
+        document.logpage_resource_form.fin_content_date.value = d.toISOString().substring(0, 10);
+        document.logpage_resource_form.fin_content_time.value = d.toISOString().substring(11, 16);
+    }
+
+    // Scope
+    if (ElementsOfALogPage.scope) {
+        var nScope = ElementsOfALogPage.scope.length;
+        PropsOfALogPage[0].n_scope = nScope;
+        PropsOfALogPage[0].scope_elems = [];
+
+        for (var i = 0; i < nScope; i++) {
+            PropsOfALogPage[0].scope_elems[i] = {
+                type: ElementsOfALogPage.scope[i].type,
+                coords: ElementsOfALogPage.scope[i].coords,
+                desc: "" // no tenim descripció en aquest context
+            };
 			}
 		}
-		if (ElementsOfALogPage.agg) {
-			var nAgg = ElementsOfALogPage.agg.length;
-			if (nAgg > 3) nAgg = 3;
-
-			for (var i = 0; i < nAgg; i++) {
-				var typeSection = "aggregationType-logpage-resource_screen_valueL" + i;
-				var valueSection = "aggregationValue-logpage-resource_screen_valueL" + i;
-
-				var typeInput = document.getElementById(typeSection);
-				var valueInput = document.getElementById(valueSection);
-
-				// Elimina els ":" finals de aggType
-				var cleanedAggType = ElementsOfALogPage.agg[i].aggType.trim().replace(/:$/, '');
-
-
-				if (typeInput) typeInput.value = cleanedAggType;
-				if (valueInput) valueInput.value = ElementsOfALogPage.agg[i].aggValue;
-			}
-		}
-		ElementsOfALogPage=null; //perquè un cop usat no es torni a usar més	
+    // Evitem reusar ElementsOfALogPage més endavant
+    ElementsOfALogPage = null;
 	}
-}
 
 //define is_none=0;
 //define is_target=1;
@@ -6664,12 +6656,12 @@ function MostraLogPageResource(id, target)
 		document.getElementById("logpage-resource-delete_btn").style.display='none';		
 		
 		//OG: unblock text areas
-		document.getElementById("aggregationType-logpage-resource_screen_valueL1").disabled=false;
-		document.getElementById("aggregationValue-logpage-resource_screen_valueL1").disabled=false;
-		document.getElementById("aggregationType-logpage-resource_screen_valueL2").disabled=false;
-		document.getElementById("aggregationValue-logpage-resource_screen_valueL2").disabled=false;
-		document.getElementById("aggregationType-logpage-resource_screen_valueL3").disabled=false;
-		document.getElementById("aggregationValue-logpage-resource_screen_valueL3").disabled=false;
+		document.getElementById("dimensionName-logpage-resource_screen_valueL1").disabled=false;
+		document.getElementById("dimensionValue-logpage-resource_screen_valueL1").disabled=false;
+		document.getElementById("dimensionName-logpage-resource_screen_valueL2").disabled=false;
+		document.getElementById("dimensionValue-logpage-resource_screen_valueL2").disabled=false;
+		document.getElementById("dimensionName-logpage-resource_screen_valueL3").disabled=false;
+		document.getElementById("dimensionValue-logpage-resource_screen_valueL3").disabled=false;
 		document.getElementById("title-logpage-resource_screen_value").disabled=false;
 		document.getElementById("comment-logpage-resource_screen_value").disabled=false;
 		document.getElementById("logpage-link-resource_screen_value").disabled=false;
@@ -6838,7 +6830,7 @@ function EntraAAddLogPage(logbook_obj)
 {
     var logbook = logbook_obj.logbooks[0];
 	var scope = logbook_obj.scope;
-	var agg = logbook_obj.agg;
+	var dim = logbook_obj.dim;
     var current_role = logbook.role ? logbook.role : "primary";
 //TODO
     var params_str = JSON.stringify({
@@ -8052,18 +8044,18 @@ function SendLogPageResourceChanges()
 	  	ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 
 		// En una creació els elements buits no s'han d'enviar
-		if (document.logpage_resource_form.aggType1.value!="")
-			s2+="&AGG_TYPE_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType1.value);
-		if (document.logpage_resource_form.aggValue1.value!="")
-			s2+="&AGG_VAL_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue1.value);
-		if (document.logpage_resource_form.aggType2.value!="")
-			s2+="&AGG_TYPE_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType2.value);
-		if (document.logpage_resource_form.aggValue2.value!="")
-			s2+="&AGG_VAL_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue2.value);
-		if (document.logpage_resource_form.aggType3.value!="")
-			s2+="&AGG_TYPE_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType3.value);
-		if (document.logpage_resource_form.aggValue3.value!="")
-			s2+="&AGG_VAL_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue3.value);
+		if (document.logpage_resource_form.dimName1.value!="")
+			s2+="&DIM_NAME_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName1.value);
+		if (document.logpage_resource_form.dimValue1.value!="")
+			s2+="&DIM_VAL_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue1.value);
+		if (document.logpage_resource_form.dimName2.value!="")
+			s2+="&DIM_NAME_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName2.value);
+		if (document.logpage_resource_form.dimValue2.value!="")
+			s2+="&DIM_VAL_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue2.value);
+		if (document.logpage_resource_form.dimName3.value!="")
+			s2+="&DIM_NAME_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName3.value);
+		if (document.logpage_resource_form.dimValue3.value!="")
+			s2+="&DIM_VAL_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue3.value);
 		if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.ini_content_date.value,document.logpage_resource_form.ini_content_time.value))!="")
 			s2+="&DATE_1="+p;
 		if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.fin_content_date.value,document.logpage_resource_form.fin_content_time.value))!="")
@@ -8080,9 +8072,9 @@ function SendLogPageResourceChanges()
 	  	ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
 
 		// En una modificació els elements buits SI que s'han d'enviar
-		s2+="&AGG_TYPE_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType1.value)+"&AGG_VAL_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue1.value);
-		s2+="&AGG_TYPE_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType2.value)+"&AGG_VAL_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue2.value);
-		s2+="&AGG_TYPE_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggType3.value)+"&AGG_VAL_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.aggValue3.value);
+		s2+="&DIM_NAME_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName1.value)+"&DIM_VAL_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue1.value);
+		s2+="&DIM_NAME_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName2.value)+"&DIM_VAL_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue2.value);
+		s2+="&DIM_NAME_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName3.value)+"&DIM_VAL_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue3.value);
 		p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.ini_content_date.value,document.logpage_resource_form.ini_content_time.value);
 		s2+="&DATE_1="+p;
 		p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.fin_content_date.value,document.logpage_resource_form.fin_content_time.value);
@@ -10323,12 +10315,12 @@ function BuidaLogBookResource()
 
 function BuidaLogPageResource()
 {
-	document.getElementById("aggregationType-logpage-resource_screen_valueL1").value="";
-	document.getElementById("aggregationValue-logpage-resource_screen_valueL1").value="";
-	document.getElementById("aggregationType-logpage-resource_screen_valueL2").value="";
-	document.getElementById("aggregationValue-logpage-resource_screen_valueL2").value="";
-	document.getElementById("aggregationType-logpage-resource_screen_valueL3").value="";
-	document.getElementById("aggregationValue-logpage-resource_screen_valueL3").value="";
+	document.getElementById("dimensionName-logpage-resource_screen_valueL1").value="";
+	document.getElementById("dimensionValue-logpage-resource_screen_valueL1").value="";
+	document.getElementById("dimensionName-logpage-resource_screen_valueL2").value="";
+	document.getElementById("dimensionValue-logpage-resource_screen_valueL2").value="";
+	document.getElementById("dimensionName-logpage-resource_screen_valueL3").value="";
+	document.getElementById("dimensionValue-logpage-resource_screen_valueL3").value="";
 	document.getElementById("title-logpage-resource_screen_value").value="";
 	document.getElementById("ini-content-date-logpage-resource_screen_value").value="";
 	document.getElementById("ini-content-time-logpage-resource_screen_value").value="";
@@ -11347,7 +11339,7 @@ function BuidaHlinkResource()
 		
 		<br>
 
-		<div id="aggregation-logpage-resource_fieldset" class="control-group" style="text-align: left;">
+		<div id="dimension-logpage-resource_fieldset" class="control-group" style="text-align: left;">
 			<div class="controls" style="display: flex; flex-direction: column; gap: 20px;">
 				
 				<!-- Fila L1 -->
@@ -11355,20 +11347,20 @@ function BuidaHlinkResource()
 					<!-- Tipus L1 -->
 					<div style="display: flex; flex-direction: column;">
 						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="aggregationType-logpage-resource_screenL1" for="aggregationType-logpage-resource_screen_valueL1" style="margin-top: 5px;">Tipus</label>
+							<label class="control-label" id="dimensionName-logpage-resource_screenL1" for="dimensionName-logpage-resource_screen_valueL1" style="margin-top: 5px;">Tipus</label>
 							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="aggregationType-logpage-resource_screen_valueL1" name="aggType1" style="width: 200px;" />
-								<p id="aggregationType-logpage-resource_screen_descripL1" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+								<input type="text" class="text-input" id="dimensionName-logpage-resource_screen_valueL1" name="dimName1" style="width: 200px;" />
+								<p id="dimensionName-logpage-resource_screen_descripL1" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
 							</div>
 						</div>
 					</div>
 					<!-- Valor L1 -->
 					<div style="display: flex; flex-direction: column;">
 						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="aggregationValue-logpage-resource_screenL1" for="aggregationValue-logpage-resource_screen_valueL1" style="margin-top: 5px;">Valor</label>
+							<label class="control-label" id="dimensionValue-logpage-resource_screenL1" for="dimensionValue-logpage-resource_screen_valueL1" style="margin-top: 5px;">Valor</label>
 							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="aggregationValue-logpage-resource_screen_valueL1" name="aggValue1" style="width: 200px;" />
-								<p id="aggregationValue-logpage-resource_screen_descripL1" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+								<input type="text" class="text-input" id="dimensionValue-logpage-resource_screen_valueL1" name="dimValue1" style="width: 200px;" />
+								<p id="dimensionValue-logpage-resource_screen_descripL1" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
 							</div>
 						</div>
 					</div>
@@ -11379,20 +11371,20 @@ function BuidaHlinkResource()
 					<!-- Tipus L2 -->
 					<div style="display: flex; flex-direction: column;">
 						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="aggregationType-logpage-resource_screenL2" for="aggregationType-logpage-resource_screen_valueL2" style="margin-top: 5px;">Tipus</label>
+							<label class="control-label" id="dimensionName-logpage-resource_screenL2" for="dimensionName-logpage-resource_screen_valueL2" style="margin-top: 5px;">Tipus</label>
 							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="aggregationType-logpage-resource_screen_valueL2" name="aggType2" style="width: 200px;" />
-								<p id="aggregationType-logpage-resource_screen_descripL2" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+								<input type="text" class="text-input" id="dimensionName-logpage-resource_screen_valueL2" name="dimName2" style="width: 200px;" />
+								<p id="dimensionName-logpage-resource_screen_descripL2" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
 							</div>
 						</div>
 					</div>
 					<!-- Valor L2 -->
 					<div style="display: flex; flex-direction: column;">
 						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="aggregationValue-logpage-resource_screenL2" for="aggregationValue-logpage-resource_screen_valueL2" style="margin-top: 5px;">Valor</label>
+							<label class="control-label" id="dimensionValue-logpage-resource_screenL2" for="dimensionValue-logpage-resource_screen_valueL2" style="margin-top: 5px;">Valor</label>
 							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="aggregationValue-logpage-resource_screen_valueL2" name="aggValue2" style="width: 200px;" />
-								<p id="aggregationValue-logpage-resource_screen_descripL2" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+								<input type="text" class="text-input" id="dimensionValue-logpage-resource_screen_valueL2" name="dimValue2" style="width: 200px;" />
+								<p id="dimensionValue-logpage-resource_screen_descripL2" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
 							</div>
 						</div>
 					</div>
@@ -11403,20 +11395,20 @@ function BuidaHlinkResource()
 					<!-- Tipus L3 -->
 					<div style="display: flex; flex-direction: column;">
 						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="aggregationType-logpage-resource_screenL3" for="aggregationType-logpage-resource_screen_valueL3" style="margin-top: 5px;">Tipus</label>
+							<label class="control-label" id="dimensionName-logpage-resource_screenL3" for="dimensionName-logpage-resource_screen_valueL3" style="margin-top: 5px;">Tipus</label>
 							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="aggregationType-logpage-resource_screen_valueL3" name="aggType3" style="width: 200px;" />
-								<p id="aggregationType-logpage-resource_screen_descripL3" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+								<input type="text" class="text-input" id="dimensionName-logpage-resource_screen_valueL3" name="dimName3" style="width: 200px;" />
+								<p id="dimensionName-logpage-resource_screen_descripL3" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
 							</div>
 						</div>
 					</div>
 					<!-- Valor L3 -->
 					<div style="display: flex; flex-direction: column;">
 						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="aggregationValue-logpage-resource_screenL3" for="aggregationValue-logpage-resource_screen_valueL3" style="margin-top: 5px;">Valor</label>
+							<label class="control-label" id="dimensionValue-logpage-resource_screenL3" for="dimensionValue-logpage-resource_screen_valueL3" style="margin-top: 5px;">Valor</label>
 							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="aggregationValue-logpage-resource_screen_valueL3" name="aggValue3" style="width: 200px;" />
-								<p id="aggregationValue-logpage-resource_screen_descripL3" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+								<input type="text" class="text-input" id="dimensionValue-logpage-resource_screen_valueL3" name="dimValue3" style="width: 200px;" />
+								<p id="dimensionValue-logpage-resource_screen_descripL3" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
 							</div>
 						</div>
 					</div>

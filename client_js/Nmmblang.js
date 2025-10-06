@@ -1,4 +1,4 @@
-﻿/* 
+/* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
     storing geospatial resources on the MiraMon private cloud. 
     MiraMon is a family of GIS&RS products developed since 1994 
@@ -625,22 +625,22 @@ var l_msg_Define_Scope_LP={cat: "Introdueix l'àmbit/s referent a aquest registr
 	document.getElementById("target-logpage-resource").innerHTML=DonaCadenaJSON({cat: "Llibre de registres objectiu", spa: "Libro de registros objetivo", eng: "Log Book target"});
 	document.getElementById("open-data-logpage-resource_screen").innerHTML=DonaCadenaJSON({cat: "Compartir amb tothom", spa: "Compartir con todos", eng: "Share to everyone"});
 	document.getElementById("open-data-logpage-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "Compartir aquest registre amb tothom", spa: "Compartir este registro con todos", eng: "If check this logpage will be visible to everyone"});
-	document.getElementById("aggregationType-logpage-resource_screenL1").innerHTML=DonaCadenaJSON({cat: "Tipus d'agregació (nivell 1):", spa: "Tipo de agregación (nivel 1):", eng: "Aggregation type (level 1):"});
-	document.getElementById("aggregationValue-logpage-resource_screenL1").innerHTML=DonaCadenaJSON({cat: "Valor d'agregació (nivell 1):", spa: "Valor de agregación (nivel 1):", eng: "Aggregation value (level 1):"});
-	document.getElementById("aggregationType-logpage-resource_screenL2").innerHTML=DonaCadenaJSON({cat: "Tipus d'agregació (nivell 1):", spa: "Tipo de agregación (nivel 2):", eng: "Aggregation type (level 2):"});
-	document.getElementById("aggregationValue-logpage-resource_screenL2").innerHTML=DonaCadenaJSON({cat: "Valor d'agregació (nivell 1):", spa: "Valor de agregación (nivel 2):", eng: "Aggregation value (level 2):"});
-	document.getElementById("aggregationType-logpage-resource_screenL3").innerHTML=DonaCadenaJSON({cat: "Tipus d'agregació (nivell 1):", spa: "Tipo de agregación (nivel 3):", eng: "Aggregation type (level 3):"});
-	document.getElementById("aggregationValue-logpage-resource_screenL3").innerHTML=DonaCadenaJSON({cat: "Valor d'agregació (nivell 1):", spa: "Valor de agregación (nivel 3):", eng: "Aggregation value (level 3):"});
+	document.getElementById("dimensionName-logpage-resource_screenL1").innerHTML=DonaCadenaJSON({cat: "Nom de la dimensió 1:", spa: "Nombre de la dimensión 1:", eng: "Dimension name 1:"});
+	document.getElementById("dimensionValue-logpage-resource_screenL1").innerHTML=DonaCadenaJSON({cat: "Valor de la dimensió 1:", spa: "Valor de la dimensión 1:", eng: "Dimension value 1:"});
+	document.getElementById("dimensionName-logpage-resource_screenL2").innerHTML=DonaCadenaJSON({cat: "Nom de la dimensió 2:", spa: "Nombre de la dimensión 2:", eng: "Dimension name 2:"});
+	document.getElementById("dimensionValue-logpage-resource_screenL2").innerHTML=DonaCadenaJSON({cat: "Valor de la dimensió 2:", spa: "Valor de la dimensión 2:", eng: "Dimension value 2:"});
+	document.getElementById("dimensionName-logpage-resource_screenL3").innerHTML=DonaCadenaJSON({cat: "Nom de la dimensió 3:", spa: "Nombre de la dimensión 3:", eng: "Dimension name 3:"});
+	document.getElementById("dimensionValue-logpage-resource_screenL3").innerHTML=DonaCadenaJSON({cat: "Valor de la dimensió 3:", spa: "Valor de la dimensión 3:", eng: "Dimension value 3:"});
 	document.getElementById("ini-content-date-time-logpage-resource_screen").innerHTML=DonaCadenaJSON({cat: "Data del contingut (inicial):", spa: "Fecha del contenido (inicial)", eng: "Content date (start)"});
 	document.getElementById("fin-content-date-time-logpage-resource_screen").innerHTML=DonaCadenaJSON({cat: "Data del contingut (final):", spa: "Fecha del contenido (final)", eng: "Content date (end)"});
 	document.getElementById("comment-logpage-resource_screen").innerHTML=DonaCadenaJSON({cat: "Comentari", spa: "Comentario", eng: "Comment"});
 	document.getElementById("logpage-link-resource_screen").innerHTML=DonaCadenaJSON({cat: "URL amb informació adicional", spa: "URL con informació adicional", eng: "URL with additional information"});			
-	document.getElementById("aggregationType-logpage-resource_screen_descripL1").innerHTML=DonaCadenaJSON({cat: "per exemple: Regió", spa: "por ejemplo: Región", eng: "for example: Region"});
-	document.getElementById("aggregationValue-logpage-resource_screen_descripL1").innerHTML=DonaCadenaJSON({cat: "per exemple: Catalunya", spa: "por ejemplo: Cataluña", eng: "for example: Catalonia"});
-	document.getElementById("aggregationType-logpage-resource_screen_descripL2").innerHTML=DonaCadenaJSON({cat: "per exemple: Província", spa: "por ejemplo: Provincia", eng: "for example: Province"});
-	document.getElementById("aggregationValue-logpage-resource_screen_descripL2").innerHTML=DonaCadenaJSON({cat: "per exemple: Barcelona", spa: "por ejemplo: Barcelona", eng: "for example: Barcelona"});
-	document.getElementById("aggregationType-logpage-resource_screen_descripL3").innerHTML=DonaCadenaJSON({cat: "per exemple: Ciutat", spa: "por ejemplo: Ciudad", eng: "for example: City"});
-	document.getElementById("aggregationValue-logpage-resource_screen_descripL3").innerHTML=DonaCadenaJSON({cat: "per exemple: St. Cugat del Vallès", spa: "por ejemplo: St. Cugat del Vallés", eng: "for example: St. Cugat del Vallès"});
+	document.getElementById("dimensionName-logpage-resource_screen_descripL1").innerHTML=DonaCadenaJSON({cat: "per exemple: Espècies", spa: "por ejemplo: Especies", eng: "for example: Species"});
+	document.getElementById("dimensionValue-logpage-resource_screen_descripL1").innerHTML=DonaCadenaJSON({cat: "per exemple: Alauda arvensis", spa: "por ejemplo: Alauda arvensis", eng: "for example: Alauda arvensis"});
+	document.getElementById("dimensionName-logpage-resource_screen_descripL2").innerHTML=DonaCadenaJSON({cat: "per exemple: Escenari", spa: "por ejemplo: Escenario", eng: "for example: Scenario"});
+	document.getElementById("dimensionValue-logpage-resource_screen_descripL2").innerHTML=DonaCadenaJSON({cat: "per exemple: Current AES", spa: "por ejemplo: Current AES", eng: "for example: Current AES"});
+	document.getElementById("dimensionName-logpage-resource_screen_descripL3").innerHTML=DonaCadenaJSON({cat: "per exemple: Llindar", spa: "por ejemplo: Umbral", eng: "for example: Threshold"});
+	document.getElementById("dimensionValue-logpage-resource_screen_descripL3").innerHTML=DonaCadenaJSON({cat: "per exemple: Tx090", spa: "por ejemplo: Tx090", eng: "for example: Tx090"});
 	document.getElementById("title-logpage-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "per exemple: instal·lació de nous sensors a la parcel·la d'estudi", spa: "por ejemplo: instalación de nouevos sensores en la parcela de estudio", eng: "for example: installation of new sensors on the study plot"});
 	document.getElementById("ini-content-date-time-logpage-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "inici del període temporal sobre el qual aplica el contingut del registre", spa: "inicio del periodo temporal sobre el cual aplica el contenido del registro", eng: "begining of the time period over which the contents of the log apply"});
 	document.getElementById("fin-content-date-time-logpage-resource_screen_descrip").innerHTML=DonaCadenaJSON({cat: "final del període temporal sobre el qual aplica el contingut del registre", spa: "final del periodo temporal sobre el cual aplica el contenido del registro", eng: "ending of the time period over which the contents of the log apply"});
