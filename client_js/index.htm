@@ -186,7 +186,7 @@ function GoBackOnePage()
 }
 window.onhashchange = GoBackOnePage;
 
-function RevisaCrossSserverServersNB(servers)
+function RevisaCrossServerServersNB(servers)
 {
 var s_host; 
 	for (var i=0; i<servers.length; i++)
@@ -881,16 +881,10 @@ var kvp="";
 				elems="_"+n;
 			}
 		
-			ElementsOfALogPage.dim=[];
-			for (var k=1; k<4; k++)
-			{
-				if (query["DIM_NAME_"+k] && query["DIM_VAL_"+k])
-				{
-					ElementsOfALogPage.dim.push({"dimName": query["DIM_NAME_"+k], "dimValue": query["DIM_VAL_"+k]});					
+			if (query["ID_FEATURE"]) 
+				ElementsOfALogPage.idFeature = query["ID_FEATURE"];
 				}
 			}
-		}
-	}
 
 	if (typeof ParamsQuery.newpage !== "undefined" && ParamsQuery.newpage!="")
 	{	
@@ -944,7 +938,7 @@ function NotifyOpenerIAmReady(url)
 
 function InitFrontPage()
 {
-	RevisaCrossSserverServersNB(ServersNB);
+	RevisaCrossServerServersNB(ServersNB);
 	InitHello();
 	SurtDeNimmbus();
 	AnalitzarParametresURL();
@@ -3331,12 +3325,7 @@ function AvaluaRespostaRetrieveResourceLogPage(doc, id)
 
 	if (output && output.length)
 	{
-		document.logpage_resource_form.dimName1.value="";
-		document.logpage_resource_form.dimValue1.value="";
-		document.logpage_resource_form.dimName2.value="";
-		document.logpage_resource_form.dimValue2.value="";
-		document.logpage_resource_form.dimName3.value="";
-		document.logpage_resource_form.dimValue3.value="";
+		document.logpage_resource_form.idFeature.value="";
 		document.logpage_resource_form.title.value="";
 		document.logpage_resource_form.ini_content_date.value="";
 		document.logpage_resource_form.ini_content_time.value="";
@@ -3456,18 +3445,8 @@ function AvaluaRespostaRetrieveResourceLogPage(doc, id)
 					document.logpage_resource_form.comment.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
 				else if (identifier.childNodes[0].nodeValue=="link")
 					document.logpage_resource_form.logpageLink.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
-				else if (identifier.childNodes[0].nodeValue=="dimName1")
-					document.logpage_resource_form.dimName1.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
-				else if (identifier.childNodes[0].nodeValue=="dimValue1")
-					document.logpage_resource_form.dimValue1.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-				else if (identifier.childNodes[0].nodeValue=="dimName2")
-					document.logpage_resource_form.dimName2.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
-				else if (identifier.childNodes[0].nodeValue=="dimValue2")
-					document.logpage_resource_form.dimValue2.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
-				else if (identifier.childNodes[0].nodeValue=="dimName3")
-					document.logpage_resource_form.dimName3.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
-				else if (identifier.childNodes[0].nodeValue=="dimValue3")
-					document.logpage_resource_form.dimValue3.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));
+				else if (identifier.childNodes[0].nodeValue=="idFeature")
+					document.logpage_resource_form.idFeature.value=OmpleInputDesDeWPSLiteralOutput(output.item(item));	
 				else if (identifier.childNodes[0].nodeValue=="rights")
 				{
 					var rights=OmpleInputDesDeWPSLiteralOutput(output.item(item));
@@ -3485,12 +3464,8 @@ function AvaluaRespostaRetrieveResourceLogPage(doc, id)
 					document.getElementById("logpage-resource-close_btn").style.display=puc_modificar ? 'inline' : 'none';
 					document.getElementById("logpage-resource-delete_btn").style.display=(rights.indexOf("O")==-1) ? 'none' : 'inline';	
 					
-					document.getElementById("dimensionName-logpage-resource_screen_valueL1").disabled=puc_modificar ? false : true;
-					document.getElementById("dimensionValue-logpage-resource_screen_valueL1").disabled=puc_modificar ? false : true;
-					document.getElementById("dimensionName-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
-					document.getElementById("dimensionValue-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
-					document.getElementById("dimensionName-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
-					document.getElementById("dimensionValue-logpage-resource_screen_valueL2").disabled=puc_modificar ? false : true;
+					//document.getElementById("idFeature-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
+					document.getElementById("idFeature-logpage-resource_screen_value").disabled=true; //sempre està blocat. S'omple des del widget
 					document.getElementById("title-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
 					document.getElementById("ini-content-date-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
 					document.getElementById("ini-content-time-logpage-resource_screen_value").disabled=puc_modificar ? false : true;
@@ -6107,23 +6082,10 @@ function OmpleElementsOfALogPage()
         document.logpage_resource_form.logpageLink.value = ElementsOfALogPage.link;
 		}
 		
-    // Omplim les dimensions (fins a 3)
-    if (ElementsOfALogPage.dim) {
-        var nDim = Math.min(ElementsOfALogPage.dim.length, 3);
+    // Omplim idFeature
+    if (ElementsOfALogPage.idFeature)
+        document.getElementById("idFeature-logpage-resource_screen_value").value= ElementsOfALogPage.idFeature;
 
-        for (var i = 0; i < nDim; i++) {
-            var idx = i + 1; // perquè al HTML és L1, L2, L3
-
-            var typeInput = document.getElementById("dimensionName-logpage-resource_screen_valueL" + idx);
-            var valueInput = document.getElementById("dimensionValue-logpage-resource_screen_valueL" + idx);
-
-            var dim = ElementsOfALogPage.dim[i];
-            var cleanedDimName = (dim.dimName || "").trim().replace(/:$/, '');
-
-            if (typeInput) typeInput.value = cleanedDimName;
-            if (valueInput) valueInput.value = dim.dimValue || "";
-        }
-    }
 
     // Dates (si existeixen, posem l'actual)
     if (ElementsOfALogPage.contentDateIni) {
@@ -6656,12 +6618,8 @@ function MostraLogPageResource(id, target)
 		document.getElementById("logpage-resource-delete_btn").style.display='none';		
 		
 		//OG: unblock text areas
-		document.getElementById("dimensionName-logpage-resource_screen_valueL1").disabled=false;
-		document.getElementById("dimensionValue-logpage-resource_screen_valueL1").disabled=false;
-		document.getElementById("dimensionName-logpage-resource_screen_valueL2").disabled=false;
-		document.getElementById("dimensionValue-logpage-resource_screen_valueL2").disabled=false;
-		document.getElementById("dimensionName-logpage-resource_screen_valueL3").disabled=false;
-		document.getElementById("dimensionValue-logpage-resource_screen_valueL3").disabled=false;
+		//document.getElementById("idFeature-logpage-resource_screen_value").disabled=false;
+		document.getElementById("idFeature-logpage-resource_screen_value").disabled=true; //sempre està blocat. S'omple des del widget
 		document.getElementById("title-logpage-resource_screen_value").disabled=false;
 		document.getElementById("comment-logpage-resource_screen_value").disabled=false;
 		document.getElementById("logpage-link-resource_screen_value").disabled=false;
@@ -6830,7 +6788,7 @@ function EntraAAddLogPage(logbook_obj)
 {
     var logbook = logbook_obj.logbooks[0];
 	var scope = logbook_obj.scope;
-	var dim = logbook_obj.dim;
+	var idFeature = logbook_obj.idFeature;
     var current_role = logbook.role ? logbook.role : "primary";
 //TODO
     var params_str = JSON.stringify({
@@ -8044,18 +8002,8 @@ function SendLogPageResourceChanges()
 	  	ShowInfo("permanent", DonaCadenaJSON(Msg_Resource_sent));
 
 		// En una creació els elements buits no s'han d'enviar
-		if (document.logpage_resource_form.dimName1.value!="")
-			s2+="&DIM_NAME_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName1.value);
-		if (document.logpage_resource_form.dimValue1.value!="")
-			s2+="&DIM_VAL_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue1.value);
-		if (document.logpage_resource_form.dimName2.value!="")
-			s2+="&DIM_NAME_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName2.value);
-		if (document.logpage_resource_form.dimValue2.value!="")
-			s2+="&DIM_VAL_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue2.value);
-		if (document.logpage_resource_form.dimName3.value!="")
-			s2+="&DIM_NAME_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName3.value);
-		if (document.logpage_resource_form.dimValue3.value!="")
-			s2+="&DIM_VAL_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue3.value);
+		if (document.logpage_resource_form.idFeature.value!="")
+			s2+="&ID_FEATURE="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.idFeature.value);
 		if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.ini_content_date.value,document.logpage_resource_form.ini_content_time.value))!="")
 			s2+="&DATE_1="+p;
 		if ((p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.fin_content_date.value,document.logpage_resource_form.fin_content_time.value))!="")
@@ -8072,9 +8020,7 @@ function SendLogPageResourceChanges()
 	  	ShowInfo("permanent", DonaCadenaJSON(Msg_Modifications_sent));
 
 		// En una modificació els elements buits SI que s'han d'enviar
-		s2+="&DIM_NAME_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName1.value)+"&DIM_VAL_1="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue1.value);
-		s2+="&DIM_NAME_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName2.value)+"&DIM_VAL_2="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue2.value);
-		s2+="&DIM_NAME_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimName3.value)+"&DIM_VAL_3="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.dimValue3.value);
+		s2+="&ID_FEATURE="+DonaCadenaPerValorDeFormulari(document.logpage_resource_form.idFeature.value);
 		p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.ini_content_date.value,document.logpage_resource_form.ini_content_time.value);
 		s2+="&DATE_1="+p;
 		p=DonaCadenaDataHoraPerValorDeFormulari(document.logpage_resource_form.fin_content_date.value,document.logpage_resource_form.fin_content_time.value);
@@ -10315,12 +10261,7 @@ function BuidaLogBookResource()
 
 function BuidaLogPageResource()
 {
-	document.getElementById("dimensionName-logpage-resource_screen_valueL1").value="";
-	document.getElementById("dimensionValue-logpage-resource_screen_valueL1").value="";
-	document.getElementById("dimensionName-logpage-resource_screen_valueL2").value="";
-	document.getElementById("dimensionValue-logpage-resource_screen_valueL2").value="";
-	document.getElementById("dimensionName-logpage-resource_screen_valueL3").value="";
-	document.getElementById("dimensionValue-logpage-resource_screen_valueL3").value="";
+	document.getElementById("idFeature-logpage-resource_screen_value").value="";
 	document.getElementById("title-logpage-resource_screen_value").value="";
 	document.getElementById("ini-content-date-logpage-resource_screen_value").value="";
 	document.getElementById("ini-content-time-logpage-resource_screen_value").value="";
@@ -11339,83 +11280,14 @@ function BuidaHlinkResource()
 		
 		<br>
 
-		<div id="dimension-logpage-resource_fieldset" class="control-group" style="text-align: left;">
-			<div class="controls" style="display: flex; flex-direction: column; gap: 20px;">
-				
-				<!-- Fila L1 -->
-				<div style="display: flex; gap: 40px;">
-					<!-- Tipus L1 -->
-					<div style="display: flex; flex-direction: column;">
-						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="dimensionName-logpage-resource_screenL1" for="dimensionName-logpage-resource_screen_valueL1" style="margin-top: 5px;">Tipus</label>
-							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="dimensionName-logpage-resource_screen_valueL1" name="dimName1" style="width: 200px;" />
-								<p id="dimensionName-logpage-resource_screen_descripL1" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
+		<div id="idFeature-logpage-resource_fieldset" class="control-group">
+			<label class="control-label" id="idFeature-logpage-resource_screen" for="idFeature-logpage-resource_screen_value">id Feature</label>
+			<div class="controls">
+				<input type="text" class="text-input" value="" id="idFeature-logpage-resource_screen_value" name="idFeature" style="width: 80%;" maxlength="254"/>
+				<p id="idFeature-logpage-resource_screen_descrip" class="white-area-screen-descrip-text"></p>
 							</div>
 						</div>
-					</div>
-					<!-- Valor L1 -->
-					<div style="display: flex; flex-direction: column;">
-						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="dimensionValue-logpage-resource_screenL1" for="dimensionValue-logpage-resource_screen_valueL1" style="margin-top: 5px;">Valor</label>
-							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="dimensionValue-logpage-resource_screen_valueL1" name="dimValue1" style="width: 200px;" />
-								<p id="dimensionValue-logpage-resource_screen_descripL1" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
-							</div>
-						</div>
-					</div>
-				</div>
 
-				<!-- Fila L2 -->
-				<div style="display: flex; gap: 40px;">
-					<!-- Tipus L2 -->
-					<div style="display: flex; flex-direction: column;">
-						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="dimensionName-logpage-resource_screenL2" for="dimensionName-logpage-resource_screen_valueL2" style="margin-top: 5px;">Tipus</label>
-							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="dimensionName-logpage-resource_screen_valueL2" name="dimName2" style="width: 200px;" />
-								<p id="dimensionName-logpage-resource_screen_descripL2" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
-							</div>
-						</div>
-					</div>
-					<!-- Valor L2 -->
-					<div style="display: flex; flex-direction: column;">
-						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="dimensionValue-logpage-resource_screenL2" for="dimensionValue-logpage-resource_screen_valueL2" style="margin-top: 5px;">Valor</label>
-							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="dimensionValue-logpage-resource_screen_valueL2" name="dimValue2" style="width: 200px;" />
-								<p id="dimensionValue-logpage-resource_screen_descripL2" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Fila L3 -->
-				<div style="display: flex; gap: 40px;">
-					<!-- Tipus L3 -->
-					<div style="display: flex; flex-direction: column;">
-						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="dimensionName-logpage-resource_screenL3" for="dimensionName-logpage-resource_screen_valueL3" style="margin-top: 5px;">Tipus</label>
-							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="dimensionName-logpage-resource_screen_valueL3" name="dimName3" style="width: 200px;" />
-								<p id="dimensionName-logpage-resource_screen_descripL3" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
-							</div>
-						</div>
-					</div>
-					<!-- Valor L3 -->
-					<div style="display: flex; flex-direction: column;">
-						<div style="display: flex; align-items: flex-start; gap: 10px;">
-							<label class="control-label" id="dimensionValue-logpage-resource_screenL3" for="dimensionValue-logpage-resource_screen_valueL3" style="margin-top: 5px;">Valor</label>
-							<div style="display: flex; flex-direction: column;">
-								<input type="text" class="text-input" id="dimensionValue-logpage-resource_screen_valueL3" name="dimValue3" style="width: 200px;" />
-								<p id="dimensionValue-logpage-resource_screen_descripL3" class="white-area-screen-descrip-text" style="margin: 4px 0 0 0;"></p>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div>
 
 		<div id="title-logpage-resource_fieldset" class="control-group">
 			<label class="control-label" id="title-logpage-resource_screen" for="title-logpage-resource_screen_value"></label>

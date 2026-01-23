@@ -1,4 +1,4 @@
-﻿/* 
+/* 
     This file is part of NiMMbus system. NiMMbus is a solution for 
     storing geospatial resources on the MiraMon private cloud. 
     MiraMon is a family of GIS&RS products developed since 1994 
@@ -1281,14 +1281,39 @@ var n_targets_secundaris=0;
 		cdns.push("</fieldset></div>");
 	else
 		cdns.push("</div><br>");
+	var featureTrobat=null;
+	for (var i = 0; i < targets.length; i++)
+	{
+		if (targets[i].role == "primary" && targets[i].feature != null)
+			featureTrobat=i;
+	}
 
 	// div for feedback summary
 	cdns.push("<div id=\"feedback_summary_div\" class=\"guf_summary user\" style=\"display:block;\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">"); 
 	if (rsc_type != "")
-		cdns.push(GUFDonaCadenaLang({"cat":"Resum de les valoracions prèvies sobre", "spa":"Resumen de las valoraciones previas sobre", "eng":"Summary of previous user feedback on", "fre":"Résumé des précédent rétroaction de l'utilisateur de"}, lang));
+		if (featureTrobat!=null)
+		{
+			cdns.push(GUFDonaCadenaLang({
+				"cat":"Resum de les valoracions prèvies sobre", 
+				"spa":"Resumen de las valoraciones previas sobre", 
+				"eng":"Summary of previous user feedback on", 
+				"fre":"Résumé des précédent rétroaction de l'utilisateur de"}, lang));
+			cdns.push(" the feature " +"\""+ targets[featureTrobat].feature + "\" in " + rsc_type + "</legend>");
+		}
+		else
+		{
+			cdns.push(GUFDonaCadenaLang({
+				"cat":"Resum de les valoracions prèvies sobre", 
+				"spa":"Resumen de las valoraciones previas sobre", 
+				"eng":"Summary of previous user feedback on", 
+				"fre":"Résumé des précédent rétroaction de l'utilisateur de"}, lang));
+			cdns.push(" " + rsc_type + "</legend>");
+		}
 	else
+	{
 		cdns.push(GUFDonaCadenaLang({"cat":"Resum de les valoracions prèvies", "spa":"Resumen de las valoraciones previas", "eng":"Summary of previous user feedback", "fre":"Résumé des précédent rétroaction de l'utilisateur"}, lang));
 	cdns.push(" ", rsc_type, "</legend>");
+	}
 	
 	cdns.push("<div id=\"",div_id,"Summary\" style=\"width:98%\">", "</div></fieldset>");
 	cdns.push("</div>");
@@ -1299,11 +1324,34 @@ var n_targets_secundaris=0;
 
 	cdns.push("<div id=\"preFB\" class=\"guf_report user\" style=\"display:none;\"><fieldset class=\"guf_fieldset user\"><legend class=\"guf_legend user\">"); 
 	if (rsc_type != "")
-		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prèvies a", "spa":"Valoraciones previas a", "eng":"Previous user feedback to", "fre":"Précédent rétroaction de l'utilisateur de"}, lang));
+	{
+		if (featureTrobat!=null)
+		{
+			cdns.push(GUFDonaCadenaLang({
+				"cat":"Valoracions prèvies a", 
+				"spa":"Valoraciones previas a", 
+				"eng":"Previous user feedback to", 
+				"fre":"Précédent rétroaction de l'utilisateur de"}
+				, lang));
+			cdns.push(" the feature " +"\""+ targets[featureTrobat].feature + "\" in " + rsc_type + "</legend>");
+		}
+		else
+		{
+			cdns.push(GUFDonaCadenaLang({
+				"cat":"Valoracions prèvies a", 
+				"spa":"Valoraciones previas a", 
+				"eng":"Previous user feedback to", 
+				"fre":"Précédent rétroaction de l'utilisateur de"}
+				, lang));
+			cdns.push(" " + rsc_type + "</legend>");
+		}	
+	}
 	else
+	{
 		cdns.push(GUFDonaCadenaLang({"cat":"Valoracions prèvies", "spa":"Valoraciones previas", "eng":"Previous user feedback", "fre":"Précédent rétroaction de l'utilisateur"}, lang));
 	cdns.push(" ", rsc_type, "</legend>");
 	
+	}
 	cdns.push("<div id=\"",div_id,"Previ\" style=\"width:98%\">", "</div></fieldset>");
 	
 	n_targets_secundaris=TornaNTargetsSecundaris(targets);
