@@ -771,8 +771,8 @@ var kvp="";
 				ValidaSSOAuthenix(true, SignInNBAuthenix, null);
 			else if (access_token_type=="wqems")
 				ValidaSSOWQeMS(true, SignInNBWQeMS, null);
-			else if (access_token_type=="google")
-				ValidaSSOGoogle();
+			/*else if (access_token_type=="google")
+				ValidaSSOGoogle();*/
 			else if (access_token_type=="debug")
 				ValidaSSODebug();					
 		}
@@ -1300,8 +1300,8 @@ function InitHello()
 	}, {redirect_uri: ((location.pathname.charAt(location.pathname.length-1)=='/') ? location.pathname.substring(0, location.pathname.length-1) : location.pathname), popup: {width: 800}});
 	document.getElementById("authenix-button").disabled=false;
 	//amaguem el botó nextgeoss i el desabilitem
-	document.getElementById("nextgeoss-button").style.display="none"; //si volem recuperar el botó, aquesta linia es pot eliminar
-	//document.getElementById("nextgeoss-button").disabled=false;
+	//document.getElementById("nextgeoss-button").style.display="none"; //si volem recuperar el botó, aquesta linia es pot eliminar
+	document.getElementById("nextgeoss-button").disabled=false;
 	document.getElementById("wqems-button").disabled=false;
 }
 
@@ -1315,7 +1315,7 @@ function InitHello()
  The instructions includes the ay to register in google console: https://console.developers.google.com
  both the API key for google+ API and the Credentials for the NiMMBus web application.*/
 
-function HandleGoogleApiLibrary() 
+/*function HandleGoogleApiLibrary() 
 {
 	// Load "client" & "auth2" libraries
 	gapi.load('client:auth2', {
@@ -1323,7 +1323,7 @@ function HandleGoogleApiLibrary()
 			// Initialize client library
 			// clientId & scope is provided => automatically initializes auth2 library
 			gapi.client.init({
-		    	apiKey: 'AIzaSyBSTYA3cOVJ1fuVGBrJXT8gsrRvFjp74x8',
+		    	apiKey: '',
 		    	//discoveryDocs: ['https://people.googleapis.com/$discovery/rest'],
 		    	clientId: '281597821362-tkj1tngjiiuul47m6dkhrorrsdqomahu.apps.googleusercontent.com',
 		    	scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me'
@@ -1344,7 +1344,7 @@ function HandleGoogleApiLibrary()
 			alert(DonaCadenaJSON(Msg_Failure_loading_Google_libraries));
 		}
 	});
-}
+}*/
 
 var AccessToken="";
 var AccessTokenType="";
@@ -1455,8 +1455,8 @@ function ValidaSSOAuthenix(popup, f_callback, pending_ajax_req)
 
 function ValidaSSONextGEOSS(popup, f_callback, pending_ajax_req)
 {
-	//document.getElementById("nextgeoss-button").disabled=true;
-	document.getElementById("nextgeoss-button").style.display="none"; //amaga botó
+	document.getElementById("nextgeoss-button").disabled=true;
+	//document.getElementById("nextgeoss-button").style.display="none"; //amaga botó
 
 	/*The automatic regeneration of the token in the background happens every 10 minutes (wrong timing since token expires in 5 minutes only). 
 	To make the situation worse, the automatically generated new token does not work in the server side, so I have to force reauthentification using 
@@ -1471,14 +1471,14 @@ function ValidaSSONextGEOSS(popup, f_callback, pending_ajax_req)
 				f_callback();
 			if (pending_ajax_req)
 				pending_ajax_req.doReqAutenticated();
-			//document.getElementById("nextgeoss-button").disabled=false;
-			document.getElementById("nextgeoss-button").style.display="none"; //amaga botó
+			document.getElementById("nextgeoss-button").disabled=false;
+			//document.getElementById("nextgeoss-button").style.display="none"; //amaga botó
 		},
 		// On error
 		function(error) {
 			alert(DonaCadenaJSON(Msg_NextGEOSS_login_failed) + " " + error.error.message);
-			//document.getElementById("nextgeoss-button").disabled=false;
-			document.getElementById("nextgeoss-button").style.display="none"; //amaga botó
+			document.getElementById("nextgeoss-button").disabled=false;
+			//document.getElementById("nextgeoss-button").style.display="none"; //amaga botó
 		}
 	);
 }
@@ -1523,7 +1523,7 @@ function ValidaSSODebug()
 
 
 // Click on login button
-function ValidaSSOGoogle() 
+/*function ValidaSSOGoogle() 
 {
 	document.getElementById("google-button").disabled=true;
 			
@@ -1568,7 +1568,7 @@ function ValidaSSOGoogle()
 			alert(DonaCadenaJSON(Msg_Google_login_failed));
 		}
 	);
-};
+};*/
 
 
 function AfegeixCredencialsToken(ajax)
@@ -10286,7 +10286,7 @@ function BuidaHlinkResource()
 
 </script>
 
-<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+<!--<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};HandleGoogleApiLibrary()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>-->
 
 </head>
 
@@ -10333,12 +10333,12 @@ function BuidaHlinkResource()
 		<div class="front-welcome-forms">
 			<div class="white-area" style="top: 105px; width: 326px;">
 				<h2 id="front-signin-external-lang" class="white-area-title"></h2>
-				<!--button id="nextgeoss-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);">NextGEOSS</button-->
-				<button id="nextgeoss-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);"  style="display: none;">NextGEOSS</button>
 				<button id="authenix-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOAuthenix(true, SignInNBAuthenix, null);">Authenix</button>
 				<!--br-->
 				<button id="wqems-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOWQeMS(true, SignInNBWQeMS, null);">WQeMS</button>
-				<button id="google-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOGoogle();">Google</button>
+				<!--<button id="google-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSOGoogle();">Google</button>-->
+				<!--button id="nextgeoss-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);"  style="display: none;">NextGEOSS</button-->
+				<button id="nextgeoss-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSONextGEOSS(true, SignInNBNextGEOSS, null);">NextGEOSS</button>
 				<button id="sso-debug-button" style="margin-right:4px; margin-bottom:4px;" class="submit_btn" disabled onClick="ValidaSSODebug();" style="display: none;">Debug</button>
 			</div>
 		
